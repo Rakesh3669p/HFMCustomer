@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+
+    <TextView
+        android:id="@+id/searchBar"
+        style="@style/textMedium"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:background="@drawable/radius_box"
+        android:drawableStart="@drawable/ic_search_32"
+        android:drawableEnd="@drawable/seach_filter"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/_5sdp"
+        android:text="Samyung Buy 2 Free 1"
+        android:textColor="@color/textGreyDark"
+        app:layout_constraintBottom_toBottomOf="@id/notification"
+        app:layout_constraintEnd_toStartOf="@id/notification"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/notification" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/notification"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginVertical="@dimen/_5sdp"
+        android:src="@drawable/ic_notification"
+        app:layout_constraintEnd_toStartOf="@+id/cart"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/cart"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginVertical="@dimen/_5sdp"
+        android:src="@drawable/ic_cart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/cartCount"
+        style="@style/textSmallSemiBold"
+        android:layout_width="@dimen/_12sdp"
+        android:layout_height="@dimen/_12sdp"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:background="@drawable/red_circle"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/cart"
+        app:layout_constraintEnd_toEndOf="@id/cart"
+        app:layout_constraintStart_toStartOf="@id/cart"
+        app:layout_constraintTop_toTopOf="@id/cart" />
+
+    <TextView
+        android:id="@+id/notificationCount"
+        style="@style/textSmallSemiBold"
+        android:layout_width="@dimen/_12sdp"
+        android:layout_height="@dimen/_12sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:background="@drawable/red_circle"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/notification"
+        app:layout_constraintEnd_toEndOf="@id/notification"
+        app:layout_constraintStart_toStartOf="@id/notification"
+        app:layout_constraintTop_toTopOf="@id/notification" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:fillViewport="true"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notification">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="true"
+            android:paddingBottom="@dimen/_70sdp">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/homeMainCategoriesRv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:itemCount="5"
+                tools:listitem="@layout/item_home_category" />
+
+            <RelativeLayout
+                android:id="@+id/bannerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/homeMainCategoriesRv">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/homeMainBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_130sdp"
+                    android:layout_marginHorizontal="@dimen/_35sdp"
+                    android:layout_marginTop="@dimen/_10sdp" />
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_14sdp"
+                    android:background="@color/trans"
+                    app:tabBackground="@drawable/home_banner_selector"
+                    app:tabGravity="center"
+                    app:tabIndicatorHeight="0dp"
+                    android:layout_marginTop="@dimen/_115sdp"
+                    app:ci_drawable="@drawable/selected_dot_home_banner"
+                    app:ci_drawable_unselected="@drawable/un_selected_dot_home"
+                     />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/flashDealsLbl"
+                style="@style/textLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:text="@string/flash_deals_lbl"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bannerLayout" />
+
+            <TextView
+                android:id="@+id/endsInLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Ends In"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/flashDealsLbl" />
+
+            <include
+                android:id="@+id/flashDealsTimer"
+                layout="@layout/flash_deals_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                app:layout_constraintBottom_toBottomOf="@id/endsInLbl"
+                app:layout_constraintStart_toEndOf="@id/endsInLbl"
+                app:layout_constraintTop_toTopOf="@id/endsInLbl" />
+
+
+            <TextView
+                android:id="@+id/flashDealsViewAll"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:drawableEnd="@drawable/ic_keyboard_arrow"
+                android:drawableTint="@color/red"
+                android:gravity="center"
+                android:text="@string/view_all_lbl"
+                android:textColor="@color/red"
+                app:layout_constraintBottom_toBottomOf="@id/flashDealsTimer"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/flashDealsTimer" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/flashDealsProductsRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/endsInLbl"
+                tools:itemCount="4"
+                tools:listitem="@layout/item_products" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/adsRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_7sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/flashDealsProductsRv"
+                tools:itemCount="4"
+                tools:listitem="@layout/item_ads" />
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/secondaryBanner"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_140sdp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:scaleType="fitXY"
+                android:src="@drawable/grocery_list"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/adsRv"
+                app:roundPercent="0.1" />
+
+
+            <TextView
+                android:id="@+id/officialBrandsLbl"
+                style="@style/textLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/official_brands_store_lbl"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/secondaryBanner" />
+
+
+            <TextView
+                android:id="@+id/officialBrandsViewAll"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:drawableEnd="@drawable/ic_keyboard_arrow"
+                android:drawableTint="@color/red"
+                android:gravity="center"
+                android:text="@string/view_all_lbl"
+                android:textColor="@color/red"
+                app:layout_constraintBottom_toBottomOf="@id/officialBrandsLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/officialBrandsLbl" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/brandsRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_7sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/officialBrandsLbl"
+                tools:itemCount="10"
+                tools:listitem="@layout/item_brands" />
+
+            <TextView
+                android:id="@+id/factoryDealsLbl"
+                style="@style/textLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Factory Direct Wholesale"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/brandsRv" />
+
+
+            <TextView
+                android:id="@+id/factoryDealsViewAll"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:drawableEnd="@drawable/ic_keyboard_arrow"
+                android:drawableTint="@color/red"
+                android:gravity="center"
+                android:text="@string/view_all_lbl"
+                android:textColor="@color/red"
+                app:layout_constraintBottom_toBottomOf="@id/factoryDealsLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/factoryDealsLbl" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/factoryDealsRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_7sdp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/factoryDealsLbl"
+                tools:itemCount="10"
+                tools:listitem="@layout/item_products" />
+
+            <TextView
+                android:id="@+id/trendingNowLbl"
+                style="@style/textLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:text="Trending Now"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/factoryDealsRv" />
+
+
+            <TextView
+                android:id="@+id/trendingNowViewAll"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:drawableEnd="@drawable/ic_keyboard_arrow"
+                android:drawableTint="@color/red"
+                android:gravity="center"
+                android:text="@string/view_all_lbl"
+                android:textColor="@color/red"
+                app:layout_constraintBottom_toBottomOf="@id/trendingNowLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/trendingNowLbl" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/trendingNowRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_7sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/trendingNowLbl"
+                tools:itemCount="10"
+                tools:listitem="@layout/item_trending_now" />
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/referBanner"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_90sdp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:scaleType="fitXY"
+                android:src="@drawable/grocery_list"
+                app:layout_constraintEnd_toStartOf="@id/adBanner"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/trendingNowRv"
+                app:roundPercent="0.1" />
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/adBanner"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:background="@color/grey_lite"
+                android:scaleType="fitXY"
+                android:src="@drawable/grocery_list"
+
+                app:layout_constraintBottom_toBottomOf="@id/referBanner"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/referBanner"
+                app:layout_constraintTop_toTopOf="@id/referBanner"
+                app:roundPercent="0.1" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/featuresProductLbl"
+                style="@style/textLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Features Products"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/referBanner" />
+
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/featuresProductViewAll"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:drawableEnd="@drawable/ic_keyboard_arrow"
+                android:drawableTint="@color/red"
+                android:gravity="center"
+                android:text="@string/view_all_lbl"
+                android:textColor="@color/red"
+                app:layout_constraintBottom_toBottomOf="@id/featuresProductLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/featuresProductLbl" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:visibility="gone"
+                android:id="@+id/featuresProductRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_7sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/featuresProductLbl"
+                tools:itemCount="10"
+                tools:listitem="@layout/item_products" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <View
+        android:id="@+id/loader"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
+        android:visibility="gone"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

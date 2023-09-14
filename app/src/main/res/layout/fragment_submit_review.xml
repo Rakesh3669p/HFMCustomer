@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.fragments.referral.ReferralFragment">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/back"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:clickable="true"
+        android:contentDescription="@string/back_lbl"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:paddingVertical="@dimen/_5sdp"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/toolBarTitle"
+        style="@style/textLargeSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/submit_your_review_lbl"
+        app:layout_constraintBottom_toBottomOf="@id/back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/back" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/rateThisProductLbl"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/your_rating_of_this_product_lbl"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <RatingBar
+                android:id="@+id/reviewRatingBar"
+                style="@style/Base.Widget.AppCompat.RatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:progressTint="@color/red"
+                android:rating="4"
+                android:scaleX="0.7"
+                android:scaleY="0.7"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rateThisProductLbl" />
+
+            <TextView
+                android:id="@+id/titleLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/titleLbl"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/reviewRatingBar" />
+
+
+            <EditText
+                android:id="@+id/titleEdt"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/edt_line_box"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_8sdp"
+                app:layout_constraintEnd_toEndOf="@id/titleLbl"
+                app:layout_constraintStart_toStartOf="@id/titleLbl"
+                app:layout_constraintTop_toBottomOf="@id/titleLbl" />
+
+            <TextView
+                android:id="@+id/uploadImageLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:text="Upload Images &amp; Videos"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/titleEdt" />
+
+            <View
+                android:id="@+id/uploadImageBg"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_90sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/edt_line_box"
+                app:layout_constraintEnd_toEndOf="@id/uploadImageLbl"
+                app:layout_constraintStart_toStartOf="@+id/uploadImageLbl"
+                app:layout_constraintTop_toBottomOf="@id/uploadImageLbl" />
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/uploadImage"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:src="@drawable/add_photo_alternate"
+                android:tint="@color/grey_lite"
+                app:layout_constraintBottom_toTopOf="@id/uploadImageVideosLbl"
+                app:layout_constraintEnd_toEndOf="@id/uploadImageBg"
+                app:layout_constraintStart_toStartOf="@id/uploadImageBg"
+                app:layout_constraintTop_toTopOf="@id/uploadImageBg" />
+
+            <TextView
+                android:id="@+id/uploadImageVideosLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:singleLine="false"
+                android:text="Click here to upload Images/Videos"
+                android:textColor="@color/grey_lite"
+                app:layout_constraintEnd_toEndOf="@+id/uploadImage"
+                app:layout_constraintStart_toStartOf="@+id/uploadImage"
+                app:layout_constraintTop_toBottomOf="@+id/uploadImage" />
+
+
+            <TextView
+                android:id="@+id/writeReviewLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Write A Review"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/uploadImageBg" />
+
+
+            <EditText
+                android:id="@+id/writeReviewEdt"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/edt_line_box"
+                android:gravity="start"
+                android:maxHeight="@dimen/_90sdp"
+                android:minHeight="@dimen/_90sdp"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_8sdp"
+                android:singleLine="false"
+                app:layout_constraintEnd_toEndOf="@id/writeReviewLbl"
+                app:layout_constraintStart_toStartOf="@id/writeReviewLbl"
+                app:layout_constraintTop_toBottomOf="@id/writeReviewLbl" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/send"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:backgroundTint="@color/red"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="@string/submit_review_lbl"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textFontWeight="600"
+                android:textSize="@dimen/_12ssp"
+                app:cornerRadius="@dimen/_6sdp"
+                app:layout_constraintEnd_toEndOf="@id/titleLbl"
+                app:layout_constraintStart_toStartOf="@id/titleLbl"
+                app:layout_constraintTop_toBottomOf="@id/writeReviewEdt"
+                tools:ignore="UnusedAttribute"
+                tools:layout_editor_absoluteX="13dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/categoriesFragment"
+        android:name="com.hfm.customer.ui.dashBoard.categories.CategoriesFragment"
+        android:label="fragment_categories"
+        tools:layout="@layout/fragment_categories" />
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.hfm.customer.ui.dashBoard.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.hfm.customer.ui.dashBoard.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/productListFragment"
+        android:name="com.hfm.customer.ui.fragments.products.productList.ProductListFragment"
+        android:label="fragment_product_list"
+        tools:layout="@layout/fragment_product_list" />
+    <fragment
+        android:id="@+id/productDetailsFragment"
+        android:name="com.hfm.customer.ui.fragments.products.productDetails.ProductDetailsFragment"
+        android:label="ProductDetailsFragment"
+        tools:layout="@layout/fragment_product_detail">
+        <action
+            android:id="@+id/action_productDetailsFragment_to_myOrdersFragment"
+            app:destination="@id/myOrdersFragment"
+            app:popUpTo="@id/productListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/customerRatingFragment"
+        android:name="com.hfm.customer.ui.fragments.products.productDetails.CustomerRatingFragment"
+        android:label="fragment_customer_rating"
+        tools:layout="@layout/fragment_customer_rating" />
+    <fragment
+        android:id="@+id/storeFragment"
+        android:name="com.hfm.customer.ui.fragments.store.StoreFragment"
+        android:label="fragment_store"
+        tools:layout="@layout/fragment_store" />
+    <fragment
+        android:id="@+id/wishListFragment"
+        android:name="com.hfm.customer.ui.fragments.wishlist.WishListFragment"
+        android:label="WishListFragment"
+        tools:layout="@layout/fragment_wishlist" />
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.hfm.customer.ui.fragments.cart.CartFragment"
+        android:label="CartFragment"
+        tools:layout="@layout/fragment_cart" />
+
+    <fragment
+        android:id="@+id/checkOutFragment"
+        android:name="com.hfm.customer.ui.fragments.checkOut.CheckOutFragment"
+        android:label="CheckOutFragment"
+        tools:layout="@layout/fragment_checkout" />
+    <fragment
+        android:id="@+id/chatUsersFragment"
+        android:name="com.hfm.customer.ui.fragments.chat.ChatListFragment"
+        android:label="ChatFragment"
+        tools:layout="@layout/fragment_chat_list" />
+    <fragment
+        android:id="@+id/manageAddressFragment"
+        android:name="com.hfm.customer.ui.fragments.address.ManageAddressFragment"
+        android:label="ManageAddressFragment"
+        tools:layout="@layout/fragment_manage_address" />
+    <fragment
+        android:id="@+id/walletFragment"
+        android:name="com.hfm.customer.ui.fragments.vouchers.VouchersFragment"
+        android:label="WalletFragment"
+        tools:layout="@layout/fragment_wallet" />
+
+    <fragment
+        android:id="@+id/vouchersFragment"
+        android:name="com.hfm.customer.ui.fragments.vouchers.VouchersFragment"
+        android:label="WalletFragment"
+        tools:layout="@layout/fragment_vouchers" />
+    <fragment
+        android:id="@+id/supportFragment"
+        android:name="com.hfm.customer.ui.fragments.support.SupportFragment"
+        android:label="SupportFragment"
+        tools:layout="@layout/fragment_support" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.hfm.customer.ui.fragments.support.NotificationFragment"
+        android:label="NotificationFragment"
+        tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/profileSettingsFragment"
+        android:name="com.hfm.customer.ui.dashBoard.profile.ProfileSettings"
+        android:label="ProfileSettings"
+        tools:layout="@layout/fragment_profile_settings" />
+    <fragment
+        android:id="@+id/paymentMethodFragment"
+        android:name="com.hfm.customer.ui.fragments.payment.PaymentMethodFragment"
+        android:label="PaymentMethodFragment"
+        tools:layout="@layout/fragment_payment_method" />
+
+    <fragment
+        android:id="@+id/myOrdersFragment"
+        android:name="com.hfm.customer.ui.fragments.myOrders.MyOrdersFragment"
+        android:label="fragment_my_orders"
+        tools:layout="@layout/fragment_my_orders" />
+    <fragment
+        android:id="@+id/noInternetFragment"
+        android:name="com.hfm.customer.ui.fragments.noInternet.NoInternetFragment"
+        android:label="NoInternetFragment"
+        tools:layout="@layout/fragment_no_internet"/>
+    <fragment
+        android:id="@+id/brandsFragment"
+        android:name="com.hfm.customer.ui.fragments.brands.BrandsFragment"
+        android:label="fragment_brands"
+        tools:layout="@layout/fragment_brands" />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.hfm.customer.ui.fragments.chat.ChatFragment"
+        android:label="ChatFragment"
+        tools:layout="@layout/fragment_chat"/>
+    <fragment
+        android:id="@+id/orderDetailsFragment"
+        android:name="com.hfm.customer.ui.fragments.myOrders.OrderDetailsFragment"
+        android:label="OrderDetailsFragment"
+        tools:layout="@layout/fragment_order_details"/>
+    <fragment
+        android:id="@+id/orderTrackingFragment"
+        android:name="com.hfm.customer.ui.fragments.orderTracking.OrderTrackingFragment"
+        android:label="fragment_order_tracking"
+        tools:layout="@layout/fragment_order_tracking" />
+
+</navigation>

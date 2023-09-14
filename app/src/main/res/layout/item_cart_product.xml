@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="@dimen/_15sdp"
+        android:layout_height="@dimen/_15sdp"
+        android:layout_margin="@dimen/_5sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/productImage"/>
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/productImage"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
+        android:layout_margin="@dimen/_10sdp"
+        android:src="@drawable/red_chilli"
+        android:background="@drawable/edt_box"
+        android:elevation="@dimen/_1sdp"
+        android:paddingVertical="@dimen/_10sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/checkBox"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/productName"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:text="@string/cart_details_lbl"
+        app:layout_constraintBottom_toTopOf="@id/variantsSpinner"
+        app:layout_constraintStart_toEndOf="@id/productImage"
+        app:layout_constraintTop_toTopOf="@id/productImage"/>
+
+    <TextView
+        android:id="@+id/delete"
+        style="@style/textMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:text="@string/deleteLbl"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/variantsSpinner"
+        app:layout_constraintTop_toTopOf="@id/productImage"/>
+
+    <Spinner
+        android:id="@+id/variantsSpinner"
+        style="@style/SpinnerTheme"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_7sdp"
+        android:paddingStart="@dimen/_15sdp"
+        android:paddingEnd="@dimen/_15sdp"
+        android:spinnerMode="dropdown"
+        android:paddingVertical="@dimen/_4sdp"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:backgroundTint="@color/textGrey"
+
+        app:layout_constraintBottom_toTopOf="@id/productPrice"
+        app:layout_constraintStart_toStartOf="@id/productName"
+        app:layout_constraintTop_toBottomOf="@id/productName"
+         />
+
+
+    <TextView
+        android:id="@+id/productPrice"
+        style="@style/textMediumBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:text="RM 24"
+        android:textColor="@color/red"
+        app:layout_constraintStart_toEndOf="@id/productImage"
+        app:layout_constraintTop_toBottomOf="@id/variantsSpinner"
+        app:layout_constraintBottom_toTopOf="@id/outOfStock"/>
+
+    <TextView
+        android:id="@+id/outOfStock"
+        style="@style/textSmall"
+        android:layout_width="@dimen/_65sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:background="@drawable/rectangle_box"
+        android:backgroundTint="@color/red"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_5sdp"
+        android:paddingVertical="@dimen/_3sdp"
+        android:text="Out of stock"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@id/productName"
+        app:layout_constraintTop_toBottomOf="@id/productPrice"
+        app:layout_constraintBottom_toBottomOf="@id/productImage" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cartCount"
+        android:layout_width="@dimen/_65sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:backgroundTint="@color/textGrey"
+        app:layout_constraintBottom_toBottomOf="@id/productPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/productPrice"
+        >
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/decreaseQty"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_margin="@dimen/_2sdp"
+            android:background="@drawable/edt_box_smaa_radius"
+            android:backgroundTint="@color/red"
+            android:tint="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/_4sdp"
+            android:src="@drawable/ic_round_remove"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/qty"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/qty"
+            style="@style/textMediumBold"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/decreaseQty"
+            app:layout_constraintEnd_toStartOf="@+id/increaseQty"
+            app:layout_constraintStart_toEndOf="@id/decreaseQty"
+            app:layout_constraintTop_toTopOf="@id/decreaseQty" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/increaseQty"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_margin="@dimen/_2sdp"
+            android:background="@drawable/edt_box_smaa_radius"
+            android:clickable="true"
+            android:contentDescription="@string/back_lbl"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/_4sdp"
+            android:backgroundTint="@color/red"
+            android:tint="@color/white"
+            android:src="@drawable/ic_plus"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/qty"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

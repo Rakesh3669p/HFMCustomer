@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/back"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:clickable="true"
+        android:contentDescription="@string/back_lbl"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:paddingVertical="@dimen/_5sdp"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/titleLbl"
+        style="@style/textLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="@string/payment_method_lbl"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/howToPayLbl"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:gravity="center"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="How to make payment?"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back" />
+
+    <TextView
+        android:id="@+id/bankTransfer"
+        style="@style/textMediumSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:elevation="@dimen/_1sdp"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/bank_transfer_lbl"
+        app:layout_constraintTop_toBottomOf="@id/howToPayLbl" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/bankTransferArrow"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:background="@color/redLite"
+        android:elevation="@dimen/_1sdp"
+        android:src="@drawable/ic_keyboard_arrow"
+        android:tint="@color/red"
+        app:layout_constraintBottom_toBottomOf="@id/bankTransfer"
+        app:layout_constraintEnd_toEndOf="@id/bankTransfer"
+        app:layout_constraintTop_toTopOf="@+id/bankTransfer"
+        app:roundPercent="0.2" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bankTransferLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:elevation="@dimen/_1sdp"
+        android:padding="@dimen/_10sdp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/bankTransfer"
+        app:layout_constraintStart_toStartOf="@id/bankTransfer"
+        app:layout_constraintTop_toBottomOf="@id/bankTransfer">
+
+        <TextView
+            android:id="@+id/bankTransferUploadReceiptLbl"
+            style="@style/textMediumSemiBold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_payment_receipt_lbl"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/bankTransferUploadReceipt"
+            style="@style/textMediumSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/dash_box_grey"
+            android:drawableStart="@drawable/add_photo_alternate"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_90sdp"
+            android:paddingVertical="@dimen/_10sdp"
+            android:text="Upload"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bankTransferUploadReceiptLbl" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <TextView
+        android:id="@+id/duitNowLbl"
+        style="@style/textMediumSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:elevation="@dimen/_1sdp"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/duit_now_lbl"
+        app:layout_constraintTop_toBottomOf="@id/bankTransferLayout" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/duitNowArrow"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:background="@color/redLite"
+        android:elevation="@dimen/_1sdp"
+        android:src="@drawable/ic_keyboard_arrow"
+        android:tint="@color/red"
+        app:layout_constraintBottom_toBottomOf="@id/duitNowLbl"
+        app:layout_constraintEnd_toEndOf="@id/duitNowLbl"
+        app:layout_constraintTop_toTopOf="@+id/duitNowLbl"
+        app:roundPercent="0.2" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/duitNowLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:elevation="@dimen/_1sdp"
+        android:padding="@dimen/_10sdp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/duitNowLbl"
+        app:layout_constraintStart_toStartOf="@id/duitNowLbl"
+        app:layout_constraintTop_toBottomOf="@id/duitNowLbl">
+
+        <TextView
+            android:id="@+id/duitNowUploadReceiptLbl"
+            style="@style/textMediumSemiBold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_payment_receipt_lbl"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/duitNowUploadReceipt"
+            style="@style/textMediumSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/dash_box_grey"
+            android:drawableStart="@drawable/add_photo_alternate"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_90sdp"
+            android:paddingVertical="@dimen/_10sdp"
+            android:text="Upload"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/duitNowUploadReceiptLbl" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/onlinePaymentLbl"
+        style="@style/textMediumSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:elevation="@dimen/_1sdp"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/online_payment_lbl"
+        app:layout_constraintTop_toBottomOf="@id/duitNowLayout" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/onlinePaymentArrow"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:background="@color/redLite"
+        android:elevation="@dimen/_1sdp"
+        android:src="@drawable/ic_keyboard_arrow"
+        android:tint="@color/red"
+        app:layout_constraintBottom_toBottomOf="@id/onlinePaymentLbl"
+        app:layout_constraintEnd_toEndOf="@id/onlinePaymentLbl"
+        app:layout_constraintTop_toTopOf="@+id/onlinePaymentLbl"
+        app:roundPercent="0.2" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:id="@+id/onlinePaymentLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:elevation="@dimen/_1sdp"
+        android:padding="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="@id/onlinePaymentLbl"
+        app:layout_constraintStart_toStartOf="@id/onlinePaymentLbl"
+        app:layout_constraintTop_toBottomOf="@id/onlinePaymentLbl">
+
+        <RadioButton
+            android:id="@+id/onlinePaymentRadioBtn"
+            style="@style/textMediumSemiBold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:scaleType="fitXY"
+            android:src="@drawable/grocery_list"
+            app:layout_constraintBottom_toBottomOf="@id/onlinePaymentRadioBtn"
+            app:layout_constraintStart_toEndOf="@id/onlinePaymentRadioBtn"
+            app:layout_constraintTop_toTopOf="@id/onlinePaymentRadioBtn" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <TextView
+        android:id="@+id/creditCardLbl"
+        style="@style/textMediumSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:elevation="@dimen/_1sdp"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/credit_card_lbl"
+        app:layout_constraintTop_toBottomOf="@id/onlinePaymentLayout" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/creditCardArrow"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:background="@color/redLite"
+        android:elevation="@dimen/_1sdp"
+        android:src="@drawable/ic_keyboard_arrow"
+        android:tint="@color/red"
+        app:layout_constraintBottom_toBottomOf="@id/creditCardLbl"
+        app:layout_constraintEnd_toEndOf="@id/creditCardLbl"
+        app:layout_constraintTop_toTopOf="@+id/creditCardLbl"
+        app:roundPercent="0.2" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/creditCardLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:elevation="@dimen/_1sdp"
+        android:padding="@dimen/_10sdp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/creditCardLbl"
+        app:layout_constraintStart_toStartOf="@id/creditCardLbl"
+        app:layout_constraintTop_toBottomOf="@id/creditCardLbl">
+
+        <TextView
+            android:id="@+id/creditCardUploadReceiptLbl"
+            style="@style/textMediumSemiBold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_payment_receipt_lbl"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/creditCardUploadReceipt"
+            style="@style/textMediumSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/dash_box_grey"
+            android:drawableStart="@drawable/add_photo_alternate"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_90sdp"
+            android:paddingVertical="@dimen/_10sdp"
+            android:text="Upload"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/creditCardUploadReceiptLbl" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/continueLbl"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:background="@color/red"
+        android:drawableEnd="@drawable/ic_arrow_forward"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:text="@string/continueLbl"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

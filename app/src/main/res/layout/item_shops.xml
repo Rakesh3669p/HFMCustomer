@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/_5sdp"
+    android:background="@drawable/edt_box"
+    android:elevation="@dimen/_4sdp">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/shopImage"
+        android:layout_width="@dimen/_135sdp"
+        android:layout_height="@dimen/_135sdp"
+        android:layout_margin="@dimen/_10sdp"
+        android:src="@drawable/grocery_list"
+        android:scaleType="fitXY"
+        app:roundPercent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/chat"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_30sdp"
+        android:backgroundTint="@color/red"
+        android:paddingVertical="0dp"
+        android:text="@string/chatLbl"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:cornerRadius="@dimen/_6sdp"
+        android:layout_marginHorizontal="@dimen/_5sdp"
+        app:layout_constraintStart_toStartOf="@+id/shopImage"
+        app:layout_constraintEnd_toEndOf="@id/shopImage"
+        app:layout_constraintBottom_toTopOf="@id/unFollow"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/unFollow"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_30sdp"
+        android:backgroundTint="@color/white"
+        android:paddingVertical="0dp"
+        android:text="@string/unfollowLbl"
+        android:textAllCaps="false"
+        android:textColor="@color/red"
+        app:cornerRadius="@dimen/_6sdp"
+        android:layout_marginHorizontal="@dimen/_5sdp"
+        app:layout_constraintStart_toStartOf="@+id/shopImage"
+        app:layout_constraintEnd_toEndOf="@id/shopImage"
+        app:layout_constraintBottom_toBottomOf="@id/shopImage"
+        />
+
+
+    <TextView
+        android:id="@+id/shopName"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Store Name"
+        android:paddingEnd="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@id/ratingBar"
+        app:layout_constraintTop_toTopOf="@id/shopImage"
+        app:layout_constraintStart_toEndOf="@id/shopImage"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        style="@style/RatingBarSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/_2sdp"
+        android:progressTint="@color/red"
+        android:rating="4"
+        app:layout_constraintBottom_toTopOf="@id/ratingType"
+        app:layout_constraintStart_toStartOf="@id/shopName"
+        app:layout_constraintTop_toBottomOf="@id/shopName" />
+
+    <TextView
+        android:id="@+id/ratingType"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="50% Positive"
+        android:paddingEnd="@dimen/_10sdp"
+        android:textColor="@color/red"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:includeFontPadding="false"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@id/ratings"
+        app:layout_constraintTop_toBottomOf="@id/ratingBar"
+        app:layout_constraintStart_toEndOf="@id/shopImage"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/ratings"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="(4 ratings)"
+        android:paddingEnd="@dimen/_10sdp"
+        android:includeFontPadding="false"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@id/productsLbl"
+        app:layout_constraintTop_toBottomOf="@id/ratingType"
+        app:layout_constraintStart_toEndOf="@id/shopImage"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/productsLbl"
+        style="@style/textMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/productsLbl"
+        android:paddingEnd="@dimen/_10sdp"
+        android:textColor="@color/textGreyDark"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:includeFontPadding="false"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintEnd_toStartOf="@id/countryLbl"
+        app:layout_constraintBottom_toTopOf="@id/products"
+        app:layout_constraintTop_toBottomOf="@id/ratings"
+        app:layout_constraintStart_toEndOf="@id/shopImage"
+        />
+
+    <TextView
+        android:id="@+id/products"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="160"
+        android:paddingEnd="@dimen/_10sdp"
+        android:includeFontPadding="false"
+        android:textColor="@color/red"
+        android:layout_marginStart="@dimen/_10sdp"
+
+        app:layout_constraintEnd_toStartOf="@id/countryLbl"
+        app:layout_constraintBottom_toTopOf="@id/stateLbl"
+        app:layout_constraintTop_toBottomOf="@id/productsLbl"
+        app:layout_constraintStart_toEndOf="@id/shopImage"
+        />
+
+    <TextView
+        android:id="@+id/countryLbl"
+        style="@style/textMedium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/countryLbl"
+        android:paddingEnd="@dimen/_10sdp"
+        android:textColor="@color/textGreyDark"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:includeFontPadding="false"
+        android:layout_marginStart="@dimen/_20sdp"
+
+        app:layout_constraintBottom_toTopOf="@id/products"
+        app:layout_constraintTop_toBottomOf="@id/ratings"
+        app:layout_constraintStart_toEndOf="@id/productsLbl"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/country"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Malaysia"
+        android:paddingEnd="@dimen/_10sdp"
+        android:includeFontPadding="false"
+        android:textColor="@color/red"
+        android:layout_marginStart="@dimen/_20sdp"
+        app:layout_constraintBottom_toTopOf="@id/stateLbl"
+        app:layout_constraintTop_toBottomOf="@id/countryLbl"
+        app:layout_constraintStart_toEndOf="@+id/productsLbl"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+
+    <TextView
+        android:id="@+id/stateLbl"
+        style="@style/textMedium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/stateLbl"
+        android:paddingEnd="@dimen/_10sdp"
+        android:textColor="@color/textGreyDark"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:includeFontPadding="false"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@id/state"
+        app:layout_constraintTop_toBottomOf="@id/products"
+        app:layout_constraintStart_toEndOf="@id/shopImage"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/state"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Johor"
+        android:paddingEnd="@dimen/_10sdp"
+        android:includeFontPadding="false"
+        android:textColor="@color/red"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintBottom_toBottomOf="@id/shopImage"
+        app:layout_constraintTop_toBottomOf="@id/stateLbl"
+        app:layout_constraintStart_toEndOf="@id/shopImage"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.fragments.store.StoreFragment">
+
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/storeBanner"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_124sdp"
+        android:src="@drawable/grocery_list"
+        android:scaleType="fitXY"
+        android:foreground="@color/blackTrans200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_arrow_back"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toStartOf="@id/search"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/search"
+        app:layout_constraintBottom_toBottomOf="@id/search"
+        />
+
+    <EditText
+        android:id="@+id/search"
+        style="@style/textMediumSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_30sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginVertical="@dimen/_15sdp"
+        android:background="@drawable/store_search_box"
+        android:drawableStart="@drawable/ic_search"
+        android:drawablePadding="@dimen/_5sdp"
+        android:drawableTint="@color/white"
+        android:hint="@string/search_in_store_lbl"
+        android:paddingHorizontal="@dimen/_5sdp"
+        android:paddingVertical="@dimen/_5sdp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/storeImage"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_margin="@dimen/_15sdp"
+        android:src="@drawable/grocery_list"
+        android:scaleType="fitXY"
+        android:elevation="@dimen/_1sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search"
+        app:roundPercent="1" />
+
+    <TextView
+        android:id="@+id/storeName"
+        style="@style/textMediumBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:text="Jaya Grocer"
+        android:elevation="@dimen/_4sdp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/storeFollowers"
+        app:layout_constraintStart_toEndOf="@id/storeImage"
+        app:layout_constraintTop_toTopOf="@id/storeImage"
+        app:layout_constraintVertical_chainStyle="spread" />
+
+
+    <TextView
+        android:id="@+id/storeFollowers"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="95% Chat Response  |  451k followers"
+        android:textColor="@color/white"
+        android:elevation="@dimen/_4sdp"
+        android:layout_marginBottom="@dimen/_4sdp"
+        app:layout_constraintBottom_toBottomOf="@id/storeImage"
+        app:layout_constraintEnd_toStartOf="@+id/chat"
+        app:layout_constraintStart_toStartOf="@id/storeName"
+        app:layout_constraintTop_toBottomOf="@id/storeName" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/follow"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:backgroundTint="@color/red"
+        android:gravity="center"
+        android:paddingVertical="0dp"
+        android:text="@string/followLbl"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:cornerRadius="@dimen/_6sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/storeImage" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/chat"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:backgroundTint="@color/red"
+        android:gravity="center"
+        android:paddingVertical="0dp"
+        android:text="@string/chatLbl"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:cornerRadius="@dimen/_6sdp"
+
+        app:layout_constraintBottom_toBottomOf="@id/storeImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/follow" />
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_30sdp"
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/storeBanner"
+        app:tabGravity="start"
+        app:tabIndicatorAnimationMode="linear"
+        app:tabIndicatorColor="@color/red"
+        app:tabIndicatorFullWidth="true"
+        app:tabIndicatorGravity="bottom"
+        app:tabIndicatorHeight="3dp"
+        app:tabMode="scrollable"
+        app:tabIndicator="@drawable/tab_indicator"
+        app:tabSelectedTextColor="@color/red"
+        app:tabTextAppearance="@style/textMediumSemiBold" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/storeVp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

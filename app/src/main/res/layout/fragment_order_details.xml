@@ -1,0 +1,900 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/back"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:clickable="true"
+        android:contentDescription="@string/back_lbl"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:paddingVertical="@dimen/_5sdp"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/toolBarTitle"
+        style="@style/textLargeSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/order_details_lbl"
+        app:layout_constraintBottom_toBottomOf="@id/back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/back" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/_20sdp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/orderDetailsCv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                app:cardCornerRadius="@dimen/_6sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_10sdp">
+
+
+                    <TextView
+                        android:id="@+id/orderId"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="Order #:995566"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toTopOf="@id/requestedDate"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/requestedDate"
+                        style="@style/textMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="Apr 20,2022 | 3.00pm"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintBottom_toTopOf="@id/requestStatus"
+                        app:layout_constraintStart_toStartOf="@+id/requestStatusLbl"
+                        app:layout_constraintTop_toBottomOf="@id/orderId" />
+
+                    <TextView
+                        android:id="@+id/requestStatusLbl"
+                        style="@style/textMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="Request Accept Status: "
+                        android:textColor="@color/textGreyDark"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@+id/requestStatus"
+                        app:layout_constraintStart_toStartOf="@+id/orderId"
+                        app:layout_constraintTop_toTopOf="@id/requestStatus" />
+
+                    <TextView
+                        android:id="@+id/requestStatus"
+                        style="@style/textMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="Pending"
+                        android:textColor="@color/orangeLite"
+                        app:layout_constraintBottom_toTopOf="@id/orderAmount"
+                        app:layout_constraintStart_toEndOf="@id/requestStatusLbl"
+                        app:layout_constraintTop_toBottomOf="@+id/requestedDate" />
+
+                    <TextView
+                        android:id="@+id/orderAmount"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="RM 20,0000.0"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/requestStatusLbl"
+                        app:layout_constraintTop_toBottomOf="@+id/requestStatus" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+
+            
+                android:id="@+id/orderTrackingCv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:cardCornerRadius="@dimen/_6sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/orderDetailsCv">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_12sdp">
+
+                    <androidx.constraintlayout.utils.widget.ImageFilterView
+                        android:id="@+id/ordered"
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:src="@drawable/support"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/orderedLbl"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:singleLine="false"
+                        android:text="@string/orderedLbl"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintStart_toEndOf="@id/ordered"
+                        app:layout_constraintTop_toTopOf="@id/ordered" />
+
+                    <TextView
+                        android:id="@+id/orderedDate"
+                        style="@style/textSmallSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:singleLine="false"
+                        android:text="Tue, 16th Apr 2022"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintBottom_toBottomOf="@id/ordered"
+                        app:layout_constraintStart_toEndOf="@id/ordered"
+                        app:layout_constraintTop_toBottomOf="@id/orderedLbl" />
+
+
+                    <View
+                        android:id="@+id/orderedTrack"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:background="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="@id/ordered"
+                        app:layout_constraintStart_toStartOf="@id/ordered"
+                        app:layout_constraintTop_toBottomOf="@id/ordered" />
+
+
+                    <androidx.constraintlayout.utils.widget.ImageFilterView
+                        android:id="@+id/inProcess"
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:src="@drawable/support"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/orderedTrack" />
+
+                    <TextView
+                        android:id="@+id/inProcessLbl"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:singleLine="false"
+                        android:text="@string/in_process_lbl"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintStart_toEndOf="@id/inProcess"
+                        app:layout_constraintTop_toTopOf="@id/inProcess" />
+
+                    <TextView
+                        android:id="@+id/inProcessDate"
+                        style="@style/textSmallSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:singleLine="false"
+                        android:text="Tue, 16th Apr 2022"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintBottom_toBottomOf="@id/inProcess"
+                        app:layout_constraintStart_toEndOf="@id/inProcess"
+                        app:layout_constraintTop_toBottomOf="@id/inProcessLbl" />
+
+                    <View
+                        android:id="@+id/inProcessTrack"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:background="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="@id/ordered"
+                        app:layout_constraintStart_toStartOf="@id/ordered"
+                        app:layout_constraintTop_toBottomOf="@id/inProcess" />
+
+
+                    <androidx.constraintlayout.utils.widget.ImageFilterView
+                        android:id="@+id/readyToShip"
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:src="@drawable/support"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/inProcessTrack" />
+
+                    <TextView
+                        android:id="@+id/readyToShipLbl"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:singleLine="false"
+                        android:text="@string/ready_for_ship_lbl"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintStart_toEndOf="@id/readyToShip"
+                        app:layout_constraintTop_toTopOf="@id/readyToShip" />
+
+                    <TextView
+                        android:id="@+id/readyToShipDate"
+                        style="@style/textSmallSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:singleLine="false"
+                        android:text="Tue, 16th Apr 2022"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintBottom_toBottomOf="@id/readyToShip"
+                        app:layout_constraintStart_toEndOf="@id/readyToShip"
+                        app:layout_constraintTop_toBottomOf="@id/readyToShipLbl" />
+
+
+                    <View
+                        android:id="@+id/readyToShipTrack"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:background="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="@id/ordered"
+                        app:layout_constraintStart_toStartOf="@id/ordered"
+                        app:layout_constraintTop_toBottomOf="@id/readyToShip" />
+
+                    <androidx.constraintlayout.utils.widget.ImageFilterView
+                        android:id="@+id/deliveryInProgress"
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:src="@drawable/support"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/readyToShipTrack" />
+
+                    <TextView
+                        android:id="@+id/deliveryInProgressLbl"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:singleLine="false"
+                        android:text="@string/delivery_in_progress_lbl"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintStart_toEndOf="@id/deliveryInProgress"
+                        app:layout_constraintTop_toTopOf="@id/deliveryInProgress" />
+
+                    <TextView
+                        android:id="@+id/deliveryInProgressDate"
+                        style="@style/textSmallSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:singleLine="false"
+                        android:text="Tue, 16th Apr 2022"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintBottom_toBottomOf="@id/deliveryInProgress"
+                        app:layout_constraintStart_toEndOf="@id/deliveryInProgress"
+                        app:layout_constraintTop_toBottomOf="@id/deliveryInProgressLbl" />
+
+                    <View
+                        android:id="@+id/deliveryInProgressTrack"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:background="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="@id/ordered"
+                        app:layout_constraintStart_toStartOf="@id/ordered"
+                        app:layout_constraintTop_toBottomOf="@id/deliveryInProgress" />
+
+                    <androidx.constraintlayout.utils.widget.ImageFilterView
+                        android:id="@+id/delivered"
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:src="@drawable/support"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/deliveryInProgressTrack" />
+
+                    <TextView
+                        android:id="@+id/deliveredLbl"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:singleLine="false"
+                        android:text="Delivered"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintStart_toEndOf="@id/delivered"
+                        app:layout_constraintTop_toTopOf="@id/delivered" />
+
+                    <TextView
+                        android:id="@+id/deliveredDate"
+                        style="@style/textSmallSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:singleLine="false"
+                        android:text="Tue, 16th Apr 2022"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintBottom_toBottomOf="@id/delivered"
+                        app:layout_constraintStart_toEndOf="@id/delivered"
+                        app:layout_constraintTop_toBottomOf="@id/deliveredLbl" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                
+                android:id="@+id/paymentMethodCv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:cardCornerRadius="@dimen/_6sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/orderTrackingCv">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_8sdp">
+
+                    <TextView
+                        android:id="@+id/paymentMethodLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="@string/payment_method_lbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/paymentMethod"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:singleLine="false"
+                        android:text="Bank Slip"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/paymentMethodLbl" />
+
+                    <View
+                        android:id="@+id/paymentMethodDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_1sdp"
+                        android:background="@color/grey_lite"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        app:layout_constraintTop_toBottomOf="@id/paymentMethod"/>
+
+                    <TextView
+                        android:id="@+id/billingAddressLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="@string/billing_address_lbl"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/paymentMethodDivider" />
+
+                    <TextView
+                        android:id="@+id/billingAddress"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:singleLine="false"
+                        android:text="1 block adjaisjd a asd\n asjdias"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/billingAddressLbl" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                
+                android:id="@+id/shippingAddressCv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:cardCornerRadius="@dimen/_6sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/paymentMethodCv">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_8sdp">
+
+                    <TextView
+                        android:id="@+id/shippingAddressLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="@string/shipping_address_lbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/shippingAddress"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:singleLine="false"
+                        android:text="1 block ajsdpa aspasd,\n jahsdoa"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/shippingAddressLbl" />
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                
+                android:id="@+id/paymentReceiptCv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:cardCornerRadius="@dimen/_6sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/shippingAddressCv">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_8sdp">
+
+                    <TextView
+                        android:id="@+id/uploadPaymentMethodLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="@string/upload_payment_receipt_lbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.utils.widget.ImageFilterView
+                        android:id="@+id/uploadImage"
+                        android:layout_width="@dimen/_40sdp"
+                        android:layout_height="@dimen/_40sdp"
+                        android:src="@drawable/add_photo_alternate"
+                        android:tint="@color/grey_lite"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:layout_constraintEnd_toEndOf="@id/uploadPaymentMethodLbl"
+                        app:layout_constraintStart_toStartOf="@id/uploadPaymentMethodLbl"
+                        app:layout_constraintTop_toBottomOf="@id/uploadPaymentMethodLbl"/>
+
+                    <TextView
+                        android:id="@+id/uploadPaymentMethod"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:singleLine="false"
+                        android:text="Click here to upload receipt"
+                        android:textColor="@color/grey_lite"
+                        app:layout_constraintEnd_toEndOf="@+id/uploadImage"
+                        app:layout_constraintStart_toStartOf="@+id/uploadImage"
+                        app:layout_constraintTop_toBottomOf="@+id/uploadImage" />
+
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.button.MaterialButton
+                
+                android:id="@+id/submit"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_35sdp"
+                android:backgroundTint="@color/red"
+                android:text="@string/submitLbl"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12ssp"
+                app:cornerRadius="@dimen/_6sdp"
+                app:layout_constraintTop_toBottomOf="@id/paymentReceiptCv"
+                app:layout_constraintEnd_toEndOf="@id/paymentReceiptCv"
+                />
+
+
+            <TextView
+                android:id="@+id/itemsLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:singleLine="false"
+                android:text="@string/itemsLbl"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="@+id/orderDetailsCv"
+                app:layout_constraintTop_toBottomOf="@+id/submit" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                
+                android:id="@+id/productsRv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/edt_box_smaa_radius"
+                android:elevation="@dimen/_1sdp"
+                tools:itemCount="2"
+                android:padding="@dimen/_10sdp"
+                tools:listitem="@layout/item_checkout_product"
+                app:layout_constraintTop_toBottomOf="@id/itemsLbl"
+                app:layout_constraintStart_toStartOf="@id/orderDetailsCv"
+                app:layout_constraintEnd_toEndOf="@id/orderDetailsCv"/>
+
+            <TextView
+                android:id="@+id/downLoadInvoice"
+                style="@style/textMediumSemiBold"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_40sdp"
+                android:elevation="@dimen/_1sdp"
+                android:text="@string/download_invoice_lbl"
+                android:gravity="center_vertical"
+                android:background="@drawable/edt_box_smaa_radius"
+                android:drawableEnd="@drawable/ic_arrow_forward"
+                android:drawableTint="@color/textGreyDark"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:layout_constraintTop_toBottomOf="@+id/productsRv"
+                app:layout_constraintStart_toStartOf="@id/productsRv"
+                app:layout_constraintEnd_toEndOf="@+id/productsRv"
+                />
+
+            <androidx.cardview.widget.CardView
+
+                android:id="@+id/sellerDetailsCv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:cardCornerRadius="@dimen/_6sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/downLoadInvoice">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_8sdp">
+
+                    <TextView
+                        android:id="@+id/sellerLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="@string/sellerLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/seller"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="McJoden"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/sellerLbl" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/chat"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:backgroundTint="@color/red"
+                        android:text="@string/chatLbl"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_12ssp"
+                        app:cornerRadius="@dimen/_4sdp"
+                        app:layout_constraintTop_toTopOf="@id/sellerLbl"
+                        app:layout_constraintBottom_toBottomOf="@id/seller"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+
+                    <TextView
+                        android:id="@+id/deliveryPartnerLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="@string/billing_address_lbl"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/seller" />
+
+                    <TextView
+                        android:id="@+id/deliveryPartner"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="DHL"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/deliveryPartnerLbl" />
+
+                    <TextView
+                        android:id="@+id/viewTrackDetails"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="View Track Details"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/deliveryPartnerLbl" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/billDetailsLbl"
+                style="@style/textLargeSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_9sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/bill_details_lbl"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sellerDetailsCv" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:background="@color/grey_lite"
+                app:layout_constraintBottom_toBottomOf="@id/billDetailsLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/billDetailsLbl"
+                app:layout_constraintTop_toTopOf="@id/billDetailsLbl" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cartBillCv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/_7sdp"
+                app:cardElevation="@dimen/_1sdp"
+                app:cardUseCompatPadding="true"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layout_constraintStart_toStartOf="@id/orderDetailsCv"
+                app:layout_constraintEnd_toEndOf="@id/orderDetailsCv"
+                app:layout_constraintTop_toBottomOf="@+id/billDetailsLbl">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_10sdp">
+
+                    <TextView
+                        android:id="@+id/priceLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Price(5 items)"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/price"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_9sdp"
+                        android:text="RM 32.00"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/priceLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/priceLbl" />
+
+                    <TextView
+                        android:id="@+id/deliveryLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="@string/delivery_charge_lbl"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/priceLbl" />
+
+                    <TextView
+                        android:id="@+id/deliveryCharges"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_9sdp"
+                        android:text="RM 32.00"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/deliveryLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/deliveryLbl" />
+
+                    <TextView
+                        android:id="@+id/voucherLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="@string/voucherLbl"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/deliveryLbl" />
+
+                    <TextView
+                        android:id="@+id/voucher"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_9sdp"
+                        android:text="RM 32.00"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/voucherLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/voucherLbl" />
+
+                    <TextView
+                        android:id="@+id/discountLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="Discount"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/voucherLbl" />
+
+                    <TextView
+                        android:id="@+id/discount"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_9sdp"
+                        android:text="RM 32.00"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/discountLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/discountLbl" />
+
+                    <TextView
+                        android:id="@+id/walletBillLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="@string/walletLbl"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/discountLbl" />
+
+                    <TextView
+                        android:id="@+id/walletAmount"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_9sdp"
+                        android:text="RM 32.00"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/walletBillLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/walletBillLbl" />
+
+
+                    <View
+                        android:id="@+id/divider"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:background="@color/grey_lite"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/walletBillLbl" />
+
+                    <TextView
+                        android:id="@+id/totalLbl"
+                        style="@style/textLargeSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="@string/totalLbl"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/divider" />
+
+                    <TextView
+                        android:id="@+id/totalAmount"
+                        style="@style/textLargeSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_9sdp"
+                        android:text="RM 32.00"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/totalLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/totalLbl" />
+
+                    <TextView
+                        android:id="@+id/totalSavings"
+                        style="@style/textMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:text="Total Savings: RM5.00"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/totalAmount" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

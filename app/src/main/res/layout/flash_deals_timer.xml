@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/day"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:backgroundTint="@color/redLite"
+        android:padding="@dimen/_5sdp"
+        android:text="20"
+        android:textColor="@color/red"
+        android:layout_marginHorizontal="@dimen/_2sdp"
+        app:layout_constraintEnd_toStartOf="@id/hour"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/hour"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:backgroundTint="@color/redLite"
+        android:padding="@dimen/_5sdp"
+        android:text="09"
+        android:textColor="@color/red"
+        android:layout_marginHorizontal="@dimen/_2sdp"
+        app:layout_constraintEnd_toStartOf="@id/minutes"
+        app:layout_constraintStart_toEndOf="@id/day"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/minutes"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:backgroundTint="@color/redLite"
+        android:padding="@dimen/_5sdp"
+        android:text="19"
+        android:textColor="@color/red"
+        android:layout_marginHorizontal="@dimen/_2sdp"
+        app:layout_constraintEnd_toStartOf="@+id/seconds"
+        app:layout_constraintStart_toEndOf="@id/hour"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/seconds"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:backgroundTint="@color/redLite"
+        android:padding="@dimen/_5sdp"
+        android:text="20"
+        android:textColor="@color/red"
+        android:layout_marginHorizontal="@dimen/_2sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/minutes"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

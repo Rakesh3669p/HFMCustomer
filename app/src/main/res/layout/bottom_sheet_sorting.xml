@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_sort_bg"
+    android:elevation="@dimen/_10sdp"
+    android:paddingHorizontal="@dimen/_10sdp"
+    android:paddingBottom="@dimen/_10sdp"
+    android:maxHeight="@dimen/_450sdp">
+
+
+    <TextView
+        android:id="@+id/titleLbl"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="Sort by"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleLbl"
+        >
+
+        <RadioButton
+            android:id="@+id/popularityRadioButton"
+            style="@style/textSmallSemiBold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_7sdp"
+            android:buttonTint="@color/red"
+            android:checked="true"
+            android:layoutDirection="rtl"
+            android:paddingVertical="@dimen/_10sdp"
+            android:text="@string/popularityLbl"
+            android:textAlignment="textStart"
+            android:textColor="@color/grey"
+             />
+
+
+        <RadioButton
+            android:id="@+id/newestRadioButton"
+            style="@style/textSmallSemiBold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_7sdp"
+            android:buttonTint="@color/red"
+            android:checked="true"
+            android:layoutDirection="rtl"
+            android:paddingVertical="@dimen/_7sdp"
+            android:text="@string/newestLbl"
+            android:textAlignment="textStart"
+            android:textColor="@color/grey"
+            />
+
+
+        <RadioButton
+            android:id="@+id/lowPriceRadioButton"
+            style="@style/textSmallSemiBold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_7sdp"
+            android:buttonTint="@color/red"
+            android:checked="true"
+            android:layoutDirection="rtl"
+            android:paddingVertical="@dimen/_7sdp"
+            android:text="@string/lowPriceLbl"
+            android:textAlignment="textStart"
+            android:textColor="@color/grey"
+            />
+
+        <RadioButton
+            android:id="@+id/highPriceRadioButton"
+            style="@style/textSmallSemiBold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_7sdp"
+            android:buttonTint="@color/red"
+            android:checked="true"
+            android:layoutDirection="rtl"
+            android:paddingVertical="@dimen/_7sdp"
+            android:text="@string/highPriceLbl"
+            android:textAlignment="textStart"
+            android:textColor="@color/grey"
+            />
+    </RadioGroup>
+</androidx.constraintlayout.widget.ConstraintLayout>

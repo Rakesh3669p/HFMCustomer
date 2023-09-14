@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_sort_bg"
+    android:elevation="@dimen/_10sdp"
+    android:paddingBottom="@dimen/_10sdp">
+
+
+    <TextView
+        android:id="@+id/titleLbl"
+        style="@style/textMediumSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:gravity="center"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="Select Platform Voucher"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/addVoucherLbl"
+        style="@style/textSmallSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:gravity="center"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="Add Voucher"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleLbl" />
+
+    <EditText
+
+        android:id="@+id/voucherCode"
+        style="@style/textMedium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:background="@drawable/edt_line_box"
+        android:gravity="start"
+        android:hint="Enter Voucher Code"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_10sdp"
+        app:layout_constraintEnd_toStartOf="@id/addVoucher"
+        app:layout_constraintStart_toStartOf="@id/addVoucherLbl"
+        app:layout_constraintTop_toBottomOf="@+id/addVoucherLbl" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addVoucher"
+        style="@style/textSmallSemiBold"
+        android:layout_width="@dimen/_65sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginEnd="@dimen/_24sdp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:paddingHorizontal="@dimen/_18sdp"
+        android:text="@string/applyLbl"
+        android:textColor="@color/textGreyDark"
+        app:backgroundTint="@color/grey_lite"
+        app:cornerRadius="@dimen/_4sdp"
+        app:layout_constraintBottom_toBottomOf="@id/voucherCode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/voucherCode"
+        app:layout_constraintTop_toTopOf="@id/voucherCode" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/vouchersRv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:itemCount="2"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_platform_voucher"
+        app:layout_constraintTop_toBottomOf="@+id/addVoucher"
+
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancel"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_7sdp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:paddingHorizontal="@dimen/_18sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:text="@string/cancelLbl"
+        android:textColor="@color/red"
+        app:backgroundTint="@android:color/transparent"
+        app:cornerRadius="@dimen/_6sdp"
+        app:layout_constraintTop_toBottomOf="@+id/vouchersRv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ok"
+        app:strokeColor="@color/red"
+        app:strokeWidth="1dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/ok"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:backgroundTint="@color/red"
+        android:text="@string/ok"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12ssp"
+        app:cornerRadius="@dimen/_6sdp"
+        app:layout_constraintBottom_toBottomOf="@id/cancel"
+        app:layout_constraintStart_toEndOf="@id/cancel"
+        app:layout_constraintTop_toTopOf="@id/cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/textMedium"
+    android:id="@+id/bradName"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Cabizco"
+    android:layout_margin="@dimen/_3sdp"
+    android:textColor="@color/black"
+    android:paddingVertical="@dimen/_8sdp"
+    android:paddingHorizontal="@dimen/_18sdp"
+    android:background="@drawable/edt_box"
+    android:backgroundTint="@color/grey_lite"
+    app:cornerRadius="@dimen/_10sdp"
+    />
+

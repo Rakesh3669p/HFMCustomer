@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.fragments.productDetails.CustomerRatingFragment">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/back"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:clickable="true"
+        android:contentDescription="@string/back_lbl"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:paddingVertical="@dimen/_5sdp"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/toolBarTitle"
+        style="@style/textLargeSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/customer_reviews_lbl"
+        app:layout_constraintBottom_toBottomOf="@id/back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/back" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/reviewCv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:background="@color/white"
+        android:padding="@dimen/_10sdp"
+        app:layout_constraintTop_toBottomOf="@+id/back">
+
+        <TextView
+            android:id="@+id/reviewLbl"
+            style="@style/textMediumSemiBold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/_2sdp"
+            android:text="Customer Reviews (40)"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/reviewDivider"
+            android:layout_width="@dimen/_45sdp"
+            android:layout_height="2dp"
+            android:layout_marginTop="@dimen/_2sdp"
+            android:background="@color/red"
+            android:elevation="@dimen/_2sdp"
+            app:layout_constraintStart_toStartOf="@+id/reviewLbl"
+            app:layout_constraintTop_toBottomOf="@+id/reviewLbl" />
+
+        <TextView
+            android:id="@+id/rateProduct"
+            style="@style/textMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edt_line_red_box"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:text="@string/rate_product_lbl"
+            android:textColor="@color/red"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/reviewRatingCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="4.6"
+            android:textColor="@color/red"
+            android:textSize="@dimen/_24ssp"
+            app:layout_constraintStart_toStartOf="@id/reviewLbl"
+            app:layout_constraintTop_toBottomOf="@id/reviewLbl" />
+
+        <RatingBar
+            android:id="@+id/reviewRatingBar"
+            style="@style/RatingBarSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:progressTint="@color/red"
+            android:rating="4"
+            app:layout_constraintEnd_toEndOf="@id/reviewRatingCount"
+            app:layout_constraintStart_toStartOf="@id/reviewRatingCount"
+            app:layout_constraintTop_toBottomOf="@id/reviewRatingCount" />
+
+
+        <TextView
+            android:id="@+id/reviewRatingDetails"
+            style="@style/textSmallSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="97 Reviews"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintEnd_toEndOf="@id/reviewRatingBar"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/reviewRatingBar"
+            app:layout_constraintTop_toBottomOf="@id/reviewRatingBar" />
+
+        <TextView
+            android:id="@+id/fiveStarCount"
+            style="@style/textSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="end"
+            android:text="1000"
+
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reviewLbl" />
+
+        <TextView
+            android:id="@+id/fourStarCount"
+            style="@style/textSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="end"
+            android:text="4500"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintStart_toStartOf="@id/fiveStarCount"
+            app:layout_constraintTop_toBottomOf="@id/fiveStarCount" />
+
+        <TextView
+            android:id="@+id/threeStarCount"
+            style="@style/textSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="end"
+            android:text="250"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintStart_toStartOf="@id/fourStarCount"
+            app:layout_constraintTop_toBottomOf="@id/fourStarCount" />
+
+        <TextView
+            android:id="@+id/twoStarCount"
+            style="@style/textSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="end"
+            android:text="100"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintStart_toStartOf="@id/threeStarCount"
+            app:layout_constraintTop_toBottomOf="@id/threeStarCount" />
+
+        <TextView
+            android:id="@+id/oneStarCount"
+            style="@style/textSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="end"
+            android:text="1"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintStart_toStartOf="@id/twoStarCount"
+            app:layout_constraintTop_toBottomOf="@id/twoStarCount" />
+
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/fiveStarSlider"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:scaleX="1.20"
+            app:haloRadius="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/fiveStarCount"
+            app:layout_constraintEnd_toStartOf="@id/fiveStarCount"
+            app:layout_constraintTop_toTopOf="@id/fiveStarCount"
+            app:thumbRadius="0dp" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/fourStarSlider"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:scaleX="1.20"
+            app:haloRadius="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/fourStarCount"
+            app:layout_constraintEnd_toStartOf="@id/fourStarCount"
+            app:layout_constraintTop_toTopOf="@id/fourStarCount"
+            app:thumbRadius="0dp" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/threeStarSlider"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:scaleX="1.20"
+            app:haloRadius="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/threeStarCount"
+            app:layout_constraintEnd_toStartOf="@id/threeStarCount"
+            app:layout_constraintTop_toTopOf="@id/threeStarCount"
+            app:thumbRadius="0dp" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/twoStarSlider"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:scaleX="1.20"
+            app:haloRadius="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/twoStarCount"
+            app:layout_constraintEnd_toStartOf="@id/twoStarCount"
+            app:layout_constraintTop_toTopOf="@id/twoStarCount"
+            app:thumbRadius="0dp" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/oneStarSlider"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:scaleX="1.20"
+            app:haloRadius="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/oneStarCount"
+            app:layout_constraintEnd_toStartOf="@id/oneStarCount"
+            app:layout_constraintTop_toTopOf="@id/oneStarCount"
+            app:thumbRadius="0dp" />
+
+
+        <TextView
+            android:id="@+id/fiveStar"
+            style="@style/textSmallSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:text="5 Star"
+
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintBottom_toBottomOf="@id/fiveStarSlider"
+            app:layout_constraintEnd_toStartOf="@id/fiveStarSlider"
+            app:layout_constraintTop_toTopOf="@id/fiveStarSlider" />
+
+        <TextView
+            android:id="@+id/fourStar"
+            style="@style/textSmallSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:text="4 Star"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintBottom_toBottomOf="@id/fourStarSlider"
+            app:layout_constraintEnd_toStartOf="@id/fourStarSlider"
+            app:layout_constraintTop_toTopOf="@id/fourStarSlider" />
+
+        <TextView
+            android:id="@+id/threeStar"
+            style="@style/textSmallSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:text="3 Star"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintBottom_toBottomOf="@id/threeStarSlider"
+            app:layout_constraintEnd_toStartOf="@id/threeStarSlider"
+            app:layout_constraintTop_toTopOf="@id/threeStarSlider" />
+
+        <TextView
+            android:id="@+id/twoStar"
+            style="@style/textSmallSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:text="2 Star"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintBottom_toBottomOf="@id/twoStarSlider"
+            app:layout_constraintEnd_toStartOf="@id/twoStarSlider"
+            app:layout_constraintTop_toTopOf="@id/twoStarSlider" />
+
+        <TextView
+            android:id="@+id/oneStar"
+            style="@style/textSmallSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:text="1 Star"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintBottom_toBottomOf="@id/oneStarSlider"
+            app:layout_constraintEnd_toStartOf="@id/oneStarSlider"
+            app:layout_constraintTop_toTopOf="@id/oneStarSlider" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <HorizontalScrollView
+        android:id="@+id/ratingSelection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:orientation="horizontal"
+        android:scrollbars="none"
+        app:layout_constraintStart_toStartOf="@id/reviewCv"
+        app:layout_constraintEnd_toEndOf="@id/reviewCv"
+        app:layout_constraintTop_toBottomOf="@id/reviewCv">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/all"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edt_line_red_box"
+                android:backgroundTint="@color/grey_lite"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:paddingVertical="@dimen/_5sdp"
+                android:text="@string/allLbl"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/fiveStarSelection"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:background="@drawable/edt_line_red_box"
+                android:backgroundTint="@color/grey_lite"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:paddingVertical="@dimen/_5sdp"
+                android:text="5 stars (1.5k)"
+                app:layout_constraintStart_toEndOf="@id/all"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/fourStarSelection"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:background="@drawable/edt_line_red_box"
+                android:backgroundTint="@color/grey_lite"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:paddingVertical="@dimen/_5sdp"
+                android:text="4 stars (1.5k)"
+                app:layout_constraintStart_toEndOf="@id/fiveStarSelection"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/threeStarSelection"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:background="@drawable/edt_line_red_box"
+                android:backgroundTint="@color/grey_lite"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:paddingVertical="@dimen/_5sdp"
+                android:text="3 stars (1.5k)"
+                app:layout_constraintStart_toEndOf="@id/fourStarSelection"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/twoStarSelection"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:background="@drawable/edt_line_red_box"
+                android:backgroundTint="@color/grey_lite"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:paddingVertical="@dimen/_5sdp"
+                android:text="2 stars (1.5k)"
+                app:layout_constraintStart_toEndOf="@id/threeStarSelection"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/oneStarSelection"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:background="@drawable/edt_line_red_box"
+                android:backgroundTint="@color/grey_lite"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:paddingVertical="@dimen/_5sdp"
+                android:text="1 stars (1.5k)"
+                app:layout_constraintStart_toEndOf="@id/twoStarSelection"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </HorizontalScrollView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reviewsRv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_40sdp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@+id/ratingSelection"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_review_comments" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

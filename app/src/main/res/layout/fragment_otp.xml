@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true"
+    android:paddingHorizontal="@dimen/_15sdp"
+    tools:context=".ui.loginSignUp.register.RegisterFragment">
+
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="@dimen/_180sdp"
+        android:layout_height="@dimen/_160sdp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/titleLbl"
+        style="@style/textLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/otp_verification_lbl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo" />
+
+    <EditText
+        android:id="@+id/otpField1"
+        style="@style/textMediumSemiBold"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_32sdp"
+        android:background="@drawable/edt_box"
+        android:gravity="center"
+        android:maxLength="1"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_15sdp"
+        app:layout_constraintEnd_toStartOf="@id/otpField2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleLbl" />
+
+    <EditText
+        android:id="@+id/otpField2"
+        style="@style/textMediumSemiBold"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edt_box"
+        android:gravity="center"
+        android:maxLength="1"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_15sdp"
+        app:layout_constraintBottom_toBottomOf="@id/otpField1"
+        app:layout_constraintEnd_toStartOf="@id/otpField3"
+        app:layout_constraintStart_toEndOf="@id/otpField1"
+        app:layout_constraintTop_toTopOf="@id/otpField1" />
+
+    <EditText
+        android:id="@+id/otpField3"
+        style="@style/textMediumSemiBold"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edt_box"
+        android:gravity="center"
+        android:maxLength="1"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_15sdp"
+        app:layout_constraintBottom_toBottomOf="@id/otpField1"
+        app:layout_constraintEnd_toStartOf="@id/otpField4"
+        app:layout_constraintStart_toEndOf="@id/otpField2"
+        app:layout_constraintTop_toTopOf="@id/otpField1" />
+
+    <EditText
+        android:id="@+id/otpField4"
+        style="@style/textMediumSemiBold"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edt_box"
+        android:gravity="center"
+        android:maxLength="1"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_15sdp"
+        app:layout_constraintBottom_toBottomOf="@id/otpField1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/otpField3"
+        app:layout_constraintTop_toTopOf="@id/otpField1" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/verify"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_24sdp"
+        android:backgroundTint="@color/red"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="@string/verify_lbl"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textFontWeight="600"
+        android:textSize="@dimen/_12ssp"
+        app:cornerRadius="@dimen/_6sdp"
+        app:layout_constraintTop_toBottomOf="@id/otpField1"
+        tools:ignore="UnusedAttribute" />
+
+
+    <TextView
+        android:id="@+id/alreadyHaveAccount"
+        style="@style/textMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:text="@string/resendOtp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/verify" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/_4sdp"
+    android:layout_marginStart="@dimen/_4sdp"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/productImageCard"
+        android:layout_width="@dimen/_115sdp"
+        android:layout_height="@dimen/_120sdp"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="@dimen/_4sdp"
+        app:cardElevation="@dimen/_1sdp"
+        app:cardBackgroundColor="@color/grey_lite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/productImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@color/white"
+            android:padding="@dimen/_20sdp"
+            android:src="@drawable/red_chilli"
+            app:roundPercent="0.05" />
+
+        <TextView
+            android:visibility="gone"
+            style="@style/textMediumSemiBold"
+            android:id="@+id/soldOut"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/sold_out_lbl"
+            android:textColor="@color/white"
+            android:singleLine="false"
+            android:gravity="center"
+            android:layout_margin="@dimen/_15sdp"
+            android:textSize="@dimen/_16ssp"
+            android:background="@drawable/black_circle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+
+        <TextView
+            android:id="@+id/saleTime"
+            style="@style/textSmall"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:background="@drawable/rectangle_box"
+            android:backgroundTint="@color/red"
+            android:elevation="@dimen/_4sdp"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_5sdp"
+            android:paddingVertical="@dimen/_3sdp"
+            android:text="Save RM120"
+            android:textColor="@color/white" />
+
+    </androidx.cardview.widget.CardView>
+
+
+    <TextView
+        android:id="@+id/saveLbl"
+        style="@style/textSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:background="@drawable/rectangle_box"
+        android:backgroundTint="@color/red"
+        android:gravity="center"
+        android:text="Save RM10"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        android:textSize="@dimen/_8ssp"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        app:layout_constraintEnd_toStartOf="@id/frozenLbl"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="@id/productImageCard"
+        app:layout_constraintTop_toBottomOf="@id/productImageCard" />
+
+    <TextView
+        android:id="@+id/frozenLbl"
+        style="@style/textSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_box"
+        android:backgroundTint="@color/orange"
+        android:gravity="center"
+        android:text="Frozen"
+        android:textSize="@dimen/_8ssp"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:textColor="@color/white"
+        android:visibility="gone"
+
+        app:layout_constraintEnd_toStartOf="@id/wholeSaleLbl"
+        app:layout_constraintStart_toEndOf="@id/saveLbl"
+        app:layout_constraintTop_toTopOf="@+id/saveLbl"
+        app:layout_constraintBottom_toBottomOf="@id/saveLbl"/>
+
+
+    <TextView
+        android:id="@+id/wholeSaleLbl"
+        style="@style/textSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_box"
+        android:backgroundTint="@color/purple"
+        android:gravity="center"
+        android:text="WholeSale"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        android:textSize="@dimen/_8ssp"
+        app:layout_constraintEnd_toEndOf="@id/productImageCard"
+        app:layout_constraintStart_toEndOf="@id/frozenLbl"
+        app:layout_constraintTop_toTopOf="@+id/saveLbl"
+        app:layout_constraintBottom_toBottomOf="@id/saveLbl" />
+
+
+
+    <TextView
+        android:id="@+id/productName"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_15sdp"
+        android:text="Tom Yam Stramboat "
+        android:singleLine="false"
+        app:layout_constraintEnd_toEndOf="@id/productImageCard"
+        app:layout_constraintStart_toStartOf="@id/productImageCard"
+        app:layout_constraintTop_toBottomOf="@id/saveLbl" />
+
+    <TextView
+        android:id="@+id/productPrice"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/_15sdp"
+        android:text="RM 53"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="@id/productImageCard"
+        app:layout_constraintStart_toStartOf="@id/productImageCard"
+        app:layout_constraintTop_toBottomOf="@id/productName" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

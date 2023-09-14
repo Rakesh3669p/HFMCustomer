@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:fillViewport="true"
+    android:paddingBottom="@dimen/_10sdp"
+    tools:context=".ui.loginSignUp.register.RegisterFragment">
+
+
+    <EditText
+        android:id="@+id/companyName"
+        style="@style/textMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@drawable/edt_box"
+        android:gravity="start"
+        android:hint="@string/company_name_lbl"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_15sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/companyRegisterNo"
+        style="@style/textMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:background="@drawable/edt_box"
+        android:gravity="start"
+        android:hint="@string/company_register_no_lbl"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/companyName" />
+
+    <Spinner
+        android:id="@+id/natureOfBusiness"
+        style="@style/SpinnerTheme2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:gravity="start"
+        android:hint="@string/nature_of_business_lbl"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/companyRegisterNo" />
+
+
+
+    <EditText
+        android:id="@+id/companyContactNo"
+        style="@style/textMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:background="@drawable/edt_box"
+        android:gravity="start"
+        android:hint="@string/company_contact_no_lbl"
+        android:inputType="number"
+        android:paddingEnd="@dimen/_10sdp"
+        android:paddingStart="@dimen/_65sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/natureOfBusiness" />
+
+    <Spinner
+        android:id="@+id/countryCodeSpinner"
+        style="@style/SpinnerTheme2"
+        android:layout_width="@dimen/_55sdp"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:hint="@string/nature_of_business_lbl"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="@+id/companyContactNo"
+        app:layout_constraintStart_toStartOf="@+id/companyContactNo"
+        app:layout_constraintTop_toTopOf="@+id/companyContactNo" />
+
+    <EditText
+        android:id="@+id/email"
+        style="@style/textMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:background="@drawable/edt_box"
+        android:gravity="start"
+        android:hint="@string/email_lbl"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/companyContactNo" />
+
+
+    <CheckBox
+        android:id="@+id/termsAndConditionsCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_38sdp"
+        android:layout_marginTop="@dimen/_7sdp"
+        android:padding="0dp"
+        android:textFontWeight="500"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/email" />
+
+
+    <TextView
+        android:id="@+id/termsAndConditions"
+        style="@style/textMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/termsConditionsLbl"
+        app:layout_constraintBottom_toBottomOf="@id/termsAndConditionsCheckBox"
+        app:layout_constraintStart_toEndOf="@+id/termsAndConditionsCheckBox"
+        app:layout_constraintTop_toTopOf="@id/termsAndConditionsCheckBox" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sendOtp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:backgroundTint="@color/red"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="@string/send_otp_lbl"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textFontWeight="600"
+        android:textSize="@dimen/_12ssp"
+        app:cornerRadius="@dimen/_6sdp"
+        app:layout_constraintTop_toBottomOf="@id/termsAndConditions"
+        tools:ignore="UnusedAttribute" />
+
+
+    <TextView
+        android:id="@+id/alreadyHaveAccount"
+        style="@style/textMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_40sdp"
+        android:text="@string/oldToHfm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sendOtp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_sort_bg"
+    android:elevation="@dimen/_10sdp"
+    android:paddingHorizontal="@dimen/_10sdp"
+    android:paddingBottom="@dimen/_10sdp">
+
+
+    <TextView
+        android:id="@+id/titleLbl"
+        style="@style/textMediumBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="Create New Ticket"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close"
+        android:tint="@color/textGreyDark"
+        app:layout_constraintBottom_toBottomOf="@id/titleLbl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/titleLbl" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/close"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/close">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/ticketTypeLbl"
+                style="@style/textSmallSemiBold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ticket_type_lbl"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/ticketSpinner"
+                style="@style/SpinnerTheme"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_7sdp"
+                android:background="@drawable/edt_line_box"
+                android:paddingVertical="@dimen/_4sdp"
+                android:paddingStart="@dimen/_15sdp"
+                android:paddingEnd="@dimen/_15sdp"
+                android:spinnerMode="dropdown"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/ticketTypeLbl"
+                app:layout_constraintTop_toBottomOf="@id/ticketTypeLbl" />
+
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/textSmallSemiBold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:text="Title"
+                app:layout_constraintEnd_toEndOf="@id/ticketSpinner"
+                app:layout_constraintStart_toStartOf="@id/ticketSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/ticketSpinner" />
+
+            <EditText
+                android:id="@+id/titleEdt"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/edt_line_box"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintTop_toBottomOf="@+id/title" />
+
+            <TextView
+                android:id="@+id/uploadImagesLbl"
+                style="@style/textSmallSemiBold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:text="@string/upload_images_lbl"
+                app:layout_constraintEnd_toEndOf="@id/ticketSpinner"
+                app:layout_constraintStart_toStartOf="@id/ticketSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/titleEdt" />
+
+            <TextView
+                android:id="@+id/uploadImages"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_85sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/edt_line_box"
+                android:drawableLeft="@drawable/add_photo_alternate"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_80sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="@string/browse_images_lbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintTop_toBottomOf="@+id/uploadImagesLbl" />
+
+            <TextView
+                android:id="@+id/messagesLbl"
+                style="@style/textSmallSemiBold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:text="@string/messageLbl"
+                app:layout_constraintEnd_toEndOf="@id/ticketSpinner"
+                app:layout_constraintStart_toStartOf="@id/ticketSpinner"
+                app:layout_constraintTop_toBottomOf="@+id/uploadImages" />
+
+            <EditText
+                android:id="@+id/messageEdt"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_80sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/edt_line_box"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/title"
+                app:layout_constraintTop_toBottomOf="@+id/messagesLbl" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/apply"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="@color/red"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="@string/sendLbl"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textFontWeight="600"
+                android:textSize="@dimen/_12ssp"
+                app:cornerRadius="@dimen/_6sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/messageEdt"
+                tools:ignore="UnusedAttribute"
+                tools:layout_editor_absoluteX="13dp" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

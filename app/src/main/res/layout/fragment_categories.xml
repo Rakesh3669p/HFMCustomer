@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clipToPadding="false"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.dashBoard.categories.CategoriesFragment">
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/categoriesMainRv"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
+        android:background="@color/white"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_60sdp"
+        style="@style/scrollbar_style"
+        android:clipToPadding="false"
+        android:fadeScrollbars="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_category_main" />
+
+    <TextView
+        android:id="@+id/categoryName"
+        style="@style/textLargeSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/highlightLbl"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:textColor="@color/red"
+        app:layout_constraintStart_toEndOf="@+id/categoriesMainRv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/categoriesRv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        tools:itemCount="10"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/item_category_items"
+        app:spanCount="3"
+        android:paddingBottom="@dimen/_60sdp"
+        android:clipToPadding="false"
+        android:layout_margin="@dimen/_5sdp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintStart_toEndOf="@+id/categoriesMainRv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/categoryName"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

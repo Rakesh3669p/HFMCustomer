@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/edt_box_smaa_radius"
+    android:elevation="@dimen/_1sdp"
+    android:layout_margin="@dimen/_4sdp"
+    android:padding="@dimen/_10sdp">
+
+    <TextView
+        android:id="@+id/notificationTitle"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Delivered: Nuts Enough Kikirirki Series Peanut Butter Creamy (350g)"
+        android:singleLine="false"
+        app:layout_constraintEnd_toStartOf="@id/arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/time"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="2 days ago"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:textColor="@color/textGreyDark"
+        app:layout_constraintEnd_toStartOf="@id/arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notificationTitle"/>
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/arrow"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:src="@drawable/ic_keyboard_arrow"
+        android:tint="@color/red"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

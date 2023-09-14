@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true"
+    android:paddingHorizontal="@dimen/_10sdp"
+    tools:context=".ui.dashBoard.profile.ProfileFragment">
+
+
+    <TextView
+        android:id="@+id/toolbarTitle"
+        style="@style/textLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="@string/my_account_lbl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_search"
+        android:tint="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/toolbarTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/toolbarTitle" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarTitle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_40sdp">
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/basicDetailsBg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_65sdp"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:background="@color/textGrey"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/companyBillingAddress"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                app:layout_constraintBottom_toBottomOf="@id/profileImage"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:roundPercent="0.2" />
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/profileImage"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:src="@drawable/user"
+                app:layout_constraintBottom_toBottomOf="@id/basicDetailsBg"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/basicDetailsBg"
+                app:roundPercent="1" />
+
+
+            <TextView
+                android:id="@+id/userName"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:paddingEnd="@dimen/_50sdp"
+                android:text="John Doe"
+                android:textColor="@color/red"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/userType"
+                app:layout_constraintEnd_toEndOf="@id/basicDetailsBg"
+                app:layout_constraintStart_toEndOf="@id/profileImage"
+                app:layout_constraintTop_toTopOf="@id/profileImage"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:ignore="HardcodedText,RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/userType"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:paddingRight="@dimen/_50sdp"
+                android:text="Customer Type: Normal"
+                android:textColor="@color/red"
+                app:layout_constraintBottom_toBottomOf="@id/profileImage"
+                app:layout_constraintEnd_toEndOf="@id/basicDetailsBg"
+                app:layout_constraintStart_toEndOf="@id/profileImage"
+                app:layout_constraintTop_toBottomOf="@id/userName"
+                tools:ignore="HardcodedText,RtlHardcoded,RtlSymmetry" />
+
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/profileArrow"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:background="@color/redLite"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/ic_arrow_forward"
+                android:tint="@color/red"
+                android:contentDescription="@string/my_account_lbl"
+                app:layout_constraintBottom_toBottomOf="@id/basicDetailsBg"
+                app:layout_constraintEnd_toEndOf="@id/basicDetailsBg"
+                app:layout_constraintTop_toTopOf="@id/basicDetailsBg"
+                app:roundPercent="0.3" />
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/orderDetailsBg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_95sdp"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:contentDescription="@string/my_orders_lbl"
+                android:background="@drawable/acc_bg"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/basicDetailsBg"
+                app:roundPercent="0.2" />
+
+
+            <TextView
+                android:id="@+id/myOrderLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_7sdp"
+                android:text="@string/my_orders_lbl"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="@id/orderDetailsBg"
+                app:layout_constraintTop_toTopOf="@id/orderDetailsBg" />
+
+            <TextView
+                android:id="@+id/viewAllLbl"
+                style="@style/textSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginHorizontal="@dimen/_7sdp"
+                android:layout_marginTop="@dimen/_7sdp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:text="@string/view_all_lbl"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@id/orderDetailsBg"
+                app:layout_constraintTop_toTopOf="@id/orderDetailsBg" />
+
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/toPay"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:src="@drawable/ic_pay"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/to_pay_lbl"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                app:layout_constraintBottom_toTopOf="@id/toPayLbl"
+                app:layout_constraintEnd_toStartOf="@id/toShip"
+                app:layout_constraintStart_toStartOf="@id/orderDetailsBg"
+                app:layout_constraintTop_toBottomOf="@id/myOrderLbl" />
+
+            <TextView
+                android:id="@+id/toPayLbl"
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:text="@string/to_pay_lbl"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/orderDetailsBg"
+                app:layout_constraintEnd_toEndOf="@id/toPay"
+                app:layout_constraintStart_toStartOf="@id/toPay"
+                app:layout_constraintTop_toBottomOf="@id/toPay" />
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/toShip"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:src="@drawable/ic_ship"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/to_ship_lbl"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                app:layout_constraintBottom_toBottomOf="@id/toPay"
+                app:layout_constraintEnd_toStartOf="@id/toReceive"
+                app:layout_constraintStart_toEndOf="@id/toPay"
+                app:layout_constraintTop_toTopOf="@id/toPay"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/toShipLbl"
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:text="@string/to_ship_lbl"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/orderDetailsBg"
+                app:layout_constraintEnd_toEndOf="@id/toShip"
+                app:layout_constraintStart_toStartOf="@id/toShip"
+                app:layout_constraintTop_toBottomOf="@id/toShip" />
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/toReceive"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:src="@drawable/ic_receive"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/to_receive_lbl"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                app:layout_constraintBottom_toBottomOf="@id/toPay"
+                app:layout_constraintEnd_toStartOf="@id/bulkOrders"
+                app:layout_constraintStart_toEndOf="@id/toShip"
+                app:layout_constraintTop_toTopOf="@id/toPay"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/toReceiveLbl"
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:text="@string/to_receive_lbl"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/orderDetailsBg"
+                app:layout_constraintEnd_toEndOf="@id/toReceive"
+                app:layout_constraintStart_toStartOf="@id/toReceive"
+                app:layout_constraintTop_toBottomOf="@id/toReceive" />
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/bulkOrders"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:src="@drawable/ic_bulk"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/bulk_orders_lbl"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                app:layout_constraintBottom_toBottomOf="@id/toPay"
+                app:layout_constraintEnd_toEndOf="@id/orderDetailsBg"
+                app:layout_constraintStart_toEndOf="@id/toReceive"
+                app:layout_constraintTop_toTopOf="@id/toPay"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/bulkOrdersLbl"
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:text="@string/bulk_orders_lbl"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@id/orderDetailsBg"
+                app:layout_constraintEnd_toEndOf="@id/bulkOrders"
+                app:layout_constraintStart_toStartOf="@id/bulkOrders"
+                app:layout_constraintTop_toBottomOf="@id/bulkOrders" />
+
+
+            <TextView
+                android:id="@+id/manageAddress"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_address"
+                android:drawableEnd="@drawable/ic_arrow_forward_profile"
+                android:drawablePadding="@dimen/_5sdp"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="@string/manage_address_lbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/orderDetailsBg"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+
+            <TextView
+                android:id="@+id/wishList"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_wishlist"
+                android:drawableEnd="@drawable/ic_arrow_forward_profile"
+                android:drawablePadding="@dimen/_5sdp"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="@string/my_wishlist_lbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/manageAddress"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+
+            <TextView
+                android:id="@+id/wallet"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_wallet"
+                android:drawableEnd="@drawable/ic_arrow_forward_profile"
+                android:drawablePadding="@dimen/_5sdp"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="@string/walletLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/wishList"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+
+            <TextView
+                android:id="@+id/voucher"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_voucher"
+                android:drawableEnd="@drawable/ic_arrow_forward_profile"
+                android:drawablePadding="@dimen/_5sdp"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="@string/vouchersLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/wallet"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+
+            <TextView
+                android:id="@+id/chat"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_acc_chat"
+                android:drawableEnd="@drawable/ic_arrow_forward_profile"
+                android:drawablePadding="@dimen/_5sdp"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="@string/chatLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/voucher"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+
+            <TextView
+                android:id="@+id/support"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_support"
+                android:drawableEnd="@drawable/ic_arrow_forward_profile"
+                android:drawablePadding="@dimen/_10sdp"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="@string/hfmSupportLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chat"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+
+            <TextView
+                android:id="@+id/referral"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_refer"
+                android:drawableEnd="@drawable/ic_arrow_forward_profile"
+                android:drawablePadding="@dimen/_10sdp"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="@string/referralLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/support"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+
+            <TextView
+                android:id="@+id/logout"
+                style="@style/textMedium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_logout"
+                android:drawableEnd="@drawable/ic_arrow_forward_profile"
+                android:drawablePadding="@dimen/_10sdp"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="@string/logoutLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/referral"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

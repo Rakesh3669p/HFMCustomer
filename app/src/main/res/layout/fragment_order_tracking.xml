@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.fragments.orderTracking.OrderTrackingFragment">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/back"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:clickable="true"
+        android:contentDescription="@string/back_lbl"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:paddingVertical="@dimen/_5sdp"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/toolBarTitle"
+        style="@style/textLargeSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/track_details_lbl"
+        app:layout_constraintBottom_toBottomOf="@id/back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/back" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@drawable/edt_box_smaa_radius"
+            android:elevation="@dimen/_1sdp"
+            android:padding="@dimen/_15sdp">
+
+            <View
+                android:id="@+id/firstDot"
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/selected_dot"
+                android:backgroundTint="@color/green"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/firstLine"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="0dp"
+                android:background="@color/green"
+                android:layout_marginTop="@dimen/_4sdp"
+                app:layout_constraintBottom_toBottomOf="@id/secondDot"
+                app:layout_constraintEnd_toEndOf="@id/firstDot"
+                app:layout_constraintStart_toStartOf="@id/firstDot"
+                app:layout_constraintTop_toTopOf="@id/firstDot" />
+
+            <TextView
+                android:id="@+id/orderConfirmedLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:text="Order Confirmed"
+                app:layout_constraintBottom_toBottomOf="@id/firstDot"
+                app:layout_constraintStart_toEndOf="@id/firstDot"
+                app:layout_constraintTop_toTopOf="@id/firstDot" />
+
+            <TextView
+                android:id="@+id/orderConfirmedDate"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:text="Thursday, 25th July 2023"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintBottom_toBottomOf="@id/orderConfirmedLbl"
+                app:layout_constraintStart_toEndOf="@id/orderConfirmedLbl"
+                app:layout_constraintTop_toTopOf="@id/orderConfirmedLbl" />
+
+            <TextView
+                android:id="@+id/orderPlacedLbl"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_7sdp"
+                android:text="Your order has been place."
+                app:layout_constraintStart_toEndOf="@id/firstDot"
+                app:layout_constraintTop_toBottomOf="@id/orderConfirmedLbl" />
+
+            <TextView
+                android:id="@+id/orderPlacedDate"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thursday, 25th July 2023"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="@id/orderConfirmedLbl"
+                app:layout_constraintTop_toBottomOf="@id/orderPlacedLbl" />
+
+            <TextView
+                android:id="@+id/sellerProcessLbl"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_7sdp"
+                android:text="Seller has processed your order."
+                app:layout_constraintStart_toEndOf="@id/firstDot"
+                app:layout_constraintTop_toBottomOf="@id/orderPlacedDate" />
+
+            <TextView
+                android:id="@+id/sellerProcessDate"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thursday, 25th July 2023"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="@id/sellerProcessLbl"
+                app:layout_constraintTop_toBottomOf="@id/sellerProcessLbl" />
+
+            <TextView
+                android:id="@+id/orderPickedLbl"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_7sdp"
+                android:text="Your Item has been picked up by courier partner."
+                app:layout_constraintStart_toEndOf="@id/firstDot"
+                app:layout_constraintTop_toBottomOf="@id/sellerProcessDate" />
+
+            <TextView
+                android:id="@+id/orderPickedDate"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thursday, 25th July 2023"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="@id/orderPickedLbl"
+                app:layout_constraintTop_toBottomOf="@id/orderPickedLbl" />
+
+
+            <View
+                android:id="@+id/secondDot"
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/selected_dot"
+                android:backgroundTint="@color/green"
+                app:layout_constraintBottom_toBottomOf="@id/orderShippedLbl"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/orderShippedLbl" />
+
+            <View
+                android:id="@+id/secondLine"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="0dp"
+                android:background="@color/green"
+                app:layout_constraintBottom_toBottomOf="@id/thirdDot"
+
+                app:layout_constraintEnd_toEndOf="@id/secondDot"
+                app:layout_constraintStart_toStartOf="@id/secondDot"
+                app:layout_constraintTop_toTopOf="@id/secondDot" />
+
+            <TextView
+                android:id="@+id/orderShippedLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Shipped"
+                app:layout_constraintStart_toEndOf="@id/firstDot"
+                app:layout_constraintTop_toBottomOf="@id/orderPickedDate" />
+
+            <TextView
+                android:id="@+id/orderShippedDate"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:text="Thursday, 25th July 2023"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintBottom_toBottomOf="@id/orderShippedLbl"
+                app:layout_constraintStart_toEndOf="@id/orderShippedLbl"
+                app:layout_constraintTop_toTopOf="@id/orderShippedLbl" />
+
+            <TextView
+                android:id="@+id/courierName"
+                style="@style/textMediumSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:text="DHL 654731"
+                app:layout_constraintStart_toStartOf="@id/orderShippedLbl"
+                app:layout_constraintTop_toBottomOf="@id/orderShippedDate" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/courierStatusRv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/courierName"
+                app:layout_constraintTop_toBottomOf="@id/courierName"
+                tools:itemCount="4"
+                tools:listitem="@layout/item_order_track" />
+
+            <View
+                android:id="@+id/thirdDot"
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/selected_dot"
+                android:backgroundTint="@color/green"
+                app:layout_constraintBottom_toBottomOf="@id/outForDeliveryLbl"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/outForDeliveryLbl" />
+
+            <View
+                android:id="@+id/thirdLine"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="@dimen/_4sdp"
+                android:background="@color/green"
+                app:layout_constraintBottom_toBottomOf="@id/fourthDot"
+                app:layout_constraintEnd_toEndOf="@id/thirdDot"
+                app:layout_constraintStart_toStartOf="@id/thirdDot"
+                app:layout_constraintTop_toTopOf="@id/thirdDot" />
+
+            <TextView
+                android:id="@+id/outForDeliveryLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Out For Delivery"
+                app:layout_constraintStart_toEndOf="@id/firstDot"
+                app:layout_constraintTop_toBottomOf="@id/courierStatusRv" />
+
+            <TextView
+                android:id="@+id/outForDeliveryDate"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:text="Thursday, 25th July 2023"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintBottom_toBottomOf="@id/outForDeliveryLbl"
+                app:layout_constraintStart_toEndOf="@id/outForDeliveryLbl"
+                app:layout_constraintTop_toTopOf="@id/outForDeliveryLbl" />
+
+            <View
+                android:id="@+id/fourthDot"
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/selected_dot"
+                android:backgroundTint="@color/green"
+                app:layout_constraintBottom_toBottomOf="@id/deliveredLbl"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/deliveredLbl" />
+
+
+            <TextView
+                android:id="@+id/deliveredLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Delivered"
+                app:layout_constraintStart_toEndOf="@id/firstDot"
+                app:layout_constraintTop_toBottomOf="@id/outForDeliveryLbl" />
+
+            <TextView
+                android:id="@+id/deliveredDate"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:text="Thursday, 25th July 2023"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintBottom_toBottomOf="@id/deliveredLbl"
+                app:layout_constraintStart_toEndOf="@id/deliveredLbl"
+                app:layout_constraintTop_toTopOf="@id/deliveredLbl" />
+
+            <TextView
+                android:id="@+id/deliveredStatusLbl"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_7sdp"
+                android:text="Your order has been place."
+                app:layout_constraintStart_toEndOf="@id/firstDot"
+                app:layout_constraintTop_toBottomOf="@id/deliveredDate" />
+
+            <TextView
+                android:id="@+id/deliveredStatusDate"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thursday, 25th July 2023"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="@id/deliveredStatusLbl"
+                app:layout_constraintTop_toBottomOf="@id/deliveredStatusLbl" />
+
+            <TextView
+                android:id="@+id/viewOrderProof"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View"
+                android:padding="@dimen/_4sdp"
+                android:textColor="@color/green"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/deliveredStatusDate"
+                app:layout_constraintBottom_toBottomOf="@id/deliveredStatusDate"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
