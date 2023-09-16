@@ -95,6 +95,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/name" />
 
+
+
+            <Spinner
+                android:id="@+id/countryCodeSpinner"
+                style="@style/SpinnerTheme2"
+                android:layout_width="@dimen/_55sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:gravity="start"
+                app:layout_constraintStart_toStartOf="@id/mobileNumber"
+                app:layout_constraintBottom_toBottomOf="@+id/mobileNumber"
+                app:layout_constraintTop_toTopOf="@+id/mobileNumber" />
+
+
             <EditText
                 android:id="@+id/mobileNumber"
                 style="@style/textMedium"
@@ -104,7 +117,8 @@
                 android:background="@drawable/edt_line_box"
                 android:gravity="start"
                 android:hint="@string/mobile_number_lbl"
-                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_10sdp"
+                android:paddingStart="@dimen/_60sdp"
                 android:paddingVertical="@dimen/_12sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -179,11 +193,10 @@
 
             <Spinner
                 android:id="@+id/citySpinner"
-                style="@style/textMedium"
+                style="@style/SpinnerTheme"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:background="@drawable/edt_line_box"
                 android:gravity="start"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_15sdp"
@@ -234,11 +247,11 @@
 
             <Spinner
                 android:id="@+id/stateSpinner"
-                style="@style/textMedium"
+                style="@style/SpinnerTheme"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:background="@drawable/edt_line_box"
+
                 android:gravity="start"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_15sdp"
@@ -262,11 +275,10 @@
 
             <Spinner
                 android:id="@+id/countrySpinner"
-                style="@style/textMedium"
+                style="@style/SpinnerTheme"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:background="@drawable/edt_line_box"
                 android:gravity="start"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_15sdp"

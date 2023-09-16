@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
 import com.hfm.customer.commonModel.HomeMainCategoriesModel
+import com.hfm.customer.commonModel.SuccessModel
 import com.hfm.customer.data.Repository
 import com.hfm.customer.ui.dashBoard.home.model.FeatureProductsModel
 import com.hfm.customer.ui.dashBoard.home.model.FlashSaleModel
@@ -15,11 +16,13 @@ import com.hfm.customer.ui.dashBoard.home.model.HomeMiddleBanner
 import com.hfm.customer.ui.dashBoard.home.model.TrendingNowModel
 import com.hfm.customer.ui.dashBoard.home.model.WholeSaleModel
 import com.hfm.customer.ui.dashBoard.profile.model.ProfileModel
+import com.hfm.customer.ui.fragments.address.model.AddressModel
 import com.hfm.customer.ui.fragments.myOrders.model.BulkOrdersListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.BulkOrderRequestModel
 import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetailsModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
+import com.hfm.customer.ui.fragments.wishlist.model.WishListModel
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.SingleLiveEvent
@@ -56,6 +59,12 @@ class MainViewModel @Inject constructor(
     val profile = SingleLiveEvent<Resource<ProfileModel>>()
     val sendBulkOrderRequest = SingleLiveEvent<Resource<BulkOrderRequestModel>>()
     val bulkOrderList = SingleLiveEvent<Resource<BulkOrdersListModel>>()
+    val addToWishList = SingleLiveEvent<Resource<SuccessModel>>()
+    val removeFromWishList = SingleLiveEvent<Resource<SuccessModel>>()
+    val wishListProducts = SingleLiveEvent<Resource<WishListModel>>()
+    val address = SingleLiveEvent<Resource<AddressModel>>()
+    val addNewAddress = SingleLiveEvent<Resource<SuccessModel>>()
+    val updateAddress = SingleLiveEvent<Resource<SuccessModel>>()
 
 
     fun getProductDetails(productId: String) = viewModelScope.launch {
@@ -219,25 +228,52 @@ class MainViewModel @Inject constructor(
         }
 
         when (val homeFlashSaleProductsData = homeFlashSaleProductsResponse.await()) {
-            is Resource.Success -> homeFlashSaleProducts.postValue(Resource.Success(homeFlashSaleProductsData.data as FlashSaleModel))
+            is Resource.Success -> homeFlashSaleProducts.postValue(
+                Resource.Success(
+                    homeFlashSaleProductsData.data as FlashSaleModel
+                )
+            )
+
             is Resource.Loading -> Unit
-            is Resource.Error -> homeFlashSaleProducts.postValue(Resource.Error(homeFlashSaleProductsData.message))
+            is Resource.Error -> homeFlashSaleProducts.postValue(
+                Resource.Error(
+                    homeFlashSaleProductsData.message
+                )
+            )
         }
 
         when (val homeWholeSaleProductsData = homeWholeSaleProductsResponse.await()) {
-            is Resource.Success -> homeWholeSaleProducts.postValue(Resource.Success(homeWholeSaleProductsData.data as WholeSaleModel))
+            is Resource.Success -> homeWholeSaleProducts.postValue(
+                Resource.Success(
+                    homeWholeSaleProductsData.data as WholeSaleModel
+                )
+            )
+
             is Resource.Loading -> Unit
-            is Resource.Error -> homeWholeSaleProducts.postValue(Resource.Error(homeWholeSaleProductsData.message))
+            is Resource.Error -> homeWholeSaleProducts.postValue(
+                Resource.Error(
+                    homeWholeSaleProductsData.message
+                )
+            )
         }
 
         when (val homeFeaturesProductsData = homeFeaturesProductsResponse.await()) {
-            is Resource.Success -> homeFeatureProducts.postValue(Resource.Success(homeFeaturesProductsData.data as FeatureProductsModel))
+            is Resource.Success -> homeFeatureProducts.postValue(
+                Resource.Success(
+                    homeFeaturesProductsData.data as FeatureProductsModel
+                )
+            )
+
             is Resource.Loading -> Unit
-            is Resource.Error -> homeFeatureProducts.postValue(Resource.Error(homeFeaturesProductsData.message))
+            is Resource.Error -> homeFeatureProducts.postValue(
+                Resource.Error(
+                    homeFeaturesProductsData.message
+                )
+            )
         }
     }
 
-    fun getBrandsList() =viewModelScope.launch{
+    fun getBrandsList() = viewModelScope.launch {
         val brandsJson = JsonObject()
         brandsJson.addProperty("sort_by_name", "")
         brandsJson.addProperty("limit", "")
@@ -379,11 +415,13 @@ class MainViewModel @Inject constructor(
     fun getProductList(
         catId: String,
         subCatId: String = "",
+        brandId: String = "",
         maxPrice: String = "",
         minPrice: String = "",
         lowToHigh: String = "",
         highToLow: String = "",
         popular: String = "",
+        latest: String = "",
         search: String = "",
         deviceId: String,
         page: Int
@@ -392,12 +430,12 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("lang_id", "1")
         jsonObject.addProperty("category_id", catId)
         jsonObject.addProperty("subcategory_id", subCatId)
-        jsonObject.addProperty("brand_id", "")
+        jsonObject.addProperty("brand_id", brandId)
         jsonObject.addProperty("max_price", maxPrice)
         jsonObject.addProperty("min_price", minPrice)
         jsonObject.addProperty("low_to_high", lowToHigh)
         jsonObject.addProperty("high_to_low", highToLow)
-        jsonObject.addProperty("latest", "")
+        jsonObject.addProperty("latest", latest)
         jsonObject.addProperty("popular", popular)
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("keyword", search)
@@ -528,6 +566,178 @@ class MainViewModel @Inject constructor(
                 bulkOrderList.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             bulkOrderList.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getStoreDetails() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        safeStoreDetailsCall(jsonObject)
+    }
+
+    private suspend fun safeStoreDetailsCall(jsonObject: JsonObject) {
+        profile.postValue(Resource.Loading())
+        try {
+            val response = repository.getProfile(jsonObject)
+            if (response.isSuccessful)
+                profile.postValue(Resource.Success(checkResponseBody(response.body()) as ProfileModel))
+            else
+                profile.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            profile.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+
+    fun addToWishList(productId: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("product_id", productId)
+        jsonObject.addProperty("type", "APP")
+        safeAddToWishListCall(jsonObject)
+    }
+
+    private suspend fun safeAddToWishListCall(jsonObject: JsonObject) {
+        addToWishList.postValue(Resource.Loading())
+        try {
+            val response = repository.addToWishList(jsonObject)
+            if (response.isSuccessful)
+                addToWishList.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                addToWishList.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            addToWishList.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun removeFromWishList(productId: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("product_id", productId)
+        jsonObject.addProperty("type", "APP")
+        safeRemoveFromWishListCall(jsonObject)
+    }
+
+    private suspend fun safeRemoveFromWishListCall(jsonObject: JsonObject) {
+        removeFromWishList.postValue(Resource.Loading())
+        try {
+            val response = repository.removeFromWishList(jsonObject)
+            if (response.isSuccessful)
+                removeFromWishList.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                removeFromWishList.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            removeFromWishList.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getWishListProducts() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("lang_id", 1)
+        safeWishListProductsCall(jsonObject)
+    }
+
+    private suspend fun safeWishListProductsCall(jsonObject: JsonObject) {
+        wishListProducts.postValue(Resource.Loading())
+        try {
+            val response = repository.getWishListProducts(jsonObject)
+            if (response.isSuccessful)
+                wishListProducts.postValue(Resource.Success(checkResponseBody(response.body()) as WishListModel))
+            else
+                wishListProducts.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            wishListProducts.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getAddress() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        safeGetAddressCall(jsonObject)
+    }
+
+    private suspend fun safeGetAddressCall(jsonObject: JsonObject) {
+        address.postValue(Resource.Loading())
+        try {
+            val response = repository.getAddress(jsonObject)
+            if (response.isSuccessful)
+                address.postValue(Resource.Success(checkResponseBody(response.body()) as AddressModel))
+            else
+                address.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            address.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun addNewAddress(
+        name: String,
+        address_type: Int,
+        country_code: String,
+        phone: String,
+        country: String,
+        state: String,
+        city: String,
+        address1: String,
+        address2: String,
+        pincode: String,
+        latitude: String,
+        longitude: String,
+        is_default: Int,
+        house: String,
+        street: String,
+    ) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        safeAddNewAddressCall(jsonObject)
+    }
+
+    private suspend fun safeAddNewAddressCall(jsonObject: JsonObject) {
+        addNewAddress.postValue(Resource.Loading())
+        try {
+            val response = repository.addNewAddress(jsonObject)
+            if (response.isSuccessful)
+                addNewAddress.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                addNewAddress.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            addNewAddress.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun updateAddress(
+        address_id: Int,
+        name: String,
+        address_type: Int,
+        country_code: String,
+        phone: String,
+        country: String,
+        state: String,
+        city: String,
+        address1: String,
+        address2: String,
+        pincode: String,
+        latitude: String,
+        longitude: String,
+        is_default: Int,
+        house: String,
+        street: String,
+    ) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        safeUpdateAddressCall(jsonObject)
+    }
+
+    private suspend fun safeUpdateAddressCall(jsonObject: JsonObject) {
+        updateAddress.postValue(Resource.Loading())
+        try {
+            val response = repository.updateAddress(jsonObject)
+            if (response.isSuccessful)
+                updateAddress.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                updateAddress.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            updateAddress.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 

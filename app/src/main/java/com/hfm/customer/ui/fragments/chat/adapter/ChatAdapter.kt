@@ -17,28 +17,30 @@ class ChatAdapter @Inject constructor() : RecyclerView.Adapter<ChatAdapter.ViewH
 
     inner class ViewHolder(private val bind: ItemChatBinding) :
         RecyclerView.ViewHolder(bind.root) {
-        fun bind(data:String) {
+        fun bind(data: String) {
             with(bind) {
-                if(adapterPosition %2==0){
+                if (absoluteAdapterPosition % 2 == 0) {
                     rightChatGroup.isVisible = true
-                }else{
+                } else {
                     leftChatGroup.isVisible = true
                 }
+
+                warningMessage.root.isVisible = absoluteAdapterPosition == 2
             }
         }
     }
 
-      private val diffUtil = object : DiffUtil.ItemCallback<String>(){
-          override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
-              return oldItem == newItem
-          }
+    private val diffUtil = object : DiffUtil.ItemCallback<String>() {
+        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+            return oldItem == newItem
+        }
 
-          override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
-              return oldItem == newItem
-          }
+        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+            return oldItem == newItem
+        }
 
-      }
-      val differ = AsyncListDiffer(this,diffUtil)
+    }
+    val differ = AsyncListDiffer(this, diffUtil)
 
 
     override fun onCreateViewHolder(

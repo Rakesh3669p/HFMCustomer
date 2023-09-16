@@ -84,6 +84,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.constraintlayout.utils.widget.ImageFilterView
+                        android:id="@+id/addToWishlist"
                         android:layout_width="@dimen/_20sdp"
                         android:layout_height="@dimen/_20sdp"
                         android:layout_margin="@dimen/_10sdp"
@@ -347,7 +348,6 @@
 
             <View
                 android:id="@+id/frequentlyBoughtDivider"
-
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginStart="@dimen/_10sdp"
@@ -357,38 +357,16 @@
                 app:layout_constraintStart_toEndOf="@id/frequentlyBoughtLbl"
                 app:layout_constraintTop_toTopOf="@id/frequentlyBoughtLbl" />
 
-            <include
-                android:id="@+id/frequentlyBoughtItem1"
-                layout="@layout/item_products"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintEnd_toStartOf="@+id/plusIcon"
-                app:layout_constraintStart_toStartOf="@id/frequentlyBoughtLbl"
-                app:layout_constraintTop_toBottomOf="@id/frequentlyBoughtLbl" />
-
-            <androidx.constraintlayout.utils.widget.ImageFilterView
-                android:id="@+id/plusIcon"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:layout_marginBottom="@dimen/_15sdp"
-                android:src="@drawable/ic_plus"
-                app:layout_constraintBottom_toBottomOf="@id/frequentlyBoughtItem2"
-                app:layout_constraintEnd_toStartOf="@id/frequentlyBoughtItem2"
-                app:layout_constraintStart_toEndOf="@id/frequentlyBoughtItem1"
-                app:layout_constraintTop_toTopOf="@id/frequentlyBoughtItem2" />
-
-            <include
-                android:id="@+id/frequentlyBoughtItem2"
-                layout="@layout/item_products"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_15sdp"
-                app:layout_constraintEnd_toEndOf="@id/productImageCv"
-                app:layout_constraintStart_toEndOf="@id/plusIcon"
-                app:layout_constraintTop_toBottomOf="@id/frequentlyBoughtLbl" />
+          <include
+              android:id="@+id/frequentlyBoughtItems"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              layout="@layout/frequently_bought"
+              android:layout_marginHorizontal="@dimen/_10sdp"
+              app:layout_constraintTop_toBottomOf="@id/frequentlyBoughtLbl"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintEnd_toEndOf="parent"
+              />
 
             <TextView
                 android:id="@+id/totalLbl"
@@ -429,15 +407,15 @@
                 android:textSize="@dimen/_12ssp"
                 app:cornerRadius="@dimen/_6sdp"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
-                app:layout_constraintTop_toBottomOf="@id/frequentlyBoughtItem2"
+                app:layout_constraintTop_toBottomOf="@id/frequentlyBoughtItems"
                 tools:ignore="UnusedAttribute" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/frequentProducts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:constraint_referenced_ids="frequentlyBoughtItem1,frequentlyBoughtItem2,total,totalLbl,plusIcon,frequentlyBoughtLbl,addToCart,frequentlyBoughtDivider" />
+                android:visibility="visible"
+                app:constraint_referenced_ids="frequentlyBoughtItems,total,totalLbl,plusIcon,frequentlyBoughtLbl,addToCart,frequentlyBoughtDivider" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/storeDetailsCv"

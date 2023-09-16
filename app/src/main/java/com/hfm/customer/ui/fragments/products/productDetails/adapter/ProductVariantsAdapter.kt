@@ -3,10 +3,13 @@ package com.hfm.customer.ui.fragments.products.productDetails.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.hfm.customer.databinding.ItemProductVariantsBinding
+import com.hfm.customer.ui.fragments.products.productDetails.model.Variants
 import javax.inject.Inject
 
 
@@ -16,18 +19,28 @@ class ProductVariantsAdapter @Inject constructor() :
 
     inner class ViewHolder(private val bind: ItemProductVariantsBinding) :
         RecyclerView.ViewHolder(bind.root) {
-        fun bind(data:String) {
+        fun bind(data: Variants) {
             with(bind) {
+                val imageOriginal = data.image
+                val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
+                productImage.load(imageReplaced)
+                productVariant.text = data.combination
+                root.setOnClickListener {
+                    onVariantsClick?.let {
+                        it(data.pro_id)
+                    }
+                }
+
             }
         }
     }
 
-      private val diffUtil = object : DiffUtil.ItemCallback<String>(){
-          override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+      private val diffUtil = object : DiffUtil.ItemCallback<Variants>(){
+          override fun areItemsTheSame(oldItem: Variants, newItem: Variants): Boolean {
               return oldItem == newItem
           }
 
-          override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+          override fun areContentsTheSame(oldItem: Variants, newItem: Variants): Boolean {
               return oldItem == newItem
           }
 
@@ -50,16 +63,15 @@ class ProductVariantsAdapter @Inject constructor() :
     }
 
     override fun onBindViewHolder(holder: ProductVariantsAdapter.ViewHolder, position: Int) {
-        holder.bind("")
-//        holder.bind(differ.currentList[position])
+        holder.bind(differ.currentList[position])
     }
 
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = differ.currentList.size
 
-    private var onBrandFilterClick: ((id: Int) -> Unit)? = null
+    private var onVariantsClick: ((id: Int) -> Unit)? = null
 
-    fun setOnBrandFilterClickListener(listener: (id: Int) -> Unit) {
-        onBrandFilterClick = listener
+    fun setOnVariantsClickListener(listener: (id: Int) -> Unit) {
+        onVariantsClick = listener
     }
 
 }

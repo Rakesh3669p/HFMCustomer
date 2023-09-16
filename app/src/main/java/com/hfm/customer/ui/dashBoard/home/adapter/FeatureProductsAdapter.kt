@@ -7,10 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.hfm.customer.databinding.ItemHomeCategoryBinding
-import com.hfm.customer.databinding.ItemProductsBinding
 import com.hfm.customer.databinding.ItemProductsSingleBinding
-import com.hfm.customer.ui.dashBoard.home.model.Product
+import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import javax.inject.Inject
 
 

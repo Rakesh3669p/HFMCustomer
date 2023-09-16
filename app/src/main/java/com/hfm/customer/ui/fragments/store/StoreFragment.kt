@@ -5,20 +5,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentStoreBinding
 import com.hfm.customer.ui.fragments.wishlist.adapter.WishListPagerAdapter
+import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.PromotionBanner
+import com.hfm.customer.viewModel.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
-class StoreFragment : Fragment() , View.OnClickListener {
+@AndroidEntryPoint
+class StoreFragment : Fragment(), View.OnClickListener {
 
 
     private lateinit var binding: FragmentStoreBinding
     private var currentView: View? = null
     private lateinit var promotionBanner: PromotionBanner
+    private val mainViewModel: MainViewModel by viewModels()
+    private lateinit var noInternetDialog: NoInternetDialog
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,10 +42,19 @@ class StoreFragment : Fragment() , View.OnClickListener {
     }
 
     private fun init() {
-        promotionBanner = PromotionBanner(requireContext(), "")
+        setPromotionalPopup()
+        mainViewModel.getProfile()
+    }
+
+    private fun setPromotionalPopup() {
+        val originalPopup =
+            "https://uat.hfm.synuos.com/QA/admin/uploads/storage/app/public/trending/1/trending_11692614116.png"
+        val replacedPopup = originalPopup.replace(
+            "https://uat.hfm.synuos.com",
+            "http://4.194.191.242"
+        )
+        promotionBanner = PromotionBanner(requireContext(), replacedPopup)
         promotionBanner.show()
-        with(binding) {
-        }
     }
 
     private fun setTabLayoutAndViewPager() {
@@ -50,7 +65,7 @@ class StoreFragment : Fragment() , View.OnClickListener {
 
 
         val fragmentManager = childFragmentManager
-        val viewPagerAdapter = WishListPagerAdapter(fragmentManager,lifecycle)
+        val viewPagerAdapter = WishListPagerAdapter(fragmentManager, lifecycle)
         binding.storeVp.adapter = viewPagerAdapter
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -67,7 +82,7 @@ class StoreFragment : Fragment() , View.OnClickListener {
         })
 
 
-        binding.storeVp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+        binding.storeVp.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(position))
             }
@@ -83,7 +98,6 @@ class StoreFragment : Fragment() , View.OnClickListener {
 
         }
     }
-
 
 
     override fun onClick(v: View?) {

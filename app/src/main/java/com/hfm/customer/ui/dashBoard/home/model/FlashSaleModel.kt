@@ -1,5 +1,7 @@
 package com.hfm.customer.ui.dashBoard.home.model
 
+import com.hfm.customer.ui.fragments.products.productDetails.model.Product
+
 data class FlashSaleModel(
     val `data`: FlashSaleData,
     val httpcode: Int,

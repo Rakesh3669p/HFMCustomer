@@ -22,12 +22,12 @@
     <string name="otp_verification_lbl">OTP Verification</string>
     <string name="create_password_lbl">Create Password</string>
     <string name="companyBillingAddress">Company Billing Address</string>
-    <string name="password_lbl">password</string>
+    <string name="password_lbl">Password</string>
     <string name="confirm_password">confirm password</string>
     <string name="register_lbl">Register</string>
     <string name="address_lbl">Address</string>
     <string name="login_lbl">Login</string>
-    <string name="forgot_password_lbl">Forgot Password</string>
+    <string name="forgot_password_lbl">Forgot Password?</string>
     <string name="back_lbl">Back</string>
     <string name="send_reset_link_lbl">Send Reset Link</string>
     <string name="reset_password_lbl">Reset Password</string>

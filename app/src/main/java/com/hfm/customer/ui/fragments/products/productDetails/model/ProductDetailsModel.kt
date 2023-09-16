@@ -15,12 +15,29 @@ data class ProductData(
     val relative_products: List<Any>,
     val seller_info: List<SellerInfo>,
     val sidebar_section: List<String>,
-    val varaiants_list: List<Any>
+    val varaiants_list: List<Variants>
+)
+
+data class Variants(
+    val pro_id: Int,
+    val combination: String,
+    val stock: Int,
+    val is_out_of_stock: Boolean,
+    val out_of_stock_selling: String,
+    val min_order_qty: Any,
+    val bulk_order_qty: Any,
+    val image: String,
+    val offer_name: Any,
+    val discount_type: Any,
+    val offer: Any,
+    val actual_price: Any,
+    val offer_price: Any
 )
 
 data class CategoryBreadcrumbs(
     val category_breadcrumbs: CategoryBreadcrumbsX
 )
+
 data class CategoryBreadcrumbsX(
     val category: Category,
     val subcategory: Subcategory
@@ -48,9 +65,9 @@ data class CrossSellingProduct(
     val image: List<Image>,
     val is_out_of_stock: Any,
     val long_description: String,
-    val offer: Boolean,
-    val offer_name: Boolean,
-    val offer_price: Boolean,
+    val offer: Any,
+    val offer_name: Any,
+    val offer_price: Any,
     val product_id: Any,
     val product_name: String,
     val product_type: String,
@@ -86,12 +103,14 @@ data class Product(
     val content: String,
     val discount_type: Boolean,
     val image: List<Image>,
-    val in_wishlist: Any,
+    var in_wishlist: Int,
     val is_featured: Any,
     val is_out_of_stock: Boolean,
     val long_description: String,
     val minimum_quantity: Any,
-    val offer: Any,
+    val offer: String?="",
+    val frozen: Int,
+    val wholesale: Int,
     val offer_name: Any,
     val offer_price: Any,
     val out_of_stock_selling: Boolean,
@@ -111,6 +130,7 @@ data class Product(
     val total_reviews: Any,
     val video: String
 )
+
 data class Image(
     val image: String,
     val thumbnail: String

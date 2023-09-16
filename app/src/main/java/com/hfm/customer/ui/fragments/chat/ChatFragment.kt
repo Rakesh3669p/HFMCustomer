@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentChatBinding
 import com.hfm.customer.ui.fragments.chat.adapter.ChatAdapter
 import com.hfm.customer.ui.fragments.chat.adapter.ChatUserAdapter
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.normal
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -38,6 +40,8 @@ class ChatFragment : Fragment() , View.OnClickListener {
 
     private fun init() {
         initRecyclerView(requireContext(),binding.chatRv,chatAdapter)
+        val from = arguments?.getString("from").toString()
+        binding.noticeMessage.root.isVisible = from == "chatList"
     }
 
     private fun setRecyclerViews() {

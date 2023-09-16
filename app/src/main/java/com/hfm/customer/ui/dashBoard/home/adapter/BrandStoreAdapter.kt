@@ -24,6 +24,11 @@ class BrandStoreAdapter @Inject constructor() :
                 val imageOriginal = data.brand_image
                 val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
                 adsImage.load(imageReplaced)
+                root.setOnClickListener {
+                    onBrandClick?.let {
+                        it(data.brand_id)
+                    }
+                }
             }
         }
     }
@@ -61,10 +66,10 @@ class BrandStoreAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onCategoryClick: ((id: Int) -> Unit)? = null
+    private var onBrandClick: ((id: Int) -> Unit)? = null
 
-    fun setOnCategoryClickListener(listener: (id: Int) -> Unit) {
-        onCategoryClick = listener
+    fun setOnBrandClickListener(listener: (id: Int) -> Unit) {
+        onBrandClick = listener
     }
 
 }

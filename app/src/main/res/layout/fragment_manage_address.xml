@@ -39,27 +39,35 @@
         android:layout_height="0dp"
         tools:listitem="@layout/item_address"
         tools:itemCount="3"
+        app:layout_constraintBottom_toTopOf="@id/addNewAddress"
         app:layout_constraintTop_toBottomOf="@+id/back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-
-    <TextView
-        android:id="@+id/addNewAddress"
-        style="@style/textLargeSemiBold"
+    <include
+        android:visibility="gone"
+        android:id="@+id/noDataLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@color/red"
-        android:clickable="true"
-        android:contentDescription="@string/back_lbl"
+        android:layout_height="match_parent"
+        layout="@layout/no_data_found"
 
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        android:gravity="center"
-        android:paddingHorizontal="@dimen/_10sdp"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addNewAddress"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:backgroundTint="@color/red"
+        android:layout_margin="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_10sdp"
         android:text="@string/add_new_address_lbl"
+        android:textAllCaps="false"
         android:textColor="@color/white"
+        android:textFontWeight="600"
+        android:textSize="@dimen/_12ssp"
+        app:cornerRadius="@dimen/_6sdp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

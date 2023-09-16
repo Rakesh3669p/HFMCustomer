@@ -23,6 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
+        android:id="@+id/sortRadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -39,6 +40,7 @@
             android:paddingHorizontal="@dimen/_7sdp"
             android:buttonTint="@color/red"
             android:checked="true"
+
             android:layoutDirection="rtl"
             android:paddingVertical="@dimen/_10sdp"
             android:text="@string/popularityLbl"
@@ -54,7 +56,6 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/_7sdp"
             android:buttonTint="@color/red"
-            android:checked="true"
             android:layoutDirection="rtl"
             android:paddingVertical="@dimen/_7sdp"
             android:text="@string/newestLbl"
@@ -70,7 +71,6 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/_7sdp"
             android:buttonTint="@color/red"
-            android:checked="true"
             android:layoutDirection="rtl"
             android:paddingVertical="@dimen/_7sdp"
             android:text="@string/lowPriceLbl"
@@ -85,7 +85,6 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/_7sdp"
             android:buttonTint="@color/red"
-            android:checked="true"
             android:layoutDirection="rtl"
             android:paddingVertical="@dimen/_7sdp"
             android:text="@string/highPriceLbl"

@@ -44,7 +44,7 @@
         android:src="@drawable/user"
         android:layout_margin="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/warningMessage"/>
 
 
     <TextView
@@ -104,6 +104,17 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         app:constraint_referenced_ids="rightChat,rightTimeAgo"/>
+
+    <include
+        android:id="@+id/warningMessage"
+        android:layout_width="@dimen/_260sdp"
+        android:layout_height="wrap_content"
+        layout="@layout/chat_warning"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="@id/rightChat"
+        app:layout_constraintTop_toBottomOf="@id/rightChat"/>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

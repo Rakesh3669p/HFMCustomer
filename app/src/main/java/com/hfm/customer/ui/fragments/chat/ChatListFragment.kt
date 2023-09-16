@@ -54,7 +54,10 @@ class ChatListFragment : Fragment() , View.OnClickListener {
         }
 
         chatUserAdapter.setOnChatClickListener {
-            findNavController().navigate(R.id.chatFragment)
+            val bundle = Bundle().apply {
+                putString("from","chatList")
+            }
+            findNavController().navigate(R.id.chatFragment,bundle)
         }
     }
 

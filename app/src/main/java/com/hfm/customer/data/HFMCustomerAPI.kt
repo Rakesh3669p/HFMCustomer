@@ -16,11 +16,13 @@ import com.hfm.customer.ui.dashBoard.home.model.HomeMiddleBanner
 import com.hfm.customer.ui.dashBoard.home.model.TrendingNowModel
 import com.hfm.customer.ui.dashBoard.home.model.WholeSaleModel
 import com.hfm.customer.ui.dashBoard.profile.model.ProfileModel
+import com.hfm.customer.ui.fragments.address.model.AddressModel
 import com.hfm.customer.ui.fragments.myOrders.model.BulkOrdersListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.BulkOrderRequestModel
 import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetailsModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
+import com.hfm.customer.ui.fragments.wishlist.model.WishListModel
 import com.hfm.customer.ui.loginSignUp.login.model.LoginModel
 import com.hfm.customer.ui.loginSignUp.register.model.BusinessCategoryModel
 import org.json.JSONObject
@@ -155,5 +157,21 @@ interface HFMCustomerAPI {
 
     @GET("customer/business-category")
     suspend fun getBusinessCategories(): Response<BusinessCategoryModel>
+
+    @POST("customer/add/wishlist")
+    suspend fun addToWishList(@Body jsonObject: JsonObject): Response<SuccessModel>
+
+    @POST("customer/remove/wishlist")
+    suspend fun removeFromWishList(@Body jsonObject: JsonObject): Response<SuccessModel>
+
+    @POST("customer/wishlist")
+    suspend fun getWishListProducts(@Body jsonObject: JsonObject): Response<WishListModel>
+
+    @POST("customer/address")
+    suspend fun getAddress(@Body jsonObject: JsonObject): Response<AddressModel>
+    @POST("customer/add/address")
+    suspend fun addNewAddress(@Body jsonObject: JsonObject): Response<SuccessModel>
+    @POST("customer/edit/address")
+    suspend fun updateAddress(@Body jsonObject: JsonObject): Response<SuccessModel>
 
 }

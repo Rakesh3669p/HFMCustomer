@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.databinding.ItemProductsBinding
-import com.hfm.customer.ui.dashBoard.home.model.Product
+import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 
 class ProductListAdapter @Inject constructor() :
@@ -28,14 +29,31 @@ class ProductListAdapter @Inject constructor() :
                         imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
                     productImage.load(imageReplaced)
                 }
-
                 productName.text = data.product_name
-                productPrice.text = "RM ${data.actual_price}"
+                if(data.offer_price!=null) {
+                    if (data.offer_price.toString().isNotEmpty()) {
+                        if (data.offer_price.toString() != "false") {
+                            if (data.offer_price.toString().toDouble() > 0) {
+                                productPrice.text = "RM ${data.offer_price.toString().toDouble()}"
+                            } else {
+                                productPrice.text = "RM ${data.actual_price.toString().toDouble()}"
+                            }
+                        } else {
+                            productPrice.text = "RM ${data.actual_price.toString().toDouble()}"
+                        }
+                    }
+                }else{
+                    productPrice.text = "RM ${data.actual_price.toString().toDouble()}"
+                }
 
-                saveLbl.isVisible = data.offer.isNotEmpty() && data.offer!="false"
-                saveLbl.text = data.offer
-                frozenLbl.isVisible = data.frozen==1
-                wholeSaleLbl.isVisible = data.wholesale==1
+
+                if(data.offer!=null) {
+                    saveLbl.isVisible = data.offer.toString().isNotEmpty() && data.offer != "false"
+                }
+
+                saveLbl.text = data.offer.toString()
+                frozenLbl.isVisible = data.frozen == 1
+                wholeSaleLbl.isVisible = data.wholesale == 1
 
 
                 root.setOnClickListener {

@@ -144,7 +144,7 @@
                         android:id="@+id/ordered"
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
-                        android:src="@drawable/support"
+                        android:src="@drawable/ordered"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -188,7 +188,7 @@
                         android:id="@+id/inProcess"
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
-                        android:src="@drawable/support"
+                        android:src="@drawable/inprocess"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/orderedTrack" />
 
@@ -231,7 +231,7 @@
                         android:id="@+id/readyToShip"
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
-                        android:src="@drawable/support"
+                        android:src="@drawable/shipping"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/inProcessTrack" />
 
@@ -274,7 +274,7 @@
                         android:id="@+id/deliveryInProgress"
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
-                        android:src="@drawable/support"
+                        android:src="@drawable/inprogress"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/readyToShipTrack" />
 
@@ -316,7 +316,7 @@
                         android:id="@+id/delivered"
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
-                        android:src="@drawable/support"
+                        android:src="@drawable/delivered"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/deliveryInProgressTrack" />
 

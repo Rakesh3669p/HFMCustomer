@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.databinding.ItemProductsSingleBinding
-import com.hfm.customer.ui.dashBoard.home.model.Product
+import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 
 class FlashDealAdapter @Inject constructor() :
@@ -29,10 +30,18 @@ class FlashDealAdapter @Inject constructor() :
                 }
                 productName.text = data.product_name
                 productPrice.text = "RM ${data.actual_price}"
-                if(adapterPosition==0){
-                    wholeSaleLbl.isVisible = true
-                    saveLbl.isVisible = true
-                    frozenLbl.isVisible = true
+
+                frozenLbl.isVisible =data.frozen == 1
+                wholeSaleLbl.isVisible =data.wholesale == 1
+                val difference = data.actual_price.toString().toDouble() - data.offer_price.toString().toDouble()
+
+                saveLbl.isVisible = difference>0
+                saveLbl.text = "Save RM $difference"
+
+                root.setOnClickListener {
+                    onProductClick?.let {
+                        it(data.product_id.toString().toInt())
+                    }
                 }
             }
         }
@@ -71,10 +80,10 @@ class FlashDealAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onCategoryClick: ((id: Int) -> Unit)? = null
+    private var onProductClick: ((id: Int) -> Unit)? = null
 
-    fun setOnCategoryClickListener(listener: (id: Int) -> Unit) {
-        onCategoryClick = listener
+    fun setOnProductClickListener(listener: (id: Int) -> Unit) {
+        onProductClick = listener
     }
 
 }

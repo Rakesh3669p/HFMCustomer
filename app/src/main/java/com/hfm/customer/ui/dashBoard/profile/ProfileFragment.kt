@@ -138,7 +138,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             binding.wishList.id -> findNavController().navigate(R.id.wishListFragment)
             binding.wallet.id -> findNavController().navigate(R.id.walletFragment)
             binding.voucher.id -> findNavController().navigate(R.id.vouchersFragment)
-            binding.chat.id -> findNavController().navigate(R.id.chatFragment)
+            binding.chat.id -> findNavController().navigate(R.id.chatUsersFragment)
             binding.support.id -> findNavController().navigate(R.id.supportFragment)
             binding.referral.id -> showToast("Under Construction")
             binding.logout.id -> {

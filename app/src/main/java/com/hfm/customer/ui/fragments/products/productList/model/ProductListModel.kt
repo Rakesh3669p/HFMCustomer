@@ -1,6 +1,6 @@
 package com.hfm.customer.ui.fragments.products.productList.model
 
-import com.hfm.customer.ui.dashBoard.home.model.Product
+import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 
 data class ProductListModel(
     val data: ProductListData,
@@ -18,7 +18,7 @@ data class ProductListData(
 )
 
 data class SubcategoryData(
-    val category_breadcrumbs: CategoryBreadcrumbs,
+    val category_breadcrumbs: Any,
     val subcategory: List<Subcategory>
 )
 

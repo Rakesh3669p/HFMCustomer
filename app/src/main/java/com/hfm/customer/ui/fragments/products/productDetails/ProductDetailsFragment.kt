@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.products.productDetails
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.os.Bundle
@@ -27,6 +28,7 @@ import com.hfm.customer.ui.fragments.products.productDetails.adapter.SpecsAdapte
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.VouchersAdapter
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductData
 import com.hfm.customer.utils.Loader
+import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.makeGone
@@ -71,6 +73,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
     private val mainViewModel: MainViewModel by viewModels()
 
+    private lateinit var noInternetDialog: NoInternetDialog
+
     private lateinit var appLoader: Loader
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,6 +94,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
     private fun init() {
         appLoader = Loader(requireContext())
+        noInternetDialog = NoInternetDialog(requireContext())
+        noInternetDialog.setOnDismissListener { init() }
         binding.loader.isVisible = true
         val productId = arguments?.getString("productId").toString()
         mainViewModel.getProductDetails(productId)
@@ -115,7 +121,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     showToast(response.message.toString())
                     if (response.message.toString() == netWorkFailure) {
-
+                        noInternetDialog.show()
                     }
                 }
             }
@@ -135,6 +141,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                             true
                         )
                         vouchersAdapter.differ.submitList(response.data)
+                        binding.voucherListCv.isVisible = response.data.isNotEmpty()
                     } else {
                         binding.voucherListCv.isVisible = false
                     }
@@ -144,6 +151,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 is Resource.Error -> {
                     showToast(response.message.toString())
                     if (response.message.toString() == netWorkFailure) {
+                        noInternetDialog.show()
 
                     }
 
@@ -163,6 +171,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     showToast(response.message.toString())
                     if (response.message.toString() == netWorkFailure) {
+                        noInternetDialog.show()
 
                     }
                 }
@@ -176,8 +185,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     if (response.data?.httpcode == 200) {
                         bulkOrderDialog.dismiss()
                         findNavController().navigate(R.id.action_productDetailsFragment_to_myOrdersFragment)
-                    }
-                    else showToast(response.data?.message.toString())
+                    } else showToast(response.data?.message.toString())
                 }
 
                 is Resource.Loading -> appLoader.show()
@@ -190,19 +198,67 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+
+
+        mainViewModel.addToWishList.observe(viewLifecycleOwner){response->
+            when(response){
+                is Resource.Success->{
+                    appLoader.dismiss()
+                    if(response.data?.httpcode==200){
+                        binding.addToWishlist.setImageResource(R.drawable.like_active)
+                        productData.product.in_wishlist = 1
+                    }else{
+                        binding.addToWishlist.setImageResource(R.drawable.ic_fav)
+                    }
+                }
+                is Resource.Loading->Unit
+                is Resource.Error->{
+                    appLoader.dismiss()
+                    showToast(response.message.toString())
+                    if (response.message == netWorkFailure){
+                        noInternetDialog.show()
+                    }
+                }
+            }
+        }
+
+        mainViewModel.removeFromWishList.observe(viewLifecycleOwner){response->
+            when(response){
+                is Resource.Success->{
+                    appLoader.dismiss()
+                    if(response.data?.httpcode==200){
+                        binding.addToWishlist.setImageResource(R.drawable.ic_fav)
+                        productData.product.in_wishlist = 0
+                    }else{
+                        binding.addToWishlist.setImageResource(R.drawable.ic_fav_fill)
+                    }
+                }
+                is Resource.Loading->Unit
+                is Resource.Error->{
+                    appLoader.dismiss()
+                    showToast(response.message.toString())
+                    if (response.message == netWorkFailure){
+                        noInternetDialog.show()
+                    }
+                }
+            }
+        }
     }
 
+    @SuppressLint("SetJavaScriptEnabled", "SetTextI18n")
     private fun setProductDetails(productData: ProductData) {
         this.productData = productData
         initRecyclerView(requireContext(), binding.productsImagesRv, productsImagesAdapter, true)
         productsImagesAdapter.differ.submitList(productData.product.image)
         mainViewModel.getSellerVouchers(sellerId = productData.product.seller_id.toString())
-        val imageOriginal = productData.product.image[0].image
-        val imageReplaced =
-            imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
 
         with(binding) {
-            productImage.load(imageReplaced)
+
+            if (productData.product.image.isNotEmpty()) {
+                val imageOriginal = productData.product.image[0].image
+                val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
+                productImage.load(imageReplaced)
+            }
             productName.text = productData.product.product_name
             ratingBar.rating = productData.product.rating.toString().toFloat()
             ratingCount.text = productData.product.rating.toString()
@@ -212,6 +268,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             productPrice.text = "RM ${productData.product.offer_price}"
             productListingPrice.text = "NP: RM ${productData.product.actual_price}"
 
+            addToWishlist.setImageResource(if(productData.product.in_wishlist==1) R.drawable.like_active else R.drawable.ic_fav)
             if (productData.seller_info.isNotEmpty()) {
                 productData.seller_info[0].let {
                     val imageOriginal = it.logo
@@ -241,8 +298,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 specificationsCv.isVisible = true
                 specificationsWebView.isVisible = true
                 specificationsDivider.isVisible = true
-                binding.specificationsWebView.settings.javaScriptEnabled =
-                    true // Enable JavaScript if needed
+                binding.specificationsWebView.settings.javaScriptEnabled = true
                 val specificationHtmlContent = productData.product.long_description
                 specificationsWebView.loadDataWithBaseURL(
                     null,
@@ -255,35 +311,44 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             }
 
-            with(frequentlyBoughtItem1) {
-
-                productImage.load(productData.product.image[0].image)
+            with(frequentlyBoughtItems.frequentlyBoughtItem1) {
+                if (productData.product.image.isNotEmpty()) {
+                    val imageOriginal = productData.product.image[0].image
+                    val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
+                    productImage.load(imageReplaced)
+                }
                 productName.text = productData.product.product_name
                 productPrice.text = "RM ${productData.product.product_name}"
             }
 
             if (productData.cross_selling_products.isEmpty()) {
                 frequentProducts.isVisible = false
-                frequentlyBoughtItem1.root.isVisible = false
-                frequentlyBoughtItem2.root.isVisible = false
             } else {
                 frequentProducts.isVisible = true
-                frequentlyBoughtItem1.root.isVisible = true
-                frequentlyBoughtItem2.root.isVisible = true
-                with(frequentlyBoughtItem2) {
+                with(frequentlyBoughtItems.frequentlyBoughtItem2) {
                     productData.cross_selling_products[0].let {
                         if (it.image.isNotEmpty()) {
-                            productImage.load(it.image[0].image)
+                            val imageOriginal = it.image[0].image
+                            val imageReplaced = imageOriginal.replace(
+                                "https://uat.hfm.synuos.com",
+                                "http://4.194.191.242"
+                            )
+                            productImage.load(imageReplaced)
                         }
-
                         productName.text = it.product_name
                         productPrice.text = "RM ${it.product_name}"
+
+                        total.text = "RM ${
+                            productData.product.actual_price.toString()
+                                .toDouble() + it.actual_price.toString()
+                                .toDouble()
+                        }"
                     }
                 }
             }
 
-//            initRecyclerView(requireContext(), productsVariantsRv, productsVariantsAdapter, true)
-//            productsVariantsAdapter.differ.submitList(productData.varaiants_list)
+            initRecyclerView(requireContext(), productsVariantsRv, productsVariantsAdapter, true)
+            productsVariantsAdapter.differ.submitList(productData.varaiants_list)
 
             initRecyclerView(requireContext(), relatedRv, relativeProductListAdapter, true)
             relativeProductListAdapter.differ.submitList(productData.other_products)
@@ -307,6 +372,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             bulkOrder.setOnClickListener(this@ProductDetailsFragment)
             visitStore.setOnClickListener(this@ProductDetailsFragment)
             cart.setOnClickListener(this@ProductDetailsFragment)
+            addToWishlist.setOnClickListener(this@ProductDetailsFragment)
         }
 
         productsImagesAdapter.setOnImageClickListener { data ->
@@ -318,6 +384,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 putString("productId", id)
             }
             findNavController().navigate(R.id.productDetailsFragment, bundle)
+        }
+
+        productsVariantsAdapter.setOnVariantsClickListener {
+            showToast(it.toString())
         }
     }
 
@@ -354,7 +424,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             )
 
             val adapter: ArrayAdapter<String> =
-                ArrayAdapter<String>(requireContext(), R.layout.spinner_text_units_of_measurement, items)
+                ArrayAdapter<String>(
+                    requireContext(),
+                    R.layout.spinner_text_units_of_measurement,
+                    items
+                )
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
 
@@ -455,6 +529,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             bottomSheetBinding.date.text = "$dayOfMonth-$month-$year"
         }
 
+
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
@@ -486,6 +561,17 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             binding.visitStore.id -> findNavController().navigate(R.id.storeFragment)
 
             binding.cart.id -> findNavController().navigate(R.id.cartFragment)
+            binding.addToWishlist.id -> {
+                if(productData.product.in_wishlist==1) {
+                    mainViewModel.removeFromWishList(productData.product.product_id.toString())
+                    binding.addToWishlist.setImageResource(R.drawable.ic_fav)
+                }else{
+                    mainViewModel.addToWishList(productData.product.product_id.toString())
+                    binding.addToWishlist.setImageResource(R.drawable.like_active)
+                }
+            }
         }
     }
+
+
 }

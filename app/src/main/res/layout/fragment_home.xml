@@ -15,7 +15,6 @@
         android:layout_marginHorizontal="@dimen/_10sdp"
         android:background="@drawable/radius_box"
         android:drawableStart="@drawable/ic_search_32"
-        android:drawableEnd="@drawable/seach_filter"
         android:gravity="center_vertical"
         android:paddingHorizontal="@dimen/_5sdp"
         android:text="Samyung Buy 2 Free 1"
@@ -24,6 +23,16 @@
         app:layout_constraintEnd_toStartOf="@id/notification"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/notification" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/searchFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/seach_filter"
+        android:layout_marginEnd="@dimen/_3sdp"
+        app:layout_constraintEnd_toEndOf="@id/searchBar"
+        app:layout_constraintTop_toTopOf="@id/searchBar"
+        app:layout_constraintBottom_toBottomOf="@id/searchBar"/>
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/notification"

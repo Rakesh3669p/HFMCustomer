@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/edt_box_smaa_radius"
+    android:backgroundTint="@color/grey_lite_200"
+    android:padding="@dimen/_10sdp">
+
+    <TextView
+        android:id="@+id/notice"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notice:"
+        android:textColor="@color/red"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/productName"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:lineSpacingExtra="@dimen/_2sdp"
+        android:singleLine="false"
+
+        android:gravity="center"
+        android:text="Please do not provide your personal data, communicate or make payment outside of HFM's official website/app"
+        android:textColor="@color/red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notice" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

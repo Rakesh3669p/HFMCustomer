@@ -15,9 +15,21 @@
         android:text="20"
         android:textColor="@color/red"
         android:layout_marginHorizontal="@dimen/_2sdp"
-        app:layout_constraintEnd_toStartOf="@id/hour"
+        app:layout_constraintEnd_toStartOf="@id/semiColonOne"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/semiColonOne"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/red"
+        app:layout_constraintTop_toTopOf="@id/day"
+        app:layout_constraintBottom_toBottomOf="@id/day"
+        app:layout_constraintStart_toEndOf="@id/day"
+        app:layout_constraintEnd_toStartOf="@id/hour"/>
 
     <TextView
         android:id="@+id/hour"
@@ -30,9 +42,20 @@
         android:text="09"
         android:textColor="@color/red"
         android:layout_marginHorizontal="@dimen/_2sdp"
-        app:layout_constraintEnd_toStartOf="@id/minutes"
-        app:layout_constraintStart_toEndOf="@id/day"
+        app:layout_constraintEnd_toStartOf="@id/semiColonSecond"
+        app:layout_constraintStart_toEndOf="@id/semiColonOne"
         app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/semiColonSecond"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/red"
+        app:layout_constraintTop_toTopOf="@id/day"
+        app:layout_constraintBottom_toBottomOf="@id/day"
+        app:layout_constraintStart_toEndOf="@id/hour"
+        app:layout_constraintEnd_toStartOf="@id/minutes"/>
 
     <TextView
         android:id="@+id/minutes"
@@ -45,9 +68,21 @@
         android:text="19"
         android:textColor="@color/red"
         android:layout_marginHorizontal="@dimen/_2sdp"
-        app:layout_constraintEnd_toStartOf="@+id/seconds"
-        app:layout_constraintStart_toEndOf="@id/hour"
+        app:layout_constraintEnd_toStartOf="@+id/semiColonThird"
+        app:layout_constraintStart_toEndOf="@id/semiColonSecond"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/semiColonThird"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/red"
+        app:layout_constraintTop_toTopOf="@id/day"
+        app:layout_constraintBottom_toBottomOf="@id/day"
+        app:layout_constraintStart_toEndOf="@id/minutes"
+        app:layout_constraintEnd_toStartOf="@id/seconds"/>
 
     <TextView
         android:id="@+id/seconds"
@@ -61,7 +96,7 @@
         android:textColor="@color/red"
         android:layout_marginHorizontal="@dimen/_2sdp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/minutes"
+        app:layout_constraintStart_toEndOf="@id/semiColonThird"
         app:layout_constraintTop_toTopOf="parent" />
 
 

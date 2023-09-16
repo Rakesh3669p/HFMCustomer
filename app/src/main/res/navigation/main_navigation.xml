@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_categories" />
 
     <fragment
+        android:id="@+id/categoriesFragmentHome"
+        android:name="com.hfm.customer.ui.dashBoard.categories.CategoriesFragment"
+        android:label="fragment_categories"
+        tools:layout="@layout/fragment_categories" />
+
+    <fragment
         android:id="@+id/homeFragment"
         android:name="com.hfm.customer.ui.dashBoard.home.HomeFragment"
         android:label="fragment_home"
@@ -137,5 +143,10 @@
         android:name="com.hfm.customer.ui.fragments.orderTracking.OrderTrackingFragment"
         android:label="fragment_order_tracking"
         tools:layout="@layout/fragment_order_tracking" />
+    <fragment
+        android:id="@+id/addNewAddressFragment"
+        android:name="com.hfm.customer.ui.fragments.address.AddNewAddressFragment"
+        android:label="AddNewAddressFragment"
+        tools:layout="@layout/fragment_add_address"/>
 
 </navigation>

@@ -34,6 +34,12 @@ class Repository @Inject constructor(private val service: HFMCustomerAPI) {
     suspend fun sendBulkOrderRequest(jsonObject: JsonObject) = service.sendBulkOrderRequest(jsonObject)
     suspend fun getBulkOrders(jsonObject: JsonObject) = service.getBulkOrders(jsonObject)
     suspend fun getBusinessCategories() = service.getBusinessCategories()
+    suspend fun addToWishList(jsonObject: JsonObject) = service.addToWishList(jsonObject)
+    suspend fun removeFromWishList(jsonObject: JsonObject) = service.removeFromWishList(jsonObject)
+    suspend fun getWishListProducts(jsonObject: JsonObject) = service.getWishListProducts(jsonObject)
+    suspend fun getAddress(jsonObject: JsonObject) = service.getAddress(jsonObject)
+    suspend fun addNewAddress(jsonObject: JsonObject) = service.addNewAddress(jsonObject)
+    suspend fun updateAddress(jsonObject: JsonObject) = service.updateAddress(jsonObject)
 
 
 }

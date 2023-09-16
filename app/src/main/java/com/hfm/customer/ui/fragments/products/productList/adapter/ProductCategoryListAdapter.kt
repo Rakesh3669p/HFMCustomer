@@ -36,9 +36,13 @@ class ProductCategoryListAdapter @Inject constructor() :
                 }
 
                 title.setOnClickListener {
-                    selectedPosition = adapterPosition
+                    selectedPosition = absoluteAdapterPosition
+                    onSubCategoryClick?.let {
+                        it(data.id)
+                    }
                     notifyDataSetChanged()
                 }
+
 
             }
         }
@@ -76,5 +80,11 @@ class ProductCategoryListAdapter @Inject constructor() :
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+
+    private var onSubCategoryClick: ((id: Int) -> Unit)? = null
+
+    fun setOnSubCategoryClickListener(listener: (id: Int) -> Unit) {
+        onSubCategoryClick = listener
+    }
 
 }

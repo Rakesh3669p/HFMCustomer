@@ -30,20 +30,32 @@ class DashBoardActivity : AppCompatActivity() {
 
     private fun init() {
         navController = findNavController(R.id.nav_host_fragment_content_main)
-        navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         setupWithNavController(binding.bottomNavigationView, navHostFragment.navController)
         navController.addOnDestinationChangedListener(destinationListener)
     }
 
     private val destinationListener =
         NavController.OnDestinationChangedListener { _, destination, _ ->
-            val validFragmentIds = listOf(R.id.homeFragment, R.id.categoriesFragment, R.id.profileFragment, R.id.chatUsersFragment)
+            val validFragmentIds = listOf(
+                R.id.homeFragment,
+                R.id.categoriesFragment,
+                R.id.profileFragment,
+                R.id.chatUsersFragment
+            )
             val checkable = destination.id in validFragmentIds
 
             for (i in 0..4) {
                 binding.bottomNavigationView.menu.getItem(i).isCheckable = checkable
             }
-            val validFragmentBottomNavIds = listOf(R.id.homeFragment, R.id.categoriesFragment, R.id.profileFragment,R.id.categoriesFragment,R.id.chatUsersFragment)
+            val validFragmentBottomNavIds = listOf(
+                R.id.homeFragment,
+                R.id.categoriesFragment,
+                R.id.profileFragment,
+                R.id.categoriesFragment,
+                R.id.chatUsersFragment
+            )
             val showBottomNavBar = destination.id in validFragmentBottomNavIds
             binding.bottomNavigationView.isVisible = showBottomNavBar
             binding.divider.isVisible = showBottomNavBar

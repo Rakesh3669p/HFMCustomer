@@ -9,7 +9,7 @@ data class SellerVoucherModelItem(
     val minimum_purchase: Int,
     val offer: String,
     val offer_type: String,
-    val offer_value: Int,
+    val offer_value: Any,
     val offer_value_in: String,
     val previous_order_amount: String,
     val previous_order_count: Int,

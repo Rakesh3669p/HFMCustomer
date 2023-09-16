@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/edt_box_smaa_radius"
+    android:backgroundTint="@color/redLite"
+    android:padding="@dimen/_8sdp">
+
+    <TextView
+        android:id="@+id/important"
+        style="@style/textSmallSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edt_box_smaa_radius"
+        android:lineSpacingExtra="@dimen/_1sdp"
+        android:paddingHorizontal="@dimen/_4sdp"
+        android:paddingVertical="@dimen/_2sdp"
+        android:singleLine="false"
+        android:text="Important:"
+        android:textColor="@color/red"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/productName"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:lineSpacingExtra="@dimen/_2sdp"
+        android:singleLine="false"
+        android:text="                        The message has not sent. Please be mindful that you are required to comply with HFM community policy &amp; guidelines and not share any personal information or external links within the chat"
+        android:textColor="@color/red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
