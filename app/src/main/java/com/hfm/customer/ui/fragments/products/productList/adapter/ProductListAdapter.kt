@@ -1,8 +1,8 @@
 package com.hfm.customer.ui.fragments.products.productList.adapter
 
 import android.content.Context
+import android.os.CountDownTimer
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -11,8 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.databinding.ItemProductsBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
+import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 
 class ProductListAdapter @Inject constructor() :
@@ -23,7 +26,7 @@ class ProductListAdapter @Inject constructor() :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: Product) {
             with(bind) {
-                if (data.image.isNotEmpty()) {
+                if (data.image?.isNotEmpty() == true) {
                     val imageOriginal = data.image[0].image
                     val imageReplaced =
                         imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
@@ -34,19 +37,25 @@ class ProductListAdapter @Inject constructor() :
                     if (data.offer_price.toString().isNotEmpty()) {
                         if (data.offer_price.toString() != "false") {
                             if (data.offer_price.toString().toDouble() > 0) {
-                                productPrice.text = "RM ${data.offer_price.toString().toDouble()}"
+                                productPrice.text = "RM ${formatToTwoDecimalPlaces(data.offer_price.toString().toDouble())}"
                             } else {
-                                productPrice.text = "RM ${data.actual_price.toString().toDouble()}"
+                                productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
                             }
                         } else {
-                            productPrice.text = "RM ${data.actual_price.toString().toDouble()}"
+                            productPrice.text = "RM ${formatToTwoDecimalPlaces((data.actual_price?:"0").toString().toDouble())}"
                         }
                     }
                 }else{
-                    productPrice.text = "RM ${data.actual_price.toString().toDouble()}"
+                    productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
                 }
 
+                soldOut.isVisible = data.is_out_of_stock.toString()=="true"||data.is_out_of_stock.toString()=="1"
 
+
+                saleTime.isVisible = data.offer_name == "Flash Sale"
+                if(saleTime.isVisible){
+                    setTimer(data.end_time,bind)
+                }
                 if(data.offer!=null) {
                     saveLbl.isVisible = data.offer.toString().isNotEmpty() && data.offer != "false"
                 }
@@ -62,6 +71,31 @@ class ProductListAdapter @Inject constructor() :
                     }
                 }
             }
+        }
+    }
+
+    private fun setTimer(endTime: String, bind: ItemProductsBinding) {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val endTimeString = endTime
+        val endTime = dateFormat.parse(endTimeString) ?: Date()
+        val currentTime = Date()
+        val timeDifference = endTime.time - currentTime.time
+        val countdownTimer = object : CountDownTimer(timeDifference, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                updateCountdownText(millisUntilFinished,bind)
+            }
+            override fun onFinish() { updateCountdownText(0, bind) }
+        }
+        countdownTimer.start()
+    }
+
+    private fun updateCountdownText(millisUntilFinished: Long, bind: ItemProductsBinding) {
+        val days = millisUntilFinished / (1000 * 60 * 60 * 24)
+        val hours = (millisUntilFinished % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        val minutes = (millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)
+        val seconds = (millisUntilFinished % (1000 * 60)) / 1000
+        with(bind){
+            saleTime.text = "Ends In: ${String.format(Locale.getDefault(), "%02d:%02d:%02d:%02d", days,hours,minutes,seconds)}"
         }
     }
 

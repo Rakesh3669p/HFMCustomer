@@ -7,10 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.hfm.customer.databinding.ItemBrandsBinding
 import com.hfm.customer.databinding.ItemBrandsSingleBinding
-import com.hfm.customer.ui.dashBoard.home.model.Brand
-import com.hfm.customer.ui.dashBoard.home.model.Image
+import com.hfm.customer.ui.fragments.brands.model.Brand
 import javax.inject.Inject
 
 
@@ -26,6 +24,11 @@ class BrandStoreSingleAdapter @Inject constructor() :
                 val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
                 brandImage.load(imageReplaced)
                 title.text = data.brand_name
+                root.setOnClickListener {
+                    onBrandClick?.let {
+                        it(data.brand_id)
+                    }
+                }
             }
         }
     }
@@ -63,10 +66,10 @@ class BrandStoreSingleAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onCategoryClick: ((id: Int) -> Unit)? = null
+    private var onBrandClick: ((id: Int) -> Unit)? = null
 
-    fun setOnCategoryClickListener(listener: (id: Int) -> Unit) {
-        onCategoryClick = listener
+    fun setOnBrandClickListener(listener: (id: Int) -> Unit) {
+        onBrandClick = listener
     }
 
 }

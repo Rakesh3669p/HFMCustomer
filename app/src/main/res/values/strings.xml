@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">HFM Customer</string>
+    <string name="google_map_api_key">AIzaSyCREqHFu9GW1WE2fJgjagHZPenTl5KUxJ0</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="create_account_lbl">Create A New Account</string>
@@ -67,6 +68,7 @@
     <string name="descriptionsLbl">Descriptions</string>
     <string name="largeText">In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. It is also used to temporarily replace text in a process called greeking, which allows designers to consider the form of a webpage or publication, without the meaning of the text influencing the design.</string>
     <string name="view_more_lbl">View More</string>
+    <string name="view_less_lbl">View Less</string>
     <string name="specificationsLbl">Specifications</string>
     <string name="reviewLbl">Review</string>
     <string name="from_the_same_shop_lbl">From The Same Shop</string>
@@ -130,6 +132,7 @@
     <string name="no_support_ticket_found_lbl">No Support Ticket found</string>
     <string name="you_currently_have_no_support_tickets_lbl">You currently have no support tickets</string>
     <string name="create_new_ticket_lbl">Create New Ticket</string>
+    <string name="create_new_chat">Create New Chat</string>
     <string name="ticket_type_lbl">Ticket Type</string>
     <string name="upload_images_lbl">Upload Images</string>
     <string name="browse_images_lbl">Browse Images</string>
@@ -138,6 +141,7 @@
     <string name="account_settings_lbl">Account Settings</string>
     <string name="date_of_birth_lbl">Date Of Birth</string>
     <string name="change_password_lbl">Change Password</string>
+    <string name="updateLbl">Update</string>
     <string name="payment_method_lbl">Payment Method</string>
     <string name="bank_transfer_lbl">Bank Transfer</string>
     <string name="upload_payment_receipt_lbl">Upload Payment Receipt</string>
@@ -172,4 +176,19 @@
     <string name="submit_review_lbl">Submit Review</string>
     <string name="shareLbl">Share</string>
     <string name="track_details_lbl">Track Details</string>
+    <string name="company_register_no">Company Register No.</string>
+    <string name="company_email_address">Company Email Address</string>
+    <string name="store_voucher_lbl">Store Voucher</string>
+    <string name="shipping_fee_lbl">Shipping Fee</string>
+    <string name="select_order_lbl">Select Order</string>
+    <string name="orderLbl">Order</string>
+    <string name="skipLbl">Skip</string>
+    <string name="selectLbl">Select</string>
+    <string name="blogsLbl">Blogs</string>
+    <string name="blogDetailsLbl">Blog Detail</string>
+    <string name="blogs_list_lbl">Blogs List</string>
+    <string name="delivery_partner">Delivery Partner</string>
+    <string name="start_a_new_chat_lbl">Start A New Chat</string>
+    <string name="how_to_make_payment_lbl">How to make payment?</string>
+    <string name="how_to_make_payment_title">How to make Payment</string>
 </resources>

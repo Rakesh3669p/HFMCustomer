@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".ui.fragments.productDetails.CustomerRatingFragment">
+    tools:context=".ui.fragments.store.StoreRatingFragment">
 
 
 
@@ -203,6 +203,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:itemCount="5"
         tools:listitem="@layout/item_review_comments" />
+
+    <include
+        android:visibility="gone"
+        android:id="@+id/noDataFound"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        layout="@layout/no_data_found"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

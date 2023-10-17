@@ -8,7 +8,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:layout_marginHorizontal="@dimen/_8sdp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/_4sdp"
         app:cardElevation="@dimen/_2sdp"
@@ -145,10 +146,33 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/voucher" />
 
+                <TextView
+                    android:id="@+id/voucherAmount"
+                    style="@style/textMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_9sdp"
+                    android:text=""
+                    android:visibility="invisible"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/voucher" />
+
+
+                <androidx.constraintlayout.utils.widget.ImageFilterView
+                    android:id="@+id/removeCoupon"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/delivery"
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
@@ -200,16 +224,20 @@
                 app:layout_constraintTop_toBottomOf="@+id/shippingCharges" />
 
 
-            <View
-                android:id="@+id/divider"
+            <EditText
+                style="@style/textMediumSemiBold"
+                android:id="@+id/messageEdt"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:background="@color/grey_lite"
-                app:layout_constraintTop_toBottomOf="@id/messagesLbl" />
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:hint="write a message here.."
+                app:layout_constraintTop_toBottomOf="@id/messagesLbl"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/orderTotalLbl"
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
@@ -220,10 +248,11 @@
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider" />
+                app:layout_constraintTop_toBottomOf="@+id/messageEdt" />
 
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/orderTotal"
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
@@ -234,7 +263,7 @@
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider" />
+                app:layout_constraintTop_toBottomOf="@+id/messageEdt" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

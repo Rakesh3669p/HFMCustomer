@@ -23,7 +23,11 @@ class BrandsAdapter @Inject constructor() :
             with(bind) {
                 adsImage.load(data.image)
                 title.text = data.name
-                title.text = data.name
+                root.setOnClickListener {
+                    onItemClick?.let {
+                        it(adapterPosition)
+                    }
+                }
             }
         }
     }
@@ -61,10 +65,10 @@ class BrandsAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onCategoryClick: ((id: Int) -> Unit)? = null
+    private var onItemClick: ((id: Int) -> Unit)? = null
 
-    fun setOnCategoryClickListener(listener: (id: Int) -> Unit) {
-        onCategoryClick = listener
+    fun setOnItemClickListener(listener: (id: Int) -> Unit) {
+        onItemClick = listener
     }
 
 }

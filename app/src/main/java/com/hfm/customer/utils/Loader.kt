@@ -18,6 +18,7 @@ class Loader(context: Context) : Dialog(context) {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
-        window?.setBackgroundDrawableResource(R.color.blackTrans200)
+
+        window?.setBackgroundDrawableResource(R.color.trans)
     }
 }

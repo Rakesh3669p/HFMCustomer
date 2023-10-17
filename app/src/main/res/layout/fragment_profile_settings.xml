@@ -52,6 +52,7 @@
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_80sdp"
                 android:src="@color/greyDark"
+                android:scaleType="fitXY"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -63,7 +64,7 @@
                 android:layout_height="@dimen/_30sdp"
                 android:layout_marginStart="@dimen/_50sdp"
                 android:layout_marginTop="@dimen/_50sdp"
-                android:background="@color/textGreyDark"
+                android:background="@color/grey_lite"
                 android:padding="@dimen/_5sdp"
                 android:src="@drawable/ic_camera"
                 android:tint="@color/red"
@@ -81,7 +82,7 @@
                 android:gravity="center"
                 android:paddingVertical="@dimen/_10sdp"
                 android:text="Customer Type: Normal"
-                android:textColor="@color/black"
+                android:textColor="@color/red"
                 app:layout_constraintBottom_toTopOf="@+id/nameLbl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -154,7 +155,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/emailEdt" />
 
-            <EditText
+            <TextView
                 android:id="@+id/dobEdt"
                 style="@style/textMedium"
                 android:layout_width="0dp"
@@ -173,9 +174,10 @@
                 android:id="@+id/changePasswordLbl"
                 style="@style/textSmallSemiBold"
                 android:layout_width="0dp"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:text="@string/date_of_birth_lbl"
+                android:text="@string/change_password_lbl"
                 app:layout_constraintBottom_toTopOf="@+id/changePasswordEdt"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -186,11 +188,12 @@
                 style="@style/textMediumSemiBold"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_45sdp"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:background="@drawable/edt_line_box"
                 android:drawableEnd="@drawable/ic_keyboard_arrow"
                 android:drawableTint="@color/textGreyDark"
                 android:gravity="center_vertical"
+
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_10sdp"
                 android:text="@string/change_password_lbl"
@@ -199,7 +202,7 @@
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 app:layout_constraintBottom_toTopOf="@+id/save"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/changePasswordLbl"
+                app:layout_constraintStart_toStartOf="@+id/dobEdt"
                 app:layout_constraintTop_toBottomOf="@+id/changePasswordLbl" />
 
 
@@ -207,11 +210,10 @@
                 android:id="@+id/save"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_45sdp"
-                android:layout_marginHorizontal="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_50sdp"
+                android:layout_marginTop="@dimen/_40sdp"
                 android:backgroundTint="@color/red"
                 android:paddingVertical="@dimen/_10sdp"
-                android:text="@string/sendLbl"
+                android:text="@string/save"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textFontWeight="600"

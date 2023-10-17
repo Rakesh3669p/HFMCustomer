@@ -66,7 +66,10 @@ class MyOrdersFragment : Fragment(), View.OnClickListener {
 
         val fragmentManager = childFragmentManager
         val viewPagerAdapter = MyOrdersPagerAdapter(fragmentManager,lifecycle)
+        binding.ordersVp.offscreenPageLimit = ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
         binding.ordersVp.adapter = viewPagerAdapter
+        binding.ordersVp.isUserInputEnabled = false
+        binding.ordersVp.isSaveEnabled = false
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -87,16 +90,26 @@ class MyOrdersFragment : Fragment(), View.OnClickListener {
             }
         })
 
+
+        when(arguments?.getString("from")){
+            "toPay"->binding.ordersVp.currentItem =0
+            "toShip"->binding.ordersVp.currentItem =1
+            "toReceive"->binding.ordersVp.currentItem =2
+            "bulkOrders"->binding.ordersVp.currentItem =5
+        }
+
     }
 
 
     private fun setOnClickListener() {
         with(binding) {
+            back.setOnClickListener(this@MyOrdersFragment)
         }
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
+            binding.back.id -> findNavController().popBackStack()
         }
     }
 }

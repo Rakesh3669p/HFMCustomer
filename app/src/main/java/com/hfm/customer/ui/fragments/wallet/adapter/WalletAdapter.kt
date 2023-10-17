@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemWalletTransactionBinding
-import com.hfm.customer.ui.fragments.vouchers.adapter.VouchersAdapter
+import com.hfm.customer.ui.fragments.wallet.model.Wallet
+import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import javax.inject.Inject
 
 class WalletAdapter @Inject constructor() : RecyclerView.Adapter<WalletAdapter.ViewHolder>() {
@@ -17,26 +18,34 @@ class WalletAdapter @Inject constructor() : RecyclerView.Adapter<WalletAdapter.V
 
     inner class ViewHolder(private val binding: ItemWalletTransactionBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: String) {
+        fun bind(data: Wallet) {
 
             with(binding) {
-                if (adapterPosition % 2 == 0) {
-                    transactionType.text = "Paid"
-                    transactionType.setTextColor(ContextCompat.getColor(context, R.color.red))
-                } else {
-                    transactionType.text = "Received"
+
+                if(data.credit_value){
+                    transactionType.text = "Received (${data.source})"
                     transactionType.setTextColor(ContextCompat.getColor(context, R.color.green))
+                    amount.setTextColor(ContextCompat.getColor(context, R.color.green))
+                    amount.text = formatToTwoDecimalPlaces(data.credit.toDouble())
+                }else{
+                    transactionType.text = "Paid (${data.source})"
+                    transactionType.setTextColor(ContextCompat.getColor(context, R.color.red))
+                    amount.setTextColor(ContextCompat.getColor(context, R.color.red))
+                    amount.text = formatToTwoDecimalPlaces(data.debit.toDouble())
                 }
+                dateLbl.text = "${data.source_ids} ${data.created_at}"
+
+
             }
         }
     }
 
-    private val diffUtil = object : DiffUtil.ItemCallback<String>() {
-        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+    private val diffUtil = object : DiffUtil.ItemCallback<Wallet>() {
+        override fun areItemsTheSame(oldItem: Wallet, newItem: Wallet): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+        override fun areContentsTheSame(oldItem: Wallet, newItem: Wallet): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
 
@@ -58,5 +67,5 @@ class WalletAdapter @Inject constructor() : RecyclerView.Adapter<WalletAdapter.V
         holder.bind(differ.currentList[position])
     }
 
-    override fun getItemCount(): Int = 4
+    override fun getItemCount(): Int = differ.currentList.size
 }

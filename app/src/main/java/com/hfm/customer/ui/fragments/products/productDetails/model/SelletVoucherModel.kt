@@ -17,5 +17,6 @@ data class SellerVoucherModelItem(
     val shipping_type: Any,
     val title: String,
     val valid_upto: String,
-    val voucher_type: Any
+    val voucher_type: Any,
+    val status:String="",
 )

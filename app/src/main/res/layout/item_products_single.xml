@@ -5,7 +5,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/_4sdp"
-    android:layout_marginStart="@dimen/_4sdp"
+    android:layout_marginEnd="@dimen/_4sdp"
+
     >
 
     <androidx.cardview.widget.CardView
@@ -25,8 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:scaleType="fitXY"
             android:background="@color/white"
-            android:padding="@dimen/_20sdp"
             android:src="@drawable/red_chilli"
             app:roundPercent="0.05" />
 
@@ -138,6 +139,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp"
         android:gravity="center"
+        android:maxLines="3"
+        android:ellipsize="marquee"
         android:paddingHorizontal="@dimen/_15sdp"
         android:text="Tom Yam Stramboat "
         android:singleLine="false"

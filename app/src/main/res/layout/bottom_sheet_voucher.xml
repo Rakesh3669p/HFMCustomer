@@ -102,17 +102,17 @@
         app:layout_constraintTop_toBottomOf="@+id/vouchersRv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/ok"
+        app:layout_constraintEnd_toStartOf="@id/apply"
         app:strokeColor="@color/red"
         app:strokeWidth="1dp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/ok"
+        android:id="@+id/apply"
         android:layout_width="0dp"
         android:layout_height="@dimen/_45sdp"
         android:layout_marginEnd="@dimen/_10sdp"
         android:backgroundTint="@color/red"
-        android:text="@string/ok"
+        android:text="@string/applyLbl"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="@dimen/_12ssp"

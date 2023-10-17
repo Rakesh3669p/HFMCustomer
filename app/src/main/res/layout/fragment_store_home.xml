@@ -59,6 +59,7 @@
             app:tabIndicatorHeight="0dp" />
 
         <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:visibility="gone"
             android:id="@+id/bannerImage"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_130sdp"
@@ -70,6 +71,47 @@
             />
 
 
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/storeVideoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_140sdp"
+            android:background="@drawable/edt_box"
+            android:layout_marginTop="@dimen/_9sdp"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:layout_constraintBottom_toTopOf="@id/storeImagesRv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bannerDots">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_140sdp"
+            android:background="@drawable/edt_box"
+            >
+
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/storeVideo"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_140sdp"
+            app:controller_layout_id="@layout/product_video_playerview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:resize_mode="fill" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/playBtn"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:src="@drawable/ic_play_circle"
+            app:layout_constraintStart_toStartOf="@id/storeVideo"
+            app:layout_constraintEnd_toEndOf="@id/storeVideo"
+            app:layout_constraintTop_toTopOf="@id/storeVideo"
+            app:layout_constraintBottom_toBottomOf="@id/storeVideo"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/storeImagesRv"
             android:layout_width="match_parent"
@@ -78,7 +120,7 @@
             android:orientation="horizontal"
             tools:itemCount="3"
             android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@id/bannerImage"
+            app:layout_constraintTop_toBottomOf="@id/storeVideoLayout"
             tools:listitem="@layout/item_store_images"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

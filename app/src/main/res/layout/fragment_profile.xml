@@ -15,7 +15,7 @@
         style="@style/textLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_8sdp"
         android:text="@string/my_account_lbl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +27,10 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_search"
         android:tint="@color/black"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:layout_marginEnd="@dimen/_7sdp"
         app:layout_constraintBottom_toBottomOf="@id/toolbarTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/toolbarTitle" />
@@ -56,7 +60,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/profileImage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:roundPercent="0.2" />
+                app:roundPercent="0.4" />
 
             <androidx.constraintlayout.utils.widget.ImageFilterView
                 android:id="@+id/profileImage"
@@ -64,6 +68,7 @@
                 android:layout_height="@dimen/_50sdp"
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:src="@drawable/user"
+                android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="@id/basicDetailsBg"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/basicDetailsBg"
@@ -121,7 +126,7 @@
             <androidx.constraintlayout.utils.widget.ImageFilterView
                 android:id="@+id/orderDetailsBg"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_95sdp"
+                android:layout_height="@dimen/_105sdp"
                 android:layout_marginHorizontal="@dimen/_5sdp"
                 android:layout_marginVertical="@dimen/_10sdp"
                 android:contentDescription="@string/my_orders_lbl"
@@ -136,7 +141,7 @@
                 style="@style/textMediumSemiBold"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_7sdp"
                 android:text="@string/my_orders_lbl"
                 android:textColor="@color/white"
@@ -148,16 +153,15 @@
                 style="@style/textSmall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-
                 android:layout_marginHorizontal="@dimen/_7sdp"
-                android:layout_marginTop="@dimen/_7sdp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:text="@string/view_all_lbl"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="@id/orderDetailsBg"
-                app:layout_constraintTop_toTopOf="@id/orderDetailsBg" />
+                app:layout_constraintTop_toTopOf="@id/myOrderLbl"
+                app:layout_constraintBottom_toBottomOf="@id/myOrderLbl"/>
 
 
             <androidx.constraintlayout.utils.widget.ImageFilterView
@@ -169,6 +173,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:contentDescription="@string/to_pay_lbl"
+                app:layout_constraintVertical_chainStyle="packed"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 app:layout_constraintBottom_toTopOf="@id/toPayLbl"
                 app:layout_constraintEnd_toStartOf="@id/toShip"
@@ -198,6 +203,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:contentDescription="@string/to_ship_lbl"
+
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 app:layout_constraintBottom_toBottomOf="@id/toPay"
                 app:layout_constraintEnd_toStartOf="@id/toReceive"
@@ -214,10 +220,10 @@
                 android:text="@string/to_ship_lbl"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@id/orderDetailsBg"
                 app:layout_constraintEnd_toEndOf="@id/toShip"
                 app:layout_constraintStart_toStartOf="@id/toShip"
-                app:layout_constraintTop_toBottomOf="@id/toShip" />
+                app:layout_constraintTop_toTopOf="@id/toPayLbl"
+                app:layout_constraintBottom_toBottomOf="@id/toPayLbl" />
 
             <androidx.constraintlayout.utils.widget.ImageFilterView
                 android:id="@+id/toReceive"
@@ -244,10 +250,11 @@
                 android:text="@string/to_receive_lbl"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@id/orderDetailsBg"
                 app:layout_constraintEnd_toEndOf="@id/toReceive"
                 app:layout_constraintStart_toStartOf="@id/toReceive"
-                app:layout_constraintTop_toBottomOf="@id/toReceive" />
+                app:layout_constraintTop_toTopOf="@id/toPayLbl"
+                app:layout_constraintBottom_toBottomOf="@id/toPayLbl"
+                 />
 
             <androidx.constraintlayout.utils.widget.ImageFilterView
                 android:id="@+id/bulkOrders"
@@ -274,10 +281,10 @@
                 android:text="@string/bulk_orders_lbl"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@id/orderDetailsBg"
                 app:layout_constraintEnd_toEndOf="@id/bulkOrders"
                 app:layout_constraintStart_toStartOf="@id/bulkOrders"
-                app:layout_constraintTop_toBottomOf="@id/bulkOrders" />
+                app:layout_constraintTop_toTopOf="@id/toPayLbl"
+                app:layout_constraintBottom_toBottomOf="@id/toPayLbl" />
 
 
             <TextView
@@ -285,7 +292,6 @@
                 style="@style/textMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_address"
@@ -307,7 +313,7 @@
                 style="@style/textMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_5sdp"
+
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_wishlist"
                 android:drawableEnd="@drawable/ic_arrow_forward_profile"
@@ -328,7 +334,7 @@
                 style="@style/textMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_5sdp"
+
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_wallet"
                 android:drawableEnd="@drawable/ic_arrow_forward_profile"
@@ -349,7 +355,7 @@
                 style="@style/textMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_5sdp"
+
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_voucher"
                 android:drawableEnd="@drawable/ic_arrow_forward_profile"
@@ -370,7 +376,7 @@
                 style="@style/textMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_5sdp"
+
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_acc_chat"
                 android:drawableEnd="@drawable/ic_arrow_forward_profile"
@@ -391,7 +397,7 @@
                 style="@style/textMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_5sdp"
+
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_support"
                 android:drawableEnd="@drawable/ic_arrow_forward_profile"
@@ -412,7 +418,7 @@
                 style="@style/textMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_5sdp"
+
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_refer"
                 android:drawableEnd="@drawable/ic_arrow_forward_profile"
@@ -433,9 +439,9 @@
                 style="@style/textMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_5sdp"
+
                 android:clickable="true"
-                android:drawableStart="@drawable/ic_logout"
+                android:drawableStart="@drawable/logout"
                 android:drawableEnd="@drawable/ic_arrow_forward_profile"
                 android:drawablePadding="@dimen/_10sdp"
                 android:focusable="true"
@@ -447,6 +453,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/referral"
+                tools:ignore="UseCompatTextViewDrawableXml" />
+
+
+            <TextView
+                android:id="@+id/version"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Version 1.0.1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/logout"
                 tools:ignore="UseCompatTextViewDrawableXml" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

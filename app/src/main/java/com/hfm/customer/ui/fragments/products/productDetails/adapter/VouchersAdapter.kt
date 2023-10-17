@@ -22,6 +22,11 @@ class VouchersAdapter @Inject constructor() :
                 discountPercent.text = data.offer
                 discountDescription.text = "Min. Spend RM${data.minimum_purchase} Capped at ${data.offer_value}"
                 voucherExpiry.text = "Expires on: ${data.valid_upto}"
+                userNow.setOnClickListener {
+                    onItemClick?.let {
+                        it(adapterPosition)
+                    }
+                }
             }
         }
     }
@@ -59,10 +64,10 @@ class VouchersAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onBrandFilterClick: ((id: Int) -> Unit)? = null
+    private var onItemClick: ((id: Int) -> Unit)? = null
 
-    fun setOnBrandFilterClickListener(listener: (id: Int) -> Unit) {
-        onBrandFilterClick = listener
+    fun setOnItemClickListener(listener: (id: Int) -> Unit) {
+        onItemClick = listener
     }
 
 }

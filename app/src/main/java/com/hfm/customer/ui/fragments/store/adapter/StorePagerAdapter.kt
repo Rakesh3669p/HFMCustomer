@@ -8,18 +8,19 @@ import com.hfm.customer.ui.fragments.store.StoreAboutFragment
 import com.hfm.customer.ui.fragments.store.StoreHomeFragment
 import com.hfm.customer.ui.fragments.store.StoreProductListFragment
 import com.hfm.customer.ui.fragments.store.StoreRatingFragment
+import com.hfm.customer.ui.fragments.store.model.StoreData
 
-class StorePagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
+class StorePagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle, val storeData: StoreData) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> StoreHomeFragment()
-            1 -> StoreProductListFragment()
-            2 -> StoreRatingFragment()
-            3 -> StoreAboutFragment()
+            0 -> StoreHomeFragment(storeData)
+            1 -> StoreProductListFragment(storeData)
+            2 -> StoreRatingFragment(storeData)
+            3 -> StoreAboutFragment(storeData)
             else -> {
-                StoreHomeFragment()
+                StoreHomeFragment(storeData)
             }
         }
     }

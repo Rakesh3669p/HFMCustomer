@@ -9,13 +9,12 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/back"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_30sdp"
         android:clickable="true"
         android:contentDescription="@string/back_lbl"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        android:paddingVertical="@dimen/_5sdp"
         android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -33,22 +32,23 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/search"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        android:padding="@dimen/_10sdp"
+        android:padding="@dimen/_6sdp"
         android:src="@drawable/ic_search"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/toolBarTitle"
+        app:layout_constraintBottom_toBottomOf="@id/toolBarTitle"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/categoriesListRv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_8sdp"
-        android:paddingStart="@dimen/_15sdp"
+        android:layout_marginStart="@dimen/_10sdp"
         android:text="100 results for Drinks"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/categoriesListRv" />
@@ -71,7 +71,6 @@
         style="@style/textSmallSemiBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_8sdp"
         android:clickable="true"
         android:drawableEnd="@drawable/ic_sort"
         android:drawablePadding="@dimen/_1sdp"
@@ -81,7 +80,8 @@
         android:paddingHorizontal="@dimen/_10sdp"
         android:text="@string/sortLbl"
         app:layout_constraintEnd_toStartOf="@id/filter"
-        app:layout_constraintTop_toBottomOf="@id/categoriesListRv" />
+        app:layout_constraintTop_toTopOf="@+id/result"
+        app:layout_constraintBottom_toBottomOf="@+id/result"/>
 
 
     <TextView
@@ -89,17 +89,17 @@
         style="@style/textSmallSemiBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_8sdp"
         android:clickable="true"
         android:drawableEnd="@drawable/ic_filter_list"
         android:drawablePadding="@dimen/_1sdp"
         android:focusable="true"
         android:foreground="@drawable/ripple_effect_corner_radius_small"
         android:gravity="center"
-        android:paddingHorizontal="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
         android:text="@string/filterLbl"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/categoriesListRv" />
+        app:layout_constraintTop_toTopOf="@+id/result"
+        app:layout_constraintBottom_toBottomOf="@+id/result"/>
 
     <TextView
         android:id="@+id/flashDealLbl"
@@ -139,15 +139,14 @@
         android:id="@+id/productListRv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/_5sdp"
         android:clipToPadding="false"
-        android:paddingStart="@dimen/_10sdp"
         android:paddingBottom="@dimen/_65sdp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/filter"
+        app:layout_constraintStart_toStartOf="@id/result"
         app:layout_constraintTop_toBottomOf="@+id/flashDealLbl"
+        app:layout_constraintVertical_bias="0.0"
         app:spanCount="2"
         tools:itemCount="21"
         tools:listitem="@layout/item_products" />
@@ -170,6 +169,17 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/toolBarTitle"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <include
+        android:visibility="gone"
+        android:id="@+id/noData"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        layout="@layout/no_data_found"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolBarTitle"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

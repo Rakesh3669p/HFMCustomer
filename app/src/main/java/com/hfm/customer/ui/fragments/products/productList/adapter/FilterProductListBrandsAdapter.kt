@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemFilterBrandBinding
+import com.hfm.customer.ui.dashBoard.home.model.Brand
 import com.hfm.customer.ui.fragments.products.productList.ProductListFragment.Companion.selectedBrandFilters
 import javax.inject.Inject
 
@@ -19,18 +20,18 @@ class FilterProductListBrandsAdapter @Inject constructor() :
 
     inner class ViewHolder(private val bind: ItemFilterBrandBinding) :
         RecyclerView.ViewHolder(bind.root) {
-        fun bind(data:String) {
+        fun bind(data:Brand) {
             with(bind) {
-                bradName.text = data
+                bradName.text = data.brand_name
 
 
                 bradName.setOnClickListener {
                     onBrandFilterClick?.let {
-                        it(adapterPosition)
+                        it(data.brand_id,adapterPosition)
                     }
                 }
 
-                if(selectedBrandFilters.contains(adapterPosition) ) {
+                if(selectedBrandFilters.contains(data.brand_id) ) {
                     bradName.backgroundTintList = ContextCompat.getColorStateList(context, R.color.red)
                     bradName.setTextColor(ContextCompat.getColor(context, R.color.white))
                 }else{
@@ -42,12 +43,12 @@ class FilterProductListBrandsAdapter @Inject constructor() :
         }
     }
 
-      private val diffUtil = object : DiffUtil.ItemCallback<String>(){
-          override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+      private val diffUtil = object : DiffUtil.ItemCallback<Brand>(){
+          override fun areItemsTheSame(oldItem: Brand, newItem: Brand): Boolean {
               return oldItem == newItem
           }
 
-          override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+          override fun areContentsTheSame(oldItem: Brand, newItem: Brand): Boolean {
               return oldItem == newItem
           }
 
@@ -75,9 +76,9 @@ class FilterProductListBrandsAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onBrandFilterClick: ((id: Int) -> Unit)? = null
+    private var onBrandFilterClick: ((id: Int,adapterPosition:Int) -> Unit)? = null
 
-    fun setOnBrandFilterClickListener(listener: (id: Int) -> Unit) {
+    fun setOnBrandFilterClickListener(listener: (id: Int,adapterPosition:Int) -> Unit) {
         onBrandFilterClick = listener
     }
 

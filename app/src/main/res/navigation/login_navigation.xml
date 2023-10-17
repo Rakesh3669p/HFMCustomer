@@ -10,11 +10,20 @@
         android:name="com.hfm.customer.ui.loginSignUp.register.RegisterFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_register" />
+
     <fragment
         android:id="@+id/createPasswordFragment"
         android:name="com.hfm.customer.ui.loginSignUp.password.CreatePasswordFragment"
         android:label="CreatePasswordFragment"
-        tools:layout="@layout/fragment_create_password" />
+        tools:layout="@layout/fragment_create_password" >
+
+        <action
+            android:id="@+id/action_createPasswordFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
 
 
     <fragment

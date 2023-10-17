@@ -38,12 +38,12 @@
         android:layout_height="0dp"
         tools:listitem="@layout/item_support"
         tools:itemCount="4"
-        android:visibility="gone"
         android:layout_margin="@dimen/_8sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/createNewTicket2"
         app:layout_constraintTop_toBottomOf="@id/back"/>
 
     <androidx.constraintlayout.widget.Group
+        android:visibility="gone"
         android:id="@+id/noSupportTickets"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -101,6 +101,19 @@
         app:cornerRadius="@dimen/_5sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/noSupportDescLbl"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/createNewTicket2"
+        style="@style/textMediumSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_margin="@dimen/_8sdp"
+        android:backgroundTint="@color/red"
+        android:textColor="@color/white"
+        android:text="@string/create_new_ticket_lbl"
+        app:cornerRadius="@dimen/_5sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
 
 

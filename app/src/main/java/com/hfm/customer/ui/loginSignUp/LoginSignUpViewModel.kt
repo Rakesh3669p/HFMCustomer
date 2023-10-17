@@ -3,6 +3,7 @@ package com.hfm.customer.ui.loginSignUp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
+import com.hfm.customer.BuildConfig
 import com.hfm.customer.commonModel.CityListModel
 import com.hfm.customer.commonModel.CountryListModel
 import com.hfm.customer.commonModel.StateListModel
@@ -25,6 +26,7 @@ class LoginSignUpViewModel @Inject constructor(private val repository: Repositor
 
 
     val login = SingleLiveEvent<Resource<LoginModel>>()
+    val socialLogin = SingleLiveEvent<Resource<LoginModel>>()
     val registerUser = SingleLiveEvent<Resource<SuccessModel>>()
     val sendRegisterOtp = SingleLiveEvent<Resource<SuccessModel>>()
     val registerVerifyOtp = SingleLiveEvent<Resource<SuccessModel>>()
@@ -105,6 +107,39 @@ class LoginSignUpViewModel @Inject constructor(private val repository: Repositor
                 login.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             login.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun socialLogin(email: String, name: String,avatar:String,loginId:String,type:String, deviceId: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("social_media", type)
+        jsonObject.addProperty("login_id", loginId)
+        jsonObject.addProperty("fname", name)
+        jsonObject.addProperty("email", email)
+        jsonObject.addProperty("phone", "")
+        jsonObject.addProperty("country_code", "")
+        jsonObject.addProperty("avatar", avatar)
+        jsonObject.addProperty("model", "")
+        jsonObject.addProperty("osversion", "")
+        jsonObject.addProperty("appversion", BuildConfig.VERSION_CODE)
+        jsonObject.addProperty("os", "Android")
+        jsonObject.addProperty("manufacturer", "")
+        jsonObject.addProperty("device_name", "")
+        jsonObject.addProperty("deviceId", deviceId)
+        jsonObject.addProperty("deviceToken", deviceId)
+        safeSocialLogin(jsonObject)
+    }
+
+    private suspend fun safeSocialLogin(jsonObject: JsonObject) {
+        socialLogin.postValue(Resource.Loading())
+        try {
+            val response = repository.socialLogin(jsonObject)
+            if (response.isSuccessful)
+                socialLogin.postValue(Resource.Success(checkResponseBody(response.body()) as LoginModel))
+            else
+                socialLogin.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            socialLogin.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 

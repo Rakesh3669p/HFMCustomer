@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
-import com.hfm.customer.databinding.ItemCategoryMainBinding
 import com.hfm.customer.databinding.ItemListCategoriesBinding
 import com.hfm.customer.ui.fragments.products.productList.model.Subcategory
 import javax.inject.Inject
@@ -36,7 +35,7 @@ class ProductCategoryListAdapter @Inject constructor() :
                 }
 
                 title.setOnClickListener {
-                    selectedPosition = absoluteAdapterPosition
+                    selectedPosition = adapterPosition
                     onSubCategoryClick?.let {
                         it(data.id)
                     }

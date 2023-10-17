@@ -22,7 +22,6 @@ import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import org.json.JSONObject
 import javax.inject.Inject
 
 
@@ -30,13 +29,13 @@ import javax.inject.Inject
 class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentBusinessCreatePasswordBinding
     private var currentView: View? = null
+
     private val loginSignUpViewModel: LoginSignUpViewModel by activityViewModels()
-    private lateinit var appLoader: Loader
-
-    private lateinit var noInternetDialog: NoInternetDialog
-
     @Inject
     lateinit var sessionManager: SessionManager
+
+    private lateinit var appLoader: Loader
+    private lateinit var noInternetDialog: NoInternetDialog
 
     var from = ""
     var email = ""
@@ -53,16 +52,19 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        if (currentView == null) {
-            currentView =
-                inflater.inflate(R.layout.fragment_business_create_password, container, false)
-            binding = FragmentBusinessCreatePasswordBinding.bind(currentView!!)
+        currentView ?: inflater.inflate(R.layout.fragment_business_create_password, container, false)?.apply {
+            currentView = this
+            binding = FragmentBusinessCreatePasswordBinding.bind(this)
             init()
-            setObserver()
             setOnClickListener()
         }
-        return currentView!!
+        return currentView
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObserver()
     }
 
     private fun init() {
@@ -91,13 +93,7 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
                 }
 
                 is Resource.Loading -> Unit
-                is Resource.Error -> {
-                    appLoader.dismiss()
-                    if (response.message.toString() == netWorkFailure) {
-                        noInternetDialog.show()
-                    }
-
-                }
+                is Resource.Error -> apiError(response.message)
             }
         }
 
@@ -111,13 +107,7 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
                 }
 
                 is Resource.Loading -> Unit
-                is Resource.Error -> {
-                    appLoader.dismiss()
-                    if (response.message.toString() == netWorkFailure) {
-                        noInternetDialog.show()
-                    }
-
-                }
+                is Resource.Error -> apiError(response.message)
             }
         }
 
@@ -129,18 +119,10 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
                         setCitiesDropDown(response.data.data)
                     }
                 }
-
                 is Resource.Loading -> Unit
-                is Resource.Error -> {
-                    appLoader.dismiss()
-                    if (response.message.toString() == netWorkFailure) {
-                        noInternetDialog.show()
-                    }
-
-                }
+                is Resource.Error -> apiError(response.message)
             }
         }
-
 
         loginSignUpViewModel.registerUser.observe(viewLifecycleOwner) { response ->
             when (response) {
@@ -151,26 +133,18 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
                         findNavController().navigate(R.id.action_businessCreatePasswordFragment_to_loginFragment)
                     }
                 }
-
                 is Resource.Loading -> appLoader.show()
-                is Resource.Error -> {
-                    appLoader.dismiss()
-                    if (response.message == netWorkFailure) {
-                        noInternetDialog.show()
-                    }
-                }
+                is Resource.Error -> apiError(response.message)
             }
         }
     }
 
     private fun setCitiesDropDown(data: CityData) {
-        val cities: MutableList<String> = ArrayList()
-        data.city.forEach { cities.add(it.city_name) }
-
-        val adapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, cities)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.citySpinner.adapter = adapter
+        val cities = data.city.map { it.city_name }
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, cities).apply {
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                binding.citySpinner.adapter = this
+            }
         cityId = data.city[0].id.toString()
         binding.citySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -181,18 +155,16 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
             ) {
                 cityId = data.city[position].id.toString()
             }
-
             override fun onNothingSelected(parentView: AdapterView<*>?) {}
         }
     }
 
     private fun setStatesDropDown(data: StateData) {
-        val states: MutableList<String> = ArrayList()
-        data.state.forEach { states.add(it.state_name) }
-        val adapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, states)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.stateSpinner.adapter = adapter
+        val states = data.state.map { it.state_name }
+        ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, states).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.stateSpinner.adapter = this
+        }
         binding.stateSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parentView: AdapterView<*>,
@@ -204,35 +176,33 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
                 loginSignUpViewModel.getCitiesList(data.state[position].id)
 
             }
-
             override fun onNothingSelected(parentView: AdapterView<*>?) {}
         }
-
     }
 
     private fun setCountriesDropDown(data: CountryData) {
-        val countries: MutableList<String> = ArrayList()
-        data.country.forEach { countries.add(it.country_name) }
-        val adapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, countries)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val countries = data.country.map { it.country_name }
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            countries
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
         binding.countrySpinner.adapter = adapter
         binding.countrySpinner.setSelection(131)
-        binding.countrySpinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parentView: AdapterView<*>,
-                    selectedItemView: View,
-                    position: Int,
-                    id: Long
-                ) {
-                    countryId = data.country[position].id.toString()
-                    loginSignUpViewModel.getStateList(data.country[position].id)
-
-                }
-
-                override fun onNothingSelected(parentView: AdapterView<*>?) {}
+        binding.countrySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parentView: AdapterView<*>,
+                selectedItemView: View,
+                position: Int,
+                id: Long
+            ) {
+                countryId = data.country[position].id.toString()
+                loginSignUpViewModel.getStateList(data.country[position].id)
             }
+            override fun onNothingSelected(parentView: AdapterView<*>?) {}
+        }
     }
 
     private fun setOnClickListener() {
@@ -248,7 +218,7 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
         val pinCode = binding.postCode.text.toString()
 
         if (password.length <= 8) {
-            showToast("password length must be more than 8")
+            showToast("password length must be more than 8 characters.")
             return
         }
 
@@ -258,13 +228,13 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
         }
 
 
-        if (address.isEmpty()) {
-            showToast("Please enter a valid address")
+        if (address.isBlank()) {
+            showToast("Please enter a valid address.")
             return
         }
 
-        if (pinCode.isEmpty() || pinCode.length < 5) {
-            showToast("Please enter a valid postal code")
+        if (pinCode.isBlank() || pinCode.length < 5) {
+            showToast("Please enter a valid postal code.")
             return
         }
 
@@ -288,13 +258,18 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
             pinCode
         )
     }
+    private fun apiError(message: String?) {
+        appLoader.dismiss()
+        showToast(message.toString())
+        if (message == netWorkFailure) {
+            noInternetDialog.show()
+        }
+    }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.register.id -> registerUser()
         }
-
     }
-
 
 }

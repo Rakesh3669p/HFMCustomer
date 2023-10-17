@@ -48,9 +48,26 @@ class ManageAddressAdapter @Inject constructor() :
                     selectedAddressSwitch.trackDrawable.colorFilter = colorFilter
                 }
 
+                selectedAddressSwitch.setOnClickListener {
+                    onDefaultAddressClick?.let {
+                        it(data.id)
+                    }
+                }
+                delete.setOnClickListener {
+                    onDeleteClick?.let {
+                        it(data.id)
+                    }
+                }
+
+                edit.setOnClickListener {
+                    onEditAddressClick?.let {
+                        it(adapterPosition)
+                    }
+                }
+
                 root.setOnClickListener {
                     onAddressClick?.let {
-                        it(absoluteAdapterPosition)
+                        it(data.id)
                     }
                 }
             }
@@ -90,15 +107,25 @@ class ManageAddressAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
+    private var onDeleteClick: ((id: Int) -> Unit)? = null
+    private var onEditAddressClick: ((id: Int) -> Unit)? = null
     private var onAddressClick: ((id: Int) -> Unit)? = null
+
     private var onDefaultAddressClick: ((id: Int) -> Unit)? = null
 
+    fun setOnEditAddressClickListener(listener: (id: Int) -> Unit) {
+        onEditAddressClick = listener
+    }
     fun setOnAddressClickListener(listener: (id: Int) -> Unit) {
         onAddressClick = listener
     }
 
     fun setOnDefaultClickListener(listener: (id: Int) -> Unit) {
         onDefaultAddressClick = listener
+    }
+
+    fun setOnDeleteClickListener(listener: (id: Int) -> Unit) {
+        onDeleteClick = listener
     }
 
 }

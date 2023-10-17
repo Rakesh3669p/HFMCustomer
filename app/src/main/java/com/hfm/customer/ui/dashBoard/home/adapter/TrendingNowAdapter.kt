@@ -23,6 +23,12 @@ class TrendingNowAdapter @Inject constructor() :
                 val imageOriginal = data.image
                 val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
                 productImage.load(imageReplaced)
+
+                root.setOnClickListener {
+                    onCategoryClick?.let {
+                        it(data.link)
+                    }
+                }
             }
         }
     }
@@ -60,9 +66,9 @@ class TrendingNowAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onCategoryClick: ((id: Int) -> Unit)? = null
+    private var onCategoryClick: ((id: String) -> Unit)? = null
 
-    fun setOnCategoryClickListener(listener: (id: Int) -> Unit) {
+    fun setOnCategoryClickListener(listener: (id: String) -> Unit) {
         onCategoryClick = listener
     }
 

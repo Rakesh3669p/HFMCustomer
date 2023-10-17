@@ -3,6 +3,7 @@
     <style name="Base.Theme.HFMCustomer" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/red</item>
         <item name="colorPrimaryVariant">@color/red</item>
+        <item name="colorAccent">@color/red</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/white</item>
         <item name="colorSecondaryVariant">@color/white</item>
@@ -11,9 +12,5 @@
         <item name="android:statusBarColor">@color/white</item>
     </style>
 
-    <style name="splashScreenTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_image</item>
-        <item name="android:statusBarColor">@color/white</item>
-    </style>
 
 </resources>

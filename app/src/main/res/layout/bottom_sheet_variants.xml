@@ -26,7 +26,7 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/vouchersRv"
+        android:id="@+id/variantsRv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:itemCount="3"
@@ -54,7 +54,7 @@
         android:textColor="@color/red"
         app:backgroundTint="@android:color/transparent"
         app:cornerRadius="@dimen/_6sdp"
-        app:layout_constraintTop_toBottomOf="@+id/vouchersRv"
+        app:layout_constraintTop_toBottomOf="@+id/variantsRv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/confirm"

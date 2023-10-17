@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:id="@+id/mainLayout"
     tools:context=".ui.fragments.store.StoreFragment">
 
 
@@ -34,10 +35,10 @@
         app:layout_constraintTop_toTopOf="@id/back" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back">
 
@@ -74,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_10sdp"
-                android:text="Select All(3)"
+                android:text="Select All "
                 app:layout_constraintBottom_toBottomOf="@id/cartDetailsLbl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/cartDetailsLbl" />
@@ -83,8 +84,11 @@
                 android:id="@+id/cartDataRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
                 app:layout_constraintTop_toBottomOf="@id/cartDetailsLbl"
                 tools:itemCount="1"
+                android:nestedScrollingEnabled="false"
+                tools:layout_editor_absoluteX="0dp"
                 tools:listitem="@layout/item_cart_list" />
 
             <TextView
@@ -92,7 +96,7 @@
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_9sdp"
+                android:layout_marginStart="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@string/platform_voucher_lbl"
                 android:textColor="@color/black"
@@ -110,14 +114,15 @@
                 app:layout_constraintStart_toEndOf="@id/platformVoucherLbl"
                 app:layout_constraintTop_toTopOf="@id/platformVoucherLbl" />
 
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/voucherDetailsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_8sdp"
+                android:layout_marginVertical="@dimen/_8sdp"
+                android:layout_marginHorizontal="@dimen/_12sdp"
                 android:background="@drawable/dash_box"
-                android:padding="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_5sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/platformVoucherLbl">
@@ -167,18 +172,19 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addVoucher"
                 style="@style/textMediumSemiBold"
-                android:layout_width="@dimen/_80sdp"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/_35sdp"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginEnd="@dimen/_7sdp"
+                android:layout_marginHorizontal="@dimen/_12sdp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:paddingHorizontal="@dimen/_18sdp"
-                android:text="@string/addLbl"
+                android:text="Apply your exclusive vouchers"
                 android:textColor="@color/red"
                 app:backgroundTint="@android:color/transparent"
                 app:cornerRadius="@dimen/_6sdp"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/voucherDetailsLayout"
                 app:strokeColor="@color/red"
@@ -189,7 +195,7 @@
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_9sdp"
+                android:layout_marginStart="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@string/walletLbl"
                 android:textColor="@color/black"
@@ -200,7 +206,7 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
                 android:background="@color/grey_lite"
                 app:layout_constraintBottom_toBottomOf="@id/walletLbl"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -211,9 +217,11 @@
                 android:id="@+id/walletPointsCv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_10sdp"
+                android:layout_marginVertical="@dimen/_8sdp"
+                android:layout_marginHorizontal="@dimen/_12sdp"
                 app:cardCornerRadius="@dimen/_4sdp"
                 app:cardElevation="@dimen/_2sdp"
+                app:cardBackgroundColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/walletLbl">
@@ -221,7 +229,9 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/_5sdp">
+                    android:paddingVertical="@dimen/_3sdp"
+                    android:paddingHorizontal="@dimen/_5sdp"
+                    >
 
                     <CheckBox
                         android:id="@+id/useWalletPoints"
@@ -239,9 +249,8 @@
                         style="@style/textMediumSemiBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_9sdp"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:text="500 (RM5)"
+                        android:layout_marginEnd="@dimen/_7sdp"
+                        android:text="0.00"
                         android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="@id/useWalletPoints"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -256,7 +265,7 @@
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_9sdp"
+                android:layout_marginStart="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@string/bill_details_lbl"
                 android:textColor="@color/black"
@@ -266,8 +275,8 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
                 android:background="@color/grey_lite"
                 app:layout_constraintBottom_toBottomOf="@id/billDetailsLbl"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -280,7 +289,7 @@
                 android:layout_height="0dp"
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="@dimen/_10sdp"
+                app:cardCornerRadius="@dimen/_6sdp"
                 app:cardElevation="@dimen/_1sdp"
                 app:cardUseCompatPadding="true"
                 app:layout_constraintTop_toBottomOf="@+id/billDetailsLbl">
@@ -291,95 +300,72 @@
                     android:padding="@dimen/_10sdp">
 
                     <TextView
-                        android:id="@+id/priceLbl"
+                        android:id="@+id/subtotalLbl"
                         style="@style/textMediumSemiBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Price(5 items)"
+                        android:text="Subtotal(5 items)"
                         android:textColor="@color/black"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/price"
+                        android:id="@+id/subtotal"
                         style="@style/textMediumBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_9sdp"
-                        android:text="RM 32.00"
+                        android:text="RM 0.00"
                         android:textColor="@color/red"
-                        app:layout_constraintBottom_toBottomOf="@id/priceLbl"
+                        app:layout_constraintBottom_toBottomOf="@id/subtotalLbl"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/priceLbl" />
+                        app:layout_constraintTop_toTopOf="@id/subtotalLbl" />
 
                     <TextView
-                        android:id="@+id/deliveryLbl"
+                        android:id="@+id/storeVoucherLbl"
                         style="@style/textMediumSemiBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_10sdp"
-                        android:text="@string/delivery_charge_lbl"
+                        android:text="@string/store_voucher_lbl"
                         android:textColor="@color/black"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/priceLbl" />
+                        app:layout_constraintTop_toBottomOf="@id/subtotalLbl" />
 
                     <TextView
-                        android:id="@+id/deliveryCharges"
+                        android:id="@+id/storeVoucher"
                         style="@style/textMediumBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_9sdp"
-                        android:text="RM 32.00"
+                        android:text="RM 0.00"
                         android:textColor="@color/red"
-                        app:layout_constraintBottom_toBottomOf="@id/deliveryLbl"
+                        app:layout_constraintBottom_toBottomOf="@id/storeVoucherLbl"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/deliveryLbl" />
+                        app:layout_constraintTop_toTopOf="@id/storeVoucherLbl" />
 
                     <TextView
-                        android:id="@+id/voucherLbl"
+                        android:id="@+id/platformVoucherBillLbl"
                         style="@style/textMediumSemiBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_10sdp"
-                        android:text="@string/voucherLbl"
+                        android:text="@string/platform_voucher_lbl"
                         android:textColor="@color/black"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/deliveryLbl" />
+                        app:layout_constraintTop_toBottomOf="@id/storeVoucherLbl" />
 
                     <TextView
-                        android:id="@+id/voucher"
+                        android:id="@+id/platformVoucher"
                         style="@style/textMediumBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_9sdp"
-                        android:text="RM 32.00"
+                        android:text="RM 0.00"
                         android:textColor="@color/red"
-                        app:layout_constraintBottom_toBottomOf="@id/voucherLbl"
+                        app:layout_constraintBottom_toBottomOf="@id/platformVoucherBillLbl"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/voucherLbl" />
-
-                    <TextView
-                        android:id="@+id/discountLbl"
-                        style="@style/textMediumSemiBold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:text="Discount"
-                        android:textColor="@color/black"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/voucherLbl" />
-
-                    <TextView
-                        android:id="@+id/discount"
-                        style="@style/textMediumBold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_9sdp"
-                        android:text="RM 32.00"
-                        android:textColor="@color/red"
-                        app:layout_constraintBottom_toBottomOf="@id/discountLbl"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/discountLbl" />
+                        app:layout_constraintTop_toTopOf="@id/platformVoucherBillLbl" />
 
                     <TextView
                         android:id="@+id/walletBillLbl"
@@ -390,19 +376,42 @@
                         android:text="@string/walletLbl"
                         android:textColor="@color/black"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/discountLbl" />
+                        app:layout_constraintTop_toBottomOf="@id/platformVoucherBillLbl" />
 
                     <TextView
-                        android:id="@+id/walletAmount"
+                        android:id="@+id/wallet"
                         style="@style/textMediumBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_9sdp"
-                        android:text="RM 32.00"
+                        android:text="RM 0.00"
                         android:textColor="@color/red"
                         app:layout_constraintBottom_toBottomOf="@id/walletBillLbl"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/walletBillLbl" />
+
+                    <TextView
+                        android:id="@+id/shippingChargesLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="@string/shipping_fee_lbl"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/walletBillLbl" />
+
+                    <TextView
+                        android:id="@+id/shippingAmount"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_9sdp"
+                        android:text="RM 0.00"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/shippingChargesLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/shippingChargesLbl" />
 
 
                     <View
@@ -413,7 +422,7 @@
                         android:background="@color/grey_lite"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/walletBillLbl" />
+                        app:layout_constraintTop_toBottomOf="@id/shippingChargesLbl" />
 
                     <TextView
                         android:id="@+id/totalLbl"
@@ -427,18 +436,32 @@
                         app:layout_constraintTop_toBottomOf="@id/divider" />
 
                     <TextView
+                        android:id="@+id/rmLbl"
+                        style="@style/textLargeSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_9sdp"
+                        android:text="RM "
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/totalLbl"
+                        app:layout_constraintEnd_toStartOf="@id/totalAmount"
+                        app:layout_constraintTop_toTopOf="@id/totalLbl"
+                        />
+
+                    <TextView
                         android:id="@+id/totalAmount"
                         style="@style/textLargeSemiBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_9sdp"
-                        android:text="RM 32.00"
+                        android:text="32.00"
                         android:textColor="@color/red"
-                        app:layout_constraintBottom_toBottomOf="@id/totalLbl"
+                        app:layout_constraintBottom_toBottomOf="@id/rmLbl"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/totalLbl" />
+                        app:layout_constraintTop_toTopOf="@id/rmLbl" />
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/totalSavings"
                         style="@style/textMedium"
                         android:layout_width="wrap_content"
@@ -456,6 +479,7 @@
 
 
     </androidx.core.widget.NestedScrollView>
+
 
     <TextView
         android:id="@+id/checkOut"
@@ -475,4 +499,25 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <View
+        android:visibility="gone"
+        android:id="@+id/loader"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <include
+        android:visibility="gone"
+        android:id="@+id/noDataFound"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        layout="@layout/no_data_found"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

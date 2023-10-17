@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="supportTicket">
+        <item>General</item>
+        <item>Order</item>
+    </string-array>
+</resources>

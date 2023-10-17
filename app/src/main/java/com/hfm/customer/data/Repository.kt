@@ -1,12 +1,13 @@
 package com.hfm.customer.data
 
 import com.google.gson.JsonObject
-import org.json.JSONObject
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class Repository @Inject constructor(private val service: HFMCustomerAPI) {
 
     suspend fun login(jsonObject: JsonObject) = service.login(jsonObject)
+    suspend fun socialLogin(jsonObject: JsonObject) = service.socialLogin(jsonObject)
     suspend fun registerSendOTP(jsonObject: JsonObject) = service.registerSendOTP(jsonObject)
     suspend fun registerUser(jsonObject: JsonObject) = service.registerUser(jsonObject)
     suspend fun registerVerifyOTP(jsonObject: JsonObject) = service.registerVerifyOTP(jsonObject)
@@ -24,7 +25,7 @@ class Repository @Inject constructor(private val service: HFMCustomerAPI) {
     suspend fun getHomeFlashSaleProducts(jsonObject: JsonObject,page:String) = service.getFlashSaleProducts(jsonObject,page)
     suspend fun getWholeSaleProducts(jsonObject: JsonObject,page: String) = service.getWholeSaleProducts(jsonObject,page)
     suspend fun getTrendingNow(jsonObject: JsonObject) = service.getTrendingNow(jsonObject)
-    suspend fun getFeatureProducts(jsonObject: JsonObject, page: String) = service.getFeatureProducts(jsonObject)
+    suspend fun getFeatureProducts(jsonObject: JsonObject) = service.getFeatureProducts(jsonObject)
     suspend fun getBrandsList(jsonObject: JsonObject) = service.getHomeBrands(jsonObject)
 
 
@@ -38,8 +39,46 @@ class Repository @Inject constructor(private val service: HFMCustomerAPI) {
     suspend fun removeFromWishList(jsonObject: JsonObject) = service.removeFromWishList(jsonObject)
     suspend fun getWishListProducts(jsonObject: JsonObject) = service.getWishListProducts(jsonObject)
     suspend fun getAddress(jsonObject: JsonObject) = service.getAddress(jsonObject)
+    suspend fun getCheckOutInfo(jsonObject: JsonObject) = service.getCheckOutInfo(jsonObject)
     suspend fun addNewAddress(jsonObject: JsonObject) = service.addNewAddress(jsonObject)
+    suspend fun deleteAddress(jsonObject: JsonObject) = service.deleteAddress(jsonObject)
+    suspend fun defaultAddress(jsonObject: JsonObject) = service.defaultAddress(jsonObject)
     suspend fun updateAddress(jsonObject: JsonObject) = service.updateAddress(jsonObject)
-
-
+    suspend fun makeDefaultAddress(jsonObject: JsonObject) = service.makeDefaultAddress(jsonObject)
+    suspend fun addToCart(jsonObject: JsonObject) = service.addToCart(jsonObject)
+    suspend fun addToCartMultiple(jsonObject: JsonObject) = service.addToCartMultiple(jsonObject)
+    suspend fun getCart(jsonObject: JsonObject) = service.getCart(jsonObject)
+    suspend fun deleterCartProduct(jsonObject: JsonObject) = service.deleterCartProduct(jsonObject)
+    suspend fun getPlatFormVouchers(jsonObject: JsonObject) = service.getPlatFormVouchers(jsonObject)
+    suspend fun applyPlatFormVouchers(jsonObject: JsonObject) = service.applyPlatFormVouchers(jsonObject)
+    suspend fun applySellerVouchers(jsonObject: JsonObject) = service.applySellerVouchers(jsonObject)
+    suspend fun relatedSearchTerms(jsonObject: JsonObject) = service.relatedSearchTerms(jsonObject)
+    suspend fun getNotifications(jsonObject: JsonObject) = service.getNotifications(jsonObject)
+    suspend fun checkAvailability(jsonObject: JsonObject) = service.checkAvailability(jsonObject)
+    suspend fun updateProfileCustomer(requestBody: MutableMap<String, RequestBody?>) = service.updateProfileCustomer(requestBody)
+    suspend fun updateProfileBusiness(requestBody: MutableMap<String, RequestBody?>) = service.updateProfileBusiness(requestBody)
+    suspend fun updateCartQty(jsonObject: JsonObject) = service.updateCartQty(jsonObject)
+    suspend fun getStoreDetails(jsonObject: JsonObject) = service.getStoreDetails(jsonObject)
+    suspend fun myOrders(jsonObject: JsonObject) = service.getMyOrders(jsonObject)
+    suspend fun getBrands(jsonObject: JsonObject) = service.getBrands(jsonObject)
+    suspend fun getPageData(jsonObject: JsonObject) = service.getPageData(jsonObject)
+    suspend fun getBlogsList(jsonObject: JsonObject) = service.getBlogs(jsonObject)
+    suspend fun getBlogDetails(jsonObject: JsonObject) = service.getBlogDetails(jsonObject)
+    suspend fun createSupportTicket(requestBody: MutableMap<String, RequestBody?>) = service.createSupportTicket(requestBody)
+    suspend fun getSupportTickets(jsonObject: JsonObject) = service.getSupportTickets(jsonObject)
+    suspend fun followShop(jsonObject: JsonObject) = service.followShop(jsonObject)
+    suspend fun unFollowShop(jsonObject: JsonObject) = service.unFollowShop(jsonObject)
+    suspend fun followedShops(jsonObject: JsonObject) = service.followedShops(jsonObject)
+    suspend fun getWallet(jsonObject: JsonObject) = service.getWallet(jsonObject)
+    suspend fun getChatList(jsonObject: JsonObject) = service.getChatList(jsonObject)
+    suspend fun getChatMessage(jsonObject: JsonObject) = service.getChatMessage(jsonObject)
+    suspend fun selectCart(jsonObject: JsonObject) = service.selectCart(jsonObject)
+    suspend fun getOrderHistory(jsonObject: JsonObject) = service.getOrderHistory(jsonObject)
+    suspend fun sendMessage(requestBody: MutableMap<String, RequestBody?>) = service.sendMessage(requestBody)
+    suspend fun placeOrder(jsonObject: JsonObject) = service.placeOrder(jsonObject)
+    suspend fun uploadOrderReceipt(requestBody: MutableMap<String, RequestBody?>) = service.uploadOrderReceipt(requestBody)
+    suspend fun paymentFaq() = service.paymentFaq()
+    suspend fun getCountryCode(countryCode:String) = service.getCountryCode(countryCode)
+    suspend fun getStateCode(name:String,countryId:String) = service.getStateCode(name,countryId)
+    suspend fun getCityCode(name:String,stateId:String) = service.getCityCode(name,  stateId)
 }

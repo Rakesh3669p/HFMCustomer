@@ -10,6 +10,7 @@ class SessionManager(mcxt: Context) {
         const val KEY_TOKEN = "token"
         const val KEY_DEVICE_TOKEN = "deviceToken"
         const val KEY_IS_LOGIN = "KEY_IS_LOGIN"
+        const val KEY_LOGIN_TYPE = "KEY_LOGIN_TYPE"
         const val PUSH_NOTIFICATION = "PUSH_NOTIFICATION"
 
         const val USER_ID = "USER_ID"
@@ -35,6 +36,13 @@ class SessionManager(mcxt: Context) {
         get() = generalPref.getBoolean(KEY_IS_LOGIN, false)
         set(status) {
             generalEditor.putBoolean(KEY_IS_LOGIN, status)
+            generalEditor.commit()
+        }
+
+    var loginType: String
+        get() = generalPref.getString(KEY_LOGIN_TYPE, "").toString()
+        set(status) {
+            generalEditor.putString(KEY_LOGIN_TYPE, status)
             generalEditor.commit()
         }
 

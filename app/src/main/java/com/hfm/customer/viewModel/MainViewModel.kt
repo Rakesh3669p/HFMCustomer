@@ -1,6 +1,6 @@
 package com.hfm.customer.viewModel
 
-import android.icu.util.LocaleData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
@@ -17,11 +17,34 @@ import com.hfm.customer.ui.dashBoard.home.model.TrendingNowModel
 import com.hfm.customer.ui.dashBoard.home.model.WholeSaleModel
 import com.hfm.customer.ui.dashBoard.profile.model.ProfileModel
 import com.hfm.customer.ui.fragments.address.model.AddressModel
+import com.hfm.customer.ui.fragments.address.model.CityCodeModel
+import com.hfm.customer.ui.fragments.address.model.CountryCodeModel
+import com.hfm.customer.ui.fragments.address.model.StateCodeModel
+import com.hfm.customer.ui.fragments.blogs.model.BlogDetailsModel
+import com.hfm.customer.ui.fragments.blogs.model.BlogsModel
+import com.hfm.customer.ui.fragments.brands.model.BrandsModel
+import com.hfm.customer.ui.fragments.cart.model.CartModel
+import com.hfm.customer.ui.fragments.cart.model.CouponAppliedModel
+import com.hfm.customer.ui.dashBoard.chat.model.ChatListModel
+import com.hfm.customer.ui.dashBoard.chat.model.ChatMessageModel
+import com.hfm.customer.ui.dashBoard.chat.model.MessageSentModel
+import com.hfm.customer.ui.fragments.checkOut.model.CheckOutModel
+import com.hfm.customer.ui.fragments.commonPage.model.PageModel
 import com.hfm.customer.ui.fragments.myOrders.model.BulkOrdersListModel
+import com.hfm.customer.ui.fragments.myOrders.model.MyOrdersModel
+import com.hfm.customer.ui.fragments.myOrders.model.OrderHistoryModel
+import com.hfm.customer.ui.fragments.notifications.model.NotificationModel
+import com.hfm.customer.ui.fragments.payment.model.PaymentFAQModel
+import com.hfm.customer.ui.fragments.products.productDetails.model.AddToCartModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.BulkOrderRequestModel
 import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetailsModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
+import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
+import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
+import com.hfm.customer.ui.fragments.support.model.SupportTicketsModel
+import com.hfm.customer.ui.fragments.wallet.model.WalletModel
+import com.hfm.customer.ui.fragments.wishlist.model.StoreWishlistModel
 import com.hfm.customer.ui.fragments.wishlist.model.WishListModel
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
@@ -31,8 +54,8 @@ import com.hfm.customer.utils.checkThrowable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import okhttp3.RequestBody
 import java.time.LocalDate
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,7 +65,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     val productDetails = SingleLiveEvent<Resource<ProductDetailsModel>>()
-    val categories = SingleLiveEvent<Resource<HomeMainCategoriesModel>>()
+    val categories:MutableLiveData<Resource<HomeMainCategoriesModel>> = MutableLiveData()
 
     val homeMainBanner = SingleLiveEvent<Resource<HomeMainCategoriesModel>>()
     val homeMiddleBanner = SingleLiveEvent<Resource<HomeMiddleBanner>>()
@@ -53,18 +76,59 @@ class MainViewModel @Inject constructor(
     val homeTrendingNow = SingleLiveEvent<Resource<TrendingNowModel>>()
     val homeFeatureProducts = SingleLiveEvent<Resource<FeatureProductsModel>>()
     val homeBrands = SingleLiveEvent<Resource<HomeBrandsModel>>()
+    val brands = SingleLiveEvent<Resource<BrandsModel>>()
+    val pageData = SingleLiveEvent<Resource<PageModel>>()
+    val blogsList = SingleLiveEvent<Resource<BlogsModel>>()
+    val blogsDetails = SingleLiveEvent<Resource<BlogDetailsModel>>()
+    val followShop = SingleLiveEvent<Resource<SuccessModel>>()
+    val unFollowShop = SingleLiveEvent<Resource<SuccessModel>>()
+    val followedShops = SingleLiveEvent<Resource<StoreWishlistModel>>()
+    val wallet = SingleLiveEvent<Resource<WalletModel>>()
+    val selectCart = SingleLiveEvent<Resource<SuccessModel>>()
+    val chatList:MutableLiveData<Resource<ChatListModel>> = MutableLiveData()
+
+    val chatMessages = SingleLiveEvent<Resource<ChatMessageModel>>()
 
     val productList = SingleLiveEvent<Resource<ProductListModel>>()
     val sellerVouchers = SingleLiveEvent<Resource<SellerVoucherModel>>()
-    val profile = SingleLiveEvent<Resource<ProfileModel>>()
+    val platformVouchers = SingleLiveEvent<Resource<SellerVoucherModel>>()
+    val applyPlatformVoucher = SingleLiveEvent<Resource<CouponAppliedModel>>()
+    val applySellerVoucher = SingleLiveEvent<Resource<CouponAppliedModel>>()
+    val relatedSearchTerms = SingleLiveEvent<Resource<RelatedSearchTermsModel>>()
+    val notifications = SingleLiveEvent<Resource<NotificationModel>>()
+    val profile:MutableLiveData<Resource<ProfileModel>> = MutableLiveData()
     val sendBulkOrderRequest = SingleLiveEvent<Resource<BulkOrderRequestModel>>()
     val bulkOrderList = SingleLiveEvent<Resource<BulkOrdersListModel>>()
     val addToWishList = SingleLiveEvent<Resource<SuccessModel>>()
     val removeFromWishList = SingleLiveEvent<Resource<SuccessModel>>()
     val wishListProducts = SingleLiveEvent<Resource<WishListModel>>()
     val address = SingleLiveEvent<Resource<AddressModel>>()
+    val checkOutInfo = SingleLiveEvent<Resource<CheckOutModel>>()
     val addNewAddress = SingleLiveEvent<Resource<SuccessModel>>()
+    val deleteAddress = SingleLiveEvent<Resource<SuccessModel>>()
+    val defaultAddress = SingleLiveEvent<Resource<SuccessModel>>()
     val updateAddress = SingleLiveEvent<Resource<SuccessModel>>()
+    val addToCart = SingleLiveEvent<Resource<AddToCartModel>>()
+    val addToCartMultiple = SingleLiveEvent<Resource<SuccessModel>>()
+    val cart = SingleLiveEvent<Resource<CartModel>>()
+    val deleterCartProduct = SingleLiveEvent<Resource<SuccessModel>>()
+    val deleteCartProductForVariant = SingleLiveEvent<Resource<SuccessModel>>()
+    val checkAvailability = SingleLiveEvent<Resource<SuccessModel>>()
+    val updateProfileCustomer = SingleLiveEvent<Resource<SuccessModel>>()
+    val sendMessage = SingleLiveEvent<Resource<MessageSentModel>>()
+    val orderHistory = SingleLiveEvent<Resource<OrderHistoryModel>>()
+    val createSupportTicket = SingleLiveEvent<Resource<SuccessModel>>()
+    val supportTickets = SingleLiveEvent<Resource<SupportTicketsModel>>()
+    val updateProfileBusiness = SingleLiveEvent<Resource<SuccessModel>>()
+    val updateCartCount = SingleLiveEvent<Resource<SuccessModel>>()
+    val storeDetails = SingleLiveEvent<Resource<StoreDetailsModel>>()
+    val myOrders = SingleLiveEvent<Resource<MyOrdersModel>>()
+    val placeOrder = SingleLiveEvent<Resource<SuccessModel>>()
+    val uploadOrderReceipt = SingleLiveEvent<Resource<SuccessModel>>()
+    val paymentFaq = SingleLiveEvent<Resource<PaymentFAQModel>>()
+    val countryCode = SingleLiveEvent<Resource<CountryCodeModel>>()
+    val stateCode = SingleLiveEvent<Resource<StateCodeModel>>()
+    val cityCode = SingleLiveEvent<Resource<CityCodeModel>>()
 
 
     fun getProductDetails(productId: String) = viewModelScope.launch {
@@ -401,7 +465,7 @@ class MainViewModel @Inject constructor(
     ): Resource<out Any> {
         homeFeatureProducts.postValue(Resource.Loading())
         return try {
-            val response = repository.getFeatureProducts(jsonObject, page)
+            val response = repository.getFeatureProducts(jsonObject)
             if (response.isSuccessful)
                 Resource.Success(checkResponseBody(response.body()) as FeatureProductsModel)
             else
@@ -423,6 +487,9 @@ class MainViewModel @Inject constructor(
         popular: String = "",
         latest: String = "",
         search: String = "",
+        frozen: Int = 0,
+        wholeSale: Int = 0,
+        chilled: Int = 0,
         deviceId: String,
         page: Int
     ) = viewModelScope.launch {
@@ -437,14 +504,16 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("high_to_low", highToLow)
         jsonObject.addProperty("latest", latest)
         jsonObject.addProperty("popular", popular)
+        jsonObject.addProperty("frozen", frozen)
+        jsonObject.addProperty("wholesale", wholeSale)
+        jsonObject.addProperty("chilled", chilled)
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("keyword", search)
         jsonObject.addProperty("device_id", deviceId)
-        jsonObject.addProperty("page_url", "https://www.dummy.com/blog/")
+        jsonObject.addProperty("page_url", "products/us/img")
         jsonObject.addProperty("os_type", "APP")
-        jsonObject.addProperty("limit", "20")
+        jsonObject.addProperty("limit", 20)
         jsonObject.addProperty("offset", page)
-
         safeGetProductListCall(jsonObject)
     }
 
@@ -466,7 +535,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("lang_id", "1")
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("seller_id", sellerId)
-
+//        jsonObject.addProperty("available", 1)
         safeGetSellerVouchersCall(jsonObject)
     }
 
@@ -669,6 +738,24 @@ class MainViewModel @Inject constructor(
             address.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
+  fun getCheckoutInfo() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        safeGetCheckoutInfoCall(jsonObject)
+    }
+
+    private suspend fun safeGetCheckoutInfoCall(jsonObject: JsonObject) {
+        checkOutInfo.postValue(Resource.Loading())
+        try {
+            val response = repository.getCheckOutInfo(jsonObject)
+            if (response.isSuccessful)
+                checkOutInfo.postValue(Resource.Success(checkResponseBody(response.body()) as CheckOutModel))
+            else
+                checkOutInfo.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            checkOutInfo.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
 
     fun addNewAddress(
         name: String,
@@ -689,6 +776,21 @@ class MainViewModel @Inject constructor(
     ) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("name", name)
+        jsonObject.addProperty("address_type", address_type)
+        jsonObject.addProperty("country_code", country_code)
+        jsonObject.addProperty("phone", phone)
+        jsonObject.addProperty("street", street)
+        jsonObject.addProperty("house", house)
+        jsonObject.addProperty("address1", address1)
+        jsonObject.addProperty("address2", address2)
+        jsonObject.addProperty("country", country)
+        jsonObject.addProperty("state", state)
+        jsonObject.addProperty("city", city)
+        jsonObject.addProperty("pincode", pincode)
+        jsonObject.addProperty("latitude", latitude.toDouble())
+        jsonObject.addProperty("longitude", longitude.toDouble())
+        jsonObject.addProperty("is_default", is_default)
         safeAddNewAddressCall(jsonObject)
     }
 
@@ -702,6 +804,47 @@ class MainViewModel @Inject constructor(
                 addNewAddress.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             addNewAddress.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun deleteAddress(addressId: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("address_id", addressId)
+        safeDeleteAddressCall(jsonObject)
+    }
+
+    private suspend fun safeDeleteAddressCall(jsonObject: JsonObject) {
+        deleteAddress.postValue(Resource.Loading())
+        try {
+            val response = repository.deleteAddress(jsonObject)
+            if (response.isSuccessful)
+                deleteAddress.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                deleteAddress.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            deleteAddress.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun defaultAddress(addressId: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("address_id", addressId)
+        jsonObject.addProperty("is_default", 1)
+        safeDefaultAddressCall(jsonObject)
+    }
+
+    private suspend fun safeDefaultAddressCall(jsonObject: JsonObject) {
+        defaultAddress.postValue(Resource.Loading())
+        try {
+            val response = repository.defaultAddress(jsonObject)
+            if (response.isSuccessful)
+                defaultAddress.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                defaultAddress.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            defaultAddress.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 
@@ -725,6 +868,22 @@ class MainViewModel @Inject constructor(
     ) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("address_id", address_id)
+        jsonObject.addProperty("name", name)
+        jsonObject.addProperty("address_type", address_type)
+        jsonObject.addProperty("country_code", country_code)
+        jsonObject.addProperty("phone", phone)
+        jsonObject.addProperty("street", street)
+        jsonObject.addProperty("house", house)
+        jsonObject.addProperty("address1", address1)
+        jsonObject.addProperty("address2", address2)
+        jsonObject.addProperty("country", country)
+        jsonObject.addProperty("state", state)
+        jsonObject.addProperty("city", city)
+        jsonObject.addProperty("pincode", pincode)
+        jsonObject.addProperty("latitude", latitude)
+        jsonObject.addProperty("longitude", longitude)
+        jsonObject.addProperty("is_default", is_default)
         safeUpdateAddressCall(jsonObject)
     }
 
@@ -740,5 +899,750 @@ class MainViewModel @Inject constructor(
             updateAddress.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
+
+    fun addToCart(productId: String, quantity: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("product_id", productId)
+        jsonObject.addProperty("quantity", quantity)
+        jsonObject.addProperty("cart_type", "APP")
+        safeAddToCartCall(jsonObject)
+    }
+
+    private suspend fun safeAddToCartCall(jsonObject: JsonObject) {
+        addToCart.postValue(Resource.Loading())
+        try {
+            val response = repository.addToCart(jsonObject)
+            if (response.isSuccessful)
+                addToCart.postValue(Resource.Success(checkResponseBody(response.body()) as AddToCartModel))
+            else
+                addToCart.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            addToCart.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+
+    fun addToCartMultiple(productId: String, quantity: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("product_id", productId)
+        jsonObject.addProperty("quantity", quantity)
+        jsonObject.addProperty("cart_type", "APP")
+        safeAddToCartMultipleCall(jsonObject)
+    }
+
+    private suspend fun safeAddToCartMultipleCall(jsonObject: JsonObject) {
+        addToCartMultiple.postValue(Resource.Loading())
+        try {
+            val response = repository.addToCartMultiple(jsonObject)
+            if (response.isSuccessful)
+                addToCartMultiple.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                addToCartMultiple.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            addToCartMultiple.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+
+    fun getCart(deviceId: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("lang_id", "1")
+        jsonObject.addProperty("device_id", deviceId)
+        jsonObject.addProperty("page_url", "CART")
+        jsonObject.addProperty("os_type", "APP")
+        safeGetCartCall(jsonObject)
+    }
+
+    private suspend fun safeGetCartCall(jsonObject: JsonObject) {
+        cart.postValue(Resource.Loading())
+        try {
+            val response = repository.getCart(jsonObject)
+            if (response.isSuccessful)
+                cart.postValue(Resource.Success(checkResponseBody(response.body()) as CartModel))
+            else
+                cart.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            cart.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun deleterCartProduct(cartId: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("cart_id", cartId)
+        safeDeleterCartProductCall(jsonObject)
+    }
+
+    private suspend fun safeDeleterCartProductCall(jsonObject: JsonObject) {
+        deleterCartProduct.postValue(Resource.Loading())
+        try {
+            val response = repository.deleterCartProduct(jsonObject)
+            if (response.isSuccessful)
+                deleterCartProduct.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                deleterCartProduct.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            deleterCartProduct.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+
+
+    fun getPlatFormVouchers(available:Int) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("available", available)
+        jsonObject.addProperty("lang_id", 1)
+        safePlatFormVouchersCall(jsonObject)
+    }
+
+    private suspend fun safePlatFormVouchersCall(jsonObject: JsonObject) {
+        platformVouchers.postValue(Resource.Loading())
+        try {
+            val response = repository.getPlatFormVouchers(jsonObject)
+            if (response.isSuccessful)
+                platformVouchers.postValue(Resource.Success(checkResponseBody(response.body()) as SellerVoucherModel))
+            else
+                platformVouchers.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            platformVouchers.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun applyPlatFormVouchers(couponCode: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("lang_id", 1)
+        jsonObject.addProperty("coupon_code", couponCode)
+        safeApplyPlatFormVouchersCall(jsonObject)
+    }
+
+    private suspend fun safeApplyPlatFormVouchersCall(jsonObject: JsonObject) {
+        applyPlatformVoucher.postValue(Resource.Loading())
+        try {
+            val response = repository.applyPlatFormVouchers(jsonObject)
+            if (response.isSuccessful)
+                applyPlatformVoucher.postValue(Resource.Success(checkResponseBody(response.body()) as CouponAppliedModel))
+            else
+                applyPlatformVoucher.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            applyPlatformVoucher.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun applySellerVouchers(sellerId: String, couponCode: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("lang_id", 1)
+        jsonObject.addProperty("coupon_code", couponCode)
+        jsonObject.addProperty("seller_id", sellerId)
+        safeApplySellerVouchersCall(jsonObject)
+    }
+
+    private suspend fun safeApplySellerVouchersCall(jsonObject: JsonObject) {
+        applySellerVoucher.postValue(Resource.Loading())
+        try {
+            val response = repository.applySellerVouchers(jsonObject)
+            if (response.isSuccessful)
+                applySellerVoucher.postValue(Resource.Success(checkResponseBody(response.body()) as CouponAppliedModel))
+            else
+                applySellerVoucher.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            applySellerVoucher.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun relatedSearchTerms(keyword: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("keyword", keyword)
+        jsonObject.addProperty("device_id", 1)
+        jsonObject.addProperty("page_url", "products/us/img")
+        jsonObject.addProperty("os_typ", "APP")
+        safeRelatedSearchTermsCall(jsonObject)
+    }
+
+    private suspend fun safeRelatedSearchTermsCall(jsonObject: JsonObject) {
+        relatedSearchTerms.postValue(Resource.Loading())
+        try {
+            val response = repository.relatedSearchTerms(jsonObject)
+            if (response.isSuccessful)
+                relatedSearchTerms.postValue(Resource.Success(checkResponseBody(response.body()) as RelatedSearchTermsModel))
+            else
+                relatedSearchTerms.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            relatedSearchTerms.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getNotifications() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        safeNotificationsCall(jsonObject)
+    }
+
+    private suspend fun safeNotificationsCall(jsonObject: JsonObject) {
+        notifications.postValue(Resource.Loading())
+        try {
+            val response = repository.getNotifications(jsonObject)
+            if (response.isSuccessful)
+                notifications.postValue(Resource.Success(checkResponseBody(response.body()) as NotificationModel))
+            else
+                notifications.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            notifications.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+
+    fun checkAvailability(productId: String, pinCode: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("product_id", productId)
+        jsonObject.addProperty("postcode", pinCode)
+        safeCheckAvailabilityCall(jsonObject)
+    }
+
+    private suspend fun safeCheckAvailabilityCall(jsonObject: JsonObject) {
+        checkAvailability.postValue(Resource.Loading())
+        try {
+            val response = repository.checkAvailability(jsonObject)
+            if (response.isSuccessful)
+                checkAvailability.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                checkAvailability.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            checkAvailability.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun updateProfileCustomer(requestBody: MutableMap<String, RequestBody?>) =
+        viewModelScope.launch {
+            safeUpdateProfileCustomerCall(requestBody)
+        }
+
+    private suspend fun safeUpdateProfileCustomerCall(requestBody: MutableMap<String, RequestBody?>) {
+        updateProfileCustomer.postValue(Resource.Loading())
+        try {
+            val response = repository.updateProfileCustomer(requestBody)
+            if (response.isSuccessful)
+                updateProfileCustomer.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                updateProfileCustomer.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            updateProfileCustomer.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun createSupportTicket(requestBody: MutableMap<String, RequestBody?>) = viewModelScope.launch {
+        safeCreateSupportTicketCall(requestBody)
+    }
+
+    private suspend fun safeCreateSupportTicketCall(requestBody: MutableMap<String, RequestBody?>) {
+        createSupportTicket.postValue(Resource.Loading())
+        try {
+            val response = repository.createSupportTicket(requestBody)
+            if (response.isSuccessful)
+                createSupportTicket.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                createSupportTicket.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            createSupportTicket.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getSupportTickets(pageNo: Int) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("limit", 50)
+        jsonObject.addProperty("offset", pageNo)
+        safeGetSupportTicketsCall(jsonObject)
+    }
+
+    private suspend fun safeGetSupportTicketsCall(jsonObject: JsonObject) {
+        supportTickets.postValue(Resource.Loading())
+        try {
+            val response = repository.getSupportTickets(jsonObject)
+            if (response.isSuccessful)
+                supportTickets.postValue(Resource.Success(checkResponseBody(response.body()) as SupportTicketsModel))
+            else
+                supportTickets.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            supportTickets.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun updateProfileBusiness(requestBody: MutableMap<String, RequestBody?>) =
+        viewModelScope.launch {
+            safeUpdateProfileBusinessCall(requestBody)
+        }
+
+    private suspend fun safeUpdateProfileBusinessCall(requestBody: MutableMap<String, RequestBody?>) {
+        updateProfileBusiness.postValue(Resource.Loading())
+        try {
+            val response = repository.updateProfileBusiness(requestBody)
+            if (response.isSuccessful)
+                updateProfileBusiness.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                updateProfileBusiness.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            updateProfileBusiness.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun updateCartQty(cartId: String, qty: Int) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("cart_id", cartId)
+        jsonObject.addProperty("quantity", qty)
+        jsonObject.addProperty("cart_type", "APP")
+        safeUpdateCartQtyCall(jsonObject)
+    }
+
+    private suspend fun safeUpdateCartQtyCall(jsonObject: JsonObject) {
+        updateCartCount.postValue(Resource.Loading())
+        try {
+            val response = repository.updateCartQty(jsonObject)
+            if (response.isSuccessful)
+                updateCartCount.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                updateCartCount.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            updateCartCount.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+
+    fun getStoreDetails(sellerId: String, deviceId: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("seller_id", sellerId)
+        jsonObject.addProperty("lang_id", 1)
+        jsonObject.addProperty("device_id", deviceId)
+        jsonObject.addProperty("page_url", "http://shopproducts/us/img")
+        jsonObject.addProperty("os_type", "APP")
+        safeGetStoreDetailsCall(jsonObject)
+    }
+
+    private suspend fun safeGetStoreDetailsCall(jsonObject: JsonObject) {
+        storeDetails.postValue(Resource.Loading())
+        try {
+            val response = repository.getStoreDetails(jsonObject)
+            if (response.isSuccessful)
+                storeDetails.postValue(Resource.Success(checkResponseBody(response.body()) as StoreDetailsModel))
+            else
+                storeDetails.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            storeDetails.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getMyOrders(orderStatus: String, pageNo: Int, search: String = "") = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("lang_id", 1)
+
+        if(orderStatus =="pending"){
+            jsonObject.addProperty("order_status", "")
+            jsonObject.addProperty("payment_status", orderStatus)
+        }else{
+            jsonObject.addProperty("order_status", orderStatus)
+            jsonObject.addProperty("payment_status", "")
+        }
+
+        jsonObject.addProperty("order_time", "")
+        jsonObject.addProperty("limit", 20)
+        jsonObject.addProperty("offset", pageNo)
+        jsonObject.addProperty("search", search)
+        safeGetMyOrdersCall(jsonObject)
+    }
+
+    private suspend fun safeGetMyOrdersCall(jsonObject: JsonObject) {
+        myOrders.postValue(Resource.Loading())
+        try {
+            val response = repository.myOrders(jsonObject)
+            if (response.isSuccessful)
+                myOrders.postValue(Resource.Success(checkResponseBody(response.body()) as MyOrdersModel))
+            else
+                myOrders.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            myOrders.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getBrands(name: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("sort_by_name", if (name != "1" || name.isEmpty()) "1" else "")
+        jsonObject.addProperty("filter_by_name", name)
+        jsonObject.addProperty("limit", 150)
+        safeGetBrandsCall(jsonObject)
+    }
+
+    private suspend fun safeGetBrandsCall(jsonObject: JsonObject) {
+        brands.postValue(Resource.Loading())
+        try {
+            val response = repository.getBrands(jsonObject)
+            if (response.isSuccessful)
+                brands.postValue(Resource.Success(checkResponseBody(response.body()) as BrandsModel))
+            else
+                brands.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            brands.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getPageData(name: Int) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("page_id", name)
+        jsonObject.addProperty("identifier", "")
+        safeGetPageDataCall(jsonObject)
+    }
+
+    private suspend fun safeGetPageDataCall(jsonObject: JsonObject) {
+        pageData.postValue(Resource.Loading())
+        try {
+            val response = repository.getPageData(jsonObject)
+            if (response.isSuccessful)
+                pageData.postValue(Resource.Success(checkResponseBody(response.body()) as PageModel))
+            else
+                pageData.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            pageData.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getBlogs() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("category_id", "")
+        jsonObject.addProperty("limit", "")
+        jsonObject.addProperty("offse", "")
+        safeGetBlogsCall(jsonObject)
+    }
+
+    private suspend fun safeGetBlogsCall(jsonObject: JsonObject) {
+        blogsList.postValue(Resource.Loading())
+        try {
+            val response = repository.getBlogsList(jsonObject)
+            if (response.isSuccessful)
+                blogsList.postValue(Resource.Success(checkResponseBody(response.body()) as BlogsModel))
+            else
+                blogsList.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            blogsList.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getBlogsDetails(id: Int) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("blog_id", id)
+        safeGetBlogsDetailsCall(jsonObject)
+    }
+
+    private suspend fun safeGetBlogsDetailsCall(jsonObject: JsonObject) {
+        blogsDetails.postValue(Resource.Loading())
+        try {
+            val response = repository.getBlogDetails(jsonObject)
+            if (response.isSuccessful)
+                blogsDetails.postValue(Resource.Success(checkResponseBody(response.body()) as BlogDetailsModel))
+            else
+                blogsDetails.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            blogsDetails.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+
+    fun followShop(id: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("seller_id", id)
+        safeFollowShopCall(jsonObject)
+    }
+
+    private suspend fun safeFollowShopCall(jsonObject: JsonObject) {
+        followShop.postValue(Resource.Loading())
+        try {
+            val response = repository.followShop(jsonObject)
+            if (response.isSuccessful)
+                followShop.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                followShop.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            followShop.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun unFollowShop(id: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("seller_id", id)
+        safeUnFollowShopCall(jsonObject)
+    }
+
+    private suspend fun safeUnFollowShopCall(jsonObject: JsonObject) {
+        unFollowShop.postValue(Resource.Loading())
+        try {
+            val response = repository.unFollowShop(jsonObject)
+            if (response.isSuccessful)
+                unFollowShop.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                unFollowShop.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            unFollowShop.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun followedShops() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("lang_id", 1)
+        safeFollowedShopsCall(jsonObject)
+    }
+
+    private suspend fun safeFollowedShopsCall(jsonObject: JsonObject) {
+        followedShops.postValue(Resource.Loading())
+        try {
+            val response = repository.followedShops(jsonObject)
+            if (response.isSuccessful)
+                followedShops.postValue(Resource.Success(checkResponseBody(response.body()) as StoreWishlistModel))
+            else
+                followedShops.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            followedShops.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+
+    fun getWallet() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        safeGetWalletCall(jsonObject)
+    }
+
+    private suspend fun safeGetWalletCall(jsonObject: JsonObject) {
+        wallet.postValue(Resource.Loading())
+        try {
+            val response = repository.getWallet(jsonObject)
+            if (response.isSuccessful)
+                wallet.postValue(Resource.Success(checkResponseBody(response.body()) as WalletModel))
+            else
+                wallet.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            wallet.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getChatList() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        safeGetChatListCall(jsonObject)
+    }
+
+    private suspend fun safeGetChatListCall(jsonObject: JsonObject) {
+        chatList.postValue(Resource.Loading())
+        try {
+            val response = repository.getChatList(jsonObject)
+            if (response.isSuccessful)
+                chatList.postValue(Resource.Success(checkResponseBody(response.body()) as ChatListModel))
+            else
+                chatList.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            chatList.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getChatMessage(sellerId: String, chatId: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("chat_id", chatId)
+        jsonObject.addProperty("seller_id", sellerId)
+        safeGetChatMessageCall(jsonObject)
+    }
+
+    private suspend fun safeGetChatMessageCall(jsonObject: JsonObject) {
+        chatMessages.postValue(Resource.Loading())
+        try {
+            val response = repository.getChatMessage(jsonObject)
+            if (response.isSuccessful)
+                chatMessages.postValue(Resource.Success(checkResponseBody(response.body()) as ChatMessageModel))
+            else
+                chatMessages.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            chatMessages.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun selectCart(cartId:String, status:Int) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("cart_id", cartId)
+        jsonObject.addProperty("select_status",status)
+        safeSelectCartCall(jsonObject)
+    }
+
+    private suspend fun safeSelectCartCall(jsonObject: JsonObject) {
+        selectCart.postValue(Resource.Loading())
+        try {
+            val response = repository.selectCart(jsonObject)
+            if (response.isSuccessful)
+                selectCart.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                selectCart.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            selectCart.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun sendMessage(requestBody: MutableMap<String, RequestBody?>) {
+        viewModelScope.launch {
+            safeSendMessageCall(requestBody)
+        }
+    }
+
+    private suspend fun safeSendMessageCall(requestBody: MutableMap<String, RequestBody?>) {
+        sendMessage.postValue(Resource.Loading())
+        try {
+            val response = repository.sendMessage(requestBody)
+            if (response.isSuccessful)
+                sendMessage.postValue(Resource.Success(checkResponseBody(response.body()) as MessageSentModel))
+            else
+                sendMessage.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            sendMessage.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getOrderHistory(sale_id: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("sale_id", sale_id)
+        jsonObject.addProperty("lang_id", 1)
+        safeGetOrderHistoryCall(jsonObject)
+    }
+
+    private suspend fun safeGetOrderHistoryCall(jsonObject: JsonObject) {
+        orderHistory.postValue(Resource.Loading())
+        try {
+            val response = repository.getOrderHistory(jsonObject)
+            if (response.isSuccessful)
+                orderHistory.postValue(Resource.Success(checkResponseBody(response.body()) as OrderHistoryModel))
+            else
+                orderHistory.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            orderHistory.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+    fun placeOrder(jsonObject: JsonObject) = viewModelScope.launch {
+        safePlaceOrderCall(jsonObject)
+    }
+
+    private suspend fun safePlaceOrderCall(jsonObject: JsonObject) {
+        placeOrder.postValue(Resource.Loading())
+        try {
+            val response = repository.placeOrder(jsonObject)
+            if (response.isSuccessful)
+                placeOrder.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                placeOrder.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            placeOrder.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+
+
+    fun uploadOrderReceipt(requestBody: MutableMap<String, RequestBody?>) =
+        viewModelScope.launch {
+            safeUploadOrderReceiptCall(requestBody)
+        }
+
+    private suspend fun safeUploadOrderReceiptCall(requestBody: MutableMap<String, RequestBody?>) {
+        uploadOrderReceipt.postValue(Resource.Loading())
+        try {
+            val response = repository.uploadOrderReceipt(requestBody)
+            if (response.isSuccessful)
+                uploadOrderReceipt.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                uploadOrderReceipt.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            uploadOrderReceipt.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun paymentFaq() =
+        viewModelScope.launch {
+            safePaymentFaqCall()
+           }
+
+    private suspend fun safePaymentFaqCall() {
+        paymentFaq.postValue(Resource.Loading())
+        try {
+            val response = repository.paymentFaq()
+            if (response.isSuccessful)
+                paymentFaq.postValue(Resource.Success(checkResponseBody(response.body()) as PaymentFAQModel))
+            else
+                paymentFaq.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            paymentFaq.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getCountryCode(name: String) =
+        viewModelScope.launch {
+            safeGetCountryCodeCall(name)
+        }
+
+    private suspend fun safeGetCountryCodeCall(name: String) {
+        countryCode.postValue(Resource.Loading())
+        try {
+            val response = repository.getCountryCode(name)
+            if (response.isSuccessful)
+                countryCode.postValue(Resource.Success(checkResponseBody(response.body()) as CountryCodeModel))
+            else
+                countryCode.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            countryCode.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+
+    fun getStateCode(name:String,countryId:String) =
+        viewModelScope.launch {
+            safeGetStateCodeCall(name, countryId)
+        }
+
+    private suspend fun safeGetStateCodeCall(name: String, countryId: String) {
+        stateCode.postValue(Resource.Loading())
+        try {
+            val response = repository.getStateCode(name,countryId)
+            if (response.isSuccessful)
+                stateCode.postValue(Resource.Success(checkResponseBody(response.body()) as StateCodeModel))
+            else
+                stateCode.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            stateCode.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getCityCode(name:String,stateId:String) =
+        viewModelScope.launch {
+            safeCityCodeCall(name,stateId)
+        }
+
+    private suspend fun safeCityCodeCall(name: String, stateId: String) {
+        cityCode.postValue(Resource.Loading())
+        try {
+            val response = repository.getCityCode(name,stateId)
+            if (response.isSuccessful)
+                cityCode.postValue(Resource.Success(checkResponseBody(response.body()) as CityCodeModel))
+            else
+                cityCode.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            cityCode.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
 
 }

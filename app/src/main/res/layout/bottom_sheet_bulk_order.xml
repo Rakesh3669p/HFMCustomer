@@ -24,7 +24,7 @@
         android:gravity="center"
         android:paddingVertical="@dimen/_10sdp"
         android:layout_marginHorizontal="@dimen/_10sdp"
-        android:text="Contact For Bilk Purchase"
+        android:text="Contact For Bulk Purchase"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:layout_marginTop="@dimen/_50sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_12sdp"
         app:layout_constraintTop_toBottomOf="@id/titleLbl"
         >
 
@@ -74,7 +74,6 @@
         android:hint="@string/name_lbl"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_12sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/productImage" />
@@ -90,7 +89,6 @@
         android:hint="Purchase Quantity"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_12sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name" />
@@ -109,7 +107,6 @@
         android:spinnerMode="dropdown"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_12sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/qty" />
@@ -125,7 +122,6 @@
         android:hint="Date Needed"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_12sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/unitsSpinner" />
@@ -141,7 +137,6 @@
         android:hint="Contact Number"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_12sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date" />
@@ -157,7 +152,7 @@
         android:hint="@string/email_lbl"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_12sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contact" />
@@ -173,7 +168,7 @@
         android:hint="@string/delivery_address_lbl"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_12sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
@@ -189,7 +184,7 @@
         android:hint="@string/remarksLbl"
         android:paddingHorizontal="@dimen/_10sdp"
        android:paddingVertical="@dimen/_12sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/address" />

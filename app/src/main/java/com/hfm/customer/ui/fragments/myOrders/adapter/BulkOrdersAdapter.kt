@@ -33,6 +33,7 @@ class BulkOrdersAdapter @Inject constructor() :
                     val imageReplaced =
                         imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
                     productImage.load(imageReplaced)
+                    println("imageLoad $imageReplaced")
                 }
 
                 requestId.text = "Request #:${data.bulkrequest_id}"
@@ -50,9 +51,7 @@ class BulkOrdersAdapter @Inject constructor() :
                 requestedDate.text = "${data.date_needed} | ${data.request_time}"
 
                 root.setOnClickListener {
-                    onOrderClick?.let {
-                        it(adapterPosition)
-                    }
+                    onOrderClick?.invoke(data)
                 }
             }
         }
@@ -90,9 +89,9 @@ class BulkOrdersAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onOrderClick: ((id: Int) -> Unit)? = null
+    private var onOrderClick: ((data: BulkrequestOrderDetail) -> Unit)? = null
 
-    fun setOnOrderClickListener(listener: (id: Int) -> Unit) {
+    fun setOnOrderClickListener(listener: (data: BulkrequestOrderDetail) -> Unit) {
         onOrderClick = listener
     }
 }

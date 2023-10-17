@@ -29,16 +29,16 @@ class CategoryMainAdapter @Inject constructor() :
                 itemCv.cardElevation = 0F
                 categoryName.setTextColor(ContextCompat.getColor(context, R.color.black))
 
-                if (selectedPosition == adapterPosition) {
+                if (selectedPosition == absoluteAdapterPosition) {
                     itemCv.cardElevation = 4F
                     categoryName.setTextColor(ContextCompat.getColor(context, R.color.red))
                 }
 
                 itemCv.setOnClickListener {
                     onMainCategoryClick?.let {
-                        it(adapterPosition)
+                        it(absoluteAdapterPosition)
                     }
-                    selectedPosition = adapterPosition
+                    selectedPosition = absoluteAdapterPosition
                     notifyDataSetChanged()
 
                 }

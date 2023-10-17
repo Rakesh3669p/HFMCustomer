@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.databinding.ItemBannerBinding
+import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
 class StoreBannerAdapter @Inject constructor(): RecyclerView.Adapter<StoreBannerAdapter.ViewHolder>() {
@@ -17,7 +18,7 @@ class StoreBannerAdapter @Inject constructor(): RecyclerView.Adapter<StoreBanner
         fun bind(data: String) {
 
             with(itemBannerBinding){
-                bannerImage.load(data)
+                bannerImage.load(replaceBaseUrl(data) )
             }
         }
     }

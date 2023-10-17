@@ -17,6 +17,7 @@ import com.hfm.customer.ui.fragments.brands.adapter.BrandStoreSingleAdapter
 import com.hfm.customer.ui.fragments.brands.adapter.BrandsAlphabetsAdapter
 import com.hfm.customer.ui.fragments.myOrders.adapter.BulkOrdersAdapter
 import com.hfm.customer.utils.Loader
+import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.initRecyclerViewGrid
@@ -40,6 +41,8 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
     @Inject lateinit var alphabetsAdapter: BrandsAlphabetsAdapter
     @Inject lateinit var brandsAdapter: BrandStoreSingleAdapter
     private lateinit var appLoader: Loader
+    private lateinit var noInternetDialog: NoInternetDialog
+    var alphabet = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,14 +52,20 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
             currentView = inflater.inflate(R.layout.fragment_brands, container, false)
             binding = FragmentBrandsBinding.bind(currentView!!)
             init()
-            setObserver()
             setOnClickListener()
         }
         return currentView!!
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObserver()
+
+    }
     private fun init() {
         appLoader = Loader(requireContext())
+        noInternetDialog= NoInternetDialog(requireContext())
+        noInternetDialog.setOnDismissListener { init() }
         alphabetsAdapter.differ.submitList(alphabetList)
         binding.alphabetsRv.apply {
             setHasFixedSize(true)
@@ -65,11 +74,11 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
             }
             adapter = alphabetsAdapter
         }
-        mainViewModel.getBrandsList()
+        mainViewModel.getBrands(alphabet)
     }
 
     private fun setObserver() {
-        mainViewModel.homeBrands.observe(viewLifecycleOwner){response->
+        mainViewModel.brands.observe(viewLifecycleOwner){response->
             when(response){
                 is Resource.Success->{
                     appLoader.dismiss()
@@ -78,17 +87,17 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
                         brandsAdapter.differ.submitList(response.data.data.brands)
                     }
                 }
-
                 is Resource.Loading->appLoader.show()
-
-                is Resource.Error->{
-                    appLoader.dismiss()
-                    showToast(response.message.toString())
-                    if(response.message.toString() == netWorkFailure){
-
-                    }
-                }
+                is Resource.Error->apiError(response.message)
             }
+        }
+    }
+
+    private fun apiError(message: String?) {
+        appLoader.dismiss()
+        showToast(message.toString())
+        if (message == netWorkFailure) {
+            noInternetDialog.show()
         }
     }
 
@@ -97,6 +106,16 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
     private fun setOnClickListener() {
         with(binding) {
             back.setOnClickListener(this@BrandsFragment)
+        }
+
+        alphabetsAdapter.setOnItemClickListener {selectedAlphabet->
+            alphabet = if(selectedAlphabet=="#") "" else selectedAlphabet
+            mainViewModel.getBrands(alphabet)
+        }
+
+        brandsAdapter.setOnBrandClickListener {
+            val bundle = Bundle().apply { putString("brandId", it.toString()) }
+            findNavController().navigate(R.id.productListFragment, bundle)
         }
     }
 

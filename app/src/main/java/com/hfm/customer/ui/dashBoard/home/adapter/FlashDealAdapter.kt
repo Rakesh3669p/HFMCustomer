@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.databinding.ItemProductsSingleBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
+import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 
 class FlashDealAdapter @Inject constructor() :
@@ -23,20 +23,20 @@ class FlashDealAdapter @Inject constructor() :
         fun bind(data: Product) {
             with(bind) {
 
-                if(data.image.isNotEmpty()) {
+                if(data.image?.isNotEmpty() == true) {
                     val imageOriginal = data.image[0].image
                     val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
                     productImage.load(imageReplaced)
                 }
                 productName.text = data.product_name
-                productPrice.text = "RM ${data.actual_price}"
+                productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
 
                 frozenLbl.isVisible =data.frozen == 1
                 wholeSaleLbl.isVisible =data.wholesale == 1
                 val difference = data.actual_price.toString().toDouble() - data.offer_price.toString().toDouble()
 
                 saveLbl.isVisible = difference>0
-                saveLbl.text = "Save RM $difference"
+                saveLbl.text = "Save RM ${formatToTwoDecimalPlaces(difference)}"
 
                 root.setOnClickListener {
                     onProductClick?.let {

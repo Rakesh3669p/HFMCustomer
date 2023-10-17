@@ -13,8 +13,9 @@ data class ProfileData(
 
 data class Profile(
     val address1: String,
-    val birthday: Any,
+    val birthday: String?="",
     val business_address: BusinessAddress,
+    val business_details: BusinessDetails,
     val city: String,
     val city_id: Any,
     val country: String,
@@ -36,9 +37,23 @@ data class Profile(
     val state_id: Any,
     val user_id: Int,
     val username: String,
-    val wallet: Int
+    val wallet: Any
 )
 
+data class BusinessDetails(
+    val id:Int,
+    val user_id:Int,
+    val business_name:String,
+    val established_on:String?=null,
+    val business_type:String,
+    val registration_no:String,
+    val country_code:String,
+    val contact_no:String,
+    val is_branches:Int,
+    val created_at:String,
+    val updated_at:String,
+    val category_name:String
+)
 data class BusinessAddress(
     val address_1: Any,
     val address_2: Any,

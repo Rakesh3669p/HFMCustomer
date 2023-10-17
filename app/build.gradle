@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.firebase.crashlytics'
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -14,8 +16,8 @@ android {
         applicationId "com.hfm.customer"
         minSdk 26
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.2"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,12 +45,10 @@ android {
         annotationProcessorConfiguration.resolutionStrategy {}
     }
 
-
     buildFeatures {
         buildConfig = true
         viewBinding true
     }
-
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -65,9 +65,9 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -75,8 +75,8 @@ dependencies {
 
 
     // Navigation Component
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.4'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.4'
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -93,11 +93,9 @@ dependencies {
     implementation("io.coil-kt:coil:2.4.0")
 
     //firebase-crashlytics
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.4.0'
-    implementation 'com.google.firebase:firebase-analytics-ktx:21.3.0'
-    implementation "com.google.firebase:firebase-dynamic-links-ktx:21.1.0"
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.4.3'
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
-    implementation 'com.google.firebase:firebase-messaging:23.2.0'
+    implementation 'com.google.firebase:firebase-messaging:23.2.1'
     implementation "com.google.firebase:firebase-iid:21.1.0"
 
     //ViewPager
@@ -110,12 +108,16 @@ dependencies {
 
 
     // Social Login
-//    implementation 'com.google.android.gms:play-services-auth:20.6.0'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
     implementation 'com.facebook.android:facebook-login:16.2.0'
+
+    //Maps
+    implementation 'com.google.maps.android:android-maps-utils:0.4.4'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
 
     // Architectural Components
     implementation 'androidx.fragment:fragment-ktx:1.6.1'
-    implementation "androidx.activity:activity-ktx:1.7.2"
+    implementation "androidx.activity:activity-ktx:1.8.0"
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
@@ -146,5 +148,17 @@ dependencies {
     //Circle Indıcator
     implementation 'me.relex:circleindicator:2.1.6'
 
-    implementation "com.github.skydoves:powerspinner:1.2.4"
+
+    //Image picker
+    implementation 'com.github.dhaval2404:imagepicker:2.1'
+    implementation 'com.github.Drjacky:ImagePicker:2.3.22'
+    implementation "androidx.fragment:fragment-ktx:1.6.1"
+
+    //Exo Player
+    implementation 'androidx.media3:media3-exoplayer:1.1.1'
+    implementation 'androidx.media3:media3-exoplayer-dash:1.1.1'
+    implementation "androidx.media3:media3-session:1.1.1"
+    implementation 'androidx.media3:media3-ui:1.1.1'
+
+    implementation 'com.github.maxrave-dev:kotlin-youtubeExtractor:0.0.7'
 }

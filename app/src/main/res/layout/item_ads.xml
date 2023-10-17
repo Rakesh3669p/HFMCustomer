@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/_70sdp"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/_5sdp"
+    android:layout_marginEnd="@dimen/_10sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView

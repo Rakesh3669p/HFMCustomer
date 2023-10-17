@@ -1,0 +1,96 @@
+package com.hfm.customer.ui.fragments.notifications
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import com.hfm.customer.R
+import com.hfm.customer.databinding.FragmentNotificationsBinding
+import com.hfm.customer.ui.fragments.notifications.adapter.NotificationAdapter
+import com.hfm.customer.utils.Loader
+import com.hfm.customer.utils.NoInternetDialog
+import com.hfm.customer.utils.Resource
+import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.netWorkFailure
+import com.hfm.customer.utils.showToast
+import com.hfm.customer.viewModel.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+
+
+@AndroidEntryPoint
+class NotificationFragment : Fragment(), View.OnClickListener {
+
+    private lateinit var binding: FragmentNotificationsBinding
+    private var currentView: View? = null
+
+    @Inject
+    lateinit var notificationAdapter: NotificationAdapter
+    private lateinit var appLoader:Loader
+    private lateinit var noInternetDialog:NoInternetDialog
+    private val mainViewModel:MainViewModel by  viewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        if (currentView == null) {
+            currentView = inflater.inflate(R.layout.fragment_notifications, container, false)
+            binding = FragmentNotificationsBinding.bind(currentView!!)
+            init()
+            setObserver()
+            setOnClickListener()
+        }
+        return currentView!!
+    }
+
+
+    private fun init() {
+        mainViewModel.getNotifications()
+        appLoader = Loader(requireContext())
+        noInternetDialog = NoInternetDialog(requireContext())
+        noInternetDialog.setOnDismissListener {
+            init()
+        }
+    }
+
+
+    private fun setObserver() {
+        mainViewModel.notifications.observe(viewLifecycleOwner){response->
+            when(response){
+                is Resource.Success->{
+                    appLoader.dismiss()
+                    if(response.data?.httpcode  == "200"){
+                        initRecyclerView(requireContext(),binding.notificationRv,notificationAdapter)
+                        notificationAdapter.differ.submitList(response.data.data.notifications)
+                    }
+                }
+                is Resource.Loading->appLoader.show()
+                is Resource.Error->apiError(response.message)
+            }
+        }
+    }
+
+
+    private fun apiError(message: String?) {
+        appLoader.dismiss()
+        showToast(message.toString())
+        if (message == netWorkFailure) {
+            noInternetDialog.show()
+        }
+    }
+
+    private fun setOnClickListener() {
+        with(binding) {
+        }
+    }
+
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+        }
+    }
+}

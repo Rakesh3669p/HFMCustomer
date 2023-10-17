@@ -62,12 +62,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/brandsRv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_margin="@dimen/_5sdp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/alphabetsRv"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:spanCount="2"
         tools:itemCount="15"
         tools:listitem="@layout/item_brands_single" />

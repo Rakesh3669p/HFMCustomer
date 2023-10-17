@@ -11,15 +11,15 @@
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/storeBanner"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_124sdp"
-        android:src="@drawable/grocery_list"
+        android:layout_height="@dimen/_125sdp"
+        android:src="@color/white"
         android:scaleType="fitXY"
-        android:foreground="@color/blackTrans200"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/back"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/ic_arrow_back"
@@ -66,15 +66,15 @@
     <TextView
         android:id="@+id/storeName"
         style="@style/textMediumBold"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:text="Jaya Grocer"
         android:elevation="@dimen/_4sdp"
-        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@id/storeFollowers"
         app:layout_constraintStart_toEndOf="@id/storeImage"
+        app:layout_constraintEnd_toStartOf="@id/follow"
         app:layout_constraintTop_toTopOf="@id/storeImage"
         app:layout_constraintVertical_chainStyle="spread" />
 
@@ -96,12 +96,14 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/follow"
         style="@style/textMediumSemiBold"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_75sdp"
         android:layout_height="@dimen/_25sdp"
         android:layout_marginEnd="@dimen/_10sdp"
         android:backgroundTint="@color/red"
         android:gravity="center"
         android:paddingVertical="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
         android:text="@string/followLbl"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -112,7 +114,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/chat"
         style="@style/textMediumSemiBold"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_75sdp"
         android:layout_height="@dimen/_25sdp"
         android:layout_marginEnd="@dimen/_10sdp"
         android:backgroundTint="@color/red"
@@ -120,13 +122,20 @@
         android:paddingVertical="0dp"
         android:text="@string/chatLbl"
         android:textAllCaps="false"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
         android:textColor="@color/white"
         app:cornerRadius="@dimen/_6sdp"
-
         app:layout_constraintBottom_toBottomOf="@id/storeImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/follow" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/storeDataGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:constraint_referenced_ids="storeName,storeImage,follow,storeFollowers,chat,search,back"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"

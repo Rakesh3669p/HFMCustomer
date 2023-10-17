@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.databinding.ItemProductsSingleBinding
 import com.hfm.customer.ui.dashBoard.home.model.WholeSaleProduct
+import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import javax.inject.Inject
 
 
@@ -26,7 +27,12 @@ class FactoryAdapter @Inject constructor() :
                     productImage.load(imageReplaced)
                 }
                 productName.text = data.product_name
-                productPrice.text = "RM ${data.actual_price}"
+                productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
+                root.setOnClickListener {
+                    onProductClick?.let {
+                        it(data.product_id)
+                    }
+                }
             }
         }
     }
@@ -64,10 +70,11 @@ class FactoryAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onCategoryClick: ((id: Int) -> Unit)? = null
+    private var onProductClick: ((id: Int) -> Unit)? = null
 
-    fun setOnCategoryClickListener(listener: (id: Int) -> Unit) {
-        onCategoryClick = listener
+
+    fun setOnProductClickListener(listener: (id: Int) -> Unit) {
+        onProductClick = listener
     }
 
 }

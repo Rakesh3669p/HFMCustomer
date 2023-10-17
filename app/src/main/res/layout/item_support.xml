@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
-    android:padding="@dimen/_10sdp">
+    >
 
     <TextView
         android:id="@+id/ticketId"
@@ -15,10 +15,11 @@
         android:text="#1234"
         android:textColor="@color/white"
         android:paddingHorizontal="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_2sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
         android:paddingVertical="@dimen/_5sdp"
         android:background="@drawable/edt_box_smaa_radius"
         android:backgroundTint="@color/red"
+        android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,10 +31,13 @@
         android:layout_height="wrap_content"
         android:background="@drawable/edt_box_smaa_radius"
         android:elevation="@dimen/_1sdp"
-        android:layout_marginTop="@dimen/_24sdp"
         android:padding="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_32sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
             android:id="@+id/dateLbl"
@@ -47,7 +51,7 @@
 
         <TextView
             android:id="@+id/titleLbl"
-            style="@style/textLargeSemiBold"
+            style="@style/textMediumSemiBold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Title"
@@ -56,8 +60,8 @@
             app:layout_constraintTop_toBottomOf="@id/dateLbl" />
 
         <TextView
-            android:id="@+id/amount"
-            style="@style/textMediumSemiBold"
+            android:id="@+id/desc"
+            style="@style/textMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:singleLine="false"

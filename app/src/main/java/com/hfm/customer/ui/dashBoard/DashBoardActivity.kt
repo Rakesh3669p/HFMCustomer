@@ -11,6 +11,7 @@ import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ActivityDashBoardBinding
 import com.hfm.customer.databinding.ActivityMainBinding
+import com.hfm.customer.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,10 +31,14 @@ class DashBoardActivity : AppCompatActivity() {
 
     private fun init() {
         navController = findNavController(R.id.nav_host_fragment_content_main)
-        navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+        navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         setupWithNavController(binding.bottomNavigationView, navHostFragment.navController)
         navController.addOnDestinationChangedListener(destinationListener)
+
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
     private val destinationListener =
@@ -42,6 +47,7 @@ class DashBoardActivity : AppCompatActivity() {
                 R.id.homeFragment,
                 R.id.categoriesFragment,
                 R.id.profileFragment,
+                R.id.exploreFragment,
                 R.id.chatUsersFragment
             )
             val checkable = destination.id in validFragmentIds
@@ -54,6 +60,7 @@ class DashBoardActivity : AppCompatActivity() {
                 R.id.categoriesFragment,
                 R.id.profileFragment,
                 R.id.categoriesFragment,
+                R.id.exploreFragment,
                 R.id.chatUsersFragment
             )
             val showBottomNavBar = destination.id in validFragmentBottomNavIds

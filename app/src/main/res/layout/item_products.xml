@@ -1,49 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/_4sdp">
+    android:layout_marginHorizontal="@dimen/_8sdp"
+    android:layout_marginTop="@dimen/_4sdp"
+    android:layout_marginBottom="@dimen/_4sdp"
+    >
 
     <androidx.cardview.widget.CardView
         android:id="@+id/productImageCard"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_140sdp"
-        app:cardElevation="@dimen/_2sdp"
-        app:cardUseCompatPadding="true"
-        app:cardCornerRadius="@dimen/_4sdp"
+        android:layout_height="@dimen/_135sdp"
         app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/_4sdp"
+        app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.utils.widget.ImageFilterView
-            android:id="@+id/productImage"
-            android:layout_width="@dimen/_120sdp"
-            android:layout_height="@dimen/_120sdp"
-            android:background="@color/white"
-            android:padding="@dimen/_20sdp"
-            android:layout_gravity="center"
-            android:src="@drawable/red_chilli"
-            app:roundPercent="0.05" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/saleTime"
-            style="@style/textSmall"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/_20sdp"
-            android:layout_marginHorizontal="@dimen/_10sdp"
-            android:layout_marginBottom="@dimen/_15sdp"
-            android:background="@drawable/rectangle_box"
-            android:backgroundTint="@color/red"
-            android:elevation="@dimen/_4sdp"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_5sdp"
-            android:paddingVertical="@dimen/_3sdp"
-            android:text="Save RM10"
-            android:textColor="@color/white" />
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/productImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+
+                android:background="@color/white"
+                android:src="@drawable/red_chilli"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:roundPercent="0.05" />
+
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/soldOut"
+                style="@style/textMediumSemiBold"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:background="@drawable/black_circle"
+                android:gravity="center"
+                android:singleLine="false"
+                android:text="@string/sold_out_lbl"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_20ssp"
+                app:layout_constraintBottom_toBottomOf="@id/productImage"
+                app:layout_constraintEnd_toEndOf="@+id/productImage"
+                app:layout_constraintStart_toStartOf="@id/productImage"
+                app:layout_constraintTop_toTopOf="@id/productImage" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/saleTime"
+                style="@style/textSmallSemiBold"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_15sdp"
+                android:background="@drawable/rectangle_box"
+                android:backgroundTint="@color/red"
+                android:elevation="@dimen/_4sdp"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_5sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="Save RM10"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
@@ -57,59 +90,59 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productImageCard">
 
-    <TextView
-        android:id="@+id/saveLbl"
-        style="@style/textSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rectangle_box"
-        android:backgroundTint="@color/red"
-        android:gravity="center"
-        android:text="Save RM10"
-        android:textColor="@color/white"
-        android:visibility="gone"
-        android:paddingHorizontal="@dimen/_4sdp"
-        android:paddingVertical="@dimen/_2sdp"
-        app:layout_constraintEnd_toStartOf="@id/frozenLbl"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            android:id="@+id/saveLbl"
+            style="@style/textSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_box"
+            android:backgroundTint="@color/red"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_4sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="Save RM10"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@id/frozenLbl"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-    <TextView
-        android:id="@+id/frozenLbl"
-        style="@style/textSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rectangle_box"
-        android:backgroundTint="@color/orange"
-        android:gravity="center"
-        android:text="Frozen"
-        android:paddingHorizontal="@dimen/_4sdp"
-        android:paddingVertical="@dimen/_2sdp"
-        android:textColor="@color/white"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@id/wholeSaleLbl"
-        app:layout_constraintStart_toEndOf="@id/saveLbl"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/frozenLbl"
+            style="@style/textSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_box"
+            android:backgroundTint="@color/orange"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_4sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="Frozen"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@id/wholeSaleLbl"
+            app:layout_constraintStart_toEndOf="@id/saveLbl"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-    <TextView
-        android:id="@+id/wholeSaleLbl"
-        style="@style/textSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rectangle_box"
-        android:backgroundTint="@color/purple"
-        android:gravity="center"
-        android:text="WholeSale"
-        android:paddingHorizontal="@dimen/_4sdp"
-        android:paddingVertical="@dimen/_2sdp"
-        android:textColor="@color/white"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/frozenLbl"
-        app:layout_constraintTop_toTopOf="@id/saveLbl" />
+        <TextView
+            android:id="@+id/wholeSaleLbl"
+            style="@style/textSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_box"
+            android:backgroundTint="@color/purple"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_4sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:text="WholeSale"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/frozenLbl"
+            app:layout_constraintTop_toTopOf="@id/saveLbl" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -119,8 +152,8 @@
         style="@style/textSmallSemiBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_marginTop="@dimen/_2sdp"
+        android:gravity="center"
         android:paddingHorizontal="@dimen/_15sdp"
         android:text="Tom Yam Stramboat"
         app:layout_constraintEnd_toEndOf="@id/productImageCard"
@@ -143,3 +176,4 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -3,32 +3,43 @@ package com.hfm.customer.ui.fragments.products.productDetails.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductVariantsBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Variants
+import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
 
 class ProductVariantsAdapter @Inject constructor() :
     RecyclerView.Adapter<ProductVariantsAdapter.ViewHolder>() {
     private lateinit var context: Context
+    private var selectedPosition = 0
 
     inner class ViewHolder(private val bind: ItemProductVariantsBinding) :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: Variants) {
             with(bind) {
-                val imageOriginal = data.image
-                val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                productImage.load(imageReplaced)
+                productImage.isVisible = data.image.isNotEmpty()
+                productImage.load(replaceBaseUrl(data.image))
                 productVariant.text = data.combination
+                if(data.isSelected){
+                    mainLayout.background = ContextCompat.getDrawable(context, R.drawable.outline_line_box_red)
+                    productVariant.setTextColor(ContextCompat.getColor(context, R.color.red))
+                }else{
+                    mainLayout.background = ContextCompat.getDrawable(context, R.drawable.outline_line_box_white)
+                    productVariant.setTextColor(ContextCompat.getColor(context, R.color.black))
+                }
+
                 root.setOnClickListener {
-                    onVariantsClick?.let {
-                        it(data.pro_id)
-                    }
+                    data.isSelected =true
+                    onVariantsClick?.invoke(absoluteAdapterPosition)
+                    notifyDataSetChanged()
                 }
 
             }

@@ -17,7 +17,7 @@
         android:title="Chat" />
 
     <item
-        android:id="@+id/discoverFragment"
+        android:id="@+id/exploreFragment"
         android:icon="@drawable/ic_search"
         android:title="Explore" />
 

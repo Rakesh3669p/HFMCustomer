@@ -24,7 +24,7 @@ class CategoriesAdapter @Inject constructor() :
                 categoryName.text = data.subcategory_name
                 categoryImage.load(data.subcategory_image)
                 root.setOnClickListener {
-                   onCategoryClick?.let { it(adapterPosition) }
+                   onCategoryClick?.let { it(data.id) }
                 }
             }
         }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".ui.fragments.chat.ChatFragment">
+    tools:context=".ui.dashBoard.chat.ChatFragment">
 
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
@@ -34,6 +34,7 @@
         app:layout_constraintTop_toTopOf="@id/back" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="gone"
         android:id="@+id/ordersLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -140,16 +141,17 @@
         android:id="@+id/gallery"
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"
-        android:src="@drawable/ic_gallery"
-        android:scaleType="centerInside"
         android:padding="@dimen/_10sdp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_gallery"
+        app:layout_constraintBottom_toBottomOf="@id/edtMessage"
         app:layout_constraintEnd_toEndOf="@id/edtMessage"
         app:layout_constraintTop_toTopOf="@+id/edtMessage"
-        app:layout_constraintBottom_toBottomOf="@id/edtMessage"
 
-        />
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
+
         android:id="@+id/sendMessage"
         android:layout_width="@dimen/_35sdp"
         android:layout_height="@dimen/_35sdp"
@@ -157,5 +159,6 @@
         android:src="@drawable/ic_send"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

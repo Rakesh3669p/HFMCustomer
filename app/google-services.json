@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1064176626947",
+    "project_id": "hfm-customer",
+    "storage_bucket": "hfm-customer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064176626947:android:b86c9ed7c1601fd1908d36",
+        "android_client_info": {
+          "package_name": "com.hfm.customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlPigteHXNhsmS4QrJuIr6vkRVyl2yn8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

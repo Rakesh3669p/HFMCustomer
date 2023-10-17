@@ -10,7 +10,7 @@ data class HomeMainCategoriesModel(
 data class BannerData(
     val cat_subcat: List<CatSubcat>,
     val custom_links: List<CustomLink>,
-    val main_banner: List<MainBanner>,
+    val app_top_banner: List<MainBanner>,
     val search_placeholder_text: String,
     val top_bar_banner: List<TopBarBanner>,
     val user_data: List<Any>

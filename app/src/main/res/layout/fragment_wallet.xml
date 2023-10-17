@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="250 Points (RM 25)"
-        android:textSize="@dimen/_24sdp"
+        android:textSize="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginStart="@dimen/_20sdp"
         app:layout_constraintStart_toStartOf="parent"

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:background="@color/white">
 
 
@@ -28,7 +29,7 @@
         android:id="@+id/searchFilter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/seach_filter"
+        android:src="@drawable/search_filter"
         android:layout_marginEnd="@dimen/_3sdp"
         app:layout_constraintEnd_toEndOf="@id/searchBar"
         app:layout_constraintTop_toTopOf="@id/searchBar"
@@ -39,6 +40,10 @@
         android:layout_width="@dimen/_25sdp"
         android:layout_height="@dimen/_25sdp"
         android:layout_marginVertical="@dimen/_5sdp"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/notificationsLbl"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_notification"
         app:layout_constraintEnd_toStartOf="@+id/cart"
         app:layout_constraintTop_toTopOf="parent" />
@@ -50,47 +55,69 @@
         android:layout_marginHorizontal="@dimen/_10sdp"
         android:layout_marginVertical="@dimen/_5sdp"
         android:src="@drawable/ic_cart"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/cartLbl"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/cartCountBg"
+        android:layout_width="@dimen/_14ssp"
+        android:layout_height="@dimen/_14ssp"
+        android:background="@drawable/red_circle"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_14sdp"
+        app:layout_constraintBottom_toBottomOf="@id/cart"
+        app:layout_constraintEnd_toEndOf="@id/cart"
+        app:layout_constraintStart_toStartOf="@id/cart"
+        app:layout_constraintTop_toTopOf="@id/cart"/>
 
     <TextView
         android:id="@+id/cartCount"
         style="@style/textSmallSemiBold"
-        android:layout_width="@dimen/_12sdp"
-        android:layout_height="@dimen/_12sdp"
-        android:layout_marginStart="@dimen/_15sdp"
-        android:layout_marginBottom="@dimen/_12sdp"
-        android:background="@drawable/red_circle"
-        android:gravity="center"
-        android:text="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="4"
+        android:textSize="@dimen/_8ssp"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/cart"
-        app:layout_constraintEnd_toEndOf="@id/cart"
-        app:layout_constraintStart_toStartOf="@id/cart"
-        app:layout_constraintTop_toTopOf="@id/cart" />
+        app:layout_constraintBottom_toBottomOf="@id/cartCountBg"
+        app:layout_constraintEnd_toEndOf="@id/cartCountBg"
+        app:layout_constraintStart_toStartOf="@id/cartCountBg"
+        app:layout_constraintTop_toTopOf="@id/cartCountBg" />
+
+
+    <View
+        android:id="@+id/notificationCountBg"
+        android:layout_width="@dimen/_14ssp"
+        android:layout_height="@dimen/_14ssp"
+        android:background="@drawable/red_circle"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_14sdp"
+        app:layout_constraintBottom_toBottomOf="@id/notification"
+        app:layout_constraintEnd_toEndOf="@id/notification"
+        app:layout_constraintStart_toStartOf="@id/notification"
+        app:layout_constraintTop_toTopOf="@id/notification"/>
 
     <TextView
         android:id="@+id/notificationCount"
         style="@style/textSmallSemiBold"
-        android:layout_width="@dimen/_12sdp"
-        android:layout_height="@dimen/_12sdp"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginBottom="@dimen/_12sdp"
-        android:background="@drawable/red_circle"
-        android:gravity="center"
-        android:text="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="4"
+        android:textSize="@dimen/_8ssp"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@id/notification"
-        app:layout_constraintEnd_toEndOf="@id/notification"
-        app:layout_constraintStart_toStartOf="@id/notification"
-        app:layout_constraintTop_toTopOf="@id/notification" />
+        app:layout_constraintBottom_toBottomOf="@id/notificationCountBg"
+        app:layout_constraintEnd_toEndOf="@id/notificationCountBg"
+        app:layout_constraintStart_toStartOf="@id/notificationCountBg"
+        app:layout_constraintTop_toTopOf="@id/notificationCountBg" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/_5sdp"
         android:fillViewport="true"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notification">
 
@@ -98,6 +125,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="true"
+            android:layout_marginHorizontal="@dimen/_10sdp"
             android:paddingBottom="@dimen/_70sdp">
 
 
@@ -105,7 +133,6 @@
                 android:id="@+id/homeMainCategoriesRv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_5sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -127,8 +154,8 @@
                     android:id="@+id/homeMainBanner"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_130sdp"
-                    android:layout_marginHorizontal="@dimen/_35sdp"
-                    android:layout_marginTop="@dimen/_10sdp" />
+                    android:layout_marginHorizontal="@dimen/_25sdp"
+                    android:layout_marginTop="@dimen/_8sdp" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/indicator"
@@ -150,7 +177,6 @@
                 style="@style/textLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:text="@string/flash_deals_lbl"
                 app:layout_constraintStart_toStartOf="parent"
@@ -161,11 +187,10 @@
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="Ends In"
                 android:textColor="@color/textGreyDark"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/flashDealsLbl"
                 app:layout_constraintTop_toBottomOf="@+id/flashDealsLbl" />
 
             <include
@@ -184,16 +209,15 @@
                 style="@style/textSmallSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:drawableEnd="@drawable/ic_keyboard_arrow"
                 android:drawableTint="@color/red"
                 android:gravity="center"
                 android:text="@string/view_all_lbl"
                 android:textColor="@color/red"
                 app:layout_constraintBottom_toBottomOf="@id/flashDealsTimer"
-
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/flashDealsTimer" />
+                app:layout_constraintTop_toTopOf="@id/flashDealsTimer"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/flashDealsProductsRv"
@@ -206,13 +230,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/endsInLbl"
                 tools:itemCount="4"
-                tools:listitem="@layout/item_products" />
+                tools:listitem="@layout/item_products_single" />
 
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/flashDealsGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="flashDealsProductsRv,flashDealsLbl,flashDealsTimer,flashDealsViewAll"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/adsRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_7sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -226,7 +254,6 @@
                 android:id="@+id/secondaryBanner"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_140sdp"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:scaleType="fitXY"
                 android:src="@drawable/grocery_list"
@@ -241,7 +268,6 @@
                 style="@style/textLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@string/official_brands_store_lbl"
                 android:textColor="@color/textGreyDark"
@@ -254,7 +280,6 @@
                 style="@style/textSmallSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:drawableEnd="@drawable/ic_keyboard_arrow"
                 android:drawableTint="@color/red"
                 android:gravity="center"
@@ -268,7 +293,6 @@
                 android:id="@+id/brandsRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_7sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -283,7 +307,6 @@
                 style="@style/textLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="Factory Direct Wholesale"
                 android:textColor="@color/textGreyDark"
@@ -296,7 +319,6 @@
                 style="@style/textSmallSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:drawableEnd="@drawable/ic_keyboard_arrow"
                 android:drawableTint="@color/red"
                 android:gravity="center"
@@ -310,21 +332,19 @@
                 android:id="@+id/factoryDealsRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_7sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/factoryDealsLbl"
                 tools:itemCount="10"
-                tools:listitem="@layout/item_products" />
+                tools:listitem="@layout/item_products_single" />
 
             <TextView
                 android:id="@+id/trendingNowLbl"
                 style="@style/textLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:text="Trending Now"
                 android:textColor="@color/textGreyDark"
@@ -337,7 +357,6 @@
                 style="@style/textSmallSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:drawableEnd="@drawable/ic_keyboard_arrow"
                 android:drawableTint="@color/red"
                 android:gravity="center"
@@ -351,11 +370,11 @@
                 android:id="@+id/trendingNowRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_7sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/trendingNowLbl"
                 tools:itemCount="10"
@@ -365,9 +384,9 @@
                 android:id="@+id/referBanner"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_90sdp"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:scaleType="fitXY"
+                android:layout_marginEnd="@dimen/_4sdp"
                 android:src="@drawable/grocery_list"
                 app:layout_constraintEnd_toStartOf="@id/adBanner"
                 app:layout_constraintStart_toStartOf="parent"
@@ -378,11 +397,10 @@
                 android:id="@+id/adBanner"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:background="@color/grey_lite"
                 android:scaleType="fitXY"
                 android:src="@drawable/grocery_list"
-
+                android:layout_marginStart="@dimen/_4sdp"
                 app:layout_constraintBottom_toBottomOf="@id/referBanner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/referBanner"
@@ -395,7 +413,6 @@
                 style="@style/textLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="Features Products"
                 android:textColor="@color/textGreyDark"
@@ -409,7 +426,6 @@
                 style="@style/textSmallSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:drawableEnd="@drawable/ic_keyboard_arrow"
                 android:drawableTint="@color/red"
                 android:gravity="center"
@@ -424,7 +440,6 @@
                 android:id="@+id/featuresProductRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_7sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

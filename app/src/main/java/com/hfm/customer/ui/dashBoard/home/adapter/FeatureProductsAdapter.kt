@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.databinding.ItemProductsSingleBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
+import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import javax.inject.Inject
 
 
@@ -20,13 +21,13 @@ class FeatureProductsAdapter @Inject constructor() :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: Product) {
             with(bind) {
-                if(data.image.isNotEmpty()){
-                    val imageOriginal = data.image[0].image
+                if(data.product_image?.isNotEmpty() == true){
+                    val imageOriginal = data.product_image[0].image
                     val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
                     productImage.load(imageReplaced)
                 }
                 productName.text = data.product_name
-                productPrice.text = "RM ${data.actual_price}"
+                productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
             }
         }
     }

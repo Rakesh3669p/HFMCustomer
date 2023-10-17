@@ -72,50 +72,19 @@
         app:layout_constraintTop_toTopOf="@+id/bankTransfer"
         app:roundPercent="0.2" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <include
         android:id="@+id/bankTransferLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:background="@drawable/edt_box_smaa_radius"
-        android:elevation="@dimen/_1sdp"
-        android:padding="@dimen/_10sdp"
         android:visibility="gone"
+        android:layout_marginTop="@dimen/_5sdp"
+        layout="@layout/layout_bank_transfer"
         app:layout_constraintEnd_toEndOf="@id/bankTransfer"
         app:layout_constraintStart_toStartOf="@id/bankTransfer"
-        app:layout_constraintTop_toBottomOf="@id/bankTransfer">
-
-        <TextView
-            android:id="@+id/bankTransferUploadReceiptLbl"
-            style="@style/textMediumSemiBold"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/upload_payment_receipt_lbl"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/bankTransfer"
+        />
 
 
-        <TextView
-            android:id="@+id/bankTransferUploadReceipt"
-            style="@style/textMediumSemiBold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:background="@drawable/dash_box_grey"
-            android:drawableStart="@drawable/add_photo_alternate"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_90sdp"
-            android:paddingVertical="@dimen/_10sdp"
-            android:text="Upload"
-            android:textColor="@color/textGreyDark"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bankTransferUploadReceiptLbl" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <TextView
@@ -145,50 +114,17 @@
         app:layout_constraintTop_toTopOf="@+id/duitNowLbl"
         app:roundPercent="0.2" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/duitNowLayout"
+    <include
+        android:visibility="gone"
+        android:id="@+id/duitLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:background="@drawable/edt_box_smaa_radius"
-        android:elevation="@dimen/_1sdp"
-        android:padding="@dimen/_10sdp"
-        android:visibility="gone"
+        android:layout_marginTop="@dimen/_5sdp"
+        layout="@layout/layout_duit"
         app:layout_constraintEnd_toEndOf="@id/duitNowLbl"
         app:layout_constraintStart_toStartOf="@id/duitNowLbl"
-        app:layout_constraintTop_toBottomOf="@id/duitNowLbl">
-
-        <TextView
-            android:id="@+id/duitNowUploadReceiptLbl"
-            style="@style/textMediumSemiBold"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/upload_payment_receipt_lbl"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <TextView
-            android:id="@+id/duitNowUploadReceipt"
-            style="@style/textMediumSemiBold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:background="@drawable/dash_box_grey"
-            android:drawableStart="@drawable/add_photo_alternate"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_90sdp"
-            android:paddingVertical="@dimen/_10sdp"
-            android:text="Upload"
-            android:textColor="@color/textGreyDark"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/duitNowUploadReceiptLbl" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@id/duitNowLbl"
+        />
 
     <TextView
         android:id="@+id/onlinePaymentLbl"
@@ -201,7 +137,7 @@
         android:elevation="@dimen/_1sdp"
         android:padding="@dimen/_10sdp"
         android:text="@string/online_payment_lbl"
-        app:layout_constraintTop_toBottomOf="@id/duitNowLayout" />
+        app:layout_constraintTop_toBottomOf="@id/duitLayout" />
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/onlinePaymentArrow"
@@ -218,14 +154,14 @@
         app:roundPercent="0.2" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-
+        android:visibility="gone"
         android:id="@+id/onlinePaymentLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_10sdp"
         android:background="@drawable/edt_box_smaa_radius"
         android:elevation="@dimen/_1sdp"
-        android:padding="@dimen/_10sdp"
+        android:padding="@dimen/_4sdp"
         app:layout_constraintEnd_toEndOf="@id/onlinePaymentLbl"
         app:layout_constraintStart_toStartOf="@id/onlinePaymentLbl"
         app:layout_constraintTop_toBottomOf="@id/onlinePaymentLbl">
@@ -235,19 +171,19 @@
             style="@style/textMediumSemiBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_10sdp"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <androidx.constraintlayout.utils.widget.ImageFilterView
-            android:layout_width="@dimen/_70sdp"
-            android:layout_height="@dimen/_25sdp"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_40sdp"
             android:scaleType="fitXY"
-            android:src="@drawable/grocery_list"
-            app:layout_constraintBottom_toBottomOf="@id/onlinePaymentRadioBtn"
+            android:src="@drawable/i_pay_img"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/onlinePaymentRadioBtn"
-            app:layout_constraintTop_toTopOf="@id/onlinePaymentRadioBtn" />
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -287,41 +223,32 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:background="@drawable/edt_box_smaa_radius"
         android:elevation="@dimen/_1sdp"
-        android:padding="@dimen/_10sdp"
+        android:padding="@dimen/_4sdp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/creditCardLbl"
         app:layout_constraintStart_toStartOf="@id/creditCardLbl"
         app:layout_constraintTop_toBottomOf="@id/creditCardLbl">
 
-        <TextView
+
+        <RadioButton
             android:id="@+id/creditCardUploadReceiptLbl"
             style="@style/textMediumSemiBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/upload_payment_receipt_lbl"
             android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-
-        <TextView
+        <androidx.constraintlayout.utils.widget.ImageFilterView
             android:id="@+id/creditCardUploadReceipt"
-            style="@style/textMediumSemiBold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:background="@drawable/dash_box_grey"
-            android:drawableStart="@drawable/add_photo_alternate"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_90sdp"
-            android:paddingVertical="@dimen/_10sdp"
-            android:text="Upload"
-            android:textColor="@color/textGreyDark"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/creditCardUploadReceiptLbl" />
-
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:scaleType="fitXY"
+            android:src="@drawable/i_pay_img"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/creditCardUploadReceiptLbl"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

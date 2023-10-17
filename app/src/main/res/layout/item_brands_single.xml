@@ -12,7 +12,7 @@
         android:src="@drawable/grocery_list"
         android:elevation="@dimen/_1sdp"
         app:roundPercent="0.1"
-        android:scaleType="fitXY"
+        android:scaleType="centerInside"
         android:layout_margin="@dimen/_4sdp"
         android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"

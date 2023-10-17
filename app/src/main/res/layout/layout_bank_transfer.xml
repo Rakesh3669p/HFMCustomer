@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginHorizontal="@dimen/_10sdp"
+    android:layout_marginVertical="@dimen/_5sdp"
+    android:background="@drawable/edt_box_smaa_radius"
+    android:elevation="@dimen/_1sdp"
+    android:padding="@dimen/_5sdp">
+
+    <RadioButton
+        android:id="@+id/radioBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/bankNameLbl"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:text="Bank Name"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@id/bankAccountNumberLbl"
+        app:layout_constraintTop_toTopOf="@id/radioBtn"
+        app:layout_constraintStart_toEndOf="@id/radioBtn"
+         />
+
+    <TextView
+        android:id="@+id/bankAccountNumberLbl"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:text="Bank Account Number:"
+        android:textColor="@color/black"
+        android:layout_marginEnd="@dimen/_15sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/radioBtn"
+        app:layout_constraintStart_toEndOf="@id/bankNameLbl"
+         />
+
+    <TextView
+        android:id="@+id/bankName"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:text="RHB Bank"
+        android:drawableEnd="@drawable/ic_copy"
+        android:paddingEnd="@dimen/_20sdp"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toStartOf="@id/bankAccountNumberLbl"
+        app:layout_constraintTop_toBottomOf="@id/bankNameLbl"
+        app:layout_constraintStart_toEndOf="@id/radioBtn"
+         />
+
+    <TextView
+        android:id="@+id/bankAccountNumber"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:text="2142-3100-0686-08"
+        android:drawableEnd="@drawable/ic_copy"
+        android:textColor="@color/red"
+        android:layout_marginEnd="@dimen/_15sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bankAccountNumberLbl"
+        app:layout_constraintStart_toEndOf="@id/bankNameLbl"
+         />
+
+    <TextView
+        android:id="@+id/bankAccountNameLbl"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:text="Bank Account Name"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@id/bankAccountNumberLbl"
+        app:layout_constraintTop_toBottomOf="@id/bankName"
+        app:layout_constraintStart_toEndOf="@id/radioBtn"
+         />
+
+    <TextView
+        android:id="@+id/swiftCodeLbl"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:text="Swift Code:"
+        android:textColor="@color/black"
+        android:layout_marginEnd="@dimen/_15sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bankAccountNumber"
+        app:layout_constraintStart_toEndOf="@id/bankNameLbl"
+         />
+
+    <TextView
+        android:id="@+id/bankAccountName"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:text="Echelon Sdn Bhd"
+        android:drawableEnd="@drawable/ic_copy"
+        android:paddingEnd="@dimen/_20sdp"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toStartOf="@id/swiftCode"
+        app:layout_constraintTop_toBottomOf="@id/bankAccountNameLbl"
+        app:layout_constraintStart_toEndOf="@id/radioBtn"
+         />
+
+    <TextView
+        android:id="@+id/swiftCode"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:text="RHBBMYKL"
+        android:drawableEnd="@drawable/ic_copy"
+        android:textColor="@color/red"
+        android:layout_marginEnd="@dimen/_15sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/swiftCodeLbl"
+        app:layout_constraintStart_toEndOf="@id/bankAccountName"
+         />
+
+    <TextView
+        android:id="@+id/instruction1"
+        style="@style/textSmallSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:singleLine="false"
+        android:text="1. Drop down the bank details and click Place Order."
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bankAccountName"
+         />
+
+    <TextView
+        android:id="@+id/instruction2"
+        style="@style/textSmallSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_4sdp"
+        android:singleLine="false"
+        android:text="2. Please transfer payment within 2 working days."
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instruction1" />
+
+    <TextView
+        android:id="@+id/instruction3"
+        style="@style/textSmallSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_4sdp"
+        android:singleLine="false"
+        android:text="3. Once payment is done, please snap a photograph of the payment receipt."
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instruction2" />
+
+    <TextView
+        android:id="@+id/instruction4"
+        style="@style/textSmallSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_4sdp"
+        android:singleLine="false"
+        android:text="4. Select My Orders from the account profile. Upload payment receipt and submit."
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instruction3" />
+
+    <TextView
+        android:id="@+id/instruction5"
+        style="@style/textSmallSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_4sdp"
+        android:singleLine="false"
+        android:text="5. If the payment is received, your order will be fulfilled accordingly."
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instruction4" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,13 +9,12 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/back"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:clickable="true"
         android:contentDescription="@string/back_lbl"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        android:paddingVertical="@dimen/_5sdp"
         android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,6 +43,22 @@
         android:src="@drawable/ic_cart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/topBarCartCount"
+        style="@style/textSmallSemiBold"
+        android:layout_width="@dimen/_12sdp"
+        android:layout_height="@dimen/_12sdp"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:background="@drawable/red_circle"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/cart"
+        app:layout_constraintEnd_toEndOf="@id/cart"
+        app:layout_constraintStart_toStartOf="@id/cart"
+        app:layout_constraintTop_toTopOf="@id/cart" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -75,13 +90,26 @@
 
                     <androidx.constraintlayout.utils.widget.ImageFilterView
                         android:id="@+id/productImage"
-                        android:layout_width="@dimen/_150sdp"
-                        android:layout_height="@dimen/_150sdp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:src="@drawable/red_chilli"
+
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.media3.ui.PlayerView
+                        android:visibility="gone"
+                        android:id="@+id/productVideo"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        app:controller_layout_id="@layout/product_video_playerview"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:resize_mode="fill" />
 
                     <androidx.constraintlayout.utils.widget.ImageFilterView
                         android:id="@+id/addToWishlist"
@@ -177,6 +205,17 @@
                 app:layout_constraintEnd_toEndOf="@+id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
                 app:layout_constraintTop_toTopOf="@id/productsDetailsCv" />
+            <TextView
+                android:id="@+id/brand"
+                style="@style/textSmallSemiBold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/_2sdp"
+                android:singleLine="false"
+                android:text="@string/product_detailsLbl"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="@id/productName"
+                app:layout_constraintTop_toBottomOf="@+id/productName" />
 
             <RatingBar
                 android:id="@+id/ratingBar"
@@ -187,8 +226,8 @@
                 android:elevation="@dimen/_2sdp"
                 android:progressTint="@color/red"
                 android:rating="4"
-                app:layout_constraintStart_toStartOf="@id/productName"
-                app:layout_constraintTop_toBottomOf="@id/productName" />
+                app:layout_constraintStart_toStartOf="@id/brand"
+                app:layout_constraintTop_toBottomOf="@id/brand" />
 
             <TextView
                 android:id="@+id/ratingCount"
@@ -231,7 +270,7 @@
 
             <TextView
                 android:id="@+id/productListingPrice"
-                style="@style/textLarge"
+                style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_3sdp"
@@ -240,6 +279,36 @@
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@id/productPrice"
                 app:layout_constraintTop_toBottomOf="@id/productPrice" />
+            
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/itemsInComboLbl"
+                style="@style/textSmallSemiBold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/_2sdp"
+                android:singleLine="false"
+                android:text="Items in Combo"
+                android:textColor="@color/textGreyDark"
+                app:layout_constraintStart_toStartOf="@id/productName"
+                app:layout_constraintTop_toBottomOf="@+id/productListingPrice" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:visibility="gone"
+                android:id="@+id/comboRv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:elevation="@dimen/_2sdp"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/_12sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="@id/productImageCv"
+                app:layout_constraintStart_toStartOf="@id/productImageCv"
+                app:layout_constraintTop_toBottomOf="@+id/itemsInComboLbl"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_product_variants" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/productsVariantsRv"
@@ -253,7 +322,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
-                app:layout_constraintTop_toBottomOf="@+id/productListingPrice"
+                app:layout_constraintTop_toBottomOf="@+id/comboRv"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_product_variants" />
 
@@ -290,14 +359,16 @@
                         android:id="@+id/pinCode"
                         style="@style/textMedium"
                         android:layout_width="@dimen/_120sdp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_30sdp"
+
                         android:layout_marginTop="@dimen/_8sdp"
                         android:background="@drawable/edt_box"
                         android:backgroundTint="@color/textGrey"
-                        android:gravity="start"
-                        android:hint="@string/pincodeLbl"
+                        android:gravity="center_vertical"
+                        android:hint="@string/postcodeLbl"
+                        android:inputType="number"
+                        android:maxLength="6"
                         android:paddingHorizontal="@dimen/_10sdp"
-                        android:paddingVertical="@dimen/_12sdp"
                         app:layout_constraintStart_toStartOf="@id/checkPinCodeLbl"
                         app:layout_constraintTop_toBottomOf="@+id/checkPinCodeLbl" />
 
@@ -318,7 +389,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/checkPinCode"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/_35sdp"
+                        android:layout_height="@dimen/_30sdp"
                         android:layout_marginStart="@dimen/_10sdp"
                         android:backgroundTint="@color/red"
                         android:text="@string/checkLbl"
@@ -495,6 +566,9 @@
                         android:layout_marginEnd="@dimen/_10sdp"
                         android:backgroundTint="@color/red"
                         android:paddingHorizontal="@dimen/_10sdp"
+                        android:paddingTop="0dp"
+                        android:paddingBottom="0dp"
+                        android:gravity="center"
                         android:text="@string/visit_store_lbl"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
@@ -514,6 +588,9 @@
                         android:text="@string/chatLbl"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
+                        android:paddingTop="0dp"
+                        android:paddingBottom="0dp"
+                        android:gravity="center"
                         android:textSize="@dimen/_12ssp"
                         app:cornerRadius="@dimen/_6sdp"
                         app:layout_constraintBottom_toBottomOf="@id/storeImage"
@@ -561,6 +638,7 @@
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_10sdp"
                 app:cardElevation="@dimen/_1sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 app:cardUseCompatPadding="true"
                 app:layout_constraintBottom_toBottomOf="@id/viewMore"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
@@ -583,6 +661,8 @@
                 android:id="@+id/descriptionDivider"
                 android:layout_width="@dimen/_45sdp"
                 android:layout_height="2dp"
+                android:layout_marginStart="@dimen/_1sdp"
+
                 android:layout_marginTop="@dimen/_2sdp"
                 android:background="@color/red"
                 android:elevation="@dimen/_2sdp"
@@ -593,59 +673,37 @@
             <WebView
                 android:id="@+id/descriptionWebView"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:elevation="@dimen/_2sdp"
                 app:layout_constraintEnd_toEndOf="@id/descriptionLbl"
                 app:layout_constraintStart_toStartOf="@id/descriptionLbl"
                 app:layout_constraintTop_toBottomOf="@+id/descriptionDivider" />
 
-            <TextView
-                android:id="@+id/description"
-                style="@style/textMedium"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:elevation="@dimen/_2sdp"
-                android:lineSpacingExtra="@dimen/_5sdp"
-                android:maxLines="5"
-                android:singleLine="false"
-                android:text="@string/largeText"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@id/descriptionLbl"
-                app:layout_constraintStart_toStartOf="@id/descriptionLbl"
-                app:layout_constraintTop_toBottomOf="@+id/descriptionDivider" />
-
-
-            <androidx.constraintlayout.utils.widget.ImageFilterView
-                android:id="@+id/descriptionImage"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/_140sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:elevation="@dimen/_2sdp"
-                android:scaleType="fitXY"
-                android:src="@drawable/red_chilli"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/viewMore"
-                app:layout_constraintEnd_toEndOf="@id/descriptionLbl"
-
-                app:layout_constraintStart_toStartOf="@id/descriptionLbl"
-                app:layout_constraintTop_toBottomOf="@id/description" />
 
             <TextView
                 android:id="@+id/viewMore"
                 style="@style/textMedium"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:drawableEnd="@drawable/ic_arrow_down"
+                android:layout_height="@dimen/_45sdp"
                 android:elevation="@dimen/_2sdp"
-                android:paddingBottom="@dimen/_15sdp"
                 android:text="@string/view_more_lbl"
+                android:gravity="center"
                 android:textColor="@color/red"
                 app:layout_constraintEnd_toEndOf="@id/descriptionCv"
                 app:layout_constraintStart_toStartOf="@id/descriptionCv"
                 app:layout_constraintTop_toBottomOf="@+id/descriptionWebView" />
 
+            <ImageView
+                android:id="@+id/viewMoreArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_down"
+                android:elevation="@dimen/_2sdp"
+                android:rotation="0"
+                app:layout_constraintStart_toEndOf="@id/viewMore"
+                app:layout_constraintTop_toTopOf="@id/viewMore"
+                app:layout_constraintBottom_toBottomOf="@id/viewMore"
+                />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/specificationsCv"
@@ -655,12 +713,15 @@
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_10sdp"
                 app:cardElevation="@dimen/_1sdp"
+
+
                 app:cardUseCompatPadding="true"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
                 app:layout_constraintTop_toBottomOf="@+id/descriptionCv">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingVertical="@dimen/_8sdp">
@@ -684,6 +745,7 @@
                         android:layout_marginTop="@dimen/_2sdp"
                         android:background="@color/red"
                         android:elevation="@dimen/_2sdp"
+                        android:layout_marginStart="@dimen/_1sdp"
                         app:layout_constraintStart_toStartOf="@+id/specificationsLbl"
                         app:layout_constraintTop_toBottomOf="@+id/specificationsLbl" />
 
@@ -733,6 +795,7 @@
                         android:layout_height="2dp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:background="@color/red"
+                        android:layout_marginStart="@dimen/_1sdp"
                         android:elevation="@dimen/_2sdp"
                         app:layout_constraintStart_toStartOf="@+id/reviewLbl"
                         app:layout_constraintTop_toBottomOf="@+id/reviewLbl" />
@@ -1012,7 +1075,7 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_20sdp"
                 android:background="@color/grey_lite"
                 app:layout_constraintBottom_toBottomOf="@id/fromTheSameShopLbl"
                 app:layout_constraintEnd_toEndOf="@id/checkPinCodeCv"
@@ -1023,7 +1086,8 @@
                 android:id="@+id/relatedRv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginStart="@dimen/_4sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"

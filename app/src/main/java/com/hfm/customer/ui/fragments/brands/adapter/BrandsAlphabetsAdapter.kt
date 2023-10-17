@@ -28,7 +28,7 @@ class BrandsAlphabetsAdapter @Inject constructor() :
             with(bind) {
                 title.text = data
 
-                if(selectedIndex == adapterPosition){
+                if(selectedIndex == absoluteAdapterPosition){
                     bg.isVisible = true
                     title.setTextColor(ContextCompat.getColor(context, R.color.white))
                 }else{
@@ -37,10 +37,15 @@ class BrandsAlphabetsAdapter @Inject constructor() :
                 }
 
                 root.setOnClickListener {
+                    onItemClick?.let {
+                        it(data)
+                    }
+                    val previousIndex = selectedIndex
                     bg.isVisible = true
                     title.setTextColor(ContextCompat.getColor(context, R.color.white))
-                    selectedIndex = adapterPosition
-                    notifyDataSetChanged()
+                    selectedIndex = absoluteAdapterPosition
+                    notifyItemChanged(previousIndex)
+                    notifyItemChanged(selectedIndex)
                 }
             }
         }
@@ -79,10 +84,10 @@ class BrandsAlphabetsAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onCategoryClick: ((id: Int) -> Unit)? = null
+    private var onItemClick: ((id: String) -> Unit)? = null
 
-    fun setOnCategoryClickListener(listener: (id: Int) -> Unit) {
-        onCategoryClick = listener
+    fun setOnItemClickListener(listener: (alphabet: String) -> Unit) {
+        onItemClick = listener
     }
 
 }

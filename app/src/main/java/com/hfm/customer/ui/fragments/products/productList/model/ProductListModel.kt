@@ -19,7 +19,7 @@ data class ProductListData(
 
 data class SubcategoryData(
     val category_breadcrumbs: Any,
-    val subcategory: List<Subcategory>
+    val subcategory: List<Subcategory>?=null
 )
 
 data class CategoryBreadcrumbs(

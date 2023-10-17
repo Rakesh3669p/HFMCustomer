@@ -3,13 +3,13 @@ package com.hfm.customer.ui.fragments.products.productDetails.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.databinding.ItemProductsSingleBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.OtherProduct
+import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import javax.inject.Inject
 
 
@@ -29,7 +29,7 @@ class RelativeProductListAdapter @Inject constructor() :
 
 
                 productName.text = data.product_name
-                productPrice.text = "RM ${data.actual_price}"
+                productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble()) }"
 
 //                saveLbl.isVisible = data.offer.isNotEmpty() && data.offer!="false"
 //                saveLbl.text = data.offer

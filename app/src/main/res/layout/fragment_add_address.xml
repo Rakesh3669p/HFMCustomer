@@ -47,26 +47,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.utils.widget.ImageFilterView
-                android:id="@+id/mapView"
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/mapCV"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_120sdp"
-                android:src="@color/grey_lite"
-                app:layout_constraintTop_toTopOf="parent"
-                app:roundPercent="0.2"
-                />
+                app:cardCornerRadius="@dimen/_10sdp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                     />
+
+            </androidx.cardview.widget.CardView>
+
 
             <TextView
                 android:id="@+id/nameLbl"
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center"
                 android:text="@string/nameLbl"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/mapView" />
+                app:layout_constraintTop_toBottomOf="@+id/mapCV" />
 
             <EditText
                 android:id="@+id/name"
@@ -96,18 +105,6 @@
                 app:layout_constraintTop_toBottomOf="@id/name" />
 
 
-
-            <Spinner
-                android:id="@+id/countryCodeSpinner"
-                style="@style/SpinnerTheme2"
-                android:layout_width="@dimen/_55sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:gravity="start"
-                app:layout_constraintStart_toStartOf="@id/mobileNumber"
-                app:layout_constraintBottom_toBottomOf="@+id/mobileNumber"
-                app:layout_constraintTop_toTopOf="@+id/mobileNumber" />
-
-
             <EditText
                 android:id="@+id/mobileNumber"
                 style="@style/textMedium"
@@ -117,12 +114,23 @@
                 android:background="@drawable/edt_line_box"
                 android:gravity="start"
                 android:hint="@string/mobile_number_lbl"
-                android:paddingEnd="@dimen/_10sdp"
-                android:paddingStart="@dimen/_60sdp"
                 android:paddingVertical="@dimen/_12sdp"
+                android:paddingStart="@dimen/_60sdp"
+                android:paddingEnd="@dimen/_10sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mobileNumberLbl" />
+
+            <Spinner
+                android:id="@+id/countryCodeSpinner"
+                android:layout_width="@dimen/_55sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:gravity="start"
+                android:theme="@style/SpinnerTheme2"
+                app:layout_constraintBottom_toBottomOf="@+id/mobileNumber"
+                app:layout_constraintStart_toStartOf="@id/mobileNumber"
+                app:layout_constraintTop_toTopOf="@+id/mobileNumber" />
+
 
             <TextView
                 android:id="@+id/houseNoLbl"
@@ -171,12 +179,98 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/edt_line_box"
                 android:gravity="start"
+                android:hint="@string/building_street_name_lbl"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_12sdp"
-                android:text="@string/building_street_name_lbl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/streetNameLbl" />
+
+
+            <TextView
+                android:id="@+id/countryLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center"
+                android:text="@string/countryLbl"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/streetName" />
+
+
+            <Spinner
+                android:id="@+id/countrySpinner"
+                style="@style/SpinnerTheme"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="start"
+                android:visibility="visible"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_15sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/countryLbl" />
+
+            <TextView
+                android:id="@+id/countryText"
+                style="@style/textMedium"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="start"
+                android:background="@drawable/edt_line_box"
+                android:visibility="gone"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_15sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/countryLbl" />
+
+
+
+            <TextView
+                android:id="@+id/stateLbl"
+                style="@style/textMediumSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center"
+                android:text="@string/stateLbl"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/countrySpinner" />
+
+
+            <Spinner
+                android:id="@+id/stateSpinner"
+                style="@style/SpinnerTheme"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="start"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_15sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/stateLbl" />
+
+            <TextView
+                android:id="@+id/stateText"
+                style="@style/textMedium"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="start"
+                android:background="@drawable/edt_line_box"
+                android:visibility="gone"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_15sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/stateLbl" />
 
             <TextView
                 android:id="@+id/cityLbl"
@@ -188,8 +282,7 @@
                 android:text="@string/cityLbl"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/streetName" />
-
+                app:layout_constraintTop_toBottomOf="@id/stateSpinner" />
 
             <Spinner
                 android:id="@+id/citySpinner"
@@ -198,6 +291,22 @@
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:gravity="start"
+
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_15sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cityLbl" />
+
+            <TextView
+                android:id="@+id/cityText"
+                style="@style/textMedium"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="start"
+                android:background="@drawable/edt_line_box"
+                android:visibility="gone"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_15sdp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -216,6 +325,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/citySpinner" />
 
+
             <EditText
                 android:id="@+id/postCode"
                 style="@style/textMedium"
@@ -225,66 +335,13 @@
                 android:background="@drawable/edt_line_box"
                 android:gravity="start"
                 android:hint="@string/postcodeLbl"
+                android:inputType="number"
+                android:maxLength="6"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_12sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/postCodeLbl" />
-
-
-            <TextView
-                android:id="@+id/stateLbl"
-                style="@style/textMediumSemiBold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:gravity="center"
-                android:text="@string/stateLbl"
-                android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/postCode" />
-
-
-            <Spinner
-                android:id="@+id/stateSpinner"
-                style="@style/SpinnerTheme"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_45sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-
-                android:gravity="start"
-                android:paddingHorizontal="@dimen/_10sdp"
-                android:paddingVertical="@dimen/_15sdp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/stateLbl" />
-
-
-            <TextView
-                android:id="@+id/countryLbl"
-                style="@style/textMediumSemiBold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:gravity="center"
-                android:text="@string/countryLbl"
-                android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/stateSpinner" />
-
-
-            <Spinner
-                android:id="@+id/countrySpinner"
-                style="@style/SpinnerTheme"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_45sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:gravity="start"
-                android:paddingHorizontal="@dimen/_10sdp"
-                android:paddingVertical="@dimen/_15sdp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/countryLbl" />
 
             <TextView
                 android:id="@+id/addressTypeLbl"
@@ -296,7 +353,7 @@
                 android:text="@string/address_type"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/countrySpinner" />
+                app:layout_constraintTop_toBottomOf="@id/postCode" />
 
             <RadioGroup
                 android:id="@+id/addressTypeRadioGroup"
@@ -331,11 +388,11 @@
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/set_as_default_lbl"
                 android:gravity="center"
+                android:text="@string/set_as_default_lbl"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addressTypeRadioGroup"/>
+                app:layout_constraintTop_toBottomOf="@+id/addressTypeRadioGroup" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/cancel"
@@ -351,7 +408,6 @@
                 app:layout_constraintTop_toTopOf="@id/save"
                 app:strokeColor="@color/red"
                 app:strokeWidth="1dp" />
-
 
 
             <com.google.android.material.button.MaterialButton

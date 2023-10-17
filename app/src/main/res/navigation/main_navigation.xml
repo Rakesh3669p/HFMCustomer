@@ -34,6 +34,14 @@
         android:name="com.hfm.customer.ui.fragments.products.productList.ProductListFragment"
         android:label="fragment_product_list"
         tools:layout="@layout/fragment_product_list" />
+
+    <fragment
+        android:id="@+id/exploreFragment"
+        android:name="com.hfm.customer.ui.fragments.products.productList.ProductListFragment"
+        android:label="fragment_product_list"
+        tools:layout="@layout/fragment_product_list"
+        />
+
     <fragment
         android:id="@+id/productDetailsFragment"
         android:name="com.hfm.customer.ui.fragments.products.productDetails.ProductDetailsFragment"
@@ -73,9 +81,16 @@
         tools:layout="@layout/fragment_checkout" />
     <fragment
         android:id="@+id/chatUsersFragment"
-        android:name="com.hfm.customer.ui.fragments.chat.ChatListFragment"
+        android:name="com.hfm.customer.ui.dashBoard.chat.ChatListFragment"
         android:label="ChatFragment"
         tools:layout="@layout/fragment_chat_list" />
+
+    <fragment
+        android:id="@+id/chatUsersFragment2"
+        android:name="com.hfm.customer.ui.dashBoard.chat.ChatListFragment"
+        android:label="ChatFragment"
+        tools:layout="@layout/fragment_chat_list" />
+
     <fragment
         android:id="@+id/manageAddressFragment"
         android:name="com.hfm.customer.ui.fragments.address.ManageAddressFragment"
@@ -83,7 +98,7 @@
         tools:layout="@layout/fragment_manage_address" />
     <fragment
         android:id="@+id/walletFragment"
-        android:name="com.hfm.customer.ui.fragments.vouchers.VouchersFragment"
+        android:name="com.hfm.customer.ui.fragments.wallet.WalletFragment"
         android:label="WalletFragment"
         tools:layout="@layout/fragment_wallet" />
 
@@ -99,19 +114,31 @@
         tools:layout="@layout/fragment_support" />
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.hfm.customer.ui.fragments.support.NotificationFragment"
+        android:name="com.hfm.customer.ui.fragments.notifications.NotificationFragment"
         android:label="NotificationFragment"
         tools:layout="@layout/fragment_notifications" />
     <fragment
         android:id="@+id/profileSettingsFragment"
         android:name="com.hfm.customer.ui.dashBoard.profile.ProfileSettings"
         android:label="ProfileSettings"
-        tools:layout="@layout/fragment_profile_settings" />
+        tools:layout="@layout/fragment_profile_settings" >
+        <action
+            android:id="@+id/action_profileSettingsToProfile"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/paymentMethodFragment"
         android:name="com.hfm.customer.ui.fragments.payment.PaymentMethodFragment"
         android:label="PaymentMethodFragment"
-        tools:layout="@layout/fragment_payment_method" />
+        tools:layout="@layout/fragment_payment_method" >
+        <action
+            android:id="@+id/action_paymentMethodFragment_to_myOrdersFragment"
+            app:destination="@id/myOrdersFragment"
+            app:popUpTo="@id/cartFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/myOrdersFragment"
@@ -130,7 +157,7 @@
         tools:layout="@layout/fragment_brands" />
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.hfm.customer.ui.fragments.chat.ChatFragment"
+        android:name="com.hfm.customer.ui.dashBoard.chat.ChatFragment"
         android:label="ChatFragment"
         tools:layout="@layout/fragment_chat"/>
     <fragment
@@ -147,6 +174,97 @@
         android:id="@+id/addNewAddressFragment"
         android:name="com.hfm.customer.ui.fragments.address.AddNewAddressFragment"
         android:label="AddNewAddressFragment"
-        tools:layout="@layout/fragment_add_address"/>
+        tools:layout="@layout/fragment_add_address">
+
+        <action
+            android:id="@+id/action_addressFormToAddressList"
+            app:destination="@id/manageAddressFragment"
+            app:popUpTo="@id/manageAddressFragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.hfm.customer.ui.fragments.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/createPasswordFragment"
+        android:name="com.hfm.customer.ui.loginSignUp.password.CreatePasswordFragment"
+        android:label="fragment_create_password"
+        tools:layout="@layout/fragment_create_password" />
+
+
+    <fragment
+        android:id="@+id/profileSettingsBusiness"
+        android:name="com.hfm.customer.ui.dashBoard.profile.ProfileSettingsBusiness"
+        android:label="ProfileSettingsBusiness"
+        tools:layout="@layout/fragment_profile_settings_business">
+        <action
+            android:id="@+id/action_profileSettingsBusinessToProfile"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createSupportTicketFragment"
+        android:name="com.hfm.customer.ui.fragments.support.CreateSupportTicket"
+        android:label="CreateSupportTicket"
+        tools:layout="@layout/fragment_create_ticket">
+
+        <action
+            android:id="@+id/action_createSupportTicketFragment_to_supportFragment"
+            app:destination="@id/supportFragment"
+            app:popUpTo="@id/supportFragment"
+            app:popUpToInclusive="true"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/myAllOrdersFragment"
+        android:name="com.hfm.customer.ui.fragments.myOrders.MyAllOrdersFragment"
+        android:label="MyAllOrdersFragment"
+        tools:layout="@layout/fragment_my_all_orders">
+
+        <action
+            android:id="@+id/action_myAllOrders_to_supportFragment"
+            app:destination="@id/createSupportTicketFragment"
+            app:popUpTo="@id/createSupportTicketFragment"
+            app:popUpToInclusive="true"/>
+
+        <action
+            android:id="@+id/action_myAllOrders_to_chat"
+            app:destination="@id/chatFragment"
+            app:popUpTo="@id/myAllOrdersFragment"
+            app:popUpToInclusive="true"/>
+
+    </fragment>
+    <fragment
+        android:id="@+id/commonPageFragment"
+        android:name="com.hfm.customer.ui.fragments.commonPage.CommonPageFragment"
+        android:label="CommonPageFragment"
+        tools:layout="@layout/fragment_common_page"/>
+
+    <fragment
+        android:id="@+id/blogsFragment"
+        android:name="com.hfm.customer.ui.fragments.blogs.BlogsFragment"
+        android:label="BlogsFragment"
+        tools:layout="@layout/fragment_blogs"/>
+    <fragment
+        android:id="@+id/blogsDetailsFragment"
+        android:name="com.hfm.customer.ui.fragments.blogs.BlogsDetailsFragment"
+        android:label="BlogsDetailsFragment"
+        tools:layout="@layout/fragment_blogs_details"/>
+    <fragment
+        android:id="@+id/referralFragment"
+        android:name="com.hfm.customer.ui.fragments.referral.ReferralFragment"
+        android:label="ReferralFragment"
+        tools:layout="@layout/fragment_referal"/>
+    <fragment
+        android:id="@+id/paymentFAQFragment"
+        android:name="com.hfm.customer.ui.fragments.payment.PaymentFAQFragment"
+        android:label="PaymentFAQFragment"
+        tools:layout="@layout/fragment_payment_faq"/>
 
 </navigation>

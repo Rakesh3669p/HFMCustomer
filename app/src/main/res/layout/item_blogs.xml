@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_5sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/blogImage"
+        android:layout_width="@dimen/_70sdp"
+        android:layout_height="@dimen/_50sdp"
+        android:src="@drawable/grocery_list"
+        android:scaleType="fitXY"
+        app:roundPercent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/blogAuthor"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Blog name"
+
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/blogImage"
+        app:layout_constraintTop_toTopOf="@+id/blogImage"
+        app:layout_constraintBottom_toTopOf="@id/blogTitle"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        />
+
+        <TextView
+            android:id="@+id/blogTitle"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+        android:text="Blog name"
+        app:layout_constraintStart_toEndOf="@+id/blogImage"
+        app:layout_constraintTop_toBottomOf="@id/blogAuthor"
+            app:layout_constraintBottom_toBottomOf="@id/blogImage"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

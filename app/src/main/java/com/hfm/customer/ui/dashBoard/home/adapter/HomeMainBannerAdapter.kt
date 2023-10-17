@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.commonModel.MainBanner
 import com.hfm.customer.databinding.ItemBannerBinding
+import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
 
@@ -21,7 +22,8 @@ class HomeMainBannerAdapter @Inject constructor() :
         fun bind(data: MainBanner) {
             with(bind) {
                 bannerImage.roundPercent = 0.2F
-                bannerImage.load(data.media)
+                bannerImage.load(replaceBaseUrl(data.media))
+
             }
         }
     }

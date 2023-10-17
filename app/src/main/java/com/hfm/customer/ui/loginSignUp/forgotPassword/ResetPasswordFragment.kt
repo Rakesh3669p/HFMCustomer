@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.hfm.customer.R
-import com.hfm.customer.databinding.FragmentLoginBinding
 import com.hfm.customer.databinding.FragmentResetPasswordBinding
 import com.hfm.customer.ui.loginSignUp.LoginSignUpViewModel
 

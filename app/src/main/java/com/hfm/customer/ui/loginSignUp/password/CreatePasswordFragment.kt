@@ -6,25 +6,30 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentCreatePasswordBinding
-import com.hfm.customer.databinding.FragmentOtpBinding
 import com.hfm.customer.ui.dashBoard.DashBoardActivity
 import com.hfm.customer.ui.loginSignUp.LoginSignUpViewModel
 import com.hfm.customer.utils.Loader
+import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CreatePasswordFragment : Fragment(),View.OnClickListener {
+class CreatePasswordFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentCreatePasswordBinding
     private var currentView: View? = null
     private val loginSignUpViewModel: LoginSignUpViewModel by activityViewModels()
 
-    private lateinit var appLoader:Loader
+    private lateinit var appLoader: Loader
+    private lateinit var noInternetDialog: NoInternetDialog
+
+    private var from = ""
 
     private var firstName = ""
     private var customerType = ""
@@ -59,36 +64,43 @@ class CreatePasswordFragment : Fragment(),View.OnClickListener {
 
     private fun init() {
         appLoader = Loader(requireContext())
+        noInternetDialog = NoInternetDialog(requireContext())
+
         customerType = arguments?.getString("customerType").toString()
         firstName = arguments?.getString("name").toString()
         email = arguments?.getString("email").toString()
+        from = arguments?.getString("from").toString()
+
+        if (from == "profile") {
+            with(binding) {
+                titleLbl.text = requireActivity().getString(R.string.change_password_lbl)
+                register.text = requireActivity().getString(R.string.updateLbl)
+                alreadyHaveAccount.isVisible = false
+            }
+        }
     }
 
     private fun setObserver() {
-        loginSignUpViewModel.registerUser.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        loginSignUpViewModel.registerUser.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
                     showToast("Registered Successfully")
-                    if(response.data?.httpcode==200){
-                        startActivity(Intent(requireActivity(),DashBoardActivity::class.java))
-                        requireActivity().finish()
+                    if (response.data?.httpcode == 200) {
+                        findNavController().navigate(R.id.action_createPasswordFragment_to_loginFragment)
+                        /*startActivity(Intent(requireActivity(), DashBoardActivity::class.java))
+                        requireActivity().finish()*/
                     }
                 }
-                is Resource.Loading-> appLoader.show()
-                is Resource.Error->{
-                    showToast(response.message.toString())
-                    if(response.message.toString() == netWorkFailure){
-
-                    }
-                }
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
 
         }
     }
 
     private fun setOnClickListener() {
-        with(binding){
+        with(binding) {
             register.setOnClickListener(this@CreatePasswordFragment)
         }
     }
@@ -101,32 +113,45 @@ class CreatePasswordFragment : Fragment(),View.OnClickListener {
         } else if (password != confirmPassword) {
             showToast("Passwords do not match.")
         } else {
-            loginSignUpViewModel.registerUser(
-                firstName,
-                customerType,
-                email,
-                password,
-                confirmPassword,
-                refCode,
-                businessCategory,
-                registrationNo,
-                countryCode,
-                contactNo,
-                address,
-                country,
-                state,
-                city,
-                pinCode
-            )
+            if (from == "profile") {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    "password",
+                    password
+                )
+                findNavController().popBackStack()
+            } else {
+                loginSignUpViewModel.registerUser(
+                    firstName,
+                    customerType,
+                    email,
+                    password,
+                    confirmPassword,
+                    refCode,
+                    businessCategory,
+                    registrationNo,
+                    countryCode,
+                    contactNo,
+                    address,
+                    country,
+                    state,
+                    city,
+                    pinCode
+                )
+            }
+
         }
     }
 
+    private fun apiError(message: String?) {
+        appLoader.dismiss()
+        showToast(message.toString())
+        if (message == netWorkFailure) {
+            noInternetDialog.show()
+        }
+    }
     override fun onClick(v: View?) {
         when (v?.id) {
-            binding.register.id->{
-                validateAndRegister()
-            }
+            binding.register.id -> validateAndRegister()
         }
-
     }
 }

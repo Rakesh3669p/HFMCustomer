@@ -16,6 +16,7 @@ data class FlashSaleData(
 
 data class FlashSale(
     val end_time: String,
+    val total_products: Int ,
     val products: List<Product>,
     val shock_sale_id: Int,
     val shock_sale_title: String,

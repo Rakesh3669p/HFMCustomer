@@ -15,6 +15,7 @@ import com.hfm.customer.databinding.FragmentOtpBinding
 import com.hfm.customer.ui.dashBoard.DashBoardActivity
 import com.hfm.customer.ui.loginSignUp.LoginSignUpViewModel
 import com.hfm.customer.utils.Loader
+import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.business
 import com.hfm.customer.utils.netWorkFailure
@@ -24,12 +25,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class OTPFragment : Fragment(), View.OnClickListener {
 
-
     private var phoneCode: String = ""
     private lateinit var binding: FragmentOtpBinding
     private var currentView: View? = null
     private val loginSignUpViewModel: LoginSignUpViewModel by activityViewModels()
     private lateinit var appLoader: Loader
+    private lateinit var noInternetDialog: NoInternetDialog
 
     private var firstName = ""
     private var customerType = ""
@@ -60,6 +61,8 @@ class OTPFragment : Fragment(), View.OnClickListener {
 
     private fun init() {
         appLoader = Loader(requireContext())
+        noInternetDialog = NoInternetDialog(requireContext())
+        customerType = arguments?.getString("type").toString()
         customerType = arguments?.getString("type").toString()
         from = arguments?.getString("from").toString()
         firstName = arguments?.getString("name").toString()
@@ -90,26 +93,23 @@ class OTPFragment : Fragment(), View.OnClickListener {
     private fun setObserver() {
         loginSignUpViewModel.registerVerifyOtp.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is Resource.Success -> if (response.data?.httpcode == 200) {
+
+                is Resource.Success -> {
                     appLoader.dismiss()
-                    val bundle = Bundle().apply {
-                        putString("name", firstName)
-                        putString("email", email)
-                        putString("customerType", customerType)
-                    }
+                    if (response.data?.httpcode == 200) {
+                        val bundle = Bundle().apply {
+                            putString("name", firstName)
+                            putString("email", email)
+                            putString("customerType", customerType)
+                        }
 
-                    findNavController().navigate(R.id.createPasswordFragment, bundle)
+                        findNavController().navigate(R.id.createPasswordFragment, bundle)
 
-                } else showToast(response.data?.message.toString())
+                    } else showToast(response.data?.message.toString())
+                }
 
                 is Resource.Loading -> appLoader.show()
-                is Resource.Error -> {
-                    appLoader.dismiss()
-                    showToast(response.message.toString())
-                    if (response.message == netWorkFailure) {
-
-                    }
-                }
+                is Resource.Error -> apiError(response.message)
             }
 
         }
@@ -126,20 +126,21 @@ class OTPFragment : Fragment(), View.OnClickListener {
                         }
                     }
                 }
-
                 is Resource.Loading -> Unit
-                is Resource.Error -> {
-                    appLoader.dismiss()
-                    showToast(response.message.toString())
-                    if (response.message == netWorkFailure) {
-
-                    }
-                }
+                is Resource.Error -> apiError(response.message)
             }
 
         }
     }
 
+
+    private fun apiError(message: String?) {
+        appLoader.dismiss()
+        showToast(message.toString())
+        if (message == netWorkFailure) {
+            noInternetDialog.show()
+        }
+    }
 
     private fun setOnClickListener() {
         with(binding) {
@@ -178,10 +179,7 @@ class OTPFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            binding.verify.id -> {
-                validateAndVerifyOTP()
-
-            }
+            binding.verify.id -> validateAndVerifyOTP()
         }
     }
 }

@@ -14,7 +14,6 @@
         android:layout_width="@dimen/_60sdp"
         android:layout_height="@dimen/_60sdp"
         android:src="@drawable/red_chilli"
-        android:padding="@dimen/_10sdp"
         android:background="@color/white"
         app:roundPercent="0.1"
         android:elevation="@dimen/_1sdp"
@@ -31,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_9sdp"
         android:text="Request #:5642"
+
         android:textColor="@color/textGreyDark"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintBottom_toTopOf="@id/orderId"
@@ -45,8 +45,9 @@
         android:singleLine="false"
         android:text="Order #:995566"
         android:textColor="@color/black"
+        android:layout_marginStart="@dimen/_9sdp"
         app:layout_constraintBottom_toTopOf="@id/requestStatus"
-        app:layout_constraintStart_toStartOf="@id/requestId"
+        app:layout_constraintStart_toEndOf="@+id/productImage"
         app:layout_constraintTop_toBottomOf="@id/requestId" />
 
     <TextView
