@@ -97,7 +97,7 @@
         android:background="@drawable/edt_box_smaa_radius"
         android:elevation="@dimen/_1sdp"
         android:padding="@dimen/_10sdp"
-        android:text="@string/duit_now_lbl"
+        android:text="@string/e_wallet_duit_nowLbl"
         app:layout_constraintTop_toBottomOf="@id/bankTransferLayout" />
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
@@ -136,7 +136,7 @@
         android:background="@drawable/edt_box_smaa_radius"
         android:elevation="@dimen/_1sdp"
         android:padding="@dimen/_10sdp"
-        android:text="@string/online_payment_lbl"
+        android:text="@string/fpx_paypal_lbl"
         app:layout_constraintTop_toBottomOf="@id/duitLayout" />
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
@@ -199,7 +199,7 @@
         android:background="@drawable/edt_box_smaa_radius"
         android:elevation="@dimen/_1sdp"
         android:padding="@dimen/_10sdp"
-        android:text="@string/credit_card_lbl"
+        android:text="@string/debit_credit_card_lbl"
         app:layout_constraintTop_toBottomOf="@id/onlinePaymentLayout" />
 
     <androidx.constraintlayout.utils.widget.ImageFilterView

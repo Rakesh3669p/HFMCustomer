@@ -38,11 +38,18 @@ class CheckOutProductAdapter @Inject constructor() :
                     productImage.load(replaceBaseUrl(data.product_image[0].image))
                 }
                 productName.text = data.product_name
-                productPrice.text = "RM ${
-                    formatToTwoDecimalPlaces(
-                        data.total_discount_price.toString().toDouble()
-                    )
-                }"
+
+                if (data.total_discount_price.toString().toDouble() > 0) {
+                    productPrice.text = "RM ${
+                        formatToTwoDecimalPlaces(
+                            data.total_discount_price.toString().toDouble()
+                        )
+                    }"
+                } else {
+                    productPrice.text =
+                        "RM ${formatToTwoDecimalPlaces(data.total_actual_price.toString().toDouble())}"
+                }
+
 
                 if (data.attr_name1.isNullOrEmpty()) {
                     variants.text = "Qty: ${data.quantity.toString().toDouble().roundToInt()}"

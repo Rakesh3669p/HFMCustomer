@@ -21,6 +21,7 @@ import coil.util.DebugLogger
 import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.hfm.customer.BuildConfig
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentCategoriesBinding
 import com.hfm.customer.databinding.FragmentProfileBinding
@@ -76,10 +77,11 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
 
     private fun init() {
-
+        binding.loader.isVisible = true
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         binding.logout.isVisible  = sessionManager.isLogin
+        binding.version.text = "Version ${BuildConfig.VERSION_NAME}"
         mainViewModel.getProfile()
     }
 
@@ -87,6 +89,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         mainViewModel.profile.observe(viewLifecycleOwner){response->
             when(response){
                 is Resource.Success->{
+                    binding.loader.isVisible = false
                     appLoader.dismiss()
                     if(response.data?.httpcode=="200"){
                         setProfile(response.data.data)
@@ -192,6 +195,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 }
                 sessionManager.isLogin = false
                 startActivity(Intent(requireContext(), LoginActivity::class.java))
+                requireActivity().finish()
             }
 
             binding.basicDetailsBg.id -> {

@@ -1,7 +1,9 @@
 package com.hfm.customer.ui.fragments.cart.model
 
+import com.google.gson.annotations.SerializedName
+
 data class CouponAppliedModel(
-    val `data`: CouponData,
+    val data: CouponData,
     val httpcode: Int,
     val message: String,
     val status: String
@@ -11,20 +13,34 @@ data class CouponData(
 )
 
 data class Coupon(
-    val coupon_code: String,
-    val coupon_id: Int,
-    val desc: String,
-    val minimum_purchase: Any,
-    val offer: String,
-    val offer_type: String,
-    val offer_value: Int,
-    val offer_value_cal: Double,
-    val offer_value_in: String,
-    val previous_order_amount: String,
-    val previous_order_count: Int,
-    val purchase_type: String,
-    val shipping_voucher_type: String,
-    val title: String,
-    val valid_upto: String,
-    val voucher_type: String
+    @SerializedName("coupon_code") val couponCode: String,
+    @SerializedName("coupon_id") val couponId: Int,
+    @SerializedName("desc") val desc: String,
+    @SerializedName("minimum_purchase") val minimumPurchase: Any,
+    @SerializedName("offer") val offer: String,
+    @SerializedName("offer_type") val offerType: String,
+    @SerializedName("offer_value") val offerValue: Int,
+    @SerializedName("offer_value_cal") val offerValueCal: Double,
+    @SerializedName("offer_value_in") val offerValueIn: String,
+    @SerializedName("previous_order_amount") val previousOrderAmount: String,
+    @SerializedName("previous_order_count") val previousOrderCount: String,
+    @SerializedName("purchase_type") val purchaseType: String,
+    @SerializedName("shipping_voucher_type") val shippingVoucherType: String,
+    @SerializedName("title") val title: String,
+    @SerializedName("valid_upto") val validUpto: String,
+    @SerializedName("voucher_type") val voucherType: String
+)
+
+data class CouponApplied(
+    @SerializedName ("coupon_id") val coupon_id:Int,
+    @SerializedName("title") val title:String,
+    @SerializedName("coupon_type") val coupon_type:String,
+    @SerializedName("ofr_type") val ofr_type:String,
+    @SerializedName("ofr_amount") val ofr_amount:Int,
+    @SerializedName("discount_type") val discount_type:String,
+    @SerializedName("voucher_type") val voucher_type:String,
+    @SerializedName("is_free_shipping") val is_free_shipping:Int,
+    @SerializedName("seller_subtotal") val seller_subtotal:Double,
+    @SerializedName("seller_coupon_discount_amt") val seller_coupon_discount_amt:Double,
+    @SerializedName("seller_total_cost") val seller_total_cost:Double,
 )

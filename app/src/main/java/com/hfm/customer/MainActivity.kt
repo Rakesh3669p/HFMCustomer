@@ -7,6 +7,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.hfm.customer.databinding.ActivityMainBinding
 import com.hfm.customer.ui.dashBoard.DashBoardActivity
 import com.hfm.customer.utils.SessionManager
+import com.hfm.customer.utils.getDeviceIdInternal
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -22,6 +23,6 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        sessionManager.deviceId = getDeviceIdInternal(this)
     }
 }

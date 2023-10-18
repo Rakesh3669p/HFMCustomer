@@ -111,7 +111,7 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
         noInternetDialog.setOnDismissListener { init() }
         mainViewModel.getSellerVouchers(storeData.shop_detail[0].seller_id.toString())
         dataSourceFactory = DefaultDataSource.Factory(requireContext())
-
+        binding.storeVideoLayout.isVisible = !storeData.shop_detail[0].video.isNullOrEmpty()
         binding.storeVideo.clipToOutline = true
         binding.storeVideo.player = videoPlayer
         exoPlay = binding.storeVideo.findViewById(androidx.media3.ui.R.id.exo_play)

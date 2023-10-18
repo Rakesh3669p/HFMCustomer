@@ -40,7 +40,15 @@ class ChatAdapter @Inject constructor() : RecyclerView.Adapter<ChatAdapter.ViewH
                     showLeftChat(bind,true)
                     showRightChat(bind,false)
 
-                    agentImage.load(replaceBaseUrl(data.image) )
+                    if(data.image.isNotEmpty()){
+                        leftChatImage.isVisible = true
+                        leftChat.isVisible = false
+                        leftChatImage.load(replaceBaseUrl(data.image))
+                    }else{
+                        leftChatImage.isVisible = false
+                        leftChat.text = data.message
+                    }
+
                     leftTimeAgo.text = data.chat_time
                     leftChat.text = data.message
                 }
@@ -50,6 +58,7 @@ class ChatAdapter @Inject constructor() : RecyclerView.Adapter<ChatAdapter.ViewH
     }
 
     private fun showLeftChat(bind: ItemChatBinding, status: Boolean) {
+        bind.leftChatImage.isVisible = status
         bind.leftChat.isVisible = status
         bind.leftTimeAgo.isVisible = status
         bind.agentImage.isVisible = status

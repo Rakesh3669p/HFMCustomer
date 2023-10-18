@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentBulkOrdersBinding
 import com.hfm.customer.ui.fragments.myOrders.adapter.BulkOrdersAdapter
+import com.hfm.customer.ui.fragments.myOrders.model.BulkrequestOrderDetail
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
@@ -20,9 +21,9 @@ import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class BulkOrdersFragment : Fragment(){
+    private  var bulkOrders: List<BulkrequestOrderDetail> = ArrayList()
     private lateinit var binding: FragmentBulkOrdersBinding
     private var currentView: View? = null
     private val mainViewModel:MainViewModel by viewModels()
@@ -62,6 +63,7 @@ class BulkOrdersFragment : Fragment(){
                     }
                     if(response.data?.httpcode == 200){
                         initRecyclerView(requireContext(),binding.bulkOrdersRv,bulkOrderAdapter)
+                        bulkOrders = response.data.data.bulkrequest_order_details
                         bulkOrderAdapter.differ.submitList(response.data.data.bulkrequest_order_details)
                     }else{
                         showToast(response.data?.message.toString())
@@ -82,11 +84,14 @@ class BulkOrdersFragment : Fragment(){
         }
     }
     private fun setOnClickListener() {
-        bulkOrderAdapter.setOnOrderClickListener {
+        bulkOrderAdapter.setOnOrderClickListener {position->
             val bundle = Bundle()
-            bundle.putString("orderId",it.order_id)
-            bundle.putString("saleId", it.sale_id.toString())
-            findNavController().navigate(R.id.orderDetailsFragment, bundle)
+            if(bulkOrders.isNotEmpty()) {
+                bundle.putString("from", "bulkOrder")
+                bundle.putString("orderId", bulkOrders[position].bulkrequest_order_id)
+                bundle.putString("saleId", bulkOrders[position].sale_id ?: "")
+            }
+            findNavController().navigate(R.id.bulkOrderDetailsFragment, bundle)
         }
     }
 }

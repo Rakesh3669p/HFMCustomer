@@ -12,7 +12,6 @@
         android:background="@color/white"
         android:elevation="@dimen/_1sdp"
         android:src="@drawable/red_chilli"
-        android:padding="@dimen/_4sdp"
         android:layout_margin="@dimen/_5sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

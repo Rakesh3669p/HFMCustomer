@@ -169,7 +169,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_9sdp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginBottom="@dimen/_5sdp"
                     android:text="+ 063 - 2166 6515"
                     android:singleLine="false"
@@ -346,7 +346,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="@string/user_points_balance_lbl"
+                        android:text="@string/use_points_balance_lbl"
                         android:textColor="@color/red"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

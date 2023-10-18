@@ -9,6 +9,7 @@ data class ChatListModel(
 
 
 data class ChatData(
+    val order_count: Int,
     val list: List<ChatList>
 )
 

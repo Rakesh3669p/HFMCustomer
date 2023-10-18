@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HFM Customer</string>
+    <string name="app_name">Halal Food Master</string>
     <string name="google_map_api_key">AIzaSyCREqHFu9GW1WE2fJgjagHZPenTl5KUxJ0</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -42,6 +42,7 @@
     <string name="manage_address_lbl">Manage Address</string>
     <string name="my_wishlist_lbl">My WishList</string>
     <string name="walletLbl">Wallet</string>
+    <string name="walletCashLbl">Wallet Cash</string>
     <string name="vouchersLbl">Vouchers</string>
     <string name="chatLbl">Chat</string>
     <string name="hfmSupportLbl">HFM Support</string>
@@ -67,6 +68,7 @@
     <string name="visit_store_lbl">Visit Store</string>
     <string name="descriptionsLbl">Descriptions</string>
     <string name="largeText">In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. It is also used to temporarily replace text in a process called greeking, which allows designers to consider the form of a webpage or publication, without the meaning of the text influencing the design.</string>
+    <string name="largeTextDouble">In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. It is also used to temporarily replace text in a process called greeking, which allows designers to consider the form of a webpage or publication, without the meaning of the text influencing the design.In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. It is also used to temporarily replace text in a process called greeking, which allows designers to consider the form of a webpage or publication, without the meaning of the text influencing the design.In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. It is also used to temporarily replace text in a process called greeking, which allows designers to consider the form of a webpage or publication, without the meaning of the text influencing the design.In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. It is also used to temporarily replace text in a process called greeking, which allows designers to consider the form of a webpage or publication, without the meaning of the text influencing the design.In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. It is also used to temporarily replace text in a process called greeking, which allows designers to consider the form of a webpage or publication, without the meaning of the text influencing the design.In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available. It is also used to temporarily replace text in a process called greeking, which allows designers to consider the form of a webpage or publication, without the meaning of the text influencing the design.</string>
     <string name="view_more_lbl">View More</string>
     <string name="view_less_lbl">View Less</string>
     <string name="specificationsLbl">Specifications</string>
@@ -99,7 +101,7 @@
     <string name="shop_voucher_lb">Shop Voucher</string>
     <string name="platform_voucher_lbl">Platform Voucher</string>
     <string name="addLbl">Add</string>
-    <string name="user_points_balance_lbl">User Points Balance</string>
+    <string name="use_points_balance_lbl">Use Points Balance</string>
     <string name="delivery_charge_lbl">Delivery Charge</string>
     <string name="voucherLbl">Voucher</string>
 
@@ -191,4 +193,13 @@
     <string name="start_a_new_chat_lbl">Start A New Chat</string>
     <string name="how_to_make_payment_lbl">How to make payment?</string>
     <string name="how_to_make_payment_title">How to make Payment</string>
+    <string name="e_wallet_duit_nowLbl">E-Wallet / Duit Now</string>
+    <string name="fpx_paypal_lbl">FPX / PayPal</string>
+    <string name="debit_credit_card_lbl">Debit / Credit Card</string>
+    <string name="date_neededLbl">Date Needed</string>
+    <string name="summaryLbl">Summary</string>
+    <string name="subtotalLbl">Subtotal</string>
+    <string name="delivery_chargesLbl">Delivery Charges</string>
+    <string name="request_statusLbl">Request Status</string>
+    <string name="grand_totalLbl">Grand Total</string>
 </resources>

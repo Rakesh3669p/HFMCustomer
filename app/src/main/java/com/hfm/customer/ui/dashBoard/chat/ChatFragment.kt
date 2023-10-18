@@ -1,22 +1,15 @@
 package com.hfm.customer.ui.dashBoard.chat
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.READ_MEDIA_IMAGES
-import android.Manifest.permission.READ_MEDIA_VIDEO
-import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
 import android.app.Activity
 import android.app.Dialog
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -35,11 +28,10 @@ import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.containsSensitiveWords
 import com.hfm.customer.utils.createFileFromContentUri
-import com.hfm.customer.utils.getDeviceId
+import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
-import com.hfm.customer.utils.showToastLong
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -218,7 +210,8 @@ class ChatFragment : Fragment(), View.OnClickListener {
 
             orderId.text = "# ${messages.order_id}"
             orderDate.text = messages.order_date.toString()
-            amount.text = "RM $amount"
+            amount.text = "RM ${messages.grand_total?.toDouble()
+                ?.let { formatToTwoDecimalPlaces(it) }}"
         }
     }
 
@@ -243,6 +236,9 @@ class ChatFragment : Fragment(), View.OnClickListener {
 
     private fun validAndSendMessage() {
         val message = binding.edtMessage.text.toString()
+        if(message.isEmpty()){
+            showToast("Please type a message to send..")
+        }
         if (containsSensitiveWords(message)) {
             val currentTime = LocalTime.now()
             val timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss")
@@ -353,12 +349,8 @@ class ChatFragment : Fragment(), View.OnClickListener {
                     binding.gallery.setImageURI(fileUri)
                 }
 
-                com.github.dhaval2404.imagepicker.ImagePicker.RESULT_ERROR -> {
-                    showToast(com.github.dhaval2404.imagepicker.ImagePicker.getError(data))
-                }
-
-                else -> {
-                    showToast("Task Cancelled")
+                ImagePicker.RESULT_ERROR -> {
+                    showToast(ImagePicker.getError(data))
                 }
             }
         }

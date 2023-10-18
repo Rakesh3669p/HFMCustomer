@@ -39,8 +39,7 @@
         android:id="@+id/exploreFragment"
         android:name="com.hfm.customer.ui.fragments.products.productList.ProductListFragment"
         android:label="fragment_product_list"
-        tools:layout="@layout/fragment_product_list"
-        />
+        tools:layout="@layout/fragment_product_list" />
 
     <fragment
         android:id="@+id/productDetailsFragment"
@@ -121,7 +120,7 @@
         android:id="@+id/profileSettingsFragment"
         android:name="com.hfm.customer.ui.dashBoard.profile.ProfileSettings"
         android:label="ProfileSettings"
-        tools:layout="@layout/fragment_profile_settings" >
+        tools:layout="@layout/fragment_profile_settings">
         <action
             android:id="@+id/action_profileSettingsToProfile"
             app:destination="@id/profileFragment"
@@ -132,12 +131,12 @@
         android:id="@+id/paymentMethodFragment"
         android:name="com.hfm.customer.ui.fragments.payment.PaymentMethodFragment"
         android:label="PaymentMethodFragment"
-        tools:layout="@layout/fragment_payment_method" >
+        tools:layout="@layout/fragment_payment_method">
         <action
             android:id="@+id/action_paymentMethodFragment_to_myOrdersFragment"
             app:destination="@id/myOrdersFragment"
             app:popUpTo="@id/cartFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -149,7 +148,7 @@
         android:id="@+id/noInternetFragment"
         android:name="com.hfm.customer.ui.fragments.noInternet.NoInternetFragment"
         android:label="NoInternetFragment"
-        tools:layout="@layout/fragment_no_internet"/>
+        tools:layout="@layout/fragment_no_internet" />
     <fragment
         android:id="@+id/brandsFragment"
         android:name="com.hfm.customer.ui.fragments.brands.BrandsFragment"
@@ -159,12 +158,12 @@
         android:id="@+id/chatFragment"
         android:name="com.hfm.customer.ui.dashBoard.chat.ChatFragment"
         android:label="ChatFragment"
-        tools:layout="@layout/fragment_chat"/>
+        tools:layout="@layout/fragment_chat" />
     <fragment
         android:id="@+id/orderDetailsFragment"
         android:name="com.hfm.customer.ui.fragments.myOrders.OrderDetailsFragment"
         android:label="OrderDetailsFragment"
-        tools:layout="@layout/fragment_order_details"/>
+        tools:layout="@layout/fragment_order_details" />
     <fragment
         android:id="@+id/orderTrackingFragment"
         android:name="com.hfm.customer.ui.fragments.orderTracking.OrderTrackingFragment"
@@ -217,7 +216,7 @@
             android:id="@+id/action_createSupportTicketFragment_to_supportFragment"
             app:destination="@id/supportFragment"
             app:popUpTo="@id/supportFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
 
     </fragment>
 
@@ -231,40 +230,45 @@
             android:id="@+id/action_myAllOrders_to_supportFragment"
             app:destination="@id/createSupportTicketFragment"
             app:popUpTo="@id/createSupportTicketFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
 
         <action
             android:id="@+id/action_myAllOrders_to_chat"
             app:destination="@id/chatFragment"
             app:popUpTo="@id/myAllOrdersFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
 
     </fragment>
     <fragment
         android:id="@+id/commonPageFragment"
         android:name="com.hfm.customer.ui.fragments.commonPage.CommonPageFragment"
         android:label="CommonPageFragment"
-        tools:layout="@layout/fragment_common_page"/>
+        tools:layout="@layout/fragment_common_page" />
 
     <fragment
         android:id="@+id/blogsFragment"
         android:name="com.hfm.customer.ui.fragments.blogs.BlogsFragment"
         android:label="BlogsFragment"
-        tools:layout="@layout/fragment_blogs"/>
+        tools:layout="@layout/fragment_blogs" />
     <fragment
         android:id="@+id/blogsDetailsFragment"
         android:name="com.hfm.customer.ui.fragments.blogs.BlogsDetailsFragment"
         android:label="BlogsDetailsFragment"
-        tools:layout="@layout/fragment_blogs_details"/>
+        tools:layout="@layout/fragment_blogs_details" />
     <fragment
         android:id="@+id/referralFragment"
         android:name="com.hfm.customer.ui.fragments.referral.ReferralFragment"
         android:label="ReferralFragment"
-        tools:layout="@layout/fragment_referal"/>
+        tools:layout="@layout/fragment_referal" />
     <fragment
         android:id="@+id/paymentFAQFragment"
         android:name="com.hfm.customer.ui.fragments.payment.PaymentFAQFragment"
         android:label="PaymentFAQFragment"
-        tools:layout="@layout/fragment_payment_faq"/>
+        tools:layout="@layout/fragment_payment_faq" />
+    <fragment
+        android:id="@+id/bulkOrderDetailsFragment"
+        android:name="com.hfm.customer.ui.fragments.myOrders.BulkOrderDetailsFragment"
+        android:label="BulkOrderDetailsFragment"
+        tools:layout="@layout/fragment_bulk_order_details" />
 
 </navigation>

@@ -123,10 +123,10 @@
 
             <Spinner
                 android:id="@+id/countryCodeSpinner"
+                style="@style/SpinnerTheme3"
                 android:layout_width="@dimen/_55sdp"
                 android:layout_height="@dimen/_40sdp"
                 android:gravity="start"
-                android:theme="@style/SpinnerTheme2"
                 app:layout_constraintBottom_toBottomOf="@+id/mobileNumber"
                 app:layout_constraintStart_toStartOf="@id/mobileNumber"
                 app:layout_constraintTop_toTopOf="@+id/mobileNumber" />

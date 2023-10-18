@@ -74,6 +74,8 @@
         android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
         android:src="@drawable/user"
+        app:roundPercent="1"
+        android:scaleType="fitXY"
         android:layout_margin="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rightChatLayout"/>
@@ -118,12 +120,30 @@
         android:padding="@dimen/_5sdp"
         android:singleLine="false"
         android:elevation="@dimen/_1sdp"
-        android:text="@string/largeText"
+        android:text="hello"
         android:textColor="@color/textGreyDark"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/agentImage" />
 
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/leftChatImage"
+        style="@style/textSmallSemiBold"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_150sdp"
+        android:layout_margin="@dimen/_10sdp"
+        android:background="@drawable/chat_right_bg"
+        android:src="@drawable/red_chilli"
+        android:scaleType="fitCenter"
+        android:maxWidth="@dimen/_250sdp"
+        android:maxHeight="@dimen/_350sdp"
+        android:padding="@dimen/_5sdp"
+        android:elevation="@dimen/_1sdp"
+        android:text="@string/largeText"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/agentImage" />
 
 
     <include

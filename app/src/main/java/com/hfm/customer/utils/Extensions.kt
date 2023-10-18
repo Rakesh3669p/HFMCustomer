@@ -1,5 +1,6 @@
 package com.hfm.customer.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
@@ -54,7 +55,8 @@ fun View.makeGone() {
     this.visibility = View.GONE
 }
 
-fun getDeviceId(context: Context): String {
+@SuppressLint("HardwareIds")
+fun getDeviceIdInternal(context: Context): String {
     return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
 }
 

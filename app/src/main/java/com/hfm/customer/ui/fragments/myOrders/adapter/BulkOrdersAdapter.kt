@@ -51,7 +51,7 @@ class BulkOrdersAdapter @Inject constructor() :
                 requestedDate.text = "${data.date_needed} | ${data.request_time}"
 
                 root.setOnClickListener {
-                    onOrderClick?.invoke(data)
+                    onOrderClick?.invoke(absoluteAdapterPosition)
                 }
             }
         }
@@ -89,9 +89,9 @@ class BulkOrdersAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onOrderClick: ((data: BulkrequestOrderDetail) -> Unit)? = null
+    private var onOrderClick: ((position: Int) -> Unit)? = null
 
-    fun setOnOrderClickListener(listener: (data: BulkrequestOrderDetail) -> Unit) {
+    fun setOnOrderClickListener(listener: (position:Int) -> Unit) {
         onOrderClick = listener
     }
 }

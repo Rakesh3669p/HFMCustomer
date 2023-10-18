@@ -10,6 +10,7 @@ import coil.load
 import com.hfm.customer.databinding.ItemProductsSingleBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
 
@@ -21,13 +22,17 @@ class FeatureProductsAdapter @Inject constructor() :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: Product) {
             with(bind) {
-                if(data.product_image?.isNotEmpty() == true){
-                    val imageOriginal = data.product_image[0].image
-                    val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    productImage.load(imageReplaced)
+                if(data.image?.isNotEmpty() == true){
+                    productImage.load(replaceBaseUrl(data.image[0].image))
                 }
                 productName.text = data.product_name
-                productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
+
+                if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
+                    productPrice.text = "RM ${formatToTwoDecimalPlaces(data.offer_price.toString().toDouble())}"
+                }else{
+                    productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
+                }
+
             }
         }
     }

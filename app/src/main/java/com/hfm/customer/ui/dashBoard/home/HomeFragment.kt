@@ -35,7 +35,6 @@ import com.hfm.customer.utils.PromotionBanner
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.cartCount
-import com.hfm.customer.utils.getDeviceId
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.replaceBaseUrl
@@ -46,6 +45,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 data class AdsImage(
     val image: Drawable?,
@@ -113,12 +113,12 @@ class HomeFragment : Fragment(), View.OnClickListener {
         if(this::promotionBanner.isInitialized){
             if(promotionBanner.isShowing) promotionBanner.dismiss()
         }
-        setPromotionalPopup()
+
         setAdsRv()
         mainViewModel.apply {
             getHomePageData()
             getNotifications()
-            getCart(getDeviceId(requireContext()))
+            getCart()
         }
         appLoader.show()
     }
@@ -140,9 +140,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun setPromotionalPopup() {
-        val originalPopup = "https://uat.hfm.synuos.com/QA/admin/uploads/storage/app/public/promotion/1/1693369146.png"
-        promotionBanner = PromotionBanner(requireContext(), replaceBaseUrl(originalPopup)!!)
+    private fun setPromotionalPopup(promotionImage: String) {
+        promotionBanner = PromotionBanner(requireContext(), replaceBaseUrl(promotionImage))
         promotionBanner.show()
     }
 
@@ -199,7 +198,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     )
                     homeMainCatAdapter.differ.submitList(response.data?.data?.cat_subcat)
                 }
-
                 is Resource.Loading -> Unit
                 is Resource.Error -> {
                     if (response.message == netWorkFailure) {
@@ -214,14 +212,17 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
                     appLoader.dismiss()
-                    homeMainBannerAdapter.differ.submitList(response.data?.data?.app_top_banner)
+                    response.data?.data?.let {
 
-                    if(response.data?.data?.search_placeholder_text.isNullOrEmpty()){
-                        binding.searchBar.hint = "Search here.."
-                    }else{
-                        binding.searchBar.hint = response.data?.data?.search_placeholder_text.toString()
+                        homeMainBannerAdapter.differ.submitList(it.app_top_banner)
+                        if(it.promotion_popup!=null && !it.promotion_popup?.promotion_image.isNullOrEmpty())
+                            setPromotionalPopup(response.data.data.promotion_popup.promotion_image)
+                        if(it.search_placeholder_text.isNullOrEmpty()){
+                            binding.searchBar.text = "Search here.."
+                        }else{
+                            binding.searchBar.text = it.search_placeholder_text
+                        }
                     }
-
                 }
 
                 is Resource.Loading -> Unit
@@ -338,13 +339,17 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     binding.loader.isVisible = false
-                    initRecyclerView(
-                        requireContext(),
-                        binding.featuresProductRv,
-                        featureProductsAdapter,
-                        true
-                    )
-                    featureProductsAdapter.differ.submitList(response.data?.data?.products)
+                    response.data?.let {
+                        if(it.httpcode.toString().toDouble().roundToInt() == 200){
+                            with(binding){
+                                featuresProductLbl.isVisible = it.data.products.isNotEmpty()
+                                featuresProductViewAll.isVisible = it.data.products.isNotEmpty()
+                                initRecyclerView(requireContext(), binding.featuresProductRv, featureProductsAdapter, true)
+                                featureProductsAdapter.differ.submitList(it.data.products)
+                            }
+                        }
+                    }
+
                 }
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)

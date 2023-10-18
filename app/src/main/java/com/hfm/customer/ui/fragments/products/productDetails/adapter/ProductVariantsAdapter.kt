@@ -37,6 +37,7 @@ class ProductVariantsAdapter @Inject constructor() :
                 }
 
                 root.setOnClickListener {
+                    differ.currentList.forEach { it.isSelected = false }
                     data.isSelected =true
                     onVariantsClick?.invoke(absoluteAdapterPosition)
                     notifyDataSetChanged()

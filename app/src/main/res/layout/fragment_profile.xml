@@ -115,7 +115,7 @@
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:background="@color/redLite"
                 android:padding="@dimen/_4sdp"
-                android:src="@drawable/ic_arrow_forward"
+                android:src="@drawable/ic_arrow_forward_profile"
                 android:tint="@color/red"
                 android:contentDescription="@string/my_account_lbl"
                 app:layout_constraintBottom_toBottomOf="@id/basicDetailsBg"
@@ -397,11 +397,11 @@
                 style="@style/textMedium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_support"
                 android:drawableEnd="@drawable/ic_arrow_forward_profile"
-                android:drawablePadding="@dimen/_10sdp"
+                android:drawablePadding="@dimen/_5sdp"
+
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:gravity="center_vertical"
@@ -422,7 +422,8 @@
                 android:clickable="true"
                 android:drawableStart="@drawable/ic_refer"
                 android:drawableEnd="@drawable/ic_arrow_forward_profile"
-                android:drawablePadding="@dimen/_10sdp"
+                android:drawablePadding="@dimen/_5sdp"
+
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:gravity="center_vertical"
@@ -443,7 +444,8 @@
                 android:clickable="true"
                 android:drawableStart="@drawable/logout"
                 android:drawableEnd="@drawable/ic_arrow_forward_profile"
-                android:drawablePadding="@dimen/_10sdp"
+                android:drawablePadding="@dimen/_5sdp"
+
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:gravity="center_vertical"
@@ -469,4 +471,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <View
+        android:visibility="gone"
+        android:id="@+id/loader"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/toolbarTitle"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

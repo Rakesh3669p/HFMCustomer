@@ -30,7 +30,7 @@ class ManageAddressAdapter @Inject constructor() :
             with(bind) {
                 customerName.text = data.name.toString()
                 customerAddress.text =
-                    "${data.address1} ${data.pincode}, ${data.city}, ${data.state}, ${data.country}"
+                    "${data.address1} ${data.address2},\n${data.city}, ${data.state}, ${data.country}, ${data.pincode}"
                 customerMobile.text = data.phone.toString()
                 selectedAddressSwitch.isChecked = data.is_default == 1
 
@@ -66,9 +66,7 @@ class ManageAddressAdapter @Inject constructor() :
                 }
 
                 root.setOnClickListener {
-                    onAddressClick?.let {
-                        it(data.id)
-                    }
+                    onAddressClick?.invoke(data.id)
                 }
             }
         }

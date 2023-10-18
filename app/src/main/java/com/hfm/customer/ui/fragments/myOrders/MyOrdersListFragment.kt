@@ -64,9 +64,6 @@ class MyOrdersListFragment(private val orderStatus:String) : Fragment() {
         mainViewModel.myOrders.observe(viewLifecycleOwner){response->
             when(response){
                 is Resource.Success->{
-                    while (appLoader.isShowing) {
-                        appLoader.dismiss()
-                    }
                     if(response.data?.httpcode == "200"){
                         binding.noDataLayout.root.isVisible = false
                         setMyOrders(response.data.data)
@@ -75,7 +72,7 @@ class MyOrdersListFragment(private val orderStatus:String) : Fragment() {
 //                        showToast(response.data?.message.toString())
                     }
                 }
-                is Resource.Loading->appLoader.show()
+                is Resource.Loading->Unit
                 is Resource.Error->apiError(response.message)
             }
         }

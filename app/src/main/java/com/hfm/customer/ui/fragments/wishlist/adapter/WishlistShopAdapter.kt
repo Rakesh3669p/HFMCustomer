@@ -12,6 +12,7 @@ import com.hfm.customer.databinding.ItemShopsBinding
 import com.hfm.customer.ui.fragments.wishlist.model.Favourite
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class WishlistShopAdapter @Inject constructor(): RecyclerView.Adapter<WishlistShopAdapter.ViewHolder>() {
     private lateinit var  context: Context
@@ -23,7 +24,7 @@ class WishlistShopAdapter @Inject constructor(): RecyclerView.Adapter<WishlistSh
                 shopImage.load(replaceBaseUrl(data.logo))
                 shopName.text = data.store_name
                 ratingBar.rating = data.store_rating.toFloat()
-                ratingType.text ="${data.postive_review} % Positive"
+                ratingType.text ="${data.postive_review.roundToInt()} % Positive"
                 ratings.text ="${data.store_rating} ratings"
                 products.text =data.no_of_products.toString()
                 country.text = data.country

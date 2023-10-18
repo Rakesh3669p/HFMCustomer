@@ -16,6 +16,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.core.util.TypedValueCompat.dpToPx
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -52,6 +53,7 @@ import com.hfm.customer.utils.makeGone
 import com.hfm.customer.utils.makeInvisible
 import com.hfm.customer.utils.makeVisible
 import com.hfm.customer.utils.netWorkFailure
+import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import com.maxrave.kotlinyoutubeextractor.State
@@ -107,7 +109,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
     private lateinit var noInternetDialog: NoInternetDialog
 
-    private val videoIcon = "https://png.pngtree.com/png-vector/20190215/ourmid/pngtree-play-video-icon-graphic-design-template-vector-png-image_530837.jpg"
+    private val videoIcon =
+        "https://png.pngtree.com/png-vector/20190215/ourmid/pngtree-play-video-icon-graphic-design-template-vector-png-image_530837.jpg"
 
 
     private val videoPlayer: ExoPlayer by lazy {
@@ -147,8 +150,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         dataSourceFactory = DefaultDataSource.Factory(requireContext())
         binding.productVideo.clipToOutline = true
         binding.productVideo.player = videoPlayer
-         exoPlay = binding.productVideo.findViewById(androidx.media3.ui.R.id.exo_play)
-         exoPause = binding.productVideo.findViewById(androidx.media3.ui.R.id.exo_pause)
+        exoPlay = binding.productVideo.findViewById(androidx.media3.ui.R.id.exo_play)
+        exoPause = binding.productVideo.findViewById(androidx.media3.ui.R.id.exo_pause)
         noInternetDialog.setOnDismissListener { init() }
         binding.loader.isVisible = true
         val productId = arguments?.getString("productId").toString()
@@ -173,7 +176,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
-         }
+        }
 
 
         mainViewModel.sellerVouchers.observe(viewLifecycleOwner) { response ->
@@ -295,9 +298,20 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                         } else {
                             binding.estimateDeliveryDate.isVisible = true
                             val responseMessage = response.data.message
-                            val spannableString = SpannableString("Estimated delivery between $responseMessage")
-                            val redColorSpan = ForegroundColorSpan(ContextCompat.getColor(requireContext(),R.color.red))
-                            spannableString.setSpan(redColorSpan, spannableString.indexOf(responseMessage), spannableString.indexOf(responseMessage) + responseMessage.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            val spannableString =
+                                SpannableString("Estimated delivery between $responseMessage")
+                            val redColorSpan = ForegroundColorSpan(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.red
+                                )
+                            )
+                            spannableString.setSpan(
+                                redColorSpan,
+                                spannableString.indexOf(responseMessage),
+                                spannableString.indexOf(responseMessage) + responseMessage.length,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
                             binding.estimateDeliveryDate.text = spannableString
 
                         }
@@ -310,9 +324,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 is Resource.Error -> apiError(response.message)
             }
         }
-        mainViewModel.addToCartMultiple.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.addToCartMultiple.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
                     binding.addToCart.text = "Added to Cart"
                     binding.addToCartMain.makeInvisible()
@@ -320,29 +334,31 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     binding.qty.text = "1"
                     cartCount.postValue(cartCount.value?.plus(1) ?: 1)
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
         }
 
 
-        mainViewModel.updateCartCount.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.updateCartCount.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
 
                     binding.addToCartMain.makeInvisible()
                     binding.cartCount.makeVisible()
                     binding.qty.text = qty.toString()
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
         }
 
-        mainViewModel.deleterCartProduct.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.deleterCartProduct.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
 
                     binding.addToCartMain.makeVisible()
@@ -350,12 +366,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     binding.qty.text = "0"
                     cartCount.postValue(cartCount.value?.minus(1) ?: 1)
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
         }
 
-        cartCount.observe(requireActivity()){ count->
+        cartCount.observe(requireActivity()) { count ->
             binding.topBarCartCount.text = count.toString()
         }
     }
@@ -374,11 +391,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         this.productData = productData
         initRecyclerView(requireContext(), binding.productsImagesRv, productsImagesAdapter, true)
 
-        val productImages :MutableList<Image> = ArrayList()
+        val productImages: MutableList<Image> = ArrayList()
         productData.product.image?.let { productImages.addAll(it) }
-        val image = Image(videoIcon,"")
+        val image = Image(videoIcon, "")
 
-        if(productData.product.video?.isNotEmpty() == true){
+        if (productData.product.video?.isNotEmpty() == true) {
             productImages.add(image)
         }
 
@@ -386,27 +403,42 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         mainViewModel.getSellerVouchers(sellerId = productData.product.seller_id.toString())
 
         with(binding) {
-
             if (productData.product.image?.isNotEmpty() == true) {
-                val imageOriginal = productData.product.image[0].image
-                val imageReplaced =
-                    imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                productImage.load(imageReplaced)
+                productImage.load(replaceBaseUrl(productData.product.image[0].image))
             }
             productName.text = productData.product.product_name
             ratingBar.rating = productData.product.rating.toString().toFloat()
-            ratingCount.text = productData.product.rating.toString().toDouble().roundToInt().toString()
+            ratingCount.text =
+                productData.product.rating.toString().toDouble().roundToInt().toString()
             brand.text = "Brand: ${productData.product.brand_name}"
 
-            ratingDetails.text = "(${productData.product.rating.toString().toDouble().roundToInt()} ratings & ${productData.product.total_reviews.toString().toDouble().roundToInt()} reviews)"
-            if(productData.product.offer_price.toString() !="false") {
+            ratingDetails.text = "(${
+                productData.product.rating.toString().toDouble().roundToInt()
+            } ratings & ${
+                productData.product.total_reviews.toString().toDouble().roundToInt()
+            } reviews)"
+
+            reviewCv.isVisible = productData.product.rating.toString().toDouble() > 0
+            reviewRatingBar.rating = productData.product.rating.toString().toFloat()
+            reviewRatingCount.text = productData.product.rating.toString().toDouble().roundToInt().toString()
+            reviewLbl.text = "Customer Reviews (${productData.product.total_reviews.toString().toDouble().roundToInt()})"
+            reviewRatingDetails.text = "${productData.product.total_reviews.toString().toDouble().roundToInt()} Reviews"
+
+
+            if (productData.product.offer_price != null && productData.product.offer_price.toString() != "false") {
                 productPrice.text = "RM ${
                     formatToTwoDecimalPlaces(
                         productData.product.offer_price.toString().toDouble()
                     )
                 }"
             }
-            productListingPrice.text = "NP: RM ${formatToTwoDecimalPlaces(productData.product.actual_price.toString().toDouble()) }"
+
+
+            productListingPrice.text = "NP: RM ${
+                formatToTwoDecimalPlaces(
+                    productData.product.actual_price.toString().toDouble()
+                )
+            }"
 
             addToWishlist.setImageResource(if (productData.product.in_wishlist == 1) R.drawable.like_active else R.drawable.ic_fav)
             if (productData.seller_info.isNotEmpty()) {
@@ -419,16 +451,18 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 }
             }
 
-            reviewRatingBar.rating = productData.product.rating.toString().toFloat()
-            reviewRatingCount.text = productData.product.rating.toString()
-            reviewRatingDetails.text = "${productData.product.total_reviews} reviews)"
+
 
             binding.descriptionWebView.settings.javaScriptEnabled = true
             val htmlContent = productData.product.long_description
             descriptionWebView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
             descriptionWebView.webViewClient = WebViewClient()
 
-            if (productData.product.specification == "false"||productData.product.specification.isEmpty()) {
+            val measuredHeight = binding.descriptionWebView.measuredHeight
+            binding.viewMore.isVisible = measuredHeight > 120
+            binding.viewMoreArrow.isVisible = measuredHeight > 120
+
+            if (productData.product.specification == "false" || productData.product.specification.isEmpty()) {
                 specificationsCv.isVisible = false
                 specificationsWebView.isVisible = false
                 specificationsDivider.isVisible = false
@@ -456,7 +490,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     productImage.load(imageReplaced)
                 }
                 productName.text = productData.product.product_name
-                productPrice.text = "RM ${formatToTwoDecimalPlaces(productData.product.actual_price.toString().toDouble()) }"
+                productPrice.text = "RM ${
+                    formatToTwoDecimalPlaces(
+                        productData.product.actual_price.toString().toDouble()
+                    )
+                }"
             }
 
             if (productData.cross_selling_products.isEmpty()) {
@@ -474,28 +512,49 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                             productImage.load(imageReplaced)
                         }
                         productName.text = it.product_name
-                        productPrice.text = "RM ${formatToTwoDecimalPlaces(it.actual_price.toString().toDouble()) }"
+                        productPrice.text =
+                            "RM ${formatToTwoDecimalPlaces(it.actual_price.toString().toDouble())}"
 
                         total.text = "RM ${
-                            formatToTwoDecimalPlaces(productData.product.actual_price.toString()
-                                .toDouble() + it.actual_price.toString()
-                                .toDouble()) 
+                            formatToTwoDecimalPlaces(
+                                productData.product.actual_price.toString()
+                                    .toDouble() + it.actual_price.toString()
+                                    .toDouble()
+                            )
                         }"
                     }
                 }
             }
 
             initRecyclerView(requireContext(), productsVariantsRv, productsVariantsAdapter, true)
-            if(productData.varaiants_list.isNotEmpty()) {
+            if (productData.varaiants_list.isNotEmpty()) {
                 selectedVariant = productData.varaiants_list[0].pro_id.toString()
-                if(productData.varaiants_list[0].offer_price.toString().isNotEmpty()&&productData.varaiants_list[0].offer_price.toString()!="false"){
+                if (productData.varaiants_list[0].offer_price.toString()
+                        .isNotEmpty() && productData.varaiants_list[0].offer_price.toString() != "false"
+                ) {
                     binding.productListingPrice.isVisible = true
-                    binding.productPrice.text = formatToTwoDecimalPlaces(productData.varaiants_list[0].offer_price.toString().toDouble())
-                    binding.productListingPrice.text = formatToTwoDecimalPlaces(productData.varaiants_list[0].actual_price.toString().toDouble())
-                }else{
+                    binding.productPrice.text = "RM ${
+                        formatToTwoDecimalPlaces(
+                            productData.varaiants_list[0].offer_price.toString().toDouble()
+                        )
+                    }"
+                    binding.productListingPrice.text = "NP: RM${
+                        formatToTwoDecimalPlaces(
+                            productData.varaiants_list[0].actual_price.toString().toDouble()
+                        )
+                    }"
+                } else {
                     binding.productListingPrice.isVisible = false
-                    binding.productPrice.text = formatToTwoDecimalPlaces(productData.varaiants_list[0].actual_price.toString().toDouble())
-                    binding.productListingPrice.text = formatToTwoDecimalPlaces(productData.varaiants_list[0].actual_price.toString().toDouble())
+                    binding.productPrice.text = "RM ${
+                        formatToTwoDecimalPlaces(
+                            productData.varaiants_list[0].actual_price.toString().toDouble()
+                        )
+                    }"
+                    binding.productListingPrice.text = "NP: RM ${
+                        formatToTwoDecimalPlaces(
+                            productData.varaiants_list[0].actual_price.toString().toDouble()
+                        )
+                    }"
                 }
 
                 productData.varaiants_list[0].isSelected = true
@@ -509,9 +568,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 setTimer(productData.product.end_time)
             }
 
-            if(productData.product.is_out_of_stock!=null) {
+            if (productData.product.is_out_of_stock != null) {
                 soldOut.isVisible = productData.product.is_out_of_stock.toString().toBoolean()
             }
+            pinCode.clearFocus()
             binding.loader.isVisible = false
         }
     }
@@ -552,9 +612,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     }
 
 
-
     private fun showBulkOrderBottomSheet() {
-        if(!this::productData.isInitialized) return
+        if (!this::productData.isInitialized) return
         var unitOfMeasures = ""
         bottomSheetBinding = BottomSheetBulkOrderBinding.inflate(layoutInflater)
         bulkOrderDialog =
@@ -567,7 +626,6 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 imageOriginal?.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
             productImage.load(imageReplaced)
             name.setText("${profileData.first_name} ${profileData.last_name}")
-            contact.setText(profileData.phone)
             email.setText(profileData.email)
             address.setText(profileData.address1)
 
@@ -618,9 +676,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     requireContext(),
                     dateSetListener,
                     currentDate.year,
-                    currentDate.monthValue,
+                    currentDate.monthValue-1,
                     currentDate.dayOfMonth
                 )
+                datePickerDialog.datePicker.minDate = System.currentTimeMillis()-1000
                 datePickerDialog.show()
             }
 
@@ -693,24 +752,27 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
 
     private fun playVideo() {
-        val yt = YTExtractor(con = requireActivity(), CACHING = false, LOGGING = true, retryCount = 3)
+        val yt =
+            YTExtractor(con = requireActivity(), CACHING = false, LOGGING = true, retryCount = 3)
         lifecycleScope.launch {
-                yt.extract(extractYouTubeVideoId(productData.product.video.toString()).toString())
-                if (yt.state == State.SUCCESS) {
-                    yt.getYTFiles().let {
-                        val videoMedia = it?.get(135)?.url.toString()
-                        val audioMedia = it?.get(251)?.url.toString()
-                        startVideo(videoMedia,audioMedia)
+            yt.extract(extractYouTubeVideoId(productData.product.video.toString()).toString())
+            if (yt.state == State.SUCCESS) {
+                yt.getYTFiles().let {
+                    val videoMedia = it?.get(135)?.url.toString()
+                    val audioMedia = it?.get(251)?.url.toString()
+                    startVideo(videoMedia, audioMedia)
                 }
             }
         }
     }
 
-    private fun startVideo(videoMedia:String,audioMedia:String){
+    private fun startVideo(videoMedia: String, audioMedia: String) {
         val videoMediaItem: MediaItem = MediaItem.fromUri(videoMedia)
         val audioMediaItem: MediaItem = MediaItem.fromUri(audioMedia)
-        val videoMediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(videoMediaItem)
-        val audioMediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(audioMediaItem)
+        val videoMediaSource =
+            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(videoMediaItem)
+        val audioMediaSource =
+            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(audioMediaItem)
         val mergedSource = MergingMediaSource(videoMediaSource, audioMediaSource)
 
         val currentMediaItem: MediaItem? = videoPlayer.currentMediaItem
@@ -730,7 +792,6 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     }
 
 
-
     private fun togglePlayPause() {
         if (videoPlayer.isPlaying) {
             videoPlayer.pause()
@@ -743,13 +804,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     }
 
 
-    private val playerListener= object : Player.Listener {
+    private val playerListener = object : Player.Listener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
-            if(isPlaying){
+            if (isPlaying) {
                 exoPlay.isVisible = false
                 exoPause.isVisible = true
-            }else{
+            } else {
                 exoPlay.isVisible = true
                 exoPause.isVisible = false
             }
@@ -785,11 +846,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
 
         productsImagesAdapter.setOnImageClickListener { data ->
-            if(data==videoIcon){
+            if (data == videoIcon) {
                 binding.productVideo.isVisible = true
                 playVideo()
-            }
-            else{
+            } else {
 
                 videoPlayer.pause()
                 binding.productVideo.isVisible = false
@@ -804,16 +864,34 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             findNavController().navigate(R.id.productDetailsFragment, bundle)
         }
 
-        productsVariantsAdapter.setOnVariantsClickListener {position->
+        productsVariantsAdapter.setOnVariantsClickListener { position ->
             selectedVariant = productData.varaiants_list[position].pro_id.toString()
-            if(productData.varaiants_list[position].offer_price.toString().isNotEmpty()&&productData.varaiants_list[position].offer_price.toString()!="false"){
+            if (productData.varaiants_list[position].offer_price.toString()
+                    .isNotEmpty() && productData.varaiants_list[position].offer_price.toString() != "false"
+            ) {
                 binding.productListingPrice.isVisible = true
-                binding.productPrice.text = "RM ${formatToTwoDecimalPlaces(productData.varaiants_list[position].offer_price.toString().toDouble())}"
-                binding.productListingPrice.text = "RM ${formatToTwoDecimalPlaces(productData.varaiants_list[position].actual_price.toString().toDouble())}"
-            }else{
+                binding.productPrice.text = "RM ${
+                    formatToTwoDecimalPlaces(
+                        productData.varaiants_list[position].offer_price.toString().toDouble()
+                    )
+                }"
+                binding.productListingPrice.text = "RM ${
+                    formatToTwoDecimalPlaces(
+                        productData.varaiants_list[position].actual_price.toString().toDouble()
+                    )
+                }"
+            } else {
                 binding.productListingPrice.isVisible = false
-                binding.productPrice.text = "RM ${formatToTwoDecimalPlaces(productData.varaiants_list[position].actual_price.toString().toDouble())}"
-                binding.productListingPrice.text = "RM ${formatToTwoDecimalPlaces(productData.varaiants_list[position].actual_price.toString().toDouble())}"
+                binding.productPrice.text = "RM ${
+                    formatToTwoDecimalPlaces(
+                        productData.varaiants_list[position].actual_price.toString().toDouble()
+                    )
+                }"
+                binding.productListingPrice.text = "RM ${
+                    formatToTwoDecimalPlaces(
+                        productData.varaiants_list[position].actual_price.toString().toDouble()
+                    )
+                }"
             }
 
         }
@@ -828,9 +906,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             binding.chat.id -> {
 
                 productData.seller_info[0].let { sellerDetail ->
-                    val chatId = if(sellerDetail.chat_id.isNullOrEmpty()) 0 else sellerDetail.chat_id.toInt()
+                    val chatId =
+                        if (sellerDetail.chat_id.isNullOrEmpty()) 0 else sellerDetail.chat_id.toInt()
                     val bundle = Bundle()
-                    bundle.putString("from","chatList")
+                    bundle.putString("from", "chatList")
                     bundle.putString("storeName", binding.storeName.text.toString())
                     bundle.putString("sellerId", sellerDetail.seller_id.toString())
                     bundle.putString("saleId", "")
@@ -840,7 +919,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
 
             binding.addToCart.id -> {
-                if(binding.addToCart.text == "Added to Cart") {
+                if (binding.addToCart.text == "Added to Cart") {
                     showToast("Already added to cart")
                     return
                 }
@@ -852,25 +931,25 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
 
             binding.addToCartMain.id -> {
-                 if(selectedVariant.isNotEmpty()) {
-                     mainViewModel.addToCart(selectedVariant, "1")
-                }else{
-                     mainViewModel.addToCart(productData.product.product_id.toString(), "1")
+                if (selectedVariant.isNotEmpty()) {
+                    mainViewModel.addToCart(selectedVariant, "1")
+                } else {
+                    mainViewModel.addToCart(productData.product.product_id.toString(), "1")
 
                 }
             }
 
             binding.increaseQty.id -> {
                 qty = binding.qty.text.toString().toInt() + 1
-                mainViewModel.updateCartQty(cartId =cartId, qty = qty)
+                mainViewModel.updateCartQty(cartId = cartId, qty = qty)
             }
 
 
             binding.decreaseQty.id -> {
                 qty = binding.qty.text.toString().toInt() - 1
-                if(qty<1) {
+                if (qty < 1) {
                     mainViewModel.deleterCartProduct(cartId = cartId)
-                }else{
+                } else {
                     mainViewModel.updateCartQty(cartId = cartId, qty = qty)
                 }
 
@@ -891,14 +970,16 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             binding.visitStore.id -> {
                 val bundle = Bundle()
-                bundle.putString("storeId",productData.seller_info[0].seller_id.toString())
-                findNavController().navigate(R.id.storeFragment,bundle)
+                bundle.putString("storeId", productData.seller_info[0].seller_id.toString())
+                findNavController().navigate(R.id.storeFragment, bundle)
             }
+
             binding.storeIcon.id -> {
                 val bundle = Bundle()
-                bundle.putString("storeId",productData.seller_info[0].seller_id.toString())
-                findNavController().navigate(R.id.storeFragment,bundle)
+                bundle.putString("storeId", productData.seller_info[0].seller_id.toString())
+                findNavController().navigate(R.id.storeFragment, bundle)
             }
+
             binding.checkPinCode.id -> {
                 val pinCode = binding.pinCode.text.toString()
                 if (pinCode.isEmpty()) {
@@ -909,21 +990,25 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
 
             binding.viewMore.id -> {
-                    val webViewLayoutParams = binding.descriptionWebView.layoutParams
+                val webViewLayoutParams = binding.descriptionWebView.layoutParams
+                val measuredHeight = binding.descriptionWebView.measuredHeight
+                val maxExpandedHeight = dpToPx(
+                    240f,
+                    resources.displayMetrics
+                ) // Define the maximum expanded height in pixels
 
-                    if (isExpanded) {
-                        webViewLayoutParams.height = 200
-                        binding.viewMore.text = getString(R.string.view_more_lbl)
-                        binding.viewMoreArrow.rotation = 0f
-                    } else {
-                        webViewLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                        binding.viewMore.text = getString(R.string.view_less_lbl)
-                        binding.viewMoreArrow.rotation = 180f
-
-                    }
-                    binding.descriptionWebView.layoutParams = webViewLayoutParams
-                    isExpanded = !isExpanded
+                if (measuredHeight > maxExpandedHeight.roundToInt()) {
+                    webViewLayoutParams.height = maxExpandedHeight.roundToInt()
+                    binding.viewMore.text = getString(R.string.view_more_lbl)
+                    binding.viewMoreArrow.rotation = 0f
+                } else {
+                    webViewLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    binding.viewMore.text = getString(R.string.view_less_lbl)
+                    binding.viewMoreArrow.rotation = 180f
+                }
+                binding.descriptionWebView.layoutParams = webViewLayoutParams
             }
+
             binding.cart.id -> findNavController().navigate(R.id.cartFragment)
             binding.addToWishlist.id -> {
                 if (productData.product.in_wishlist == 1) {

@@ -198,6 +198,7 @@ interface HFMCustomerAPI {
         @Body jsonObject: JsonObject
     ): Response<BulkOrdersListModel>
 
+
     @GET("customer/business-category")
     suspend fun getBusinessCategories(): Response<BusinessCategoryModel>
 
@@ -206,6 +207,9 @@ interface HFMCustomerAPI {
 
     @POST("customer/remove/wishlist")
     suspend fun removeFromWishList(@Body jsonObject: JsonObject): Response<SuccessModel>
+
+    @POST("customer/cart/remove-coupon")
+    suspend fun removeCoupon(@Body jsonObject: JsonObject): Response<SuccessModel>
 
     @POST("customer/wishlist")
     suspend fun getWishListProducts(@Body jsonObject: JsonObject): Response<WishListModel>

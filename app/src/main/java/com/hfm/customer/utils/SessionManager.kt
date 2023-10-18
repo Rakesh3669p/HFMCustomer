@@ -8,6 +8,7 @@ class SessionManager(mcxt: Context) {
     companion object {
         val PREF_GENERAL = "PREF_GENERAL"
         const val KEY_TOKEN = "token"
+        const val KEY_DEVICE_ID = "deviceId"
         const val KEY_DEVICE_TOKEN = "deviceToken"
         const val KEY_IS_LOGIN = "KEY_IS_LOGIN"
         const val KEY_LOGIN_TYPE = "KEY_LOGIN_TYPE"
@@ -47,19 +48,24 @@ class SessionManager(mcxt: Context) {
         }
 
 
+    var showNotification: Boolean
+        get() = generalPref.getBoolean(PUSH_NOTIFICATION, false)
+        set(status) {
+            generalEditor.putBoolean(PUSH_NOTIFICATION, status)
+            generalEditor.commit()
+        }
+
+
     var token: String
         get() = generalPref.getString(KEY_TOKEN, "").toString()
         set(token) {
             generalEditor.putString(KEY_TOKEN, token)
             generalEditor.commit()
         }
-
-
-
-  var showNotification: Boolean
-        get() = generalPref.getBoolean(PUSH_NOTIFICATION, false)
-        set(status) {
-            generalEditor.putBoolean(PUSH_NOTIFICATION, status)
+    var deviceId: String
+        get() = generalPref.getString(KEY_DEVICE_ID, "").toString()
+        set(token) {
+            generalEditor.putString(KEY_DEVICE_ID, token)
             generalEditor.commit()
         }
 

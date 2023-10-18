@@ -408,7 +408,6 @@
                 app:roundPercent="0.1" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/featuresProductLbl"
                 style="@style/textLarge"
                 android:layout_width="wrap_content"
@@ -421,7 +420,6 @@
 
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/featuresProductViewAll"
                 style="@style/textSmallSemiBold"
                 android:layout_width="wrap_content"
@@ -436,7 +434,6 @@
                 app:layout_constraintTop_toTopOf="@id/featuresProductLbl" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:visibility="gone"
                 android:id="@+id/featuresProductRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

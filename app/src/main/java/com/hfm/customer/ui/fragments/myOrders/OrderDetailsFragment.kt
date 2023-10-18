@@ -1,22 +1,16 @@
 package com.hfm.customer.ui.fragments.myOrders
 
-import android.app.ActionBar.LayoutParams
 import android.app.Activity
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
-import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.LinearLayout
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -37,7 +31,6 @@ import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.createFileFromContentUri
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
-import com.hfm.customer.utils.getDeviceId
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.replaceBaseUrl
@@ -50,13 +43,13 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class OrderDetailsFragment : Fragment(), View.OnClickListener {
+    private lateinit var orderData: MyOrdersData
+
     private lateinit var orderDetails: Purchase
 
     private lateinit var binding: FragmentOrderDetailsBinding
@@ -69,7 +62,8 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
     private var imgFile: File? = null
 
 
-    @Inject lateinit var sessionManager:SessionManager
+    @Inject
+    lateinit var sessionManager: SessionManager
 
     @Inject
     lateinit var productAdapter: MyAllOrdersProductsAdapter
@@ -107,6 +101,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == "200") {
+                        orderData = response.data.data
                         setOrderData(response.data.data)
                     } else {
                         showToast(response.data?.message.toString())
@@ -118,6 +113,8 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
             }
 
         }
+
+
         mainViewModel.orderHistory.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -135,19 +132,20 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
 
         }
 
-        mainViewModel.uploadOrderReceipt.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.uploadOrderReceipt.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode == 200){
+                    if (response.data?.httpcode == 200) {
                         imgFile?.delete()
                         binding.submit.isVisible = false
-                    }else{
+                    } else {
                         showToast(response.data?.message.toString())
                     }
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
 
         }
@@ -192,8 +190,9 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
 
             data.purchase[0].let {
                 orderDetails = it
-                orderId.text = "# ${it.order_id}"
+                orderId.text = "Order #:${it.order_id}"
                 orderedDate.text = "${it.order_date} | ${it.order_time}"
+                ordered.alpha = 1f
                 val orangeColor = ContextCompat.getColor(requireContext(), R.color.orange)
                 val greenColor = ContextCompat.getColor(requireContext(), R.color.green)
                 val redColor = ContextCompat.getColor(requireContext(), R.color.red)
@@ -203,10 +202,15 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                         requestStatus.text = "Delivered on ${it.delivered_date}"
                     }
 
-                    else -> requestStatus.text = "${it.order_status}"
+                    else -> {
+                        val input = it.order_status
+                        val output = input.substring(0, 1).uppercase() + input.substring(1)
+                        requestStatus.text = "$output"
+                    }
                 }
-                requestedDate.text = "${it.order_date} | ${it.order_time}"
-                orderAmount.text = "RM ${formatToTwoDecimalPlaces(it.grand_total)}"
+                requestedDate.text = "${it.order_date}"
+                orderAmount.text =
+                    "RM ${formatToTwoDecimalPlaces(it.grand_total)} (${it.products.size} Items)"
                 paymentMethod.text = it.payment_mode
                 billingAddress.text =
                     "${it.shipping_address.address1}, ${it.shipping_address.address2},\n${it.shipping_address.city}, ${it.shipping_address.state}, ${it.shipping_address.country}, ${it.shipping_address.zip_code}\nPhone: ${it.shipping_address.phone}"
@@ -217,7 +221,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 productAdapter.setDataFrom("orderDetails")
                 seller.text = it.store_name
                 deliveryPartner.text = it.delivery_partner
-                priceLbl.text = "Price (${it.products.size})"
+                priceLbl.text = "Price (${it.products.size} Items)"
                 price.text = "RM ${formatToTwoDecimalPlaces(it.sub_total)}"
                 deliveryCharges.text = "RM ${formatToTwoDecimalPlaces(it.delivery_charges)}"
                 if (it.platform_voucher_amount.toString() != "false" || it.platform_voucher_amount.toString() != "null" || it.platform_voucher_amount.toString() != null) {
@@ -250,12 +254,12 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
 
                 totalAmount.text = "RM ${formatToTwoDecimalPlaces(it.grand_total)}"
                 totalSavings.isVisible = false
-                if(it.payment_uploaded_image.isNullOrEmpty()){
+                if (it.payment_uploaded_image.isNullOrEmpty()) {
                     binding.uploadedImage.isVisible = false
                     binding.uploadImage.isVisible = true
                     binding.uploadPaymentMethod.isVisible = true
                     binding.submit.isVisible = true
-                }else{
+                } else {
                     binding.uploadedImage.isVisible = true
                     binding.uploadedImage.load(replaceBaseUrl(it.payment_uploaded_image))
                     binding.uploadImage.isVisible = false
@@ -275,52 +279,53 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun showImagePickupDialog() {
-            val appCompatDialog = Dialog(requireContext())
-            val bindingDialog = DialogueMediaPickupBinding.inflate(layoutInflater)
-            appCompatDialog.setContentView(bindingDialog.root)
-            appCompatDialog.setCancelable(true)
-            appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DialogueMediaPickupBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.setCancelable(true)
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
 
         appCompatDialog.setCancelable(false)
-            appCompatDialog.show()
-            bindingDialog.camera.setOnClickListener {
-                ImagePicker.with(this).cameraOnly()
-                    .compress(1024)
-                    .maxResultSize(
-                        720,
-                        720
-                    )
-                    .createIntent { intent ->
-                        startForProfileImageResult.launch(intent)
-                    }
-                appCompatDialog.dismiss()
-            }
-            bindingDialog.gallery.setOnClickListener {
-                ImagePicker.with(this).galleryOnly()
-                    .compress(1024)
-                    .maxResultSize(
-                        720,
-                        720
-                    )
-                    .createIntent { intent ->
-                        startForProfileImageResult.launch(intent)
-                    }
-                appCompatDialog.dismiss()
-            }
+        appCompatDialog.show()
+        bindingDialog.camera.setOnClickListener {
+            ImagePicker.with(this).cameraOnly()
+                .compress(1024)
+                .maxResultSize(
+                    720,
+                    720
+                )
+                .createIntent { intent ->
+                    startForProfileImageResult.launch(intent)
+                }
+            appCompatDialog.dismiss()
+        }
+        bindingDialog.gallery.setOnClickListener {
+            ImagePicker.with(this).galleryOnly()
+                .compress(1024)
+                .maxResultSize(
+                    720,
+                    720
+                )
+                .createIntent { intent ->
+                    startForProfileImageResult.launch(intent)
+                }
+            appCompatDialog.dismiss()
+        }
 
     }
 
     private fun uploadPaymentSlip() {
-        if(!this::orderDetails.isInitialized) return
+        if (!this::orderDetails.isInitialized) return
         val requestBodyMap = mutableMapOf<String, RequestBody?>()
-        if(imgFile!=null) {
+        if (imgFile != null) {
             requestBodyMap["payment_receipt\"; filename=\"paymentReceipt${orderDetails.sale_id}.jpg\""] =
                 imgFile?.asRequestBody("image/jpeg".toMediaTypeOrNull())
         }
         requestBodyMap["access_token"] = sessionManager.token.toRequestBody(MultipartBody.FORM)
         requestBodyMap["lang_id"] = "1".toRequestBody(MultipartBody.FORM)
-        requestBodyMap["sale_id"] = orderDetails.sale_id.toString().toRequestBody(MultipartBody.FORM)
+        requestBodyMap["sale_id"] =
+            orderDetails.sale_id.toString().toRequestBody(MultipartBody.FORM)
         requestBodyMap["order_type"] = orderDetails.order_type.toRequestBody(MultipartBody.FORM)
         mainViewModel.uploadOrderReceipt(requestBodyMap)
     }
@@ -332,6 +337,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
             downLoadInvoice.setOnClickListener(this@OrderDetailsFragment)
             uploadImage.setOnClickListener(this@OrderDetailsFragment)
             submit.setOnClickListener(this@OrderDetailsFragment)
+            chat.setOnClickListener(this@OrderDetailsFragment)
         }
     }
 
@@ -342,10 +348,30 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
             binding.downLoadInvoice.id -> {}
             binding.uploadImage.id -> showImagePickupDialog()
             binding.submit.id -> uploadPaymentSlip()
+            binding.chat.id -> {
+                orderData.purchase[0].let { it ->
+
+                    val chatId =
+                        if (it.chat_id.isNullOrEmpty()) 0 else orderData.purchase[0].chat_id.toInt()
+                    val bundle = Bundle()
+                    bundle.putString("orderId", it.order_id)
+                    bundle.putString(
+                        "orderDateTime",
+                        "${it.order_date} | ${it.order_time}"
+                    )
+                    bundle.putString("storeName", it.store_name)
+                    bundle.putString("orderAmount", it.grand_total.toString())
+                    bundle.putString("itemsCount", it.products.size.toString())
+                    bundle.putInt("chatId", chatId)
+                    bundle.putString("saleId", it.sale_id.toString())
+                    bundle.putString("sellerId", it.seller_id.toString())
+                    findNavController().navigate(R.id.chatFragment, bundle)
+                }
+
+
+            }
         }
     }
-
-
 
 
     private val startForProfileImageResult =
@@ -355,7 +381,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     val fileUri = data?.data!!
-                    imgFile = createFileFromContentUri(requireActivity(),fileUri)
+                    imgFile = createFileFromContentUri(requireActivity(), fileUri)
                     binding.uploadedImage.isVisible = true
                     binding.uploadedImage.setImageURI(fileUri)
                     binding.uploadImage.isVisible = false
@@ -365,12 +391,6 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 ImagePicker.RESULT_ERROR -> {
                     showToast(ImagePicker.getError(data))
                 }
-
-                else -> {
-                    showToast("Task Cancelled")
-                }
             }
         }
-
-
 }

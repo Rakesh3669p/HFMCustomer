@@ -27,7 +27,13 @@ class FactoryAdapter @Inject constructor() :
                     productImage.load(imageReplaced)
                 }
                 productName.text = data.product_name
-                productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
+
+                if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
+                    productPrice.text = "RM ${formatToTwoDecimalPlaces(data.offer_price.toString().toDouble())}"
+                }else{
+                    productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
+                }
+
                 root.setOnClickListener {
                     onProductClick?.let {
                         it(data.product_id)

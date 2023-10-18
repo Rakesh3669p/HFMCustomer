@@ -65,12 +65,11 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     val productDetails = SingleLiveEvent<Resource<ProductDetailsModel>>()
-    val categories:MutableLiveData<Resource<HomeMainCategoriesModel>> = MutableLiveData()
+    val categories: MutableLiveData<Resource<HomeMainCategoriesModel>> = MutableLiveData()
 
     val homeMainBanner = SingleLiveEvent<Resource<HomeMainCategoriesModel>>()
     val homeMiddleBanner = SingleLiveEvent<Resource<HomeMiddleBanner>>()
     val homeBottomBanner = SingleLiveEvent<Resource<HomeBottomBannerModel>>()
-    val homeFlashSaleCategory = SingleLiveEvent<Resource<HomeFlashSaleCategory>>()
     val homeFlashSaleProducts = SingleLiveEvent<Resource<FlashSaleModel>>()
     val homeWholeSaleProducts = SingleLiveEvent<Resource<WholeSaleModel>>()
     val homeTrendingNow = SingleLiveEvent<Resource<TrendingNowModel>>()
@@ -85,7 +84,7 @@ class MainViewModel @Inject constructor(
     val followedShops = SingleLiveEvent<Resource<StoreWishlistModel>>()
     val wallet = SingleLiveEvent<Resource<WalletModel>>()
     val selectCart = SingleLiveEvent<Resource<SuccessModel>>()
-    val chatList:MutableLiveData<Resource<ChatListModel>> = MutableLiveData()
+    val chatList: MutableLiveData<Resource<ChatListModel>> = MutableLiveData()
 
     val chatMessages = SingleLiveEvent<Resource<ChatMessageModel>>()
 
@@ -96,11 +95,12 @@ class MainViewModel @Inject constructor(
     val applySellerVoucher = SingleLiveEvent<Resource<CouponAppliedModel>>()
     val relatedSearchTerms = SingleLiveEvent<Resource<RelatedSearchTermsModel>>()
     val notifications = SingleLiveEvent<Resource<NotificationModel>>()
-    val profile:MutableLiveData<Resource<ProfileModel>> = MutableLiveData()
+    val profile: MutableLiveData<Resource<ProfileModel>> = MutableLiveData()
     val sendBulkOrderRequest = SingleLiveEvent<Resource<BulkOrderRequestModel>>()
     val bulkOrderList = SingleLiveEvent<Resource<BulkOrdersListModel>>()
     val addToWishList = SingleLiveEvent<Resource<SuccessModel>>()
     val removeFromWishList = SingleLiveEvent<Resource<SuccessModel>>()
+    val removeCoupon = SingleLiveEvent<Resource<SuccessModel>>()
     val wishListProducts = SingleLiveEvent<Resource<WishListModel>>()
     val address = SingleLiveEvent<Resource<AddressModel>>()
     val checkOutInfo = SingleLiveEvent<Resource<CheckOutModel>>()
@@ -209,22 +209,22 @@ class MainViewModel @Inject constructor(
         jsonObject1.addProperty("access_token", "")
         jsonObject1.addProperty("lang_id", "1")
         jsonObject1.addProperty("page_url", "https://www.dummy.com/blog/")
-        jsonObject1.addProperty("device_id", "876546587")
+        jsonObject1.addProperty("device_id", sessionManager.deviceId)
         jsonObject1.addProperty("os_type", "APP")
 
 
         val middleBannerJson = JsonObject()
         middleBannerJson.addProperty("access_token", "")
         middleBannerJson.addProperty("lang_id", "1")
-        middleBannerJson.addProperty("device_id", "54655656fdf")
-        middleBannerJson.addProperty("page_url", "876546587")
+        middleBannerJson.addProperty("device_id", sessionManager.deviceId)
+        middleBannerJson.addProperty("page_url", "https://www.dummy.com/blog/")
         middleBannerJson.addProperty("os_type", "APP")
 
         val bottomBannerJson = JsonObject()
         bottomBannerJson.addProperty("access_token", "")
         bottomBannerJson.addProperty("lang_id", "1")
-        bottomBannerJson.addProperty("device_id", "54655656fdf")
-        bottomBannerJson.addProperty("page_url", "876546587")
+        bottomBannerJson.addProperty("device_id", sessionManager.deviceId)
+        bottomBannerJson.addProperty("page_url", "https://www.dummy.com/blog/")
         bottomBannerJson.addProperty("os_type", "APP")
 
         val brandsJson = JsonObject()
@@ -241,8 +241,25 @@ class MainViewModel @Inject constructor(
         mainCatJson.addProperty("access_token", "")
         mainCatJson.addProperty("lang_id", "1")
         mainCatJson.addProperty("page_url", "https://www.dummy.com/blog/")
-        mainCatJson.addProperty("device_id", "876546587")
+        mainCatJson.addProperty("device_id", sessionManager.deviceId)
         mainCatJson.addProperty("os_type", "APP")
+        safeGetCategoriesCall(mainCatJson)
+
+        val featureProductsJson = JsonObject()
+        featureProductsJson.addProperty("lang_id", 1)
+        featureProductsJson.addProperty("access_token", sessionManager.token)
+        featureProductsJson.addProperty("category_id", "")
+        featureProductsJson.addProperty("subcategory_id", "")
+        featureProductsJson.addProperty("brand_id", "")
+        featureProductsJson.addProperty("max_price", 1000)
+        featureProductsJson.addProperty("min_price", 500)
+        featureProductsJson.addProperty("low_to_high", "")
+        featureProductsJson.addProperty("high_to_low", "")
+        featureProductsJson.addProperty("latest", "")
+        featureProductsJson.addProperty("device_id", sessionManager.deviceId)
+        featureProductsJson.addProperty("page_url", "http://brands/us/img")
+        featureProductsJson.addProperty("os_type", "APP")
+
         safeGetCategoriesCall(mainCatJson)
 
         val homeMainCategoriesResponse = async { safeGetMainHomeCategories(mainCatJson) }
@@ -253,7 +270,7 @@ class MainViewModel @Inject constructor(
         val homeTrendingResponse = async { safeGetTrendingCall(trendingJson) }
         val homeFlashSaleProductsResponse = async { safeGetHomeFlashSaleProducts(mainCatJson, "1") }
         val homeWholeSaleProductsResponse = async { safeGetHomeWholeSaleProducts(mainCatJson, "1") }
-        val homeFeaturesProductsResponse = async { safeGetHomeFeatureProducts(mainCatJson, "1") }
+        val homeFeaturesProductsResponse = async { safeGetHomeFeatureProducts(featureProductsJson, "1") }
 
         when (val homeMainBannerData = homeMainBannerResponse.await()) {
             is Resource.Success -> homeMainBanner.postValue(Resource.Success(homeMainBannerData.data as HomeMainCategoriesModel?))
@@ -611,11 +628,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getBulkOrders(pageNo: Int) = viewModelScope.launch {
+    fun getBulkOrders(pageNo: Int,search:String="") = viewModelScope.launch {
         val jsonObject = JsonObject().apply {
             addProperty("access_token", sessionManager.token)
             addProperty("lang_id", 1)
-            addProperty("search", "")
+            addProperty("search", search)
             addProperty("order_status", "")
             addProperty("order_time", LocalDate.now().year)
             addProperty("limit", "20")
@@ -700,6 +717,28 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun removeCoupon(couponId: String,couponType:String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("coupon_id", couponId)
+        jsonObject.addProperty("coupon_type", couponType)
+        jsonObject.addProperty("lang_id", "")
+        safeRemoveCouponCall(jsonObject)
+    }
+
+    private suspend fun safeRemoveCouponCall(jsonObject: JsonObject) {
+        removeCoupon.postValue(Resource.Loading())
+        try {
+            val response = repository.removeCoupon(jsonObject)
+            if (response.isSuccessful)
+                removeCoupon.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                removeCoupon.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            removeCoupon.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
     fun getWishListProducts() = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
@@ -738,7 +777,8 @@ class MainViewModel @Inject constructor(
             address.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
-  fun getCheckoutInfo() = viewModelScope.launch {
+
+    fun getCheckoutInfo() = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
         safeGetCheckoutInfoCall(jsonObject)
@@ -946,11 +986,11 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun getCart(deviceId: String) = viewModelScope.launch {
+    fun getCart() = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("lang_id", "1")
-        jsonObject.addProperty("device_id", deviceId)
+        jsonObject.addProperty("device_id", sessionManager.deviceId)
         jsonObject.addProperty("page_url", "CART")
         jsonObject.addProperty("os_type", "APP")
         safeGetCartCall(jsonObject)
@@ -990,8 +1030,7 @@ class MainViewModel @Inject constructor(
     }
 
 
-
-    fun getPlatFormVouchers(available:Int) = viewModelScope.launch {
+    fun getPlatFormVouchers(available: Int) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("available", available)
@@ -1012,11 +1051,13 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun applyPlatFormVouchers(couponCode: String) = viewModelScope.launch {
+    fun applyPlatFormVouchers(couponCode: String,subTotal:String) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("lang_id", 1)
+        jsonObject.addProperty("cart_subtotal", subTotal)
         jsonObject.addProperty("coupon_code", couponCode)
+        jsonObject.addProperty("os_type", "APP")
         safeApplyPlatFormVouchersCall(jsonObject)
     }
 
@@ -1033,14 +1074,17 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun applySellerVouchers(sellerId: String, couponCode: String) = viewModelScope.launch {
-        val jsonObject = JsonObject()
-        jsonObject.addProperty("access_token", sessionManager.token)
-        jsonObject.addProperty("lang_id", 1)
-        jsonObject.addProperty("coupon_code", couponCode)
-        jsonObject.addProperty("seller_id", sellerId)
-        safeApplySellerVouchersCall(jsonObject)
-    }
+    fun applySellerVouchers(sellerId: String, couponCode: String, sellerSubtotal: Double) =
+        viewModelScope.launch {
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("lang_id", 1)
+            jsonObject.addProperty("access_token", sessionManager.token)
+            jsonObject.addProperty("coupon_code", couponCode)
+            jsonObject.addProperty("seller_id", sellerId)
+            jsonObject.addProperty("seller_subtotal", sellerSubtotal)
+            jsonObject.addProperty("os_type", "APP")
+            safeApplySellerVouchersCall(jsonObject)
+        }
 
     private suspend fun safeApplySellerVouchersCall(jsonObject: JsonObject) {
         applySellerVoucher.postValue(Resource.Loading())
@@ -1060,7 +1104,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("keyword", keyword)
         jsonObject.addProperty("device_id", 1)
         jsonObject.addProperty("page_url", "products/us/img")
-        jsonObject.addProperty("os_typ", "APP")
+        jsonObject.addProperty("os_type", "APP")
         safeRelatedSearchTermsCall(jsonObject)
     }
 
@@ -1215,12 +1259,12 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun getStoreDetails(sellerId: String, deviceId: String) = viewModelScope.launch {
+    fun getStoreDetails(sellerId: String) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("seller_id", sellerId)
         jsonObject.addProperty("lang_id", 1)
-        jsonObject.addProperty("device_id", deviceId)
+        jsonObject.addProperty("device_id", sessionManager.deviceId)
         jsonObject.addProperty("page_url", "http://shopproducts/us/img")
         jsonObject.addProperty("os_type", "APP")
         safeGetStoreDetailsCall(jsonObject)
@@ -1244,10 +1288,10 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("lang_id", 1)
 
-        if(orderStatus =="pending"){
+        if (orderStatus == "pending") {
             jsonObject.addProperty("order_status", "")
             jsonObject.addProperty("payment_status", orderStatus)
-        }else{
+        } else {
             jsonObject.addProperty("order_status", orderStatus)
             jsonObject.addProperty("payment_status", "")
         }
@@ -1474,11 +1518,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun selectCart(cartId:String, status:Int) = viewModelScope.launch {
+    fun selectCart(cartId: String, status: Int) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("cart_id", cartId)
-        jsonObject.addProperty("select_status",status)
+        jsonObject.addProperty("select_status", status)
         safeSelectCartCall(jsonObject)
     }
 
@@ -1534,6 +1578,7 @@ class MainViewModel @Inject constructor(
             orderHistory.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
+
     fun placeOrder(jsonObject: JsonObject) = viewModelScope.launch {
         safePlaceOrderCall(jsonObject)
     }
@@ -1550,7 +1595,6 @@ class MainViewModel @Inject constructor(
             placeOrder.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
-
 
 
     fun uploadOrderReceipt(requestBody: MutableMap<String, RequestBody?>) =
@@ -1574,7 +1618,7 @@ class MainViewModel @Inject constructor(
     fun paymentFaq() =
         viewModelScope.launch {
             safePaymentFaqCall()
-           }
+        }
 
     private suspend fun safePaymentFaqCall() {
         paymentFaq.postValue(Resource.Loading())
@@ -1608,7 +1652,7 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun getStateCode(name:String,countryId:String) =
+    fun getStateCode(name: String, countryId: String) =
         viewModelScope.launch {
             safeGetStateCodeCall(name, countryId)
         }
@@ -1616,7 +1660,7 @@ class MainViewModel @Inject constructor(
     private suspend fun safeGetStateCodeCall(name: String, countryId: String) {
         stateCode.postValue(Resource.Loading())
         try {
-            val response = repository.getStateCode(name,countryId)
+            val response = repository.getStateCode(name, countryId)
             if (response.isSuccessful)
                 stateCode.postValue(Resource.Success(checkResponseBody(response.body()) as StateCodeModel))
             else
@@ -1626,15 +1670,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getCityCode(name:String,stateId:String) =
+    fun getCityCode(name: String, stateId: String) =
         viewModelScope.launch {
-            safeCityCodeCall(name,stateId)
+            safeCityCodeCall(name, stateId)
         }
 
     private suspend fun safeCityCodeCall(name: String, stateId: String) {
         cityCode.postValue(Resource.Loading())
         try {
-            val response = repository.getCityCode(name,stateId)
+            val response = repository.getCityCode(name, stateId)
             if (response.isSuccessful)
                 cityCode.postValue(Resource.Success(checkResponseBody(response.body()) as CityCodeModel))
             else

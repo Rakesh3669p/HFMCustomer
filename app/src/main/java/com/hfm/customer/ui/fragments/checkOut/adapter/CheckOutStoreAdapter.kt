@@ -1,10 +1,13 @@
 package com.hfm.customer.ui.fragments.checkOut.adapter
 
+import android.R.attr
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -15,20 +18,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemCheckoutListBinding
-import com.hfm.customer.ui.fragments.cart.model.Coupon
 import com.hfm.customer.ui.fragments.cart.model.SellerProduct
 import com.hfm.customer.ui.fragments.checkOut.model.ShippingOption
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
-import com.hfm.customer.ui.fragments.products.productDetails.model.Variants
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.initRecyclerView
 import javax.inject.Inject
-import kotlin.math.abs
+
 
 class CheckOutStoreAdapter @Inject constructor() : RecyclerView.Adapter<CheckOutStoreAdapter.ViewHolder>() {
     private var shippingOptions: List<ShippingOption> =  ArrayList()
-
-    private lateinit var couponData: Coupon
     private lateinit var context: Context
 
     var  couponPosition = -1
@@ -39,30 +38,31 @@ class CheckOutStoreAdapter @Inject constructor() : RecyclerView.Adapter<CheckOut
             with(bind) {
 
 
-                voucherDetailsLayout.isVisible = couponPosition == absoluteAdapterPosition
-                if(data.seller.coupon!=null){
-                    voucher.text = data.seller.coupon.offer
-                    standardDelivery.isVisible = shippingOptions.any { it.title == "Standard Delivery" && it.is_active == 1 }
-                    selfPickup.isVisible = shippingOptions.any { it.title == "Self Pickup" && it.is_active == 1 }
+                voucherDetailsLayout.isVisible = data.is_seller_coupon_applied==1
+                if(data.is_seller_coupon_applied==1) {
+                    voucher.text = data.seller_coupon_data.title
 
-                    if (data.seller.coupon.offer_value_in == "percentage") {
-                        val storeTotal = data.seller.products.filter { it.cart_selected.toString().toDouble()>0 }.sumOf { it.total_discount_price }
-                        val percentageDiscount = (data.seller.coupon.offer_value.toDouble() / 100) * storeTotal
-                        onAppliedCoupon?.invoke(true,formatToTwoDecimalPlaces(percentageDiscount))
+                    val message =
+                        "You saved additional RM " + formatToTwoDecimalPlaces(data.seller_coupon_data.seller_coupon_discount_amt)
 
-                        voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(percentageDiscount)}"
-                        voucherAmount.text = formatToTwoDecimalPlaces(percentageDiscount)
-                    } else {
 
-                        onAppliedCoupon?.invoke(true,formatToTwoDecimalPlaces(data.seller.coupon.offer_value.toString().toDouble()))
-                        voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(data.seller.coupon.offer_value_cal.toDouble()) }"
-                        voucherAmount.text = formatToTwoDecimalPlaces(data.seller.coupon.offer_value_cal)
-                    }
+                    val spannableString = SpannableString(message)
+                    val boldSpan = StyleSpan(Typeface.BOLD)
+                    val startIndex =
+                        message.indexOf(formatToTwoDecimalPlaces(data.seller_coupon_data.seller_coupon_discount_amt))
+                    val endIndex: Int = startIndex + formatToTwoDecimalPlaces(data.seller_coupon_data.seller_coupon_discount_amt).length
+                    spannableString.setSpan(
+                        boldSpan,
+                        startIndex,
+                        endIndex,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    voucherDescription.text = spannableString
+//                    voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(data.seller_coupon_data.seller_coupon_discount_amt)}"
                 }
 
                 removeCoupon.setOnClickListener {
-                    val amount = voucherAmount.text.toString().toDouble()
-                    onRemoveCoupon?.invoke(amount)
+                    onRemoveCoupon?.invoke(data.seller_coupon_data.coupon_id)
                     voucherDetailsLayout.isVisible = false
                 }
 
@@ -85,7 +85,7 @@ class CheckOutStoreAdapter @Inject constructor() : RecyclerView.Adapter<CheckOut
                     16,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                val startIndex = 16
+                val startIndex = 17
                 val endIndex = formattedShipping.length
                 spannableString.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(context, R.color.red)),
@@ -159,17 +159,12 @@ private var onShopVoucherClick: ((id: String) -> Unit)? = null
         onAppliedCoupon = listener
     }
 
-    private var onRemoveCoupon: ((amount:Double) -> Unit)? = null
+    private var onRemoveCoupon: ((id:Int) -> Unit)? = null
 
-    fun setOnSellerRemoveCoupon(listener: (amount:Double) -> Unit) {
+    fun setOnSellerRemoveCoupon(listener: (id:Int) -> Unit) {
         onRemoveCoupon = listener
     }
 
-    fun setCouponApplied(couponPosition: Int, coupon: Coupon) {
-        this.couponPosition = couponPosition
-        couponData = coupon
-        notifyItemChanged(couponPosition)
-    }
 
     fun setShippingOptions(shippingOptions: List<ShippingOption>) {
         this.shippingOptions = shippingOptions

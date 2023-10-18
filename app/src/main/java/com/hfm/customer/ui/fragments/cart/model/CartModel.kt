@@ -1,6 +1,10 @@
 package com.hfm.customer.ui.fragments.cart.model
 
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
+import java.lang.reflect.Type
 
 data class CartModel(
     val data: CartData,
@@ -25,9 +29,12 @@ data class CartData(
     val total_offer_cost: Any,
     val total_tax: Any,
     val voucher_remaining: Any,
-    val wallet_balance: String
+    val wallet_balance: String,
+    val is_platform_coupon_applied: Int,
+    val platform_coupon_data: CouponApplied,
+    val platform_voucher_amt: Double,
+    val seller_voucher_amt: Double,
 )
-
 data class SellerProduct(
     val seller: Seller,
     val shipping: Any,
@@ -35,7 +42,13 @@ data class SellerProduct(
     val shipping_availability_text: String,
     val shipping_cal: Any,
     val shipping_markup: Any,
-    val shipping_method: String
+    val shipping_method: String,
+    val seller_subtotal: Double,
+    val is_seller_coupon_applied: Int,
+    val is_platform_coupon_applied: Int,
+    val  seller_coupon_data: CouponApplied,
+    val platform_coupon_data: CouponApplied,
+
 )
 
 data class Seller(

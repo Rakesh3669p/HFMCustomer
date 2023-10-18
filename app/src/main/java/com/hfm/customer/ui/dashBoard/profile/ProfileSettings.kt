@@ -25,7 +25,6 @@ import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.business
-import com.hfm.customer.utils.getDeviceId
 import com.hfm.customer.utils.isValidEmail
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
@@ -207,6 +206,7 @@ class ProfileSettings : Fragment(), View.OnClickListener {
             currentDate.monthValue,
             currentDate.dayOfMonth
         )
+        datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
         datePickerDialog.show()
     }
 
@@ -239,7 +239,7 @@ class ProfileSettings : Fragment(), View.OnClickListener {
             requestBodyMap["email"] = email.toRequestBody(MultipartBody.FORM)
             requestBodyMap["birthday"] = dob.toRequestBody(MultipartBody.FORM)
             requestBodyMap["os_type"] = "APP".toRequestBody(MultipartBody.FORM)
-            requestBodyMap["device_id"] = getDeviceId(requireContext()).toRequestBody(MultipartBody.FORM)
+            requestBodyMap["device_id"] = sessionManager.deviceId.toRequestBody(MultipartBody.FORM)
             requestBodyMap["password"] = password.toRequestBody(MultipartBody.FORM)
             requestBodyMap["password_confirmation"] = password.toRequestBody(MultipartBody.FORM)
             mainViewModel.updateProfileCustomer(requestBodyMap)

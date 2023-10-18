@@ -47,7 +47,6 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
             currentView = inflater.inflate(R.layout.fragment_manage_address, container, false)
             binding = FragmentManageAddressBinding.bind(currentView!!)
             init()
-            setRecyclerViews()
             setOnClickListener()
         }
         return currentView!!
@@ -76,10 +75,6 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
 
     }
 
-    private fun setRecyclerViews() {
-        with(binding) {
-        }
-    }
 
 
     private fun setObserver() {
@@ -187,6 +182,7 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
                     putString("homeFlatNo", it.house.toString())
                     putString("streetBuildingName", it.address2.toString())
                     putString("pinCode", it.pincode.toString())
+                    putInt("isDefault", it.is_default)
                 }
                 findNavController().navigate(R.id.addNewAddressFragment, bundle)
             }

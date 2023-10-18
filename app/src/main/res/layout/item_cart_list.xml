@@ -78,7 +78,6 @@
                     style="@style/textMediumSemiBold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_9sdp"
                     android:text="NEW 10"
                     android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +88,6 @@
                     style="@style/textMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_9sdp"
                     android:text="you saved additional RM 12"
                     android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
@@ -108,9 +106,8 @@
 
                 <androidx.constraintlayout.utils.widget.ImageFilterView
                     android:id="@+id/removeCoupon"
-                    android:layout_width="@dimen/_30sdp"
+                    android:layout_width="@dimen/_20sdp"
                     android:layout_height="0dp"
-                    android:padding="@dimen/_4sdp"
                     android:src="@drawable/ic_close"
                     android:tint="@color/textGreyDark"
                     app:layout_constraintEnd_toEndOf="parent"

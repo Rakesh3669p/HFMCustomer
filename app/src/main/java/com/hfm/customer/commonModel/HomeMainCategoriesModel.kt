@@ -13,7 +13,13 @@ data class BannerData(
     val app_top_banner: List<MainBanner>,
     val search_placeholder_text: String,
     val top_bar_banner: List<TopBarBanner>,
-    val user_data: List<Any>
+    val user_data: List<Any>,
+    val promotion_popup:PromotionPopup
+)
+
+data class PromotionPopup(
+    val promotion_image: String,
+    val promotion_link: String,
 )
 
 data class CatSubcat(

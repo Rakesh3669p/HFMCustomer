@@ -34,7 +34,7 @@ data class BulkrequestOrderDetail(
     val request_date: String,
     val request_status: Int,
     val request_time: String,
-    val sale_id: Any,
+    val sale_id: String?,
     val sale_price: Any,
     val shipping_address: String,
     val shipping_charges: Any,

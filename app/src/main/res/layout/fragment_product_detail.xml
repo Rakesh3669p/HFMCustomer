@@ -92,18 +92,18 @@
                         android:id="@+id/productImage"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/red_chilli"
-
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.media3.ui.PlayerView
-                        android:visibility="gone"
                         android:id="@+id/productVideo"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
+                        android:visibility="gone"
                         app:controller_layout_id="@layout/product_video_playerview"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -121,22 +121,21 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:visibility="gone"
-                        style="@style/textMediumSemiBold"
                         android:id="@+id/soldOut"
+                        style="@style/textMediumSemiBold"
                         android:layout_width="@dimen/_140sdp"
                         android:layout_height="@dimen/_140sdp"
+                        android:background="@drawable/black_circle"
+                        android:gravity="center"
+                        android:singleLine="false"
                         android:text="@string/sold_out_lbl"
                         android:textColor="@color/white"
-                        android:singleLine="false"
-                        android:gravity="center"
                         android:textSize="@dimen/_24ssp"
-                        android:background="@drawable/black_circle"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -159,17 +158,18 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/flashDealOrOutOfStock"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="@dimen/_35sdp"
                 android:layout_marginVertical="@dimen/_7sdp"
                 android:backgroundTint="@color/red"
-                android:paddingVertical="@dimen/_10sdp"
                 android:text="Flash Deals Ends In: 20:15:50"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textFontWeight="600"
                 android:textSize="@dimen/_12ssp"
                 android:visibility="gone"
-                app:cornerRadius="@dimen/_6sdp"
+                android:gravity="center"
+                app:cornerRadius="@dimen/_4sdp"
+                android:clickable="false"
                 app:layout_constraintBottom_toTopOf="@id/productsDetailsCv"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
@@ -205,6 +205,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
                 app:layout_constraintTop_toTopOf="@id/productsDetailsCv" />
+
             <TextView
                 android:id="@+id/brand"
                 style="@style/textSmallSemiBold"
@@ -279,9 +280,8 @@
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@id/productPrice"
                 app:layout_constraintTop_toBottomOf="@id/productPrice" />
-            
+
             <TextView
-                android:visibility="gone"
                 android:id="@+id/itemsInComboLbl"
                 style="@style/textSmallSemiBold"
                 android:layout_width="0dp"
@@ -290,11 +290,11 @@
                 android:singleLine="false"
                 android:text="Items in Combo"
                 android:textColor="@color/textGreyDark"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@id/productName"
                 app:layout_constraintTop_toBottomOf="@+id/productListingPrice" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:visibility="gone"
                 android:id="@+id/comboRv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -303,6 +303,7 @@
                 android:elevation="@dimen/_2sdp"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/_12sdp"
+                android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
@@ -428,16 +429,15 @@
                 app:layout_constraintStart_toEndOf="@id/frequentlyBoughtLbl"
                 app:layout_constraintTop_toTopOf="@id/frequentlyBoughtLbl" />
 
-          <include
-              android:id="@+id/frequentlyBoughtItems"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              layout="@layout/frequently_bought"
-              android:layout_marginHorizontal="@dimen/_10sdp"
-              app:layout_constraintTop_toBottomOf="@id/frequentlyBoughtLbl"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintEnd_toEndOf="parent"
-              />
+            <include
+                android:id="@+id/frequentlyBoughtItems"
+                layout="@layout/frequently_bought"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/frequentlyBoughtLbl" />
 
             <TextView
                 android:id="@+id/totalLbl"
@@ -565,10 +565,10 @@
                         android:layout_height="@dimen/_30sdp"
                         android:layout_marginEnd="@dimen/_10sdp"
                         android:backgroundTint="@color/red"
+                        android:gravity="center"
                         android:paddingHorizontal="@dimen/_10sdp"
                         android:paddingTop="0dp"
                         android:paddingBottom="0dp"
-                        android:gravity="center"
                         android:text="@string/visit_store_lbl"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
@@ -585,12 +585,12 @@
                         android:layout_width="0dp"
                         android:layout_height="@dimen/_30sdp"
                         android:backgroundTint="@color/red"
+                        android:gravity="center"
+                        android:paddingTop="0dp"
+                        android:paddingBottom="0dp"
                         android:text="@string/chatLbl"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:paddingTop="0dp"
-                        android:paddingBottom="0dp"
-                        android:gravity="center"
                         android:textSize="@dimen/_12ssp"
                         app:cornerRadius="@dimen/_6sdp"
                         app:layout_constraintBottom_toBottomOf="@id/storeImage"
@@ -633,77 +633,92 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/descriptionCv"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_10sdp"
                 app:cardElevation="@dimen/_1sdp"
-                android:layout_marginTop="@dimen/_10sdp"
                 app:cardUseCompatPadding="true"
-                app:layout_constraintBottom_toBottomOf="@id/viewMore"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
-                app:layout_constraintTop_toBottomOf="@+id/voucherListCv" />
+                app:layout_constraintTop_toBottomOf="@+id/voucherListCv">
 
-            <TextView
-                android:id="@+id/descriptionLbl"
-                style="@style/textLarge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_15sdp"
-                android:elevation="@dimen/_2sdp"
-                android:text="@string/descriptionsLbl"
-                app:layout_constraintEnd_toEndOf="@id/descriptionCv"
-                app:layout_constraintStart_toStartOf="@id/descriptionCv"
-                app:layout_constraintTop_toTopOf="@id/descriptionCv" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_10sdp">
 
-            <View
-                android:id="@+id/descriptionDivider"
-                android:layout_width="@dimen/_45sdp"
-                android:layout_height="2dp"
-                android:layout_marginStart="@dimen/_1sdp"
+                    <TextView
+                        android:id="@+id/descriptionLbl"
+                        style="@style/textLarge"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/_2sdp"
+                        android:text="@string/descriptionsLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                android:layout_marginTop="@dimen/_2sdp"
-                android:background="@color/red"
-                android:elevation="@dimen/_2sdp"
-                app:layout_constraintStart_toStartOf="@+id/descriptionLbl"
-                app:layout_constraintTop_toBottomOf="@+id/descriptionLbl" />
-
-
-            <WebView
-                android:id="@+id/descriptionWebView"
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:elevation="@dimen/_2sdp"
-                app:layout_constraintEnd_toEndOf="@id/descriptionLbl"
-                app:layout_constraintStart_toStartOf="@id/descriptionLbl"
-                app:layout_constraintTop_toBottomOf="@+id/descriptionDivider" />
+                    <View
+                        android:id="@+id/descriptionDivider"
+                        android:layout_width="@dimen/_45sdp"
+                        android:layout_height="2dp"
+                        android:layout_marginStart="@dimen/_1sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:background="@color/red"
+                        android:elevation="@dimen/_2sdp"
+                        app:layout_constraintStart_toStartOf="@+id/descriptionLbl"
+                        app:layout_constraintTop_toBottomOf="@+id/descriptionLbl" />
 
 
-            <TextView
-                android:id="@+id/viewMore"
-                style="@style/textMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/_45sdp"
-                android:elevation="@dimen/_2sdp"
-                android:text="@string/view_more_lbl"
-                android:gravity="center"
-                android:textColor="@color/red"
-                app:layout_constraintEnd_toEndOf="@id/descriptionCv"
-                app:layout_constraintStart_toStartOf="@id/descriptionCv"
-                app:layout_constraintTop_toBottomOf="@+id/descriptionWebView" />
+                    <WebView
+                        android:id="@+id/descriptionWebView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/_2sdp"
+                        app:layout_constraintBottom_toTopOf="@id/viewMore"
+                        app:layout_constraintEnd_toEndOf="@id/descriptionLbl"
+                        app:layout_constraintStart_toStartOf="@id/descriptionLbl"
+                        app:layout_constraintTop_toBottomOf="@+id/descriptionDivider"
+                        tools:ignore="WebViewLayout" />
 
-            <ImageView
-                android:id="@+id/viewMoreArrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_down"
-                android:elevation="@dimen/_2sdp"
-                android:rotation="0"
-                app:layout_constraintStart_toEndOf="@id/viewMore"
-                app:layout_constraintTop_toTopOf="@id/viewMore"
-                app:layout_constraintBottom_toBottomOf="@id/viewMore"
-                />
+
+                    <TextView
+                        android:id="@+id/viewMore"
+                        style="@style/textMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/_2sdp"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:text="@string/view_more_lbl"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/descriptionWebView" />
+
+                    <ImageView
+                        android:id="@+id/viewMoreArrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/_2sdp"
+                        android:rotation="0"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_arrow_down"
+                        app:layout_constraintBottom_toBottomOf="@id/viewMore"
+                        app:layout_constraintStart_toEndOf="@id/viewMore"
+                        app:layout_constraintTop_toTopOf="@id/viewMore" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/specificationsCv"
@@ -713,8 +728,6 @@
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_10sdp"
                 app:cardElevation="@dimen/_1sdp"
-
-
                 app:cardUseCompatPadding="true"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
@@ -742,10 +755,10 @@
                         android:id="@+id/specificationsDivider"
                         android:layout_width="@dimen/_45sdp"
                         android:layout_height="2dp"
+                        android:layout_marginStart="@dimen/_1sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:background="@color/red"
                         android:elevation="@dimen/_2sdp"
-                        android:layout_marginStart="@dimen/_1sdp"
                         app:layout_constraintStart_toStartOf="@+id/specificationsLbl"
                         app:layout_constraintTop_toBottomOf="@+id/specificationsLbl" />
 
@@ -793,9 +806,9 @@
                         android:id="@+id/reviewDivider"
                         android:layout_width="@dimen/_45sdp"
                         android:layout_height="2dp"
+                        android:layout_marginStart="@dimen/_1sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:background="@color/red"
-                        android:layout_marginStart="@dimen/_1sdp"
                         android:elevation="@dimen/_2sdp"
                         app:layout_constraintStart_toStartOf="@+id/reviewLbl"
                         app:layout_constraintTop_toBottomOf="@+id/reviewLbl" />
@@ -843,11 +856,10 @@
                         style="@style/textSmallSemiBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/_4sdp"
                         android:text="97 Reviews"
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintEnd_toEndOf="@id/reviewRatingBar"
-                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="@id/reviewRatingBar"
                         app:layout_constraintTop_toBottomOf="@id/reviewRatingBar" />
 
@@ -856,11 +868,11 @@
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="12dp"
                         android:fontFamily="@font/roboto_bold"
                         android:gravity="end"
-                        android:text="1000"
-
+                        android:text="0"
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/reviewLbl" />
@@ -873,7 +885,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:fontFamily="@font/roboto_bold"
                         android:gravity="end"
-                        android:text="4500"
+                        android:text="0"
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintStart_toStartOf="@id/fiveStarCount"
                         app:layout_constraintTop_toBottomOf="@id/fiveStarCount" />
@@ -886,7 +898,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:fontFamily="@font/roboto_bold"
                         android:gravity="end"
-                        android:text="250"
+                        android:text="0"
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintStart_toStartOf="@id/fourStarCount"
                         app:layout_constraintTop_toBottomOf="@id/fourStarCount" />
@@ -899,7 +911,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:fontFamily="@font/roboto_bold"
                         android:gravity="end"
-                        android:text="100"
+                        android:text="0"
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintStart_toStartOf="@id/threeStarCount"
                         app:layout_constraintTop_toBottomOf="@id/threeStarCount" />
@@ -912,7 +924,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:fontFamily="@font/roboto_bold"
                         android:gravity="end"
-                        android:text="1"
+                        android:text="0"
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintStart_toStartOf="@id/twoStarCount"
                         app:layout_constraintTop_toBottomOf="@id/twoStarCount" />
@@ -925,6 +937,7 @@
                         android:layout_marginEnd="@dimen/_4sdp"
                         android:scaleX="1.20"
                         app:haloRadius="0dp"
+                        android:enabled="false"
                         app:layout_constraintBottom_toBottomOf="@id/fiveStarCount"
                         app:layout_constraintEnd_toStartOf="@id/fiveStarCount"
                         app:layout_constraintTop_toTopOf="@id/fiveStarCount"
@@ -937,6 +950,7 @@
                         android:layout_marginEnd="@dimen/_4sdp"
                         android:scaleX="1.20"
                         app:haloRadius="0dp"
+                        android:enabled="false"
                         app:layout_constraintBottom_toBottomOf="@id/fourStarCount"
                         app:layout_constraintEnd_toStartOf="@id/fourStarCount"
                         app:layout_constraintTop_toTopOf="@id/fourStarCount"
@@ -949,6 +963,7 @@
                         android:layout_marginEnd="@dimen/_4sdp"
                         android:scaleX="1.20"
                         app:haloRadius="0dp"
+                        android:enabled="false"
                         app:layout_constraintBottom_toBottomOf="@id/threeStarCount"
                         app:layout_constraintEnd_toStartOf="@id/threeStarCount"
                         app:layout_constraintTop_toTopOf="@id/threeStarCount"
@@ -961,6 +976,7 @@
                         android:layout_marginEnd="@dimen/_4sdp"
                         android:scaleX="1.20"
                         app:haloRadius="0dp"
+                        android:enabled="false"
                         app:layout_constraintBottom_toBottomOf="@id/twoStarCount"
                         app:layout_constraintEnd_toStartOf="@id/twoStarCount"
                         app:layout_constraintTop_toTopOf="@id/twoStarCount"
@@ -975,6 +991,7 @@
                         android:paddingEnd="0dp"
                         android:scaleX="1.20"
                         app:haloRadius="0dp"
+                        android:enabled="false"
                         app:layout_constraintBottom_toBottomOf="@id/oneStarCount"
                         app:layout_constraintEnd_toStartOf="@id/oneStarCount"
                         app:layout_constraintTop_toTopOf="@id/oneStarCount"
@@ -1086,8 +1103,8 @@
                 android:id="@+id/relatedRv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginStart="@dimen/_4sdp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
@@ -1254,10 +1271,10 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
-        android:visibility="gone"
         android:id="@+id/loader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/_45sdp"
-        android:background="@color/white"/>
+        android:background="@color/white"
+        android:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

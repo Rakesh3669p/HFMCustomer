@@ -145,7 +145,7 @@
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
                         android:src="@drawable/ordered"
-
+                        android:alpha="0.7"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -157,6 +157,7 @@
                         android:layout_marginStart="@dimen/_10sdp"
                         android:singleLine="false"
                         android:text="@string/orderedLbl"
+
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintStart_toEndOf="@id/ordered"
                         app:layout_constraintTop_toTopOf="@id/ordered" />
@@ -168,7 +169,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_10sdp"
                         android:singleLine="false"
-                        android:text="Tue, 16th Apr 2022"
+                        android:text=""
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintBottom_toBottomOf="@id/ordered"
                         app:layout_constraintStart_toEndOf="@id/ordered"
@@ -189,6 +190,7 @@
                         android:id="@+id/inProcess"
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
+                        android:alpha="0.7"
                         android:src="@drawable/inprocess"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/orderedTrack" />
@@ -201,6 +203,7 @@
                         android:layout_marginStart="@dimen/_10sdp"
                         android:singleLine="false"
                         android:text="@string/in_process_lbl"
+
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintStart_toEndOf="@id/inProcess"
                         app:layout_constraintTop_toTopOf="@id/inProcess" />
@@ -212,7 +215,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_10sdp"
                         android:singleLine="false"
-                        android:text="Tue, 16th Apr 2022"
+                        android:text=""
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintBottom_toBottomOf="@id/inProcess"
                         app:layout_constraintStart_toEndOf="@id/inProcess"
@@ -233,6 +236,7 @@
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
                         android:src="@drawable/shipping"
+                        android:alpha="0.7"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/inProcessTrack" />
 
@@ -255,7 +259,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_10sdp"
                         android:singleLine="false"
-                        android:text="Tue, 16th Apr 2022"
+                        android:text=""
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintBottom_toBottomOf="@id/readyToShip"
                         app:layout_constraintStart_toEndOf="@id/readyToShip"
@@ -276,6 +280,7 @@
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
                         android:src="@drawable/inprogress"
+                        android:alpha="0.7"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/readyToShipTrack" />
 
@@ -298,7 +303,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_10sdp"
                         android:singleLine="false"
-                        android:text="Tue, 16th Apr 2022"
+                        android:text=""
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintBottom_toBottomOf="@id/deliveryInProgress"
                         app:layout_constraintStart_toEndOf="@id/deliveryInProgress"
@@ -318,6 +323,7 @@
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
                         android:src="@drawable/delivered"
+                        android:alpha="0.7"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/deliveryInProgressTrack" />
 
@@ -340,7 +346,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_10sdp"
                         android:singleLine="false"
-                        android:text="Tue, 16th Apr 2022"
+                        android:text=""
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintBottom_toBottomOf="@id/delivered"
                         app:layout_constraintStart_toEndOf="@id/delivered"

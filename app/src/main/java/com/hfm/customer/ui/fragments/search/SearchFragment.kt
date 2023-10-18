@@ -138,6 +138,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
         with(binding) {
             back.setOnClickListener(this@SearchFragment)
             clearSearch.setOnClickListener(this@SearchFragment)
+            searchFilter.setOnClickListener(this@SearchFragment)
         }
         relatedSearchTermAdapter.setOnItemClickListener {
             val bundle = Bundle()
@@ -151,11 +152,13 @@ class SearchFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
+            binding.searchFilter.id -> findNavController().navigate(R.id.categoriesFragmentHome)
             binding.clearSearch.id -> {
                 binding.searchSuggestionsRv.isVisible = false
                 relatedSearchTermAdapter.differ.submitList(emptyList())
                 binding.searchBar.setText("")
             }
+
         }
     }
 

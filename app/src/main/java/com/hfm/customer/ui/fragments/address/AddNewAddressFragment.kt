@@ -40,6 +40,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AddNewAddressFragment : Fragment(), View.OnClickListener {
+    private var isDefault: Int = 0
     private var from: String = ""
     private var addressId: Int = 0
     private var addressType: Int = 1
@@ -104,6 +105,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
                 homeFlatNo = it.getString("homeFlatNo").toString()
                 streetBuildingName = it.getString("streetBuildingName").toString()
                 pinCode = it.getString("pinCode").toString()
+                isDefault = it.getInt("isDefault")?:0
             }
         }
         if(from == "update") {
@@ -113,6 +115,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
                 houseNo.setText(homeFlatNo)
                 streetName.setText(streetBuildingName)
                 postCode.setText(pinCode)
+                setAsDefaultCheckBox.isChecked = isDefault == 1
             }
         }
     }
@@ -417,6 +420,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
     private fun setOnClickListener() {
         with(binding) {
             save.setOnClickListener(this@AddNewAddressFragment)
+            cancel.setOnClickListener(this@AddNewAddressFragment)
             back.setOnClickListener(this@AddNewAddressFragment)
         }
     }
@@ -434,25 +438,30 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
 
 
             if (customerName.isEmpty()) {
-                showToast("Please Enter a Valid Name")
+                showToast("Name is Required")
                 return
             }
 
-            if (customerNumber.isEmpty() || customerNumber.length < 5) {
-                showToast("Please Enter a Valid Mobile Number")
+            if (customerNumber.isEmpty()) {
+                showToast("Mobile Number is Required")
+                return
+            }
+
+            if (customerNumber.length < 5) {
+                showToast("Mobile Number should be more than 5 numbers")
                 return
             }
 
             if (homeFlatNo.isEmpty()) {
-                showToast("Please Enter a Valid House No.")
+                showToast("House No is Required.")
                 return
             }
             if (streetBuildingName.isEmpty()) {
-                showToast("Please Enter a Valid Street/Building Name")
+                showToast("Street/Building Name is Required")
                 return
             }
             if (pinCode.isEmpty()) {
-                showToast("Please Enter a Post Code")
+                showToast("Post Code is Required")
                 return
             }
             val isDefault = if (setAsDefaultCheckBox.isChecked) 1 else 2
@@ -501,6 +510,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
         when (v?.id) {
             binding.save.id -> validateAndUpdateAddress()
             binding.back.id -> findNavController().popBackStack()
+            binding.cancel.id -> findNavController().popBackStack()
         }
     }
 }

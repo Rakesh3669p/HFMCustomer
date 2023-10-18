@@ -1,16 +1,18 @@
 package com.hfm.customer.ui.fragments.checkOut
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.JsonObject
 import com.hfm.customer.R
@@ -18,18 +20,19 @@ import com.hfm.customer.databinding.BottomSheetStoreVoucherBinding
 import com.hfm.customer.databinding.BottomSheetVoucherBinding
 import com.hfm.customer.databinding.FragmentCheckoutBinding
 import com.hfm.customer.ui.fragments.address.model.Address
+import com.hfm.customer.ui.fragments.cart.adapter.PlatformVoucherAdapter
 import com.hfm.customer.ui.fragments.cart.model.CartData
-import com.hfm.customer.ui.fragments.cart.model.SellerProduct
 import com.hfm.customer.ui.fragments.checkOut.adapter.CheckOutStoreAdapter
 import com.hfm.customer.ui.fragments.checkOut.model.CheckOutData
 import com.hfm.customer.ui.fragments.checkOut.model.ShippingOption
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.ReviewsAdapter
+import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
+import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModelItem
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
-import com.hfm.customer.utils.getDeviceId
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
@@ -42,11 +45,16 @@ import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
-class CheckOutFragment : Fragment() , View.OnClickListener {
+class CheckOutFragment : Fragment(), View.OnClickListener {
 
     private lateinit var cartData: CartData
 
     private var grandTotal: Double = 0.0
+    private var selectingVoucherSellerId: String = ""
+    private var platformVouchers: SellerVoucherModel? = null
+
+    private var sellerSelectedVoucher: SellerVoucherModelItem? = null
+    private var platFormSelectedVoucher: SellerVoucherModelItem? = null
 
     private var shippingOptions: List<ShippingOption> = ArrayList()
 
@@ -55,15 +63,26 @@ class CheckOutFragment : Fragment() , View.OnClickListener {
     private lateinit var binding: FragmentCheckoutBinding
     private var currentView: View? = null
 
-    @Inject lateinit var reviewsAdapter: ReviewsAdapter
+    @Inject
+    lateinit var reviewsAdapter: ReviewsAdapter
 
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
-    private val mainViewModel:MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
+    private var sellerVouchers: SellerVoucherModel? = null
+    private lateinit var platformVoucherDialog: BottomSheetDialog
 
-    @Inject lateinit var checkOutAdapter: CheckOutStoreAdapter
-    @Inject lateinit var sessionManager: SessionManager
+    @Inject
+    lateinit var checkOutAdapter: CheckOutStoreAdapter
 
+    @Inject
+    lateinit var sessionManager: SessionManager
+
+    @Inject
+    lateinit var platformVoucherAdapter: PlatformVoucherAdapter
+
+    @Inject
+    lateinit var sellerVoucherAdapter: PlatformVoucherAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -84,73 +103,157 @@ class CheckOutFragment : Fragment() , View.OnClickListener {
             delay(500)
             findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>("addressId")
                 ?.observe(viewLifecycleOwner) {
-                    addressId = it?:0
+                    addressId = it ?: 0
                 }
 
-            if(addressId>=0){
+            if (addressId >= 0) {
                 val address = addressList.find { it.id == addressId }
                 address?.let { setAddress(it) }
             }
         }
     }
+
     private fun init() {
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         binding.loader.isVisible = true
+        mainViewModel.getPlatFormVouchers(1)
         mainViewModel.getAddress()
         mainViewModel.getCheckoutInfo()
     }
 
-
-
     private fun setObserver() {
-        mainViewModel.address.observe(viewLifecycleOwner){response->
-            when(response) {
+        mainViewModel.address.observe(viewLifecycleOwner) { response ->
+            when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode == "200"){
+                    if (response.data?.httpcode == "200") {
                         addressList = response.data.data.address_list
                         response.data.data.address_list.forEach {
-                            if(it.is_default == 1){
+                            if (it.is_default == 1) {
                                 setAddress(it)
                             }
                         }
                     }
                 }
+
                 is Resource.Loading -> appLoader.dismiss()
                 is Resource.Error -> apiError(response.message)
             }
         }
 
-        mainViewModel.checkOutInfo.observe(viewLifecycleOwner){response->
-            when(response) {
+
+        mainViewModel.platformVouchers.observe(viewLifecycleOwner) { response ->
+            when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode == 200){
-                        mainViewModel.getCart(getDeviceId(requireContext()))
-                        shippingOptions = response.data.data.shipping_options
-                        setCheckOutData(response.data.data)
-                    }else{
+                    platformVouchers = response.data
+                }
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error ->
+                    apiError(response.message)
+            }
+        }
+
+        mainViewModel.sellerVouchers.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    sellerVouchers = response.data
+                    showSellerVoucherBottomSheet()
+                }
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
+            }
+        }
+
+        mainViewModel.applyPlatformVoucher.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (response.data?.httpcode == 200) {
+                        if (this::platformVoucherDialog.isInitialized) {
+                            platformVoucherDialog.dismiss()
+                        }
+                        mainViewModel.getCheckoutInfo()
+                        showToast("Coupon Applied")
+                    } else {
+                        platformVoucherDialog.dismiss()
                         showToast(response.data?.message.toString())
                     }
                 }
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error ->
+                    apiError(response.message)
+            }
+        }
+
+
+        mainViewModel.applySellerVoucher.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (this::platformVoucherDialog.isInitialized) platformVoucherDialog.dismiss()
+                    if (response.data?.httpcode == 200) mainViewModel.getCheckoutInfo() else showToast(
+                        response.data?.message.toString()
+                    )
+                }
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error ->
+                    apiError(response.message)
+            }
+        }
+        mainViewModel.removeCoupon.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (response.data?.httpcode == 200) {
+                        mainViewModel.getCheckoutInfo()
+                    } else {
+                        showToast(response.data?.message.toString())
+                    }
+                }
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error ->
+                    apiError(response.message)
+            }
+        }
+
+        mainViewModel.checkOutInfo.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (response.data?.httpcode == 200) {
+                        mainViewModel.getCart()
+                        shippingOptions = response.data.data.shipping_options
+                        setCheckOutData(response.data.data)
+                    } else {
+                        showToast(response.data?.message.toString())
+                    }
+                }
+
                 is Resource.Loading -> appLoader.dismiss()
                 is Resource.Error -> apiError(response.message)
             }
         }
 
 
-        mainViewModel.cart.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
-
+        mainViewModel.cart.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode == 200){
+                    if (response.data?.httpcode == 200) {
                         setProducts(response.data.data)
                     }
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
         }
     }
@@ -160,67 +263,142 @@ class CheckOutFragment : Fragment() , View.OnClickListener {
         this.cartData = cartData
 
         with(binding) {
-            initRecyclerView(requireContext(),binding.checkOutRv, checkOutAdapter)
-
-            val checkOutData = mutableListOf<SellerProduct>()
-
-            for (sellerProductItem in cartData.seller_product) {
-                if (sellerProductItem.seller.products.any { it.cart_selected.toString().toDouble() > 0 }) {
-                    checkOutData.add(sellerProductItem)
+            scrollView.isVisible = false
+            initRecyclerView(requireContext(), checkOutRv, checkOutAdapter)
+            val checkOutData = cartData.seller_product.filter { sellerProductItem ->
+                sellerProductItem.seller.products.any {
+                    it.cart_selected.toString().toDouble() > 0
                 }
             }
 
-            val animator: RecyclerView.ItemAnimator? = checkOutRv.itemAnimator
-            if (animator is DefaultItemAnimator) {
-                animator.supportsChangeAnimations = false
-                checkOutRv.itemAnimator = null
+            checkOutRv.itemAnimator?.let { animator ->
+                if (animator is DefaultItemAnimator) {
+                    animator.supportsChangeAnimations = false
+                    checkOutRv.itemAnimator = null
+                }
             }
 
             checkOutAdapter.differ.submitList(checkOutData)
-
             checkOutAdapter.setShippingOptions(shippingOptions)
 
-
-            voucherDetailsLayout.isVisible = false
-            addVoucher.isVisible = true
-            scrollView.isVisible = false
-
-
-            val productCount = cartData.seller_product.sumOf { sellerProducts ->
+            val productCount = checkOutData.sumBy { sellerProducts ->
                 sellerProducts.seller.products.count { product ->
                     product.cart_selected.toString().toDouble() > 0
                 }
             }
 
+            storeVoucher.text = if (cartData.seller_voucher_amt > 0) "- RM ${cartData.seller_voucher_amt}" else "RM 0.00"
+            platformVoucher.text = if (cartData.platform_voucher_amt > 0) "- RM ${cartData.platform_voucher_amt}" else "RM 0.00"
 
-            if(productCount>0){
-                subtotalLbl.text = "Subtotal(${productCount}) Items"
-            }else{
-                subtotalLbl.text = "Subtotal"
-            }
-            subtotal.text =
-                "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
-            shippingAmount.text =
-                "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
+            subtotalLbl.text = if (productCount > 0) "Subtotal($productCount Items)" else "Subtotal"
+            subtotal.text = "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
+            shippingAmount.text = "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
             grandTotal = cartData.grand_total.toString().toDouble()
             totalAmount.text = formatToTwoDecimalPlaces(grandTotal)
 
+            voucherDetailsLayout.isVisible = cartData.is_platform_coupon_applied == 1
+            addVoucher.isVisible = cartData.is_platform_coupon_applied == 0
 
-            if (cartData.wallet_balance != "false") {
-                val pointToRM = cartData.wallet_balance.toDouble() / 100
-                points.text = "${cartData.wallet_balance.toDouble().roundToInt()} Points (RM ${formatToTwoDecimalPlaces(pointToRM)})"
+            voucherName.text = cartData.platform_coupon_data.title
+            voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
+
+            val walletBalance = cartData.wallet_balance
+            if (walletBalance != "false") {
+                val pointToRM = walletBalance.toDouble() / 100
+                points.text = "${walletBalance.toDouble().roundToInt()} Points (RM ${formatToTwoDecimalPlaces(pointToRM)})"
             } else {
                 points.text = "0 Points (RM 0.00)"
                 wallet.text = "RM 0.00"
             }
 
             lifecycleScope.launch {
+                delay(150)
                 scrollView.isVisible = true
             }
         }
 
         binding.loader.isVisible = false
+    }
 
+    private fun showVoucherBottomSheet() {
+
+        val platformVoucherBinding = BottomSheetVoucherBinding.inflate(layoutInflater)
+        platformVoucherDialog =
+            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
+        platformVoucherDialog.setContentView(platformVoucherBinding.root)
+        initRecyclerView(
+            requireContext(),
+            platformVoucherBinding.vouchersRv,
+            platformVoucherAdapter
+        )
+
+        platformVoucherAdapter.setOnItemClickListener { position ->
+            platFormSelectedVoucher = platformVouchers?.get(position)
+        }
+
+        with(platformVoucherBinding) {
+            requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+
+            voucherCode.setOnClickListener {
+                val imm =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
+            }
+
+            apply.setOnClickListener {
+                mainViewModel.applyPlatFormVouchers(
+                    platFormSelectedVoucher?.coupon_code ?: "",
+                    cartData.total_offer_cost.toString()
+                )
+            }
+            cancel.setOnClickListener {
+                platformVoucherDialog.dismiss()
+            }
+        }
+        platformVoucherAdapter.differ.submitList(platformVouchers)
+        platformVoucherDialog.show()
+        platformVoucherBinding.voucherCode.clearFocus()
+    }
+
+    private fun showSellerVoucherBottomSheet() {
+        val sellerVoucherBinding = BottomSheetVoucherBinding.inflate(layoutInflater)
+        platformVoucherDialog =
+            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
+        platformVoucherDialog.setContentView(sellerVoucherBinding.root)
+        initRecyclerView(requireContext(), sellerVoucherBinding.vouchersRv, sellerVoucherAdapter)
+        sellerVoucherAdapter.differ.submitList(sellerVouchers)
+        sellerVoucherAdapter.setOnItemClickListener { position ->
+            sellerSelectedVoucher = sellerVouchers?.get(position)
+        }
+
+        with(sellerVoucherBinding) {
+            requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+
+            voucherCode.setOnClickListener {
+                val imm =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
+            }
+
+            apply.setOnClickListener {
+                if (sellerSelectedVoucher == null) {
+                    showToast("please select any coupon to apply.")
+                    return@setOnClickListener
+                }
+
+                val sellerData =
+                    cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+                mainViewModel.applySellerVouchers(
+                    selectingVoucherSellerId,
+                    sellerSelectedVoucher?.coupon_code ?: "",
+                    sellerData?.seller_subtotal ?: 0.0
+                )
+                sellerSelectedVoucher = null
+            }
+            cancel.setOnClickListener { platformVoucherDialog.dismiss() }
+        }
+        platformVoucherDialog.show()
+        sellerVoucherBinding.voucherCode.clearFocus()
     }
 
     private fun setCheckOutData(data: CheckOutData) {
@@ -228,11 +406,12 @@ class CheckOutFragment : Fragment() , View.OnClickListener {
     }
 
     private fun setAddress(address: Address) {
-        with(binding){
+        with(binding) {
             addressId = address.id
             customerName.text = address.name.toString()
-            customerAddress.text = "${address.address1} ${address.pincode}, ${address.city}, ${address.state}, ${address.country}"
+            customerAddress.text = "${address.address1},\n${address.city}, ${address.state}, ${address.country}, ${address.pincode}"
             customerMobile.text = address.phone.toString()
+            mainViewModel.getCheckoutInfo()
         }
     }
 
@@ -243,17 +422,11 @@ class CheckOutFragment : Fragment() , View.OnClickListener {
             noInternetDialog.show()
         }
     }
-    private fun showVoucherBottomSheet() {
-        val binding = BottomSheetVoucherBinding.inflate(layoutInflater)
-        val sortDialog = BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
-        sortDialog.setContentView(binding.root)
-        sortDialog.show()
-    }
-
 
     private fun showStoreVoucherBottomSheet() {
         val binding = BottomSheetStoreVoucherBinding.inflate(layoutInflater)
-        val sortDialog = BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
+        val sortDialog =
+            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         sortDialog.setContentView(binding.root)
         sortDialog.show()
     }
@@ -261,32 +434,75 @@ class CheckOutFragment : Fragment() , View.OnClickListener {
 
     private fun setOnClickListener() {
         with(binding) {
-            back.setOnClickListener (this@CheckOutFragment)
-            addVoucher.setOnClickListener (this@CheckOutFragment)
-            removeVoucher.setOnClickListener (this@CheckOutFragment)
-            manageAddress.setOnClickListener (this@CheckOutFragment)
-            placeOrder.setOnClickListener (this@CheckOutFragment)
+            back.setOnClickListener(this@CheckOutFragment)
+            addVoucher.setOnClickListener(this@CheckOutFragment)
+            removeVoucher.setOnClickListener(this@CheckOutFragment)
+            manageAddress.setOnClickListener(this@CheckOutFragment)
+            placeOrder.setOnClickListener(this@CheckOutFragment)
         }
 
         checkOutAdapter.setOnMessageListener { message, position ->
             cartData.seller_product[position].seller.message = message
         }
+
+        checkOutAdapter.setOnShopVoucherClickListener { sellerId ->
+            val storeData =
+                cartData.seller_product.find { it.seller.seller_id.toString() == sellerId }
+            if (storeData?.seller?.products?.any {
+                    it.cart_selected.toString().toDouble() > 0
+                } == false) {
+                showToast("please select any product to apply the voucher")
+                return@setOnShopVoucherClickListener
+            }
+            selectingVoucherSellerId = sellerId
+            mainViewModel.getSellerVouchers(sellerId)
+        }
+
+        checkOutAdapter.setOnSellerRemoveCoupon { id ->
+            mainViewModel.removeCoupon(id.toString(), "seller")
+        }
     }
 
-    private fun placeOrder(){
+    private fun placeOrder() {
         val jsonObject = JsonObject()
         val sellerArray = JsonObject()
 
         var sellerIndex = 0
 
 
-        cartData.seller_product.forEach { sellerData ->
+        val someSelectedProductNotDeliverable = checkOutAdapter.differ.currentList.any { seller ->
+            seller.seller.products.any { product ->
+                product.cart_selected.toString().toDouble() > 0 && product.check_shipping_availability.toString().toDouble() < 1
+            }
+        }
+
+        val someSelectedProductOutOfStock: Boolean =
+            checkOutAdapter.differ.currentList.any { seller ->
+                seller.seller.products.any { product ->
+                    product.is_out_of_stock
+                }
+            }
+
+
+        if (someSelectedProductNotDeliverable) {
+            showToast("Some selected products is not available in your Delivery Address.")
+            return
+        } else if(someSelectedProductOutOfStock) {
+            showToast("Some selected products is Sold Out.")
+            return
+        }
+
+            cartData.seller_product.forEach { sellerData ->
             val sellerObject = JsonObject()
 
-            val totalTax = sellerData.seller.products.sumOf { it.total_tax_value.toString().toDouble() }
-            val commission = sellerData.seller.products.sumOf { it.commission.toString().toDouble() }
-            val discountAmt = sellerData.seller.products.sumOf { it.total_discount_price.toString().toDouble() }
-            val totalCost = sellerData.seller.products.sumOf { it.total_discount_price.toString().toDouble() }
+            val totalTax =
+                sellerData.seller.products.sumOf { it.total_tax_value.toString().toDouble() }
+            val commission =
+                sellerData.seller.products.sumOf { it.commission.toString().toDouble() }
+            val discountAmt =
+                sellerData.seller.products.sumOf { it.total_discount_price.toString().toDouble() }
+            val totalCost =
+                sellerData.seller.products.sumOf { it.total_discount_price.toString().toDouble() }
 
             sellerObject.addProperty("shipping_method", sellerData.shipping_method)
             sellerObject.addProperty("shipping_charge", sellerData.shipping.toString())
@@ -298,9 +514,9 @@ class CheckOutFragment : Fragment() , View.OnClickListener {
             sellerObject.addProperty("total_cost", totalCost)
             sellerObject.addProperty("is_coupon", 0)
             sellerObject.addProperty("coupon_id", "")
-            sellerObject.addProperty("discount_type"    , "")
+            sellerObject.addProperty("discount_type", "")
             sellerObject.addProperty("packing_charge", 0)
-            sellerObject.addProperty("message", sellerData.seller.message?:"")
+            sellerObject.addProperty("message", sellerData.seller.message ?: "")
             sellerObject.addProperty("shipping_option", 1)
             sellerObject.addProperty("coupon_discount_amt", "")
             sellerArray.add(sellerIndex.toString(), sellerObject)
@@ -319,7 +535,7 @@ class CheckOutFragment : Fragment() , View.OnClickListener {
         jsonObject.addProperty("reward_id", "")
         jsonObject.addProperty("commission", 0)
         jsonObject.addProperty("reward_amt", "")
-        jsonObject.addProperty("device_id", getDeviceId(requireContext()))
+        jsonObject.addProperty("device_id", sessionManager.deviceId)
         jsonObject.addProperty("page_url", "https://dev-kangtao.vercel.app/account/checkout")
         jsonObject.addProperty("os_type", "APP")
         jsonObject.addProperty("invite_coupon_id", "")
@@ -329,22 +545,26 @@ class CheckOutFragment : Fragment() , View.OnClickListener {
         jsonObject.addProperty("grand_total", binding.totalAmount.text.toString())
 
         val bundle = Bundle()
-        bundle.putString("payLoad",jsonObject.toString())
-        findNavController().navigate(R.id.paymentMethodFragment,bundle)
+        bundle.putString("payLoad", jsonObject.toString())
+        findNavController().navigate(R.id.paymentMethodFragment, bundle)
 
     }
+
     override fun onClick(v: View?) {
         when (v?.id) {
-            binding.back.id->findNavController().popBackStack()
-            binding.addVoucher.id-> showVoucherBottomSheet()
-            binding.removeVoucher.id-> showStoreVoucherBottomSheet()
-            binding.placeOrder.id-> {
+            binding.back.id -> findNavController().popBackStack()
+            binding.addVoucher.id -> showVoucherBottomSheet()
+            binding.removeVoucher.id -> {
+                mainViewModel.removeCoupon(cartData.platform_coupon_data.coupon_id.toString(),"platform")
+            }
+            binding.placeOrder.id -> {
                 placeOrder()
             }
-            binding.manageAddress.id-> {
+
+            binding.manageAddress.id -> {
                 val bundle = Bundle()
-                bundle.putString("from","checkOut")
-                findNavController().navigate(R.id.manageAddressFragment,bundle)
+                bundle.putString("from", "checkOut")
+                findNavController().navigate(R.id.manageAddressFragment, bundle)
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.hfm.customer.ui.dashBoard.profile
 
 import android.app.Activity
-import android.app.DatePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,7 +20,6 @@ import coil.util.DebugLogger
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.Country
-import com.hfm.customer.databinding.FragmentProfileSettingsBinding
 import com.hfm.customer.databinding.FragmentProfileSettingsBusinessBinding
 import com.hfm.customer.ui.dashBoard.profile.model.ProfileData
 import com.hfm.customer.ui.loginSignUp.LoginSignUpViewModel
@@ -30,8 +28,6 @@ import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
-import com.hfm.customer.utils.business
-import com.hfm.customer.utils.getDeviceId
 import com.hfm.customer.utils.isValidEmail
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
@@ -45,7 +41,6 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
-import java.time.LocalDate
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -336,7 +331,7 @@ class ProfileSettingsBusiness : Fragment(), View.OnClickListener {
         requestBodyMap["birthday"] = "2000-04-20".toRequestBody(MultipartBody.FORM)
         requestBodyMap["password"] = password.toRequestBody(MultipartBody.FORM)
         requestBodyMap["password_confirmation"] = password.toRequestBody(MultipartBody.FORM)
-        requestBodyMap["device_id"] = getDeviceId(requireContext()).toRequestBody(MultipartBody.FORM)
+        requestBodyMap["device_id"] = sessionManager.deviceId.toRequestBody(MultipartBody.FORM)
         requestBodyMap["os_type"] = "APP".toRequestBody(MultipartBody.FORM)
         mainViewModel.updateProfileBusiness(requestBodyMap)
     }

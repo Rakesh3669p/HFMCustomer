@@ -4,15 +4,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ActivityDashBoardBinding
-import com.hfm.customer.databinding.ActivityMainBinding
-import com.hfm.customer.utils.showToast
+import com.hfm.customer.utils.SessionManager
+import com.hfm.customer.utils.getDeviceIdInternal
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DashBoardActivity : AppCompatActivity() {
@@ -20,6 +20,7 @@ class DashBoardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDashBoardBinding
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var navController: NavController
+    @Inject lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +35,7 @@ class DashBoardActivity : AppCompatActivity() {
         navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         setupWithNavController(binding.bottomNavigationView, navHostFragment.navController)
         navController.addOnDestinationChangedListener(destinationListener)
-
+        sessionManager.deviceId = getDeviceIdInternal(this)
     }
 
     override fun onSupportNavigateUp(): Boolean {

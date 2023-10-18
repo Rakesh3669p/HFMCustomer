@@ -29,7 +29,7 @@ import com.hfm.customer.ui.fragments.products.productList.model.Subcategory
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
-import com.hfm.customer.utils.getDeviceId
+import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
@@ -37,12 +37,16 @@ import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.math.roundToInt
+
 @AndroidEntryPoint
 class ProductListFragment : Fragment(), View.OnClickListener {
 
     companion object {
         var selectedBrandFilters: MutableList<Int> = ArrayList()
     }
+
+    @Inject
+    lateinit var sessionManager: SessionManager
 
     private val productList: MutableList<Product> = ArrayList()
     private var brands: List<Brand> = ArrayList()
@@ -59,7 +63,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
     private var minPrice: String = ""
     private var wholeSale: Int = 0
     private var flashSale: Int = 0
-    private var deviceId: String = ""
+
 
     @Inject
     lateinit var productListAdapter: ProductListAdapter
@@ -104,7 +108,6 @@ class ProductListFragment : Fragment(), View.OnClickListener {
     private fun init() {
         binding.loader.isVisible = true
         appLoader = Loader(requireContext())
-        deviceId = getDeviceId(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener {
             init()
@@ -139,11 +142,11 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             popular = popular,
             latest = newest,
             search = search,
-            deviceId = deviceId,
+            deviceId = sessionManager.deviceId,
             page = pageNo,
             wholeSale = wholeSale,
 
-        )
+            )
     }
 
     private fun setObserver() {
@@ -153,22 +156,28 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     binding.loader.isVisible = false
                     binding.bottomLoader.isVisible = false
-                    if (response.data?.httpcode == 200) setProductData(response.data.data) else showToast(response.data?.message.toString())
+                    if (response.data?.httpcode == 200) setProductData(response.data.data) else showToast(
+                        response.data?.message.toString()
+                    )
                 }
-                is Resource.Loading -> if (pageNo == 0) appLoader.show() else binding.bottomLoader.isVisible = true
+
+                is Resource.Loading -> if (pageNo == 0) appLoader.show() else binding.bottomLoader.isVisible =
+                    true
+
                 is Resource.Error -> apiError(response.message)
             }
         }
 
-        mainViewModel.homeBrands.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
-                    if(response.data?.httpcode == 200){
+        mainViewModel.homeBrands.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    if (response.data?.httpcode == 200) {
                         brands = response.data.data.brands
                     }
                 }
-                is Resource.Loading->Unit
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> Unit
+                is Resource.Error -> apiError(response.message)
             }
         }
     }
@@ -178,8 +187,8 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         if (pageNo == 0) {
             productList.clear()
             if (!data.subcategory_data.subcategory.isNullOrEmpty()) {
-                val subCategories:MutableList<Subcategory> = ArrayList()
-                val subcategory = Subcategory(id = 0,subcategory_name="ALL")
+                val subCategories: MutableList<Subcategory> = ArrayList()
+                val subcategory = Subcategory(id = 0, subcategory_name = "ALL")
                 subCategories.add(subcategory)
                 subCategories.addAll(data.subcategory_data.subcategory)
                 initRecyclerView(
@@ -199,7 +208,8 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         productListAdapter.notifyDataSetChanged()
 
         if (data.products.isNotEmpty()) {
-            binding.result.text = "${data.total_products} results for ${data.products[0].category_name}"
+            binding.result.text =
+                "${data.total_products} results for ${data.products[0].category_name}"
         }
     }
 
@@ -236,14 +246,14 @@ class ProductListFragment : Fragment(), View.OnClickListener {
 
             productCategoryListAdapter.setOnSubCategoryClickListener {
                 pageNo = 0
-                subCatId = if(it==0) {
+                subCatId = if (it == 0) {
                     ""
-                }else{
+                } else {
                     it.toString()
                 }
                 makeProductListApiCall()
             }
-            filterBrandAdapter.setOnBrandFilterClickListener {it,adapterPosition->
+            filterBrandAdapter.setOnBrandFilterClickListener { it, adapterPosition ->
                 if (selectedBrandFilters.contains(it)) {
                     selectedBrandFilters.remove(it)
                 } else {
@@ -297,7 +307,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                 mainViewModel.getProductList(
                     catId,
                     lowToHigh = "1",
-                    deviceId = deviceId,
+                    deviceId = sessionManager.deviceId,
                     page = pageNo
                 )
                 sortDialog.dismiss()
@@ -312,7 +322,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                 mainViewModel.getProductList(
                     catId,
                     highToLow = "1",
-                    deviceId = deviceId,
+                    deviceId = sessionManager.deviceId,
                     page = pageNo
                 )
                 sortDialog.dismiss()
@@ -324,6 +334,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         sortBinding.highPriceRadioButton.isChecked = highToLow.isNotEmpty()
         sortDialog.show()
     }
+
     private fun showFilterBottomSheet() {
         bottomSheetFilterBinding = BottomSheetFilterBinding.inflate(layoutInflater)
         val filterDialog =
@@ -354,10 +365,12 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                 makeProductListApiCall()
                 filterDialog.dismiss()
             }
+            cancel.setOnClickListener {
+                filterDialog.dismiss()
+            }
         }
 
         filterDialog.show()
-
     }
 
     private fun apiError(message: String?) {
@@ -368,6 +381,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             noInternetDialog.show()
         }
     }
+
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()

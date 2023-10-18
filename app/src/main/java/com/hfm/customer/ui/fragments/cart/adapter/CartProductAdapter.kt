@@ -32,12 +32,24 @@ class CartProductAdapter @Inject constructor() :
                     productImage.load(replaceBaseUrl(data.product_image[0].image))
                 }
                 productName.text = data.product_name
-                productPrice.text = "RM ${formatToTwoDecimalPlaces(data.total_discount_price.toString().toDouble())}"
+
+                if (data.total_discount_price.toString().toDouble() > 0) {
+                    productPrice.text = "RM ${
+                        formatToTwoDecimalPlaces(
+                            data.total_discount_price.toString().toDouble()
+                        )
+                    }"
+                } else {
+                    productPrice.text =
+                        "RM ${formatToTwoDecimalPlaces(data.total_actual_price.toString().toDouble())}"
+                }
+
                 qty.text = data.quantity.toString().toDouble().roundToInt().toString()
                 variant.isVisible = data.variants_list.isNotEmpty()
 
-                available.isVisible = data.check_shipping_availability.toString().toDouble() < 1 && data.cart_selected.toString().toDouble()>0
-                available.text  = data.check_shipping_availability_text
+                available.isVisible = data.check_shipping_availability.toString()
+                    .toDouble() < 1 && data.cart_selected.toString().toDouble() > 0
+                available.text = data.check_shipping_availability_text
 
                 if (data.variants_list != null && data.variants_list.isNotEmpty()) {
                     variant.text = data.attr_name1
@@ -74,7 +86,7 @@ class CartProductAdapter @Inject constructor() :
 
                 variant.setOnClickListener {
                     data.variants_list.forEach {
-                        if(data.attr_name1.contains(it.combination)){
+                        if (data.attr_name1.contains(it.combination)) {
                             it.isSelected = true
                         }
                     }
@@ -135,9 +147,9 @@ class CartProductAdapter @Inject constructor() :
         onProductSelection = listener
     }
 
-    private var onVariantClick: ((variants: List<Variants>,cartId:String) -> Unit)? = null
+    private var onVariantClick: ((variants: List<Variants>, cartId: String) -> Unit)? = null
 
-    fun setOnVariantClick(listener: (variants: List<Variants>,cartId:String) -> Unit) {
+    fun setOnVariantClick(listener: (variants: List<Variants>, cartId: String) -> Unit) {
         onVariantClick = listener
     }
 
