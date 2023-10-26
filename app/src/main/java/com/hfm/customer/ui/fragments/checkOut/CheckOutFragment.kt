@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.JsonObject
 import com.hfm.customer.R
@@ -119,14 +121,14 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         binding.loader.isVisible = true
         mainViewModel.getPlatFormVouchers(1)
         mainViewModel.getAddress()
-        mainViewModel.getCheckoutInfo()
+//        mainViewModel.getCheckoutInfo()
     }
 
     private fun setObserver() {
         mainViewModel.address.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
+
                     if (response.data?.httpcode == "200") {
                         addressList = response.data.data.address_list
                         response.data.data.address_list.forEach {
@@ -137,7 +139,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                     }
                 }
 
-                is Resource.Loading -> appLoader.dismiss()
+                is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
         }
@@ -146,7 +148,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         mainViewModel.platformVouchers.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
+
                     platformVouchers = response.data
                 }
 
@@ -227,11 +229,9 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         mainViewModel.checkOutInfo.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
                         mainViewModel.getCart()
                         shippingOptions = response.data.data.shipping_options
-                        setCheckOutData(response.data.data)
                     } else {
                         showToast(response.data?.message.toString())
                     }
@@ -246,7 +246,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         mainViewModel.cart.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
+                    while (appLoader.isShowing) appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
                         setProducts(response.data.data)
                     }
@@ -287,12 +287,16 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 }
             }
 
-            storeVoucher.text = if (cartData.seller_voucher_amt > 0) "- RM ${cartData.seller_voucher_amt}" else "RM 0.00"
-            platformVoucher.text = if (cartData.platform_voucher_amt > 0) "- RM ${cartData.platform_voucher_amt}" else "RM 0.00"
+            storeVoucher.text =
+                if (cartData.seller_voucher_amt > 0) "- RM ${cartData.seller_voucher_amt}" else "RM 0.00"
+            platformVoucher.text =
+                if (cartData.platform_voucher_amt > 0) "- RM ${cartData.platform_voucher_amt}" else "RM 0.00"
 
             subtotalLbl.text = if (productCount > 0) "Subtotal($productCount Items)" else "Subtotal"
-            subtotal.text = "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
-            shippingAmount.text = "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
+            subtotal.text =
+                "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
+            shippingAmount.text =
+                "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
             grandTotal = cartData.grand_total.toString().toDouble()
             totalAmount.text = formatToTwoDecimalPlaces(grandTotal)
 
@@ -300,14 +304,17 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             addVoucher.isVisible = cartData.is_platform_coupon_applied == 0
 
             voucherName.text = cartData.platform_coupon_data.title
-            voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
+            voucherDescription.text =
+                "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
 
             val walletBalance = cartData.wallet_balance
             if (walletBalance != "false") {
                 val pointToRM = walletBalance.toDouble() / 100
-                points.text = "${walletBalance.toDouble().roundToInt()} Points (RM ${formatToTwoDecimalPlaces(pointToRM)})"
+                points.text = "${walletBalance.toDouble().roundToInt()} Points (RM ${
+                    formatToTwoDecimalPlaces(pointToRM)
+                })"
             } else {
-                points.text = "0 Points (RM 0.00)"
+                points.text = "0 (RM 0.00)"
                 wallet.text = "RM 0.00"
             }
 
@@ -326,6 +333,10 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         platformVoucherDialog =
             BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         platformVoucherDialog.setContentView(platformVoucherBinding.root)
+        val bottomSheet: FrameLayout? = platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        if (bottomSheet != null) {
+            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+        }
         initRecyclerView(
             requireContext(),
             platformVoucherBinding.vouchersRv,
@@ -337,9 +348,12 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         }
 
         with(platformVoucherBinding) {
+            noVouchers.isVisible = platformVouchers?.isEmpty() == true
             requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-
+            titleLbl.text = "Select Platform Vouchers"
             voucherCode.setOnClickListener {
+                voucherCode.isFocusable = true
+                voucherCode.requestFocus()
                 val imm =
                     requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
@@ -356,8 +370,11 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             }
         }
         platformVoucherAdapter.differ.submitList(platformVouchers)
+        lifecycleScope.launch {
+            delay(500)
+            platformVoucherBinding.voucherCode.clearFocus()
+        }
         platformVoucherDialog.show()
-        platformVoucherBinding.voucherCode.clearFocus()
     }
 
     private fun showSellerVoucherBottomSheet() {
@@ -365,6 +382,10 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         platformVoucherDialog =
             BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         platformVoucherDialog.setContentView(sellerVoucherBinding.root)
+        val bottomSheet: FrameLayout? = platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        if (bottomSheet != null) {
+            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+        }
         initRecyclerView(requireContext(), sellerVoucherBinding.vouchersRv, sellerVoucherAdapter)
         sellerVoucherAdapter.differ.submitList(sellerVouchers)
         sellerVoucherAdapter.setOnItemClickListener { position ->
@@ -372,9 +393,12 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         }
 
         with(sellerVoucherBinding) {
+            noVouchers.isVisible = sellerVouchers?.isEmpty() == true
             requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-
+            titleLbl.text = "Select Shop Vouchers"
             voucherCode.setOnClickListener {
+                voucherCode.isFocusable = true
+                voucherCode.requestFocus()
                 val imm =
                     requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
@@ -397,19 +421,17 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             }
             cancel.setOnClickListener { platformVoucherDialog.dismiss() }
         }
+
         platformVoucherDialog.show()
-        sellerVoucherBinding.voucherCode.clearFocus()
     }
 
-    private fun setCheckOutData(data: CheckOutData) {
-        val address = data.address.filter { it.is_default_addr == 1 }
-    }
 
     private fun setAddress(address: Address) {
         with(binding) {
             addressId = address.id
             customerName.text = address.name.toString()
-            customerAddress.text = "${address.address1},\n${address.city}, ${address.state}, ${address.country}, ${address.pincode}"
+            customerAddress.text =
+                "${address.address1},\n${address.city}, ${address.state}, ${address.country}, ${address.pincode}"
             customerMobile.text = address.phone.toString()
             mainViewModel.getCheckoutInfo()
         }
@@ -421,14 +443,6 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         if (message == netWorkFailure) {
             noInternetDialog.show()
         }
-    }
-
-    private fun showStoreVoucherBottomSheet() {
-        val binding = BottomSheetStoreVoucherBinding.inflate(layoutInflater)
-        val sortDialog =
-            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
-        sortDialog.setContentView(binding.root)
-        sortDialog.show()
     }
 
 
@@ -443,6 +457,12 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
 
         checkOutAdapter.setOnMessageListener { message, position ->
             cartData.seller_product[position].seller.message = message
+        }
+
+        checkOutAdapter.setOnStoreClicked { sellerId ->
+            val bundle = Bundle()
+            bundle.putString("storeId", sellerId.toString())
+            findNavController().navigate(R.id.storeFragment, bundle)
         }
 
         checkOutAdapter.setOnShopVoucherClickListener { sellerId ->
@@ -472,56 +492,56 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
 
         val someSelectedProductNotDeliverable = checkOutAdapter.differ.currentList.any { seller ->
             seller.seller.products.any { product ->
-                product.cart_selected.toString().toDouble() > 0 && product.check_shipping_availability.toString().toDouble() < 1
+                product.cart_selected.toString()
+                    .toDouble() > 0 && product.check_shipping_availability.toString().toDouble() < 1
             }
         }
 
         val someSelectedProductOutOfStock: Boolean =
-            checkOutAdapter.differ.currentList.any { seller ->
-                seller.seller.products.any { product ->
-                    product.is_out_of_stock
+            checkOutAdapter.differ.currentList.filter { it.seller.cart_selected == 1 }
+                .any { seller ->
+                    seller.seller.products.filter { it.cart_selected == 1 }.any { product ->
+                        product.is_out_of_stock.toString().toBoolean()
+                    }
                 }
-            }
 
 
         if (someSelectedProductNotDeliverable) {
             showToast("Some selected products is not available in your Delivery Address.")
             return
-        } else if(someSelectedProductOutOfStock) {
+        } else if (someSelectedProductOutOfStock) {
             showToast("Some selected products is Sold Out.")
             return
         }
 
-            cartData.seller_product.forEach { sellerData ->
-            val sellerObject = JsonObject()
+        cartData.seller_product.filter { it.seller.cart_selected.toString().toDouble() > 0 }
+            .forEach { sellerData ->
+                val sellerObject = JsonObject()
 
-            val totalTax =
-                sellerData.seller.products.sumOf { it.total_tax_value.toString().toDouble() }
-            val commission =
-                sellerData.seller.products.sumOf { it.commission.toString().toDouble() }
-            val discountAmt =
-                sellerData.seller.products.sumOf { it.total_discount_price.toString().toDouble() }
-            val totalCost =
-                sellerData.seller.products.sumOf { it.total_discount_price.toString().toDouble() }
+                val totalTax = sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }.sumOf { it.total_tax_value.toString().toDouble() }
+                val commission = sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }.sumOf { it.commission.toString().toDouble() }
+                val discountAmt = sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }.sumOf { it.total_discount_price.toString().toDouble() }
+                val totalCost = sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }.sumOf { it.total_actual_price.toString().toDouble() }
 
-            sellerObject.addProperty("shipping_method", sellerData.shipping_method)
-            sellerObject.addProperty("shipping_charge", sellerData.shipping.toString())
-            sellerObject.addProperty("seller_id", sellerData.seller.seller_id)
-            sellerObject.addProperty("shipping_markup", sellerData.shipping_markup.toString())
-            sellerObject.addProperty("total_tax", totalTax)
-            sellerObject.addProperty("commission", commission)
-            sellerObject.addProperty("discount_amt", discountAmt)
-            sellerObject.addProperty("total_cost", totalCost)
-            sellerObject.addProperty("is_coupon", 0)
-            sellerObject.addProperty("coupon_id", "")
-            sellerObject.addProperty("discount_type", "")
-            sellerObject.addProperty("packing_charge", 0)
-            sellerObject.addProperty("message", sellerData.seller.message ?: "")
-            sellerObject.addProperty("shipping_option", 1)
-            sellerObject.addProperty("coupon_discount_amt", "")
-            sellerArray.add(sellerIndex.toString(), sellerObject)
-            sellerIndex++
-        }
+
+                sellerObject.addProperty("shipping_method", sellerData.shipping_method)
+                sellerObject.addProperty("shipping_charge", sellerData.shipping.toString())
+                sellerObject.addProperty("seller_id", sellerData.seller.seller_id)
+                sellerObject.addProperty("shipping_markup", sellerData.shipping_markup.toString())
+                sellerObject.addProperty("total_tax", totalTax)
+                sellerObject.addProperty("commission", commission)
+                sellerObject.addProperty("discount_amt", discountAmt)
+                sellerObject.addProperty("total_cost", totalCost)
+                sellerObject.addProperty("is_coupon", 0)
+                sellerObject.addProperty("coupon_id", "")
+                sellerObject.addProperty("discount_type", "")
+                sellerObject.addProperty("packing_charge", 0)
+                sellerObject.addProperty("message", sellerData.seller.message ?: "")
+                sellerObject.addProperty("shipping_option", 1)
+                sellerObject.addProperty("coupon_discount_amt", "")
+                sellerArray.add(sellerIndex.toString(), sellerObject)
+                sellerIndex++
+            }
 
         jsonObject.add("seller_array", sellerArray)
         jsonObject.addProperty("access_token", sessionManager.token)
@@ -543,7 +563,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         jsonObject.addProperty("total_amt", binding.totalAmount.text.toString())
         jsonObject.addProperty("discount_amt", 0)
         jsonObject.addProperty("grand_total", binding.totalAmount.text.toString())
-
+        println(jsonObject)
         val bundle = Bundle()
         bundle.putString("payLoad", jsonObject.toString())
         findNavController().navigate(R.id.paymentMethodFragment, bundle)
@@ -555,8 +575,12 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             binding.back.id -> findNavController().popBackStack()
             binding.addVoucher.id -> showVoucherBottomSheet()
             binding.removeVoucher.id -> {
-                mainViewModel.removeCoupon(cartData.platform_coupon_data.coupon_id.toString(),"platform")
+                mainViewModel.removeCoupon(
+                    cartData.platform_coupon_data.coupon_id.toString(),
+                    "platform"
+                )
             }
+
             binding.placeOrder.id -> {
                 placeOrder()
             }

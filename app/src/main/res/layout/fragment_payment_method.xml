@@ -231,7 +231,7 @@
 
 
         <RadioButton
-            android:id="@+id/creditCardUploadReceiptLbl"
+            android:id="@+id/creditCardRadioBtn"
             style="@style/textMediumSemiBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -247,7 +247,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/i_pay_img"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/creditCardUploadReceiptLbl"
+            app:layout_constraintStart_toEndOf="@id/creditCardRadioBtn"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

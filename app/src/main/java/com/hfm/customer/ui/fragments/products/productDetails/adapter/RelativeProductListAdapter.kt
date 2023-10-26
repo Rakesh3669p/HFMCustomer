@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductsSingleBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.OtherProduct
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
@@ -24,7 +26,10 @@ class RelativeProductListAdapter @Inject constructor() :
                 if(data.image.isNotEmpty()) {
                     val imageOriginal = data.image[0].image
                     val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    productImage.load(imageReplaced)
+                    productImage.load(imageReplaced){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                 }
 
 

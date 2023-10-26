@@ -72,10 +72,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/productsRv" />
 
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/shippingOptionsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                app:layout_constraintTop_toBottomOf="@+id/shippingOptionsLbl">
             <TextView
                 android:id="@+id/standardDelivery"
                 style="@style/textMediumBold"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -88,14 +94,12 @@
                 android:paddingVertical="@dimen/_10sdp"
                 android:text="@string/standard_delivery_lbl"
                 android:textColor="@color/white"
-                app:layout_constraintEnd_toStartOf="@id/selfPickup"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/shippingOptionsLbl" />
+                android:layout_weight="1"/>
 
             <TextView
                 android:id="@+id/selfPickup"
                 style="@style/textMediumSemiBold"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -108,11 +112,9 @@
                 android:paddingVertical="@dimen/_10sdp"
                 android:text="Self Pickup"
                 android:textColor="@color/textGreyDark"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/standardDelivery"
-                app:layout_constraintTop_toBottomOf="@id/shippingOptionsLbl" />
+                android:layout_weight="1" />
 
-
+            </androidx.appcompat.widget.LinearLayoutCompat>
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/voucherDetailsLayout"
                 android:layout_width="0dp"
@@ -120,9 +122,9 @@
                 android:layout_marginTop="@dimen/_12sdp"
                 android:background="@drawable/dash_box"
                 android:padding="@dimen/_10sdp"
-                app:layout_constraintEnd_toEndOf="@id/selfPickup"
-                app:layout_constraintStart_toStartOf="@id/standardDelivery"
-                app:layout_constraintTop_toBottomOf="@+id/standardDelivery">
+                app:layout_constraintEnd_toEndOf="@id/shippingOptionsLayout"
+                app:layout_constraintStart_toStartOf="@id/shippingOptionsLayout"
+                app:layout_constraintTop_toBottomOf="@+id/shippingOptionsLayout">
 
                 <TextView
                     android:id="@+id/voucher"
@@ -222,6 +224,7 @@
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:text="Leave a message (Optional)"
                 android:textColor="@color/grey"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/shippingCharges" />
 
@@ -231,9 +234,10 @@
                 android:id="@+id/messageEdt"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginHorizontal="@dimen/_7sdp"
                 android:layout_marginBottom="@dimen/_10sdp"
-                android:hint="write a message here.."
+                android:hint="Leave a message (Optional)"
                 app:layout_constraintTop_toBottomOf="@id/messagesLbl"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 

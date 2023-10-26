@@ -44,12 +44,14 @@ data class SellerProduct(
     val shipping_markup: Any,
     val shipping_method: String,
     val seller_subtotal: Double,
+    var selfPickUp: Boolean =false,
+    var standardPickUp: Boolean = true,
     val is_seller_coupon_applied: Int,
     val is_platform_coupon_applied: Int,
     val  seller_coupon_data: CouponApplied,
     val platform_coupon_data: CouponApplied,
 
-)
+    )
 
 data class Seller(
     var cart_selected: Int,

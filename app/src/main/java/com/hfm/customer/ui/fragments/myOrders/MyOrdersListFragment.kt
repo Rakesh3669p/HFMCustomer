@@ -56,8 +56,6 @@ class MyOrdersListFragment(private val orderStatus:String) : Fragment() {
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         mainViewModel.getMyOrders(orderStatus,pageNo )
-
-
     }
 
     private fun setObserver() {

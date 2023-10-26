@@ -70,25 +70,28 @@
     </androidx.cardview.widget.CardView>
 
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/labelsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/productImageCard"
+        app:layout_constraintStart_toStartOf="@id/productImageCard"
+        app:layout_constraintTop_toBottomOf="@id/productImageCard" >
     <TextView
         android:id="@+id/saveLbl"
         style="@style/textSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_1sdp"
         android:background="@drawable/rectangle_box"
         android:backgroundTint="@color/red"
         android:gravity="center"
         android:text="Save RM10"
+
         android:textColor="@color/white"
-        android:visibility="gone"
         android:textSize="@dimen/_8ssp"
         android:paddingHorizontal="@dimen/_4sdp"
-        android:paddingVertical="@dimen/_2sdp"
-        app:layout_constraintEnd_toStartOf="@id/frozenLbl"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="@id/productImageCard"
-        app:layout_constraintTop_toBottomOf="@id/productImageCard" />
+        android:paddingVertical="@dimen/_2sdp"/>
 
     <TextView
         android:id="@+id/frozenLbl"
@@ -98,17 +101,13 @@
         android:background="@drawable/rectangle_box"
         android:backgroundTint="@color/orange"
         android:gravity="center"
-        android:text="Frozen"
+        android:text="Chilled"
+        android:layout_marginHorizontal="@dimen/_3sdp"
         android:textSize="@dimen/_8ssp"
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_2sdp"
         android:textColor="@color/white"
-        android:visibility="gone"
-
-        app:layout_constraintEnd_toStartOf="@id/wholeSaleLbl"
-        app:layout_constraintStart_toEndOf="@id/saveLbl"
-        app:layout_constraintTop_toTopOf="@+id/saveLbl"
-        app:layout_constraintBottom_toBottomOf="@id/saveLbl"/>
+        />
 
 
     <TextView
@@ -123,14 +122,10 @@
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_2sdp"
         android:textColor="@color/white"
-        android:visibility="gone"
         android:textSize="@dimen/_8ssp"
-        app:layout_constraintEnd_toEndOf="@id/productImageCard"
-        app:layout_constraintStart_toEndOf="@id/frozenLbl"
-        app:layout_constraintTop_toTopOf="@+id/saveLbl"
-        app:layout_constraintBottom_toBottomOf="@id/saveLbl" />
+        />
 
-
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <TextView
         android:id="@+id/productName"
@@ -139,14 +134,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp"
         android:gravity="center"
-        android:maxLines="3"
+        android:maxLines="2"
         android:ellipsize="marquee"
-        android:paddingHorizontal="@dimen/_15sdp"
-        android:text="Tom Yam Stramboat "
+        android:text="Tom Yam Stramboat"
         android:singleLine="false"
         app:layout_constraintEnd_toEndOf="@id/productImageCard"
         app:layout_constraintStart_toStartOf="@id/productImageCard"
-        app:layout_constraintTop_toBottomOf="@id/saveLbl" />
+        app:layout_constraintTop_toBottomOf="@id/labelsLayout" />
 
     <TextView
         android:id="@+id/productPrice"
@@ -156,7 +150,7 @@
         android:layout_marginTop="@dimen/_2sdp"
         android:gravity="center"
         android:paddingHorizontal="@dimen/_15sdp"
-        android:text="RM 53"
+        android:text=""
         android:textColor="@color/red"
         app:layout_constraintEnd_toEndOf="@id/productImageCard"
         app:layout_constraintStart_toStartOf="@id/productImageCard"

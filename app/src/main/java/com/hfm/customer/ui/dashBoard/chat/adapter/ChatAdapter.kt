@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemChatBinding
 import com.hfm.customer.ui.dashBoard.chat.model.Message
 import com.hfm.customer.utils.replaceBaseUrl
@@ -30,7 +32,10 @@ class ChatAdapter @Inject constructor() : RecyclerView.Adapter<ChatAdapter.ViewH
                     if(data.image.isNotEmpty()){
                         rightChatImage.isVisible = true
                         rightChat.isVisible = false
-                        rightChatImage.load(replaceBaseUrl(data.image))
+                        rightChatImage.load(replaceBaseUrl(data.image)){
+                            placeholder(R.drawable.logo)
+                            
+                        }
                     }else{
                         rightChatImage.isVisible = false
                         rightChat.text = data.message
@@ -43,7 +48,10 @@ class ChatAdapter @Inject constructor() : RecyclerView.Adapter<ChatAdapter.ViewH
                     if(data.image.isNotEmpty()){
                         leftChatImage.isVisible = true
                         leftChat.isVisible = false
-                        leftChatImage.load(replaceBaseUrl(data.image))
+                        leftChatImage.load(replaceBaseUrl(data.image)){
+                            placeholder(R.drawable.logo)
+                            
+                        }
                     }else{
                         leftChatImage.isVisible = false
                         leftChat.text = data.message

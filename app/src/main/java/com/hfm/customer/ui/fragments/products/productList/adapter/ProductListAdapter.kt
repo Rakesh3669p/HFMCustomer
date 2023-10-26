@@ -9,9 +9,12 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductsBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.replaceBaseUrl
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -27,42 +30,69 @@ class ProductListAdapter @Inject constructor() :
         fun bind(data: Product) {
             with(bind) {
                 if (data.image?.isNotEmpty() == true) {
-                    val imageOriginal = data.image[0].image
-                    val imageReplaced =
-                        imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    productImage.load(imageReplaced)
+                    productImage.load(replaceBaseUrl(data.image[0].image)) {
+                        placeholder(R.drawable.logo)
+
+                    }
                 }
+
                 productName.text = data.product_name
-                if(data.offer_price!=null) {
+                if (data.offer_price != null) {
                     if (data.offer_price.toString().isNotEmpty()) {
                         if (data.offer_price.toString() != "false") {
                             if (data.offer_price.toString().toDouble() > 0) {
-                                productPrice.text = "RM ${formatToTwoDecimalPlaces(data.offer_price.toString().toDouble())}"
+                                productPrice.text = "RM ${
+                                    formatToTwoDecimalPlaces(
+                                        data.offer_price.toString().toDouble()
+                                    )
+                                }"
                             } else {
-                                productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
+                                productPrice.text = "RM ${
+                                    formatToTwoDecimalPlaces(
+                                        data.actual_price.toString().toDouble()
+                                    )
+                                }"
                             }
                         } else {
-                            productPrice.text = "RM ${formatToTwoDecimalPlaces((data.actual_price?:"0").toString().toDouble())}"
+                            productPrice.text = "RM ${
+                                formatToTwoDecimalPlaces(
+                                    (data.actual_price ?: "0").toString().toDouble()
+                                )
+                            }"
                         }
                     }
-                }else{
-                    productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
+
+
+                } else {
+                    if (data.actual_price != null) {
+                        productPrice.text = "RM ${
+                            formatToTwoDecimalPlaces(
+                                data.actual_price.toString().toDouble()
+                            )
+                        }"
+                    } else {
+                        productPrice.isVisible = false
+                    }
                 }
 
-                soldOut.isVisible = data.is_out_of_stock.toString()=="true"||data.is_out_of_stock.toString()=="1"
+
+                soldOut.isVisible =
+                    data.is_out_of_stock.toString() == "true" || data.is_out_of_stock.toString() == "1"
 
 
                 saleTime.isVisible = data.offer_name == "Flash Sale"
-                if(saleTime.isVisible){
-                    setTimer(data.end_time,bind)
+                if (saleTime.isVisible) {
+                    setTimer(data.end_time, bind)
                 }
-                if(data.offer!=null) {
+                if (data.offer != null) {
                     saveLbl.isVisible = data.offer.toString().isNotEmpty() && data.offer != "false"
                 }
 
                 saveLbl.text = data.offer.toString()
-                frozenLbl.isVisible = data.frozen == 1
-                wholeSaleLbl.isVisible = data.wholesale == 1
+                if (data.frozen != null)
+                    frozenLbl.isVisible = data.frozen.toString().toDouble() > 0
+                if (data.wholesale != null) wholeSaleLbl.isVisible =
+                    data.wholesale.toString().toDouble() > 0
 
 
                 root.setOnClickListener {
@@ -82,9 +112,12 @@ class ProductListAdapter @Inject constructor() :
         val timeDifference = endTime.time - currentTime.time
         val countdownTimer = object : CountDownTimer(timeDifference, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                updateCountdownText(millisUntilFinished,bind)
+                updateCountdownText(millisUntilFinished, bind)
             }
-            override fun onFinish() { updateCountdownText(0, bind) }
+
+            override fun onFinish() {
+                updateCountdownText(0, bind)
+            }
         }
         countdownTimer.start()
     }
@@ -94,8 +127,17 @@ class ProductListAdapter @Inject constructor() :
         val hours = (millisUntilFinished % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
         val minutes = (millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)
         val seconds = (millisUntilFinished % (1000 * 60)) / 1000
-        with(bind){
-            saleTime.text = "Ends In: ${String.format(Locale.getDefault(), "%02d:%02d:%02d:%02d", days,hours,minutes,seconds)}"
+        with(bind) {
+            saleTime.text = "Ends In: ${
+                String.format(
+                    Locale.getDefault(),
+                    "%02d:%02d:%02d:%02d",
+                    days,
+                    hours,
+                    minutes,
+                    seconds
+                )
+            }"
         }
     }
 

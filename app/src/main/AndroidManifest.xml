@@ -30,7 +30,7 @@
             android:name=".ui.dashBoard.DashBoardActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize"/>
+            android:windowSoftInputMode="adjustResize|stateVisible"/>
         <activity
             android:name=".ui.loginSignUp.LoginActivity"
             android:exported="true"

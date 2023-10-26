@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/_500sdp"
     android:background="@drawable/bottom_sort_bg"
+    android:layout_gravity="bottom"
     android:elevation="@dimen/_10sdp"
     android:paddingBottom="@dimen/_10sdp">
 
@@ -14,7 +15,6 @@
         style="@style/textMediumSemiBold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_10sdp"
         android:gravity="center"
         android:paddingVertical="@dimen/_10sdp"
         android:text="Select Platform Voucher"
@@ -29,7 +29,7 @@
         style="@style/textSmallSemiBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
         android:gravity="center"
         android:paddingVertical="@dimen/_10sdp"
         android:text="Add Voucher"
@@ -44,11 +44,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_10sdp"
-        android:background="@drawable/edt_line_box"
+        android:background="@drawable/edt_line_box_2"
         android:gravity="start"
         android:hint="Enter Voucher Code"
         android:paddingHorizontal="@dimen/_10sdp"
-        android:paddingVertical="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_9sdp"
         app:layout_constraintEnd_toStartOf="@id/addVoucher"
         app:layout_constraintStart_toStartOf="@id/addVoucherLbl"
         app:layout_constraintTop_toBottomOf="@+id/addVoucherLbl" />
@@ -57,8 +57,8 @@
         android:id="@+id/addVoucher"
         style="@style/textSmallSemiBold"
         android:layout_width="@dimen/_65sdp"
-        android:layout_height="@dimen/_35sdp"
-        android:layout_marginEnd="@dimen/_24sdp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
@@ -72,18 +72,35 @@
         app:layout_constraintStart_toEndOf="@+id/voucherCode"
         app:layout_constraintTop_toTopOf="@id/voucherCode" />
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/vouchersRv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_350sdp"
         tools:itemCount="2"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_platform_voucher"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintTop_toBottomOf="@+id/addVoucher"
+        app:layout_constraintBottom_toTopOf="@+id/cancel"
 
         />
 
-
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/noVouchers"
+        style="@style/textSmallSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:gravity="center"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="No Vouchers Found"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addVoucher"
+        app:layout_constraintBottom_toTopOf="@id/cancel"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cancel"
@@ -101,7 +118,6 @@
         android:textColor="@color/red"
         app:backgroundTint="@android:color/transparent"
         app:cornerRadius="@dimen/_6sdp"
-        app:layout_constraintTop_toBottomOf="@+id/vouchersRv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/apply"

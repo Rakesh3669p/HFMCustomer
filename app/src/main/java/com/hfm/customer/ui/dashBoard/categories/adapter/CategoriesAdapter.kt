@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.commonModel.Subcategory
 import com.hfm.customer.databinding.ItemCategoryItemsBinding
 import com.hfm.customer.databinding.ItemCategoryMainBinding
@@ -22,7 +24,10 @@ class CategoriesAdapter @Inject constructor() :
         fun bind(data: Subcategory) {
             with(bind) {
                 categoryName.text = data.subcategory_name
-                categoryImage.load(data.subcategory_image)
+                categoryImage.load(data.subcategory_image){
+                    placeholder(R.drawable.logo)
+                    
+                }
                 root.setOnClickListener {
                    onCategoryClick?.let { it(data.id) }
                 }

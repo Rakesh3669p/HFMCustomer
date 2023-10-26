@@ -12,14 +12,14 @@ class MyOrdersPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycl
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> MyOrdersListFragment("pending")
-            1 -> MyOrdersListFragment("confirmed")
-            2 -> MyOrdersListFragment("progress")
-            3 -> MyOrdersListFragment("delivered")
-            4 -> MyOrdersListFragment("rejected")
+            0 -> MyOrdersListFragment("to_pay")
+            1 -> MyOrdersListFragment("to_ship")
+            2 -> MyOrdersListFragment("to_receive")
+            3 -> MyOrdersListFragment("completed")
+            4 -> MyOrdersListFragment("cancelled")
             5 -> BulkOrdersFragment()
             else -> {
-                MyOrdersListFragment("progress")
+                MyOrdersListFragment("to_pay")
             }
         }
     }

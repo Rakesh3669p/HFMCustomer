@@ -68,6 +68,11 @@ class StoreProductListFragment(private val storeData: StoreData) : Fragment(){
                 val bundle = Bundle().apply { putString("productId", it) }
                 findNavController().navigate(R.id.productDetailsFragment,bundle)
             }
+
+            productCategoryListAdapter.setOnSubCategoryClickListener {
+
+            }
         }
+
     }
 }

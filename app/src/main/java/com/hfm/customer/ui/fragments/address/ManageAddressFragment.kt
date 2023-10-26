@@ -30,7 +30,7 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentManageAddressBinding
     private var currentView: View? = null
-
+    private var addressId = 0
 
     @Inject
     lateinit var manageAddressAdapter: ManageAddressAdapter
@@ -76,12 +76,11 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
     }
 
 
-
     private fun setObserver() {
         mainViewModel.address.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    while (appLoader.isShowing){
+                    while (appLoader.isShowing) {
                         appLoader.dismiss()
                     }
                     if (response.data?.httpcode == "200") {
@@ -133,10 +132,22 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
         mainViewModel.defaultAddress.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
+                    while (appLoader.isShowing) {
+                        appLoader.dismiss()
+                    }
                     if (response.data?.httpcode == 200)
-                        mainViewModel.getAddress()
-                  else
-                        showToast(response.data?.message.toString())
+                        if (from == "checkOut") {
+                            mainViewModel.defaultAddress(addressId.toString())
+                            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                                "addressId",
+                                addressId
+                            )
+                            findNavController().popBackStack()
+                        } else {
+                            mainViewModel.getAddress()
+                        }
+
+                    showToast(response.data?.message.toString())
                 }
 
                 is Resource.Loading -> appLoader.show()
@@ -157,15 +168,15 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
             back.setOnClickListener(this@ManageAddressFragment)
             addNewAddress.setOnClickListener(this@ManageAddressFragment)
         }
-        manageAddressAdapter.setOnDefaultClickListener {addressId->
-        mainViewModel.defaultAddress(addressId.toString())
-    }
+        manageAddressAdapter.setOnDefaultClickListener { addressId ->
+            mainViewModel.defaultAddress(addressId.toString())
+        }
 
-        manageAddressAdapter.setOnDeleteClickListener {addressId->
+        manageAddressAdapter.setOnDeleteClickListener { addressId ->
             mainViewModel.deleteAddress(addressId.toString())
         }
 
-        manageAddressAdapter.setOnEditAddressClickListener {position->
+        manageAddressAdapter.setOnEditAddressClickListener { position ->
             addressList[position].let {
                 val bundle = Bundle().apply {
                     putString("from", "update")
@@ -187,13 +198,10 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
                 findNavController().navigate(R.id.addNewAddressFragment, bundle)
             }
         }
-        manageAddressAdapter.setOnAddressClickListener { addressId->
-            if(from == "checkOut") {
-                findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                    "addressId",
-                    addressId
-                )
-                findNavController().popBackStack()
+        manageAddressAdapter.setOnAddressClickListener { addressId ->
+            this.addressId = addressId
+            if (from == "checkOut") {
+                mainViewModel.defaultAddress(addressId.toString())
             }
 
 
@@ -209,5 +217,14 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
                 findNavController().navigate(R.id.addNewAddressFragment, bundle)
             }
         }
+    }
+
+    override fun onPause() {
+        if(this::appLoader.isInitialized) {
+            while (appLoader.isShowing) {
+                appLoader.dismiss()
+            }
+        }
+        super.onPause()
     }
 }

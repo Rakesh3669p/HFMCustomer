@@ -30,7 +30,7 @@ data class Profile(
     val invite_count: Int,
     val invite_save: Int,
     val joined_date: String,
-    val last_name: String,
+    val last_name: String?="",
     val phone: String,
     val profile_image: String,
     val state: String,

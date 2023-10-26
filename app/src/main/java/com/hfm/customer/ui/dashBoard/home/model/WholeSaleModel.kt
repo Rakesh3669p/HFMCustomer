@@ -23,6 +23,8 @@ data class WholeSaleProduct(
     val image: List<Image>,
     val offer: String,
     val offer_price: Any,
+    val wholesale: Any,
+    val frozen: Any,
     val product_id: Int,
     val product_name: String,
     val product_type: String,

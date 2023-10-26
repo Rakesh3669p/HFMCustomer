@@ -8,13 +8,12 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/back"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:clickable="true"
         android:contentDescription="@string/back_lbl"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        android:paddingVertical="@dimen/_5sdp"
         android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +37,7 @@
         android:layout_height="0dp"
         tools:listitem="@layout/item_notification"
         tools:itemCount="4"
-        android:layout_margin="@dimen/_8sdp"
+        android:layout_margin="@dimen/_6sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back"/>
 

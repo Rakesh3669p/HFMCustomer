@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/edt_box"
+    android:padding="@dimen/_10sdp"
+    >
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/textMediumSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Success"
+        android:gravity="center_horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_lite"
+        android:layout_marginTop="@dimen/_4sdp"
+        app:layout_constraintTop_toBottomOf="@id/title"/>
+
+    <TextView
+        android:id="@+id/desc"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_40sdp"
+        android:text="Your Order has been Successfully Placed.\nYou can check your orders in My Orders."
+        android:singleLine="false"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:drawablePadding="@dimen/_10sdp"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/ok"
+        style="@style/textMediumSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_marginHorizontal="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:backgroundTint="@color/red"
+        android:textColor="@color/white"
+        android:text="@string/ok"
+        app:cornerRadius="@dimen/_5sdp"
+        app:layout_constraintTop_toBottomOf="@id/desc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

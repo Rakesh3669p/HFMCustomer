@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemBlogsBinding
 import com.hfm.customer.databinding.ItemChatUsersBinding
 import com.hfm.customer.ui.fragments.blogs.model.Blogs
@@ -25,7 +27,10 @@ class BlogsAdapter @Inject constructor() : RecyclerView.Adapter<BlogsAdapter.Vie
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data:Blogs) {
             with(bind) {
-                blogImage.load(replaceBaseUrl(data.image))
+                blogImage.load(replaceBaseUrl(data.image)){
+                    placeholder(R.drawable.logo)
+                    
+                }
                 blogAuthor.text = data.author
                 blogTitle.text = data.blog_title
 

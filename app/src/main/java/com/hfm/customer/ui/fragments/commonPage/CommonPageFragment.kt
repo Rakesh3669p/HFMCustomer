@@ -22,7 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class CommonPageFragment : Fragment() ,View.OnClickListener{
+class  CommonPageFragment : Fragment() ,View.OnClickListener{
     private lateinit var binding: FragmentCommonPageBinding
     private var currentView: View? = null
     private val mainViewModel: MainViewModel by viewModels()

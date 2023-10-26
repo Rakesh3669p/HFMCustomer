@@ -10,13 +10,12 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/back"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:clickable="true"
         android:contentDescription="@string/back_lbl"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        android:paddingVertical="@dimen/_5sdp"
         android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,6 +31,7 @@
         android:text="@string/add_new_address_lbl2"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -115,7 +115,7 @@
                 android:gravity="start"
                 android:hint="@string/mobile_number_lbl"
                 android:paddingVertical="@dimen/_12sdp"
-                android:paddingStart="@dimen/_60sdp"
+                android:paddingStart="@dimen/_75sdp"
                 android:paddingEnd="@dimen/_10sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +124,7 @@
             <Spinner
                 android:id="@+id/countryCodeSpinner"
                 style="@style/SpinnerTheme3"
-                android:layout_width="@dimen/_55sdp"
+                android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_40sdp"
                 android:gravity="start"
                 app:layout_constraintBottom_toBottomOf="@+id/mobileNumber"
@@ -360,6 +360,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+
                 app:layout_constraintTop_toBottomOf="@+id/addressTypeLbl">
 
 
@@ -370,6 +371,7 @@
                     android:layout_height="wrap_content"
                     android:buttonTint="@color/red"
                     android:checked="true"
+                    android:translationX="-5dp"
                     android:text="@string/homeLbl" />
 
                 <RadioButton
@@ -379,6 +381,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_15ssp"
                     android:buttonTint="@color/red"
+                    android:translationX="-5dp"
                     android:text="@string/office" />
 
             </RadioGroup>
@@ -390,6 +393,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/set_as_default_lbl"
+                android:translationX="-5dp"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addressTypeRadioGroup" />
@@ -414,7 +418,7 @@
                 android:id="@+id/save"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_45sdp"
-                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginTop="12dp"
                 android:backgroundTint="@color/red"
                 android:paddingVertical="@dimen/_10sdp"

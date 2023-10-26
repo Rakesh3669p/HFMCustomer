@@ -2,7 +2,9 @@ package com.hfm.customer.ui.loginSignUp.register
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class BusinessRegisterFragment : Fragment(), View.OnClickListener {
+    private var termsAndCondition: String = ""
 
     private var phoneCode: String = ""
     private var natureOfBusinessId: Int = 0
@@ -56,9 +59,15 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
         return currentView!!
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+    }
     private fun init() {
         loginSignUpViewModel.getBusinessCategories()
         loginSignUpViewModel.getCountriesList()
+        loginSignUpViewModel.getTermsConditions()
+
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener {
             init()
@@ -97,6 +106,27 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
                     showToast(response.message.toString())
                     if (response.message.toString() == netWorkFailure) {
                         noInternetDialog.show()
+                    }
+                }
+            }
+        }
+
+
+        loginSignUpViewModel.termsConditions.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+
+                    if (response.data?.httpcode == "200") {
+                        termsAndCondition = response.data.data.terms_conditions.business_customer_terms
+                    } else {
+                        showToast(response.data?.message.toString())
+                    }
+                }
+
+                is Resource.Loading -> Unit
+                is Resource.Error -> {
+                    if (response.message == netWorkFailure) {
+                        showToast("Check your internet connection")
                     }
                 }
             }
@@ -219,6 +249,11 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         appCompatDialog.window!!.attributes.width = LinearLayout.LayoutParams.MATCH_PARENT
         appCompatDialog.setCancelable(false)
+        bindingDialog.description.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(termsAndCondition, Html.FROM_HTML_MODE_COMPACT)
+        } else {
+            Html.fromHtml(termsAndCondition)
+        }
 
         bindingDialog.decline.isVisible = false
         bindingDialog.accept.isVisible = false

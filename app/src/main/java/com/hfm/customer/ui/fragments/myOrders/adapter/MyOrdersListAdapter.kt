@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemAdsBinding
 import com.hfm.customer.databinding.ItemBulkOrderBinding
@@ -44,7 +45,10 @@ class MyOrdersListAdapter @Inject constructor() :
                 if(data.products.isNotEmpty()) {
                     data.products[0].let {
                         if (it.product_image!=null&&it.product_image.isNotEmpty()) {
-                            productImage.load(replaceBaseUrl(it.product_image[0].image))
+                            productImage.load(replaceBaseUrl(it.product_image[0].image)){
+                                placeholder(R.drawable.logo)
+                                
+                            }
                         }
                     }
                 }

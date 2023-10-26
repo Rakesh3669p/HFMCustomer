@@ -20,6 +20,7 @@ class SessionManager(mcxt: Context) {
         const val USER_IMAGE = "USER_IMAGE"
         const val USER_NAME = "USER_NAME"
         const val USER_DISPLAY_NAME = "USER_DISPLAY_NAME"
+        const val SEARCH_PLACE_HOLDER = "SEARCH_PLACE_HOLDER"
     }
 
 
@@ -109,6 +110,12 @@ class SessionManager(mcxt: Context) {
         get() = generalPref.getString(USER_IMAGE, "").toString()
         set(status) {
             generalEditor.putString(USER_IMAGE, status)
+            generalEditor.commit()
+        }
+    var searchPlaceHolder: String
+        get() = generalPref.getString(SEARCH_PLACE_HOLDER, "").toString()
+        set(status) {
+            generalEditor.putString(SEARCH_PLACE_HOLDER, status)
             generalEditor.commit()
         }
 

@@ -6,8 +6,8 @@
     </item>
 
     <item
-        android:height="@dimen/_80sdp"
-        android:width="80dp"
+        android:height="@dimen/_100sdp"
+        android:width="100dp"
         android:gravity="center">
         <bitmap android:src="@drawable/logo_new"/>
     </item>

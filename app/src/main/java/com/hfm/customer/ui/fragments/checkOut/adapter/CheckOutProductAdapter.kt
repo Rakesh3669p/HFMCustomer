@@ -4,11 +4,14 @@ import android.content.Context
 import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemCartProductBinding
 import com.hfm.customer.databinding.ItemCheckoutProductBinding
 import com.hfm.customer.databinding.ItemProductsBinding
@@ -33,11 +36,25 @@ class CheckOutProductAdapter @Inject constructor() :
         fun bind(data: Product) {
             with(bind) {
                 if (!data.image.isNullOrEmpty()) {
-                    productImage.load(replaceBaseUrl(data.image[0].image))
+                    productImage.load(replaceBaseUrl(data.image[0].image)){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                 } else if (!data.product_image.isNullOrEmpty()) {
-                    productImage.load(replaceBaseUrl(data.product_image[0].image))
+                    productImage.load(replaceBaseUrl(data.product_image[0].image)){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                 }
                 productName.text = data.product_name
+                available.isVisible = data.check_shipping_availability.toString().toDouble() < 1 && data.cart_selected.toString().toDouble() > 0
+                available.text = data.check_shipping_availability_text
+
+                if(data.check_shipping_availability.toString().toDouble()>0){
+                    available.setTextColor(ContextCompat.getColor(context,R.color.black))
+                }else{
+                    available.setTextColor(ContextCompat.getColor(context,R.color.red))
+                }
 
                 if (data.total_discount_price.toString().toDouble() > 0) {
                     productPrice.text = "RM ${

@@ -2,6 +2,7 @@ package com.hfm.customer.ui.fragments.products.productList
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,9 @@ import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -118,6 +122,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         search = arguments?.getString("keyword") ?: ""
         wholeSale = arguments?.getInt("wholeSale") ?: 0
         flashSale = arguments?.getInt("flashSale") ?: 0
+        val endTime = arguments?.getString("endTime")?:""
         makeProductListApiCall()
         mainViewModel.getBrandsList()
 
@@ -128,6 +133,37 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                 adapter = productListAdapter
             }.addOnScrollListener(scrollListener)
         }
+
+        if(flashSale == 1 && endTime.isNotEmpty()){
+            binding.flashDealsGroup.isVisible = true
+            setTimer(endTime)
+        }
+    }
+
+    private fun setTimer(endTime: String) {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val endTimeString = endTime
+        val endTime = dateFormat.parse(endTimeString) ?: Date()
+        val currentTime = Date()
+        val timeDifference = endTime.time - currentTime.time
+        val countdownTimer = object : CountDownTimer(timeDifference, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                updateCountdownText(millisUntilFinished)
+            }
+            override fun onFinish() { updateCountdownText(0) }
+        }
+        countdownTimer.start()
+    }
+
+    private fun updateCountdownText(millisUntilFinished: Long) {
+        val days = millisUntilFinished / (1000 * 60 * 60 * 24)
+        val hours = (millisUntilFinished % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        val minutes = (millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)
+        val seconds = (millisUntilFinished % (1000 * 60)) / 1000
+        binding.flashDealsTime.day.text = String.format(Locale.getDefault(), "%02d", days)
+        binding.flashDealsTime.hour.text = String.format(Locale.getDefault(), "%02d", hours)
+        binding.flashDealsTime.minutes.text = String.format(Locale.getDefault(), "%02d", minutes)
+        binding.flashDealsTime.seconds.text = String.format(Locale.getDefault(), "%02d", seconds)
     }
 
     private fun makeProductListApiCall() {
@@ -145,6 +181,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             deviceId = sessionManager.deviceId,
             page = pageNo,
             wholeSale = wholeSale,
+            flashSale = flashSale,
 
             )
     }

@@ -96,7 +96,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/verify"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_45sdp"
+        android:layout_height="@dimen/_50sdp"
         android:layout_marginTop="@dimen/_24sdp"
         android:backgroundTint="@color/red"
         android:paddingVertical="@dimen/_10sdp"
@@ -116,9 +116,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp"
-        android:text="@string/resendOtp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/receiveOtp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintEnd_toStartOf="@id/resend"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/verify" />
+
+    <TextView
+        android:id="@+id/resend"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:text="@string/resendOtp"
+        android:textColor="@color/red"
+        android:layout_marginStart="@dimen/_5sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/alreadyHaveAccount"
         app:layout_constraintTop_toBottomOf="@+id/verify" />
 
 

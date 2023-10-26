@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemTrendingNowBinding
 import com.hfm.customer.ui.dashBoard.home.model.Events
 import javax.inject.Inject
@@ -21,13 +23,15 @@ class TrendingNowAdapter @Inject constructor() :
         fun bind(data: Events) {
             with(bind) {
                 val imageOriginal = data.image
-                val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                productImage.load(imageReplaced)
+                val imageReplaced =
+                    imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
+                productImage.load(imageReplaced) {
+                    placeholder(R.drawable.logo)
+
+                }
 
                 root.setOnClickListener {
-                    onCategoryClick?.let {
-                        it(data.link)
-                    }
+                    onCategoryClick?.invoke(data.category, data.sub_category)
                 }
             }
         }
@@ -66,9 +70,9 @@ class TrendingNowAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onCategoryClick: ((id: String) -> Unit)? = null
+    private var onCategoryClick: ((cat: String, subCat: String) -> Unit)? = null
 
-    fun setOnCategoryClickListener(listener: (id: String) -> Unit) {
+    fun setOnCategoryClickListener(listener: (cat: String, subCat: String) -> Unit) {
         onCategoryClick = listener
     }
 

@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.loginSignUp
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
@@ -8,6 +9,7 @@ import com.hfm.customer.commonModel.CityListModel
 import com.hfm.customer.commonModel.CountryListModel
 import com.hfm.customer.commonModel.StateListModel
 import com.hfm.customer.commonModel.SuccessModel
+import com.hfm.customer.commonModel.TermsConditionsModel
 import com.hfm.customer.data.Repository
 import com.hfm.customer.ui.loginSignUp.login.model.LoginModel
 import com.hfm.customer.ui.loginSignUp.register.model.BusinessCategoryModel
@@ -34,6 +36,7 @@ class LoginSignUpViewModel @Inject constructor(private val repository: Repositor
     val states = SingleLiveEvent<Resource<StateListModel>>()
     val cities = SingleLiveEvent<Resource<CityListModel>>()
     val businessCategories = SingleLiveEvent<Resource<BusinessCategoryModel>>()
+    val termsConditions:MutableLiveData<Resource<TermsConditionsModel>> = MutableLiveData()
 
     fun registerUser(
         firstName: String = "",
@@ -254,4 +257,23 @@ class LoginSignUpViewModel @Inject constructor(private val repository: Repositor
             cities.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
+
+    fun getTermsConditions() =
+        viewModelScope.launch {
+            safeGetTermsConditionsCall()
+        }
+
+    private suspend fun safeGetTermsConditionsCall() {
+        termsConditions.postValue(Resource.Loading())
+        try {
+            val response = repository.getTermsConditions()
+            if (response.isSuccessful)
+                termsConditions.postValue(Resource.Success(checkResponseBody(response.body()) as TermsConditionsModel))
+            else
+                termsConditions.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            termsConditions.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
 }

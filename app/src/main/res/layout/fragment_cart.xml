@@ -11,17 +11,15 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/back"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:clickable="true"
         android:contentDescription="@string/back_lbl"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        android:paddingVertical="@dimen/_5sdp"
         android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <TextView
         android:id="@+id/toolBarTitle"
@@ -261,6 +259,21 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
+                android:id="@+id/deleteAll"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/delete_allLbl"
+                android:textColor="@color/red"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/walletPointsCv" />
+
+            <TextView
                 android:id="@+id/billDetailsLbl"
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
@@ -270,7 +283,7 @@
                 android:text="@string/bill_details_lbl"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/walletPointsCv" />
+                app:layout_constraintTop_toBottomOf="@+id/deleteAll" />
 
             <View
                 android:layout_width="0dp"

@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductsSingleBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
@@ -23,13 +25,17 @@ class FeatureProductsAdapter @Inject constructor() :
         fun bind(data: Product) {
             with(bind) {
                 if(data.image?.isNotEmpty() == true){
-                    productImage.load(replaceBaseUrl(data.image[0].image))
+                    productImage.load(replaceBaseUrl(data.image[0].image)){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                 }
                 productName.text = data.product_name
 
                 if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.offer_price.toString().toDouble())}"
                 }else{
+                    if(data.actual_price!=null)
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
                 }
 

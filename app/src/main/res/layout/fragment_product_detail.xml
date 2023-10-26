@@ -65,6 +65,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/_12sdp"
         android:clipToPadding="false"
+        android:layout_marginHorizontal="@dimen/_7sdp"
         android:paddingBottom="@dimen/_65sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolBarTitle">
@@ -77,7 +78,6 @@
                 android:id="@+id/productImageCv"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_240sdp"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_10sdp"
                 app:cardElevation="@dimen/_1sdp"
@@ -113,8 +113,8 @@
 
                     <androidx.constraintlayout.utils.widget.ImageFilterView
                         android:id="@+id/addToWishlist"
-                        android:layout_width="@dimen/_20sdp"
-                        android:layout_height="@dimen/_20sdp"
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_28sdp"
                         android:layout_margin="@dimen/_10sdp"
                         android:src="@drawable/ic_fav"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -146,7 +146,7 @@
                 android:id="@+id/productsImagesRv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginStart="@dimen/_4sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
@@ -170,6 +170,7 @@
                 android:gravity="center"
                 app:cornerRadius="@dimen/_4sdp"
                 android:clickable="false"
+                android:layout_marginHorizontal="@dimen/_5sdp"
                 app:layout_constraintBottom_toTopOf="@id/productsDetailsCv"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
@@ -360,13 +361,12 @@
                         android:id="@+id/pinCode"
                         style="@style/textMedium"
                         android:layout_width="@dimen/_120sdp"
-                        android:layout_height="@dimen/_30sdp"
-
+                        android:layout_height="@dimen/_38sdp"
                         android:layout_marginTop="@dimen/_8sdp"
                         android:background="@drawable/edt_box"
                         android:backgroundTint="@color/textGrey"
                         android:gravity="center_vertical"
-                        android:hint="@string/postcodeLbl"
+                        android:hint="Example 79000"
                         android:inputType="number"
                         android:maxLength="6"
                         android:paddingHorizontal="@dimen/_10sdp"
@@ -377,20 +377,23 @@
                     <TextView
                         android:id="@+id/estimateDeliveryDate"
                         style="@style/textMedium"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_6sdp"
                         android:elevation="@dimen/_2sdp"
                         android:text="Estimated delivery between 11-15 July"
+                        android:singleLine="false"
+                        android:layout_marginEnd="@dimen/_10sdp"
                         android:textColor="@color/textGreyDark"
                         android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@id/pinCode"
                         app:layout_constraintTop_toBottomOf="@id/pinCode" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/checkPinCode"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/_30sdp"
+                        android:layout_height="@dimen/_40sdp"
                         android:layout_marginStart="@dimen/_10sdp"
                         android:backgroundTint="@color/red"
                         android:text="@string/checkLbl"
@@ -413,6 +416,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:elevation="@dimen/_2sdp"
+                android:layout_marginStart="@dimen/_4sdp"
                 android:text="Frequently Bought Together"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@id/checkPinCodeCv"
@@ -434,7 +438,7 @@
                 layout="@layout/frequently_bought"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginHorizontal="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/frequentlyBoughtLbl" />
@@ -468,7 +472,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addToCart"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/_35sdp"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:backgroundTint="@color/red"
                 android:paddingHorizontal="@dimen/_15sdp"
@@ -534,12 +538,12 @@
                         app:layout_constraintVertical_chainStyle="packed" />
 
                     <TextView
-                        android:id="@+id/chatResponse"
+                            android:id="@+id/chatResponse"
                         style="@style/textSmallSemiBold"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_5sdp"
-                        android:text="95% Chat Response | 451k followers"
+                        android:text=""
                         android:textColor="@color/red"
                         app:layout_constraintBottom_toTopOf="@id/vouchers"
                         app:layout_constraintEnd_toStartOf="@+id/visitStore"
@@ -552,7 +556,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_5sdp"
-                        android:text="10 Vouchers Available"
+                        android:text=""
                         android:textColor="@color/red"
                         app:layout_constraintBottom_toBottomOf="@id/storeImage"
                         app:layout_constraintEnd_toStartOf="@id/visitStore"
@@ -562,7 +566,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/visitStore"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/_30sdp"
+                        android:layout_height="@dimen/_35sdp"
                         android:layout_marginEnd="@dimen/_10sdp"
                         android:backgroundTint="@color/red"
                         android:gravity="center"
@@ -583,7 +587,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/chat"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/_30sdp"
+                        android:layout_height="@dimen/_35sdp"
                         android:backgroundTint="@color/red"
                         android:gravity="center"
                         android:paddingTop="0dp"
@@ -636,7 +640,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_10sdp"
                 app:cardElevation="@dimen/_1sdp"
@@ -668,7 +671,6 @@
                         android:layout_marginStart="@dimen/_1sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:background="@color/red"
-                        android:elevation="@dimen/_2sdp"
                         app:layout_constraintStart_toStartOf="@+id/descriptionLbl"
                         app:layout_constraintTop_toBottomOf="@+id/descriptionLbl" />
 
@@ -758,7 +760,6 @@
                         android:layout_marginStart="@dimen/_1sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:background="@color/red"
-                        android:elevation="@dimen/_2sdp"
                         app:layout_constraintStart_toStartOf="@+id/specificationsLbl"
                         app:layout_constraintTop_toBottomOf="@+id/specificationsLbl" />
 
@@ -809,7 +810,6 @@
                         android:layout_marginStart="@dimen/_1sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:background="@color/red"
-                        android:elevation="@dimen/_2sdp"
                         app:layout_constraintStart_toStartOf="@+id/reviewLbl"
                         app:layout_constraintTop_toBottomOf="@+id/reviewLbl" />
 
@@ -1084,6 +1084,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:elevation="@dimen/_2sdp"
+                android:layout_marginStart="@dimen/_5sdp"
                 android:text="@string/from_the_same_shop_lbl"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
@@ -1103,15 +1104,15 @@
                 android:id="@+id/relatedRv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_4sdp"
+                android:layout_marginHorizontal="@dimen/_6sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
                 app:layout_constraintTop_toBottomOf="@+id/fromTheSameShopLbl"
-                tools:itemCount="2"
-                tools:listitem="@layout/item_products" />
+                tools:itemCount="4"
+                tools:listitem="@layout/item_products_single" />
 
             <androidx.constraintlayout.widget.Group
                 android:layout_width="wrap_content"
@@ -1175,12 +1176,13 @@
             android:textColor="@color/red"
             app:backgroundTint="@android:color/transparent"
             app:cornerRadius="@dimen/_6sdp"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/addToCartMain"
             app:layout_constraintStart_toEndOf="@id/storeLbl"
             app:layout_constraintTop_toTopOf="parent"
             app:strokeColor="@color/red"
-            app:strokeWidth="1dp" />
+            app:strokeWidth="2dp" />
 
 
         <com.google.android.material.button.MaterialButton
@@ -1197,6 +1199,7 @@
             android:textSize="@dimen/_12ssp"
             android:visibility="visible"
             app:cornerRadius="@dimen/_6sdp"
+
             app:layout_constraintBottom_toBottomOf="@id/bulkOrder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/bulkOrder"
@@ -1210,7 +1213,7 @@
             android:layout_height="@dimen/_37sdp"
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_marginEnd="@dimen/_10sdp"
-            android:background="@drawable/edt_box"
+            android:background="@drawable/edt_box_smaa_radius"
             android:backgroundTint="@color/red"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/bulkOrder"
@@ -1223,7 +1226,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_2sdp"
-                android:background="@drawable/edt_box"
+                android:background="@drawable/edt_box_smaa_radius"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
@@ -1252,7 +1255,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_2sdp"
-                android:background="@drawable/edt_box"
+                android:background="@drawable/edt_box_smaa_radius"
                 android:clickable="true"
                 android:contentDescription="@string/back_lbl"
                 android:focusable="true"

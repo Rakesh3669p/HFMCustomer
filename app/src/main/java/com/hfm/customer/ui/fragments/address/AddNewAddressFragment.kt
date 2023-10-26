@@ -374,7 +374,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setCountriesSpinner(country: List<Country>) {
-        val phoneCodes = country.map { it.phonecode.toString() }
+        val phoneCodes = country.map { "+${it.phonecode}"}
         val countries = country.map { it.country_name }
         val countryIds = country.map { it.id.toString() }
 

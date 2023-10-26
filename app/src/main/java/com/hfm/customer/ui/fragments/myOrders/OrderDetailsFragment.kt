@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
 import com.hfm.customer.databinding.DialogueMediaPickupBinding
@@ -47,7 +48,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class OrderDetailsFragment : Fragment(), View.OnClickListener {
+class     OrderDetailsFragment : Fragment(), View.OnClickListener {
     private lateinit var orderData: MyOrdersData
 
     private lateinit var orderDetails: Purchase
@@ -196,18 +197,19 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 val orangeColor = ContextCompat.getColor(requireContext(), R.color.orange)
                 val greenColor = ContextCompat.getColor(requireContext(), R.color.green)
                 val redColor = ContextCompat.getColor(requireContext(), R.color.red)
+
                 when (it.order_status) {
                     "delivered" -> {
                         requestStatus.setTextColor(greenColor)
                         requestStatus.text = "Delivered on ${it.delivered_date}"
                     }
-
                     else -> {
                         val input = it.order_status
                         val output = input.substring(0, 1).uppercase() + input.substring(1)
                         requestStatus.text = "$output"
                     }
                 }
+
                 requestedDate.text = "${it.order_date}"
                 orderAmount.text =
                     "RM ${formatToTwoDecimalPlaces(it.grand_total)} (${it.products.size} Items)"
@@ -261,7 +263,10 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                     binding.submit.isVisible = true
                 } else {
                     binding.uploadedImage.isVisible = true
-                    binding.uploadedImage.load(replaceBaseUrl(it.payment_uploaded_image))
+                    binding.uploadedImage.load(replaceBaseUrl(it.payment_uploaded_image)){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                     binding.uploadImage.isVisible = false
                     binding.uploadPaymentMethod.isVisible = false
                     binding.submit.isVisible = false

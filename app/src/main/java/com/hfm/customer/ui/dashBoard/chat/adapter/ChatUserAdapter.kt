@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemChatUsersBinding
 import com.hfm.customer.ui.dashBoard.chat.model.ChatList
 import com.hfm.customer.utils.replaceBaseUrl
@@ -20,7 +22,10 @@ class ChatUserAdapter @Inject constructor() : RecyclerView.Adapter<ChatUserAdapt
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: ChatList) {
             with(bind) {
-                userImage.load(replaceBaseUrl(data.logo))
+                userImage.load(replaceBaseUrl(data.logo)){
+                    placeholder(R.drawable.logo)
+                    
+                }
                 userName.text = data.store_name
                 lastMessage.text = data.last_message
                 date.text = data.last_chat_date

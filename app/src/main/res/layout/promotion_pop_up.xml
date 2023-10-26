@@ -7,6 +7,7 @@
     >
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:visibility="gone"
         android:id="@+id/close"
         android:layout_width="@dimen/_20sdp"
         android:layout_height="@dimen/_20sdp"
@@ -21,7 +22,6 @@
         android:id="@+id/productImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/arrow_drop_down"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

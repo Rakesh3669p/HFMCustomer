@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductVariantsBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Variants
@@ -26,7 +27,10 @@ class ProductVariantsAdapter @Inject constructor() :
         fun bind(data: Variants) {
             with(bind) {
                 productImage.isVisible = data.image.isNotEmpty()
-                productImage.load(replaceBaseUrl(data.image))
+                productImage.load(replaceBaseUrl(data.image)){
+                    placeholder(R.drawable.logo)
+                    
+                }
                 productVariant.text = data.combination
                 if(data.isSelected){
                     mainLayout.background = ContextCompat.getDrawable(context, R.drawable.outline_line_box_red)

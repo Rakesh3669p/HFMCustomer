@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemBrandsBinding
 import com.hfm.customer.ui.dashBoard.home.model.Brand
 import com.hfm.customer.ui.dashBoard.home.model.Image
@@ -23,7 +25,10 @@ class BrandStoreAdapter @Inject constructor() :
             with(bind) {
                 val imageOriginal = data.brand_image
                 val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                adsImage.load(imageReplaced)
+                adsImage.load(imageReplaced){
+                    placeholder(R.drawable.logo)
+                    
+                }
                 root.setOnClickListener {
                     onBrandClick?.let {
                         it(data.brand_id)

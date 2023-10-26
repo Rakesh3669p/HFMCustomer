@@ -54,6 +54,7 @@ class WishListFragment : Fragment() , View.OnClickListener {
         val viewPagerAdapter = WishListPagerAdapter(fragmentManager,lifecycle)
         binding.storeVp.isSaveEnabled = false
         binding.storeVp.adapter = viewPagerAdapter
+        binding.storeVp.isUserInputEnabled = false
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {

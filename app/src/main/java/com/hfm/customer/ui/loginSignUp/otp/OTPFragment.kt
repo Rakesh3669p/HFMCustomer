@@ -104,6 +104,7 @@ class OTPFragment : Fragment(), View.OnClickListener {
                         }
 
                         findNavController().navigate(R.id.createPasswordFragment, bundle)
+                        findNavController().popBackStack()
 
                     } else showToast(response.data?.message.toString())
                 }
@@ -126,6 +127,7 @@ class OTPFragment : Fragment(), View.OnClickListener {
                         }
                     }
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
@@ -145,9 +147,9 @@ class OTPFragment : Fragment(), View.OnClickListener {
     private fun setOnClickListener() {
         with(binding) {
             verify.setOnClickListener(this@OTPFragment)
+            resend.setOnClickListener(this@OTPFragment)
         }
     }
-
 
     private fun validateAndVerifyOTP() {
         with(binding) {

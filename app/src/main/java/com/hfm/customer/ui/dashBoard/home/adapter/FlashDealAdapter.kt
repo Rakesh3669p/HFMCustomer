@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductsSingleBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
@@ -26,9 +28,13 @@ class FlashDealAdapter @Inject constructor() :
                 if(data.image?.isNotEmpty() == true) {
                     val imageOriginal = data.image[0].image
                     val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    productImage.load(imageReplaced)
+                    productImage.load(imageReplaced){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                 }
                 productName.text = data.product_name
+
                 if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.offer_price.toString().toDouble())}"
                 }else{
@@ -36,11 +42,13 @@ class FlashDealAdapter @Inject constructor() :
                 }
 
 
-                frozenLbl.isVisible =data.frozen == 1
-                wholeSaleLbl.isVisible =data.wholesale == 1
+                frozenLbl.isVisible =data.frozen.toString().toDouble() > 0
+                wholeSaleLbl.isVisible =data.wholesale.toString().toDouble() > 0
+
                 val difference = data.actual_price.toString().toDouble() - data.offer_price.toString().toDouble()
 
-                saveLbl.isVisible = difference>0
+                saveLbl.isVisible = false
+//                saveLbl.isVisible = difference > 0
                 saveLbl.text = "Save RM ${formatToTwoDecimalPlaces(difference)}"
 
                 root.setOnClickListener {

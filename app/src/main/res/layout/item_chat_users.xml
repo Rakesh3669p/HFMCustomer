@@ -20,6 +20,7 @@
             android:layout_width="75dp"
             android:layout_height="76dp"
             android:src="@color/grey_lite"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -87,11 +88,13 @@
 
         <androidx.constraintlayout.utils.widget.ImageFilterView
             android:id="@+id/forwardArrow"
-            android:layout_width="@dimen/_20sdp"
+            android:layout_width="@dimen/_25sdp"
             android:layout_height="@dimen/_25sdp"
             android:src="@drawable/ic_keyboard_arrow"
             android:tint="@color/grey_lite"
             app:layout_constraintTop_toTopOf="parent"
+            android:translationX="5dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

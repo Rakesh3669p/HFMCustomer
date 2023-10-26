@@ -115,7 +115,7 @@
     <TextView
         android:id="@+id/productsLbl"
         style="@style/textMedium"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/productsLbl"
         android:paddingEnd="@dimen/_10sdp"
@@ -123,7 +123,7 @@
         android:layout_marginTop="@dimen/_8sdp"
         android:includeFontPadding="false"
         android:layout_marginStart="@dimen/_10sdp"
-        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintEnd_toStartOf="@id/countryLbl"
         app:layout_constraintBottom_toTopOf="@id/products"
         app:layout_constraintTop_toBottomOf="@id/ratings"
@@ -140,7 +140,6 @@
         android:includeFontPadding="false"
         android:textColor="@color/red"
         android:layout_marginStart="@dimen/_10sdp"
-
         app:layout_constraintEnd_toStartOf="@id/countryLbl"
         app:layout_constraintBottom_toTopOf="@id/stateLbl"
         app:layout_constraintTop_toBottomOf="@id/productsLbl"
@@ -157,7 +156,6 @@
         android:textColor="@color/textGreyDark"
         android:layout_marginTop="@dimen/_8sdp"
         android:includeFontPadding="false"
-        android:layout_marginStart="@dimen/_20sdp"
 
         app:layout_constraintBottom_toTopOf="@id/products"
         app:layout_constraintTop_toBottomOf="@id/ratings"
@@ -174,7 +172,6 @@
         android:paddingEnd="@dimen/_10sdp"
         android:includeFontPadding="false"
         android:textColor="@color/red"
-        android:layout_marginStart="@dimen/_20sdp"
         app:layout_constraintBottom_toTopOf="@id/stateLbl"
         app:layout_constraintTop_toBottomOf="@id/countryLbl"
         app:layout_constraintStart_toEndOf="@+id/productsLbl"

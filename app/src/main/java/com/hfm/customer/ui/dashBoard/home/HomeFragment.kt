@@ -18,6 +18,7 @@ import androidx.viewpager2.widget.MarginPageTransformer
 import coil.load
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hfm.customer.R
+import com.hfm.customer.commonModel.PromotionPopup
 import com.hfm.customer.databinding.FragmentHomeBinding
 import com.hfm.customer.ui.dashBoard.home.adapter.BrandStoreAdapter
 import com.hfm.customer.ui.dashBoard.home.adapter.BrandsAdapter
@@ -54,6 +55,7 @@ data class AdsImage(
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), View.OnClickListener {
+    private var saleTime: String=""
     private lateinit var binding: FragmentHomeBinding
     private var currentView: View? = null
 
@@ -140,8 +142,15 @@ class HomeFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun setPromotionalPopup(promotionImage: String) {
-        promotionBanner = PromotionBanner(requireContext(), replaceBaseUrl(promotionImage))
+    private fun setPromotionalPopup(promotionData: PromotionPopup) {
+        promotionBanner = PromotionBanner(requireContext(), replaceBaseUrl(promotionData.promotion_image)){
+            val bundle = Bundle()
+            bundle.putString("catId", promotionData.category)
+            bundle.putString("subCatId",promotionData.sub_category)
+            findNavController().navigate(R.id.productListFragment,bundle)
+            promotionBanner.dismiss()
+        }
+
         promotionBanner.show()
     }
 
@@ -157,12 +166,12 @@ class HomeFragment : Fragment(), View.OnClickListener {
         )
 
         val imageTitles = listOf(
-            "International shipping",
+            "International\nshipping",
             "Vouchers",
-            "Bulk Purchase",
-            "Partner Offers",
-            "News Events",
-            "HFM Contest"
+            "Bulk\nPurchase",
+            "Partner\nOffers",
+            "News\nEvents",
+            "HFM\nContest"
         )
 
         for (i in imageResources.indices) {
@@ -215,9 +224,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     response.data?.data?.let {
 
                         homeMainBannerAdapter.differ.submitList(it.app_top_banner)
-                        if(it.promotion_popup!=null && !it.promotion_popup?.promotion_image.isNullOrEmpty())
-                            setPromotionalPopup(response.data.data.promotion_popup.promotion_image)
-                        if(it.search_placeholder_text.isNullOrEmpty()){
+                        if(it.promotion_popup!=null && !it.promotion_popup.promotion_image.isNullOrEmpty())
+                            setPromotionalPopup(response.data.data.promotion_popup)
+                        sessionManager.searchPlaceHolder = it.search_placeholder_text
+                        if(sessionManager.searchPlaceHolder.isNullOrEmpty()){
                             binding.searchBar.text = "Search here.."
                         }else{
                             binding.searchBar.text = it.search_placeholder_text
@@ -240,6 +250,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     binding.loader.isVisible = false
                     appLoader.dismiss()
                     if(response.data?.httpcode == 200) {
+                        saleTime =response.data.data.flash_sale.end_time
                         setTimer(response.data.data.flash_sale)
                         initRecyclerView(
                             requireContext(),
@@ -258,11 +269,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 }
 
                 is Resource.Loading -> Unit
-                is Resource.Error -> {
-                    if (response.message == netWorkFailure) {
-                        noInternetDialog.show()
-                    }
-                }
+                is Resource.Error -> apiError(response.message)
             }
         }
 
@@ -271,7 +278,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     binding.loader.isVisible = false
-                    binding.secondaryBanner.load(replaceBaseUrl(response.data?.data?.center_left_banner?.get(0)?.media.toString()))
+                    binding.secondaryBanner.load(replaceBaseUrl(response.data?.data?.center_left_banner?.get(0)?.media.toString())){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                 }
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
@@ -297,8 +307,14 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     binding.loader.isVisible = false
                     appLoader.dismiss()
                     with(binding) {
-                        referBanner.load(replaceBaseUrl(response.data?.data?.bottom_left_banner?.get(0)?.media.toString()))
-                        adBanner.load(replaceBaseUrl(response.data?.data?.bottom_right_banner?.get(0)?.media.toString()))
+                        referBanner.load(replaceBaseUrl(response.data?.data?.bottom_left_banner?.get(0)?.media.toString())){
+                            placeholder(R.drawable.logo)
+                            
+                        }
+                        adBanner.load(replaceBaseUrl(response.data?.data?.bottom_right_banner?.get(0)?.media.toString())){
+                            placeholder(R.drawable.logo)
+                            
+                        }
                     }
                 }
                 is Resource.Loading -> Unit
@@ -382,6 +398,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setTimer(flashSale: FlashSale?) {
+        if(flashSale?.end_time.isNullOrEmpty()) return
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val endTimeString = flashSale?.end_time.toString()
         val endTime = dateFormat.parse(endTimeString) ?: Date()
@@ -417,6 +434,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             searchFilter.setOnClickListener(this@HomeFragment)
             factoryDealsViewAll.setOnClickListener(this@HomeFragment)
             flashDealsViewAll.setOnClickListener(this@HomeFragment)
+            featuresProductViewAll.setOnClickListener(this@HomeFragment)
             searchFilter.setOnClickListener(this@HomeFragment)
         }
 
@@ -440,9 +458,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
             findNavController().navigate(R.id.productListFragment, bundle)
         }
 
-        trendingNowAdapter.setOnCategoryClickListener {
+        trendingNowAdapter.setOnCategoryClickListener {catId,subCatId->
             val bundle = Bundle()
-            bundle.putInt("wholeSale",1)
+            bundle.putString("catId",catId)
+            bundle.putString("subCatId",subCatId)
             findNavController().navigate(R.id.productListFragment,bundle)
         }
 
@@ -508,7 +527,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             }
             binding.searchBar.id -> {
                 val bundle = Bundle()
-                bundle.putString("searchHint",binding.searchBar.hint.toString())
+                bundle.putString("searchHint",binding.searchBar.text.toString())
                 findNavController().navigate(R.id.searchFragment,bundle)
             }
             binding.searchFilter.id -> findNavController().navigate(R.id.categoriesFragmentHome)
@@ -517,9 +536,16 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 bundle.putInt("wholeSale",1)
                 findNavController().navigate(R.id.productListFragment,bundle)
             }
+
+            binding.featuresProductViewAll.id -> {
+                val bundle = Bundle()
+                findNavController().navigate(R.id.productListFragment,bundle)
+            }
+
             binding.flashDealsViewAll.id -> {
                 val bundle = Bundle()
-                bundle.putInt("wholeSale",1)
+                bundle.putInt("flashSale",1)
+                bundle.putString("endTime",saleTime)
                 findNavController().navigate(R.id.productListFragment,bundle)
             }
         }

@@ -1,19 +1,25 @@
 package com.hfm.customer.ui.fragments.products.productDetails
 
 import android.annotation.SuppressLint
+import android.app.ActionBar.LayoutParams
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.content.Context
+import android.graphics.Point
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.webkit.WebViewClient
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.util.TypedValueCompat.dpToPx
@@ -29,6 +35,7 @@ import androidx.media3.exoplayer.source.MergingMediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.navigation.fragment.findNavController
 import coil.load
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.hfm.customer.R
 import com.hfm.customer.databinding.BottomSheetBulkOrderBinding
@@ -129,6 +136,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
         if (currentView == null) {
             currentView = inflater.inflate(R.layout.fragment_product_detail, container, false)
@@ -157,6 +165,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         val productId = arguments?.getString("productId").toString()
         mainViewModel.getProductDetails(productId)
         mainViewModel.getProfile()
+
+
     }
 
 
@@ -220,7 +230,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
                         bulkOrderDialog.dismiss()
-                        findNavController().navigate(R.id.action_productDetailsFragment_to_myOrdersFragment)
+                        val bundle = Bundle()
+                        bundle.putString("from","bulkOrders")
+                        findNavController().navigate(R.id.action_productDetailsFragment_to_myOrdersFragment,bundle)
                     } else showToast(response.data?.message.toString())
                 }
 
@@ -389,6 +401,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     @SuppressLint("SetJavaScriptEnabled", "SetTextI18n")
     private fun setProductDetails(productData: ProductData) {
         this.productData = productData
+
+        if(productData.customer_addr!=null){
+            if(!productData.customer_addr.pincode.isNullOrEmpty()){
+                binding.pinCode.setText(productData.customer_addr.pincode)
+                mainViewModel.checkAvailability(productData.product.product_id.toString(), productData.customer_addr.pincode)
+            }
+        }
         initRecyclerView(requireContext(), binding.productsImagesRv, productsImagesAdapter, true)
 
         val productImages: MutableList<Image> = ArrayList()
@@ -404,7 +423,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
         with(binding) {
             if (productData.product.image?.isNotEmpty() == true) {
-                productImage.load(replaceBaseUrl(productData.product.image[0].image))
+                productImage.load(replaceBaseUrl(productData.product.image[0].image)){
+                    placeholder(R.drawable.logo)
+                    
+                }
             }
             productName.text = productData.product.product_name
             ratingBar.rating = productData.product.rating.toString().toFloat()
@@ -446,8 +468,16 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     val imageOriginal = it.logo
                     val imageReplaced =
                         imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    storeImage.load(imageReplaced)
+                    storeImage.load(imageReplaced){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                     storeName.text = it.store_name
+                    /*chatResponse.text = "${
+                        formatToTwoDecimalPlaces(
+                            it.postive_review.toDouble()
+                        ).toDouble().roundToInt()
+                    } % Positive ${it.followers} followers"*/
                 }
             }
 
@@ -455,12 +485,16 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             binding.descriptionWebView.settings.javaScriptEnabled = true
             val htmlContent = productData.product.long_description
+            val descriptionContent = Html.fromHtml(htmlContent).toString().replace("\\s+".toRegex(), "")
+            descriptionCv.isVisible =descriptionContent.isNotEmpty()
             descriptionWebView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
             descriptionWebView.webViewClient = WebViewClient()
 
             val measuredHeight = binding.descriptionWebView.measuredHeight
             binding.viewMore.isVisible = measuredHeight > 120
             binding.viewMoreArrow.isVisible = measuredHeight > 120
+
+
 
             if (productData.product.specification == "false" || productData.product.specification.isEmpty()) {
                 specificationsCv.isVisible = false
@@ -472,6 +506,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 specificationsDivider.isVisible = true
                 binding.specificationsWebView.settings.javaScriptEnabled = true
                 val specificationHtmlContent = productData.product.specification
+                val specificationContent = Html.fromHtml(specificationHtmlContent).toString().replace("\\s+".toRegex(), "")
+                specificationsCv.isVisible =specificationContent.isNotEmpty()
                 specificationsWebView.loadDataWithBaseURL(
                     null,
                     specificationHtmlContent,
@@ -487,7 +523,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     val imageOriginal = productData.product.image[0].image
                     val imageReplaced =
                         imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    productImage.load(imageReplaced)
+                    productImage.load(imageReplaced){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                 }
                 productName.text = productData.product.product_name
                 productPrice.text = "RM ${
@@ -509,9 +548,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                                 "https://uat.hfm.synuos.com",
                                 "http://4.194.191.242"
                             )
-                            productImage.load(imageReplaced)
+                            productImage.load(imageReplaced){
+                                placeholder(R.drawable.logo)
+                                
+                            }
                         }
                         productName.text = it.product_name
+                        if(it.actual_price!=null)
                         productPrice.text =
                             "RM ${formatToTwoDecimalPlaces(it.actual_price.toString().toDouble())}"
 
@@ -525,10 +568,14 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     }
                 }
             }
+            if (productData.product.is_out_of_stock != null) {
+                soldOut.isVisible = productData.product.is_out_of_stock.toString().toBoolean()
+            }
 
             initRecyclerView(requireContext(), productsVariantsRv, productsVariantsAdapter, true)
             if (productData.varaiants_list.isNotEmpty()) {
                 selectedVariant = productData.varaiants_list[0].pro_id.toString()
+                soldOut.isVisible = productData.varaiants_list[0].is_out_of_stock.toString().toBoolean()
                 if (productData.varaiants_list[0].offer_price.toString()
                         .isNotEmpty() && productData.varaiants_list[0].offer_price.toString() != "false"
                 ) {
@@ -568,9 +615,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 setTimer(productData.product.end_time)
             }
 
-            if (productData.product.is_out_of_stock != null) {
-                soldOut.isVisible = productData.product.is_out_of_stock.toString().toBoolean()
-            }
+
             pinCode.clearFocus()
             binding.loader.isVisible = false
         }
@@ -618,13 +663,36 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         bottomSheetBinding = BottomSheetBulkOrderBinding.inflate(layoutInflater)
         bulkOrderDialog =
             BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
+
         bulkOrderDialog.setContentView(bottomSheetBinding.root)
+
+
+        val windowManager =
+            requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
+        val screenHeight: Int = size.y
+        val desiredHeight = (screenHeight * 0.85).toInt() // Adjust the fraction as needed
+
+
         with(bottomSheetBinding) {
+            val layoutParams = scrollView.layoutParams
+            layoutParams.width = LayoutParams.MATCH_PARENT
+            layoutParams.height = desiredHeight
+            scrollView.layoutParams = layoutParams
+            val bottomSheet: FrameLayout? = bulkOrderDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+            if (bottomSheet != null) {
+                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+            }
             productName.text = productData.product.product_name
             val imageOriginal = productData.product.image?.get(0)?.image
             val imageReplaced =
                 imageOriginal?.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-            productImage.load(imageReplaced)
+            productImage.load(imageReplaced){
+                placeholder(R.drawable.logo)
+                
+            }
             name.setText("${profileData.first_name} ${profileData.last_name}")
             email.setText(profileData.email)
             address.setText(profileData.address1)
@@ -853,7 +921,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
                 videoPlayer.pause()
                 binding.productVideo.isVisible = false
-                binding.productImage.load(data)
+                binding.productImage.load(data){
+                    placeholder(R.drawable.logo)
+                    
+                }
             }
         }
 
@@ -865,7 +936,12 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         }
 
         productsVariantsAdapter.setOnVariantsClickListener { position ->
+
+            binding.addToCartMain.isVisible = true
+            binding.cartCount.isVisible = false
+
             selectedVariant = productData.varaiants_list[position].pro_id.toString()
+            binding.soldOut.isVisible = productData.varaiants_list[position].is_out_of_stock.toString().toBoolean()
             if (productData.varaiants_list[position].offer_price.toString()
                     .isNotEmpty() && productData.varaiants_list[position].offer_price.toString() != "false"
             ) {
@@ -1024,6 +1100,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
     override fun onPause() {
         super.onPause()
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         videoPlayer.pause()
     }
 }

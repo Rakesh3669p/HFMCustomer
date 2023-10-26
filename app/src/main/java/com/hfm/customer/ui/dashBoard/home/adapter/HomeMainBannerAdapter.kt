@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.commonModel.MainBanner
 import com.hfm.customer.databinding.ItemBannerBinding
 import com.hfm.customer.utils.replaceBaseUrl
@@ -22,7 +24,10 @@ class HomeMainBannerAdapter @Inject constructor() :
         fun bind(data: MainBanner) {
             with(bind) {
                 bannerImage.roundPercent = 0.2F
-                bannerImage.load(replaceBaseUrl(data.media))
+                bannerImage.load(replaceBaseUrl(data.media)){
+                    placeholder(R.drawable.logo)
+                    
+                }
 
             }
         }

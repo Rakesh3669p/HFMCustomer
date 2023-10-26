@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemAdsBinding
 import com.hfm.customer.ui.dashBoard.home.AdsImage
 import com.hfm.customer.ui.dashBoard.home.model.Brand
@@ -21,7 +23,10 @@ class BrandsAdapter @Inject constructor() :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: AdsImage) {
             with(bind) {
-                adsImage.load(data.image)
+                adsImage.load(data.image){
+                    placeholder(R.drawable.logo)
+                    
+                }
                 title.text = data.name
                 root.setOnClickListener {
                     onItemClick?.let {

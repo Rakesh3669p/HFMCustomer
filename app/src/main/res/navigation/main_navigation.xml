@@ -270,5 +270,24 @@
         android:name="com.hfm.customer.ui.fragments.myOrders.BulkOrderDetailsFragment"
         android:label="BulkOrderDetailsFragment"
         tools:layout="@layout/fragment_bulk_order_details" />
+    <fragment
+        android:id="@+id/IPay88Fragment"
+        android:name="com.hfm.customer.ui.fragments.payment.paymentGateway.IPay88"
+        android:label="IPay88"
+        tools:layout="@layout/fragment_payment_gateway">
+
+        <action
+            android:id="@+id/action_online_paymentFragment_to_myOrdersFragment"
+            app:destination="@id/myOrdersFragment"
+            app:popUpTo="@id/cartFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_online_paymentFragment_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/cartFragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
 
 </navigation>

@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.google.android.material.tabs.TabLayout
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentStoreBinding
@@ -41,6 +42,8 @@ class StoreFragment : Fragment(), View.OnClickListener {
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var noInternetDialog: NoInternetDialog
     private lateinit var appLoader: Loader
+    private var catID: String = ""
+    private var subCatID: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -179,14 +182,20 @@ class StoreFragment : Fragment(), View.OnClickListener {
                     promotionBanner = PromotionBanner(
                         requireContext(),
                         replaceBaseUrl(shopDetail.promotion_image)
-                    )
+                    ){}
                     if (!shopDetail.promotion_image.isNullOrEmpty()) {
                         promotionBanner.show()
                     }
 
                     storeName.text = shopDetail.store_name
-                    storeImage.load(replaceBaseUrl(shopDetail.logo))
-                    storeBanner.load(replaceBaseUrl(shopDetail.banner))
+                    storeImage.load(replaceBaseUrl(shopDetail.logo)){
+                        placeholder(R.drawable.logo)
+                        
+                    }
+                    storeBanner.load(replaceBaseUrl(shopDetail.banner)){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                     storeFollowers.text = "${
                         formatToTwoDecimalPlaces(
                             shopDetail.postive_review.toString().toDouble()

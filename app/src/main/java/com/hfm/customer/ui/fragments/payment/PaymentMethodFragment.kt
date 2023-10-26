@@ -29,10 +29,10 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentPaymentMethodBinding
     private var currentView: View? = null
 
-    private val mainViewModel:MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
-    private lateinit var appLoader:Loader
-    private lateinit var noInternetDialog:NoInternetDialog
+    private lateinit var appLoader: Loader
+    private lateinit var noInternetDialog: NoInternetDialog
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,19 +61,34 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
 
 
     private fun setObserver() {
-        mainViewModel.placeOrder.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.placeOrder.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode == 200){
-                        showToast("Order Placed Successfully..")
-                        findNavController().navigate(R.id.action_paymentMethodFragment_to_myOrdersFragment)
-                    }else{
+                    if (response.data?.httpcode == 200) {
+
+                        if (binding.onlinePaymentRadioBtn.isChecked || binding.creditCardRadioBtn.isChecked) {
+                            val bundle = Bundle()
+                            bundle.putString("orderId",response.data.data.order_id)
+                            bundle.putString("amount","1")
+
+                            findNavController().navigate(R.id.IPay88Fragment,bundle)
+                        } else {
+                            showToast("Order Placed Successfully..")
+                            findNavController().navigate(R.id.action_paymentMethodFragment_to_myOrdersFragment)
+                        }
+
+
+
+
+
+                    } else {
                         showToast(response.data?.message.toString())
                     }
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
 
         }
@@ -107,20 +122,40 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
                     bankTransferLayout.root.isVisible = true
                     bankTransferArrow.rotation = if (bankTransferLayout.root.isVisible) 90F else 0F
                 }
+
                 2 -> {
                     duitLayout.root.isVisible = true
                     duitNowArrow.rotation = if (duitLayout.root.isVisible) 90F else 0F
                 }
+
                 3 -> {
                     onlinePaymentLayout.isVisible = true
                     onlinePaymentArrow.rotation = if (onlinePaymentLayout.isVisible) 90F else 0F
                 }
+
                 4 -> {
                     creditCardLayout.isVisible = true
                     creditCardArrow.rotation = if (creditCardLayout.isVisible) 90F else 0F
                 }
             }
         }
+    }
+
+    private fun checkPaymentMethods() {
+
+        with(binding) {
+            if (onlinePaymentRadioBtn.isChecked || creditCardRadioBtn.isChecked) {
+                mainViewModel.placeOrder(receivedJsonObject!!)
+            } else if (duitLayout.radioBtn.isChecked) {
+                mainViewModel.placeOrder(receivedJsonObject!!)
+            } else if (bankTransferLayout.radioBtn.isChecked) {
+                mainViewModel.placeOrder(receivedJsonObject!!)
+            } else {
+                showToast("Please Select any Payment Method to Proceed.")
+            }
+        }
+
+
     }
 
     private fun setOnClickListener() {
@@ -138,13 +173,18 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            binding.continueLbl.id-> mainViewModel.placeOrder(receivedJsonObject!!)
-            binding.howToPayLbl.id-> findNavController().navigate(R.id.paymentFAQFragment)
-            binding.back.id-> findNavController().popBackStack()
-            binding.bankTransfer.id-> showPaymentMode(1)
-            binding.duitNowLbl.id-> showPaymentMode(2)
-            binding.onlinePaymentLbl.id-> showPaymentMode(3)
-            binding.creditCardLbl.id-> showPaymentMode(4)
+            binding.continueLbl.id -> {
+                checkPaymentMethods()
+            }
+
+            binding.howToPayLbl.id -> findNavController().navigate(R.id.paymentFAQFragment)
+            binding.back.id -> findNavController().popBackStack()
+            binding.bankTransfer.id -> showPaymentMode(1)
+            binding.duitNowLbl.id -> showPaymentMode(2)
+            binding.onlinePaymentLbl.id -> showPaymentMode(3)
+            binding.creditCardLbl.id -> showPaymentMode(4)
         }
     }
+
+
 }

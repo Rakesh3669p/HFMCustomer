@@ -13,12 +13,12 @@
         style="@style/textMedium"
         android:layout_width="0dp"
         android:layout_height="@dimen/_30sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_9sdp"
         android:background="@drawable/radius_box"
         android:drawableStart="@drawable/ic_search_32"
         android:gravity="center_vertical"
         android:paddingHorizontal="@dimen/_5sdp"
-        android:text="Samyung Buy 2 Free 1"
+        android:text=""
         android:textColor="@color/textGreyDark"
         app:layout_constraintBottom_toBottomOf="@id/notification"
         app:layout_constraintEnd_toStartOf="@id/notification"
@@ -52,7 +52,8 @@
         android:id="@+id/cart"
         android:layout_width="@dimen/_25sdp"
         android:layout_height="@dimen/_25sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_11sdp"
         android:layout_marginVertical="@dimen/_5sdp"
         android:src="@drawable/ic_cart"
         android:clickable="true"
@@ -213,6 +214,7 @@
                 android:drawableTint="@color/red"
                 android:gravity="center"
                 android:text="@string/view_all_lbl"
+                android:translationX="@dimen/_6sdp"
                 android:textColor="@color/red"
                 app:layout_constraintBottom_toBottomOf="@id/flashDealsTimer"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -285,6 +287,7 @@
                 android:gravity="center"
                 android:text="@string/view_all_lbl"
                 android:textColor="@color/red"
+                android:translationX="@dimen/_6sdp"
                 app:layout_constraintBottom_toBottomOf="@id/officialBrandsLbl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/officialBrandsLbl" />
@@ -323,6 +326,7 @@
                 android:drawableTint="@color/red"
                 android:gravity="center"
                 android:text="@string/view_all_lbl"
+                android:translationX="@dimen/_6sdp"
                 android:textColor="@color/red"
                 app:layout_constraintBottom_toBottomOf="@id/factoryDealsLbl"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -353,6 +357,7 @@
 
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/trendingNowViewAll"
                 style="@style/textSmallSemiBold"
                 android:layout_width="wrap_content"
@@ -362,6 +367,7 @@
                 android:gravity="center"
                 android:text="@string/view_all_lbl"
                 android:textColor="@color/red"
+                android:translationX="@dimen/_6sdp"
                 app:layout_constraintBottom_toBottomOf="@id/trendingNowLbl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/trendingNowLbl" />
@@ -429,6 +435,7 @@
                 android:gravity="center"
                 android:text="@string/view_all_lbl"
                 android:textColor="@color/red"
+                android:translationX="@dimen/_6sdp"
                 app:layout_constraintBottom_toBottomOf="@id/featuresProductLbl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/featuresProductLbl" />

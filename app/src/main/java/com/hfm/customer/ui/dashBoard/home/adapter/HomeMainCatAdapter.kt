@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.commonModel.CatSubcat
 import com.hfm.customer.databinding.ItemHomeCategoryBinding
 import com.hfm.customer.databinding.ItemHomeMainCatBinding
@@ -21,7 +23,10 @@ class HomeMainCatAdapter @Inject constructor() :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: CatSubcat) {
             with(bind) {
-                catImage.load(data.image)
+                catImage.load(data.image){
+                    placeholder(R.drawable.logo)
+                    
+                }
                 catName.text = data.category_name
 
                 root.setOnClickListener {

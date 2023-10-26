@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentBlogsBinding
 import com.hfm.customer.databinding.FragmentCommonPageBinding
@@ -91,7 +92,10 @@ class BlogsFragment : Fragment() ,View.OnClickListener{
             val bundle = Bundle()
             if(list.isNotEmpty()) {
                 list[0]?.let {
-                    blogImage.load(replaceBaseUrl(it.image) )
+                    blogImage.load(replaceBaseUrl(it.image) ){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                     blogAuthor.text = it.author
                     blogTitle.text = it.blog_title
 

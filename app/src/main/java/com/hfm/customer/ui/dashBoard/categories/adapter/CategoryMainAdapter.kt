@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.CatSubcat
 import com.hfm.customer.databinding.ItemCategoryMainBinding
@@ -24,7 +25,10 @@ class CategoryMainAdapter @Inject constructor() :
         fun bind(data: CatSubcat) {
             with(bind) {
                 categoryName.text = data.category_name
-                categoryImage.load(data.image)
+                categoryImage.load(data.image){
+                    placeholder(R.drawable.logo)
+                    
+                }
 
                 itemCv.cardElevation = 0F
                 categoryName.setTextColor(ContextCompat.getColor(context, R.color.black))

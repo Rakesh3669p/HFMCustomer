@@ -122,7 +122,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     private fun setOnClickListener() {
         with(binding) {
-            newToHFM.setOnClickListener(this@LoginFragment)
+            newToHFMSignup.setOnClickListener(this@LoginFragment)
             login.setOnClickListener(this@LoginFragment)
             forgotPassword.setOnClickListener(this@LoginFragment)
             skipLbl.setOnClickListener(this@LoginFragment)
@@ -136,17 +136,17 @@ class LoginFragment : Fragment(), View.OnClickListener {
         val password = binding.password.text.toString()
 
         if(email.isEmpty()){
-            showToast("please enter email id")
+            showToast("Please enter email id")
             return
         }
 
         if(password.isEmpty()){
-            showToast("please enter password")
+            showToast("Please enter password")
             return
         }
 
         if (!email.isValidEmail()) {
-            showToast("please enter valid email id or password")
+            showToast("Please enter valid email id or password")
             return
         }
         loginSignUpViewModel.login(email, password, sessionManager.deviceId)
@@ -186,7 +186,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.login.id -> validateAndLogin()
-            binding.newToHFM.id -> findNavController().navigate(R.id.registerFragment)
+            binding.newToHFMSignup.id -> findNavController().navigate(R.id.registerFragment)
             binding.forgotPassword.id -> findNavController().navigate(R.id.resetPasswordFragment)
             binding.skipLbl.id -> {
                 startActivity(Intent(requireContext(), DashBoardActivity::class.java))

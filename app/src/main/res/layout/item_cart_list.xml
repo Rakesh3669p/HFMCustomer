@@ -24,16 +24,28 @@
             <CheckBox
                 android:id="@+id/checkBoxStore"
                 style="@style/textMediumBold"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_5sdp"
                 android:gravity="center_vertical"
-                android:text="Store Name"
-                android:layout_marginEnd="@dimen/_4sdp"
+                app:layout_constraintHorizontal_bias="0"
                 android:textColor="@color/red"
                 app:layout_constraintEnd_toStartOf="@id/shopVoucherLbl"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/storeName"
+                style="@style/textMediumBold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Store Name"
+                android:textColor="@color/red"
+                android:gravity="start"
+                android:layout_marginEnd="@dimen/_5sdp"
+                app:layout_constraintEnd_toStartOf="@id/shopVoucherLbl"
+                app:layout_constraintStart_toEndOf="@id/checkBoxStore"
+                app:layout_constraintTop_toTopOf="@id/checkBoxStore"
+                app:layout_constraintBottom_toBottomOf="@id/checkBoxStore"/>
 
             <TextView
                 android:id="@+id/shopVoucherLbl"
@@ -54,7 +66,7 @@
                 android:id="@+id/productsRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5sdp"
+                android:layout_marginVertical="@dimen/_5sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/checkBoxStore"

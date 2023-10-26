@@ -2,6 +2,9 @@ package com.hfm.customer.ui.dashBoard.profile
 
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,6 +21,7 @@ import coil.request.ImageRequest
 import coil.util.DebugLogger
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
+import com.hfm.customer.databinding.DialogueMediaPickupBinding
 import com.hfm.customer.databinding.FragmentProfileSettingsBinding
 import com.hfm.customer.ui.dashBoard.profile.model.ProfileData
 import com.hfm.customer.utils.Loader
@@ -25,6 +29,7 @@ import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.business
+import com.hfm.customer.utils.createFileFromContentUri
 import com.hfm.customer.utils.isValidEmail
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
@@ -171,15 +176,40 @@ class ProfileSettings : Fragment(), View.OnClickListener {
     }
 
     private fun showImagePickupDialog() {
-        ImagePicker.with(this)
-            .compress(1024)
-            .maxResultSize(
-                1080,
-                1080
-            )
-            .createIntent { intent ->
-                startForProfileImageResult.launch(intent)
-            }
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DialogueMediaPickupBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.setCancelable(true)
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+        appCompatDialog.setCancelable(false)
+        appCompatDialog.show()
+        bindingDialog.camera.setOnClickListener {
+            ImagePicker.with(this).cameraOnly()
+                .compress(1024)
+                .maxResultSize(
+                    720,
+                    720
+                )
+                .createIntent { intent ->
+                    startForImageResult.launch(intent)
+                }
+            appCompatDialog.dismiss()
+        }
+        bindingDialog.gallery.setOnClickListener {
+            ImagePicker.with(this).galleryOnly()
+                .compress(1024)
+                .maxResultSize(
+                    720,
+                    720
+                )
+                .createIntent { intent ->
+                    startForImageResult.launch(intent)
+                }
+            appCompatDialog.dismiss()
+        }
+
     }
 
     private fun setOnClickListener() {
@@ -261,23 +291,19 @@ class ProfileSettings : Fragment(), View.OnClickListener {
     }
 
 
-    private val startForProfileImageResult =
+    private val startForImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             val resultCode = result.resultCode
             val data = result.data
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     val fileUri = data?.data!!
-                    imgFile = File(fileUri.path)
+                    imgFile = createFileFromContentUri(requireActivity(), fileUri)
                     binding.profileImage.setImageURI(fileUri)
                 }
 
                 ImagePicker.RESULT_ERROR -> {
                     showToast(ImagePicker.getError(data))
-                }
-
-                else -> {
-                    showToast("Task Cancelled")
                 }
             }
         }

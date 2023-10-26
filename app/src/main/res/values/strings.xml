@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Halal Food Master</string>
     <string name="google_map_api_key">AIzaSyCREqHFu9GW1WE2fJgjagHZPenTl5KUxJ0</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -9,9 +9,13 @@
     <string name="name_lbl">Name</string>
     <string name="email_lbl">Email</string>
     <string name="termsConditionsLbl"><font color='#000000'>I agree to the</font> <font color='#e21419'>terms &amp; conditions</font></string>
-    <string name="newToHfm"><font color='#000000'>New to HFM?</font> <font color='#e21419'><b>Sign Up</b></font></string>
+<!--    <string name="newToHfm">New to HFM? <b><font color='#e21419'>Sign Up</font></b></string>-->
+    <string name="newToHfm">New to HFM? </string>
+    <string name="signUp">Sign Up</string>
+
     <string name="oldToHfm"><font color='#000000'>Already have an HFM account?</font> <font color='#e21419'><b>Sign In</b></font></string>
-    <string name="resendOtp"><font color='#000000'>Dont receive OTP?</font> <font color='#e21419'><b>Resend Again</b></font></string>
+    <string name="receiveOtp">Dont receive OTP?</string>
+    <string name="resendOtp">Resend Again</string>
     <string name="send_otp_lbl">Send OTP</string>
     <string name="login_with_facebook_lbl">Login with Facebook</string>
     <string name="login_with_google_lbl">Login with Google</string>
@@ -24,7 +28,7 @@
     <string name="create_password_lbl">Create Password</string>
     <string name="companyBillingAddress">Company Billing Address</string>
     <string name="password_lbl">Password</string>
-    <string name="confirm_password">confirm password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="register_lbl">Register</string>
     <string name="address_lbl">Address</string>
     <string name="login_lbl">Login</string>
@@ -202,4 +206,6 @@
     <string name="delivery_chargesLbl">Delivery Charges</string>
     <string name="request_statusLbl">Request Status</string>
     <string name="grand_totalLbl">Grand Total</string>
+    <string name="rejectLbl">Reject</string>
+    <string name="delete_allLbl">Delete All</string>
 </resources>

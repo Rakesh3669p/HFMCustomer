@@ -85,7 +85,7 @@
 
 
         <com.google.android.material.button.MaterialButton
-            style="@style/textMediumSemiBold"
+            style="@style/textMediumBold"
             android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
@@ -120,13 +120,27 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
             android:text="@string/newToHfm"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintEnd_toStartOf="@id/newToHFMSignup"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/forgotPassword" />
 
         <TextView
+            android:id="@+id/newToHFMSignup"
+            style="@style/textMediumSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:text="@string/signUp"
+            android:textColor="@color/red"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/newToHFM"
+            app:layout_constraintTop_toBottomOf="@+id/forgotPassword" />
+
+        <TextView
             android:id="@+id/facebook"
-            style="@style/textMedium"
+            style="@style/textMediumSemiBold"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:layout_marginTop="@dimen/_12sdp"
@@ -141,7 +155,7 @@
 
         <TextView
             android:id="@+id/google"
-            style="@style/textMedium"
+            style="@style/textMediumSemiBold"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:layout_marginTop="@dimen/_12sdp"

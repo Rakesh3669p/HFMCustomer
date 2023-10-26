@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/_350sdp"
     android:background="@drawable/bottom_sort_bg"
+    android:layout_gravity="bottom"
     android:elevation="@dimen/_10sdp"
     android:paddingBottom="@dimen/_10sdp">
 

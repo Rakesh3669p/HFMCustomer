@@ -14,7 +14,7 @@
         android:background="@drawable/edt_box_smaa_radius"
         android:elevation="1dp"
         android:src="@drawable/red_chilli"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/available"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -73,5 +73,20 @@
         app:layout_constraintBottom_toBottomOf="@id/productImage"
         app:layout_constraintStart_toStartOf="@id/productName"
         app:layout_constraintTop_toBottomOf="@id/productPrice" />
+
+    <TextView
+        android:id="@+id/available"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:singleLine="false"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_4sdp"
+        app:layout_constraintTop_toBottomOf="@id/productImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/productImage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

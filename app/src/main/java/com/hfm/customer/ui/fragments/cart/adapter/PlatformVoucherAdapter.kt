@@ -37,6 +37,12 @@ class PlatformVoucherAdapter @Inject constructor() : RecyclerView.Adapter<Platfo
                 if(absoluteAdapterPosition == differ.currentList.size-1){
                     selectedPosition = -1
                 }
+
+                radioBtn.setOnClickListener {
+                    onItemClick?.invoke(absoluteAdapterPosition)
+                    selectedPosition = absoluteAdapterPosition
+                    notifyDataSetChanged()
+                }
                 root.setOnClickListener {
                     onItemClick?.invoke(absoluteAdapterPosition)
                     selectedPosition = absoluteAdapterPosition

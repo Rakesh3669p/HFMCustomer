@@ -77,6 +77,7 @@
             android:layout_height="@dimen/_24sdp"
             android:src="@drawable/ic_keyboard_arrow"
             android:tint="@color/red"
+            android:translationX="10dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 

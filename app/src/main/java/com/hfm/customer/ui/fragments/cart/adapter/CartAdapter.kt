@@ -45,7 +45,7 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
                     voucherDetailsLayout.isVisible = false
                 }
 
-                checkBoxStore.text = data.seller.seller
+                storeName.text = data.seller.seller
                 val productAdapter = CartProductAdapter()
                 initRecyclerView(context, productsRv, productAdapter)
                 productAdapter.differ.submitList(data.seller.products)
@@ -98,7 +98,9 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
                 }
 
 
-
+                storeName.setOnClickListener {
+                    onStoreClicked?.invoke(data.seller.seller_id)
+                }
                 checkBoxStore.setOnCheckedChangeListener { _, isChecked ->
                     var cartIds = ""
                     data.seller.products.forEach {
@@ -185,6 +187,11 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
 
     fun setOnSellerRemoveCoupon(listener: (id:Int) -> Unit) {
         onRemoveCoupon = listener
+    }
+    private var onStoreClicked: ((id:Int) -> Unit)? = null
+
+    fun setOnStoreClicked(listener: (id:Int) -> Unit) {
+        onStoreClicked = listener
     }
 
 

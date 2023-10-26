@@ -79,7 +79,7 @@
         android:layout_marginStart="@dimen/_10sdp"
         android:background="@drawable/edt_line_box"
         android:gravity="start"
-        android:hint="60000"
+        android:hint="60,000"
         android:inputType="number"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_8sdp"
@@ -94,6 +94,7 @@
         android:valueFrom="0"
         android:valueTo="60000"
         app:values="@array/initial_slider_values"
+        app:labelBehavior="gone"
         app:thumbColor="@color/white"
         app:thumbStrokeColor="@color/red"
         app:thumbStrokeWidth="@dimen/_2sdp"
@@ -101,6 +102,17 @@
         app:layout_constraintTop_toBottomOf="@id/rmLbl"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/brandsLbl"
+        style="@style/textSmallSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/brandsLbl"
+        android:layout_marginTop="@dimen/_12sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rangeSlider" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filterBrandRv"
@@ -111,14 +123,14 @@
         android:layout_marginTop="@dimen/_10sdp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/rangeSlider"
+        app:layout_constraintTop_toBottomOf="@id/brandsLbl"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cancel"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_45sdp"
+        android:layout_height="@dimen/_50sdp"
         android:text="@string/cancelLbl"
         android:textColor="@color/red"
         app:backgroundTint="@android:color/transparent"
@@ -135,7 +147,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/apply"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_45sdp"
+        android:layout_height="@dimen/_50sdp"
         android:layout_marginTop="12dp"
         android:backgroundTint="@color/red"
         android:paddingVertical="@dimen/_10sdp"

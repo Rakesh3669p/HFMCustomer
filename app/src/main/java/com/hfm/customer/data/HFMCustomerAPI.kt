@@ -7,6 +7,7 @@ import com.hfm.customer.commonModel.CountryListModel
 import com.hfm.customer.commonModel.HomeMainCategoriesModel
 import com.hfm.customer.commonModel.StateListModel
 import com.hfm.customer.commonModel.SuccessModel
+import com.hfm.customer.commonModel.TermsConditionsModel
 import com.hfm.customer.ui.dashBoard.home.model.FeatureProductsModel
 import com.hfm.customer.ui.dashBoard.home.model.FlashSaleModel
 import com.hfm.customer.ui.dashBoard.home.model.HomeBottomBannerModel
@@ -35,6 +36,7 @@ import com.hfm.customer.ui.fragments.myOrders.model.MyOrdersModel
 import com.hfm.customer.ui.fragments.myOrders.model.OrderHistoryModel
 import com.hfm.customer.ui.fragments.notifications.model.NotificationModel
 import com.hfm.customer.ui.fragments.payment.model.PaymentFAQModel
+import com.hfm.customer.ui.fragments.payment.model.PlaceOrderModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.AddToCartModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.BulkOrderRequestModel
 import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
@@ -57,7 +59,6 @@ interface HFMCustomerAPI {
     companion object {
         const val BASE_URL = BuildConfig.BASE_URL
     }
-
 
     @POST("customer/login")
     suspend fun login(
@@ -199,6 +200,12 @@ interface HFMCustomerAPI {
     ): Response<BulkOrdersListModel>
 
 
+    @POST("customer/order/bulkorder/quotation_status")
+    suspend fun addBulkOrdersAction(
+        @Body jsonObject: JsonObject
+    ): Response<SuccessModel>
+
+
     @GET("customer/business-category")
     suspend fun getBusinessCategories(): Response<BusinessCategoryModel>
 
@@ -324,7 +331,7 @@ interface HFMCustomerAPI {
     suspend fun sendMessage(@PartMap map: MutableMap<String, RequestBody?>): Response<MessageSentModel>
 
     @POST("customer/order/placeorder")
-    suspend fun placeOrder(@Body jsonObject: JsonObject): Response<SuccessModel>
+    suspend fun placeOrder(@Body jsonObject: JsonObject): Response<PlaceOrderModel>
     @Multipart
     @POST("customer/order/payment_upload")
     suspend fun uploadOrderReceipt(@PartMap map: MutableMap<String, RequestBody?>): Response<SuccessModel>
@@ -344,12 +351,14 @@ interface HFMCustomerAPI {
         @Query("country_id") countryId: String
     ): Response<StateCodeModel>
 
-
     @POST("customer/city/find-by-name")
     suspend fun getCityCode(
         @Query("name") name: String,
         @Query("state_id") stateId: String
     ): Response<CityCodeModel>
+
+    @GET("customer/terms-conditions")
+    suspend fun getTermsConditions(): Response<TermsConditionsModel>
 
 
 }

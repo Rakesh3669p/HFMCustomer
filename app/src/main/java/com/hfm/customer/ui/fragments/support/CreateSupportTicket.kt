@@ -1,6 +1,9 @@
 package com.hfm.customer.ui.fragments.support
 
 import android.app.Activity
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,11 +17,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
+import com.hfm.customer.databinding.DialogueMediaPickupBinding
 import com.hfm.customer.databinding.FragmentCreateTicketBinding
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
+import com.hfm.customer.utils.createFileFromContentUri
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
@@ -157,34 +162,64 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun showImagePickupDialog() {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DialogueMediaPickupBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.setCancelable(true)
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+        appCompatDialog.setCancelable(false)
+        appCompatDialog.show()
+        bindingDialog.camera.setOnClickListener {
+            ImagePicker.with(this).cameraOnly()
+                .compress(1024)
+                .maxResultSize(
+                    720,
+                    720
+                )
+                .createIntent { intent ->
+                    startForImageResult.launch(intent)
+                }
+            appCompatDialog.dismiss()
+        }
+        bindingDialog.gallery.setOnClickListener {
+            ImagePicker.with(this).galleryOnly()
+                .compress(1024)
+                .maxResultSize(
+                    720,
+                    720
+                )
+                .createIntent { intent ->
+                    startForImageResult.launch(intent)
+                }
+            appCompatDialog.dismiss()
+        }
+
+    }
+
+
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
             binding.send.id -> sendATicket()
             binding.orderEdt.id -> findNavController().navigate(R.id.myAllOrdersFragment)
             binding.uploadImages.id -> {
-                ImagePicker.with(this)
-                    .compress(1024)
-                    .maxResultSize(
-                        1080,
-                        1080
-                    )
-                    .createIntent { intent ->
-                        startForProfileImageResult.launch(intent)
-                    }
+             showImagePickupDialog()
             }
         }
     }
 
 
-    private val startForProfileImageResult =
+    private val startForImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             val resultCode = result.resultCode
             val data = result.data
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     val fileUri = data?.data!!
-                    imgFile = File(fileUri.path)
+                    imgFile = createFileFromContentUri(requireActivity(), fileUri)
                     binding.uploadedImage.isVisible = true
                     binding.uploadedImage.setImageURI(fileUri)
                 }
@@ -193,9 +228,7 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
                     showToast(ImagePicker.getError(data))
                 }
 
-                else -> {
-                    showToast("Task Cancelled")
-                }
+                else -> {}
             }
         }
 

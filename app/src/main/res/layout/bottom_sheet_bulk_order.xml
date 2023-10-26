@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
     android:background="@drawable/bottom_sort_bg"
-    android:layout_marginHorizontal="@dimen/_10sdp"
     android:elevation="@dimen/_10sdp"
     android:paddingBottom="@dimen/_10sdp">
 
@@ -31,12 +31,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/_450sdp"
         android:fillViewport="true"
-        android:layout_marginTop="@dimen/_50sdp"
+        android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginHorizontal="@dimen/_12sdp"
         app:layout_constraintTop_toBottomOf="@id/titleLbl"
+        app:layout_constraintBottom_toBottomOf="parent"
         >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,12 +55,14 @@
 
     <TextView
         android:id="@+id/productName"
-        style="@style/textLarge"
-        android:layout_width="wrap_content"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_5sdp"
         android:elevation="@dimen/_2sdp"
         android:text="@string/product_detailsLbl"
+        android:singleLine="false"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/productImage"
         app:layout_constraintBottom_toBottomOf="@id/productImage"
         app:layout_constraintTop_toTopOf="@id/productImage" />
@@ -99,13 +103,11 @@
         android:id="@+id/unitsSpinner"
         style="@style/SpinnerTheme"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_45sdp"
+        android:layout_height="@dimen/_40sdp"
         android:layout_marginTop="@dimen/_12sdp"
-
         android:gravity="start"
         android:hint="@string/name_lbl"
         android:spinnerMode="dropdown"
-        android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_12sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -198,7 +200,7 @@
         app:cornerRadius="@dimen/_6sdp"
         app:strokeColor="@color/red"
         app:strokeWidth="1dp"
-        android:layout_marginHorizontal="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/send"
         app:layout_constraintBottom_toBottomOf="@id/send"
@@ -217,8 +219,8 @@
         android:textColor="@color/white"
         android:textFontWeight="600"
         android:textSize="@dimen/_12ssp"
-        android:layout_marginHorizontal="@dimen/_5sdp"
         app:cornerRadius="@dimen/_6sdp"
+        android:layout_marginStart="@dimen/_5sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/cancel"
         app:layout_constraintTop_toBottomOf="@id/remarks"

@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemMyProductBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
@@ -26,7 +28,10 @@ class MyAllOrdersProductsAdapter @Inject constructor() : RecyclerView.Adapter<My
         fun bind(data: Product) {
             with(bind) {
                 if(data.product_image?.isNotEmpty() == true){
-                    productImage.load(replaceBaseUrl(data.product_image[0].image))
+                    productImage.load(replaceBaseUrl(data.product_image[0].image)){
+                        placeholder(R.drawable.logo)
+                        
+                    }
                 }
                 productName.text = data.product_name
                 productQty.text = "Quantity: ${data.quantity.toString().toDouble().roundToInt()}"

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentBlogsDetailsBinding
 import com.hfm.customer.ui.fragments.blogs.model.BlogDetailsData
@@ -78,7 +79,10 @@ class BlogsDetailsFragment : Fragment() ,View.OnClickListener{
 
     private fun setBlogData(data: BlogDetailsData) {
         with(binding){
-            blogImage.load(replaceBaseUrl(data.post.image))
+            blogImage.load(replaceBaseUrl(data.post.image)){
+                placeholder(R.drawable.logo)
+                
+            }
             blogAuthor.text = data.post.author
             blogTitle.text = data.post.blog_title
             blogDesc.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

@@ -20,6 +20,8 @@ data class BannerData(
 data class PromotionPopup(
     val promotion_image: String,
     val promotion_link: String,
+    val category: String,
+    val sub_category: String,
 )
 
 data class CatSubcat(

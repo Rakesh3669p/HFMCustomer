@@ -133,7 +133,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 lifecycleScope.launch {
                     imageLoader.execute(request)
                 }
-                userName.text = "${it.first_name} ${it.last_name}"
+                userName.text = "${it.first_name} ${it.last_name?:""}"
                 if(it.customer_type !=null) {
                     customerType = it.customer_type.uppercase()
                     userType.text = "Customer Type: ${customerType.uppercase()}"
@@ -158,6 +158,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             toReceive.setOnClickListener(this@ProfileFragment)
             bulkOrders.setOnClickListener(this@ProfileFragment)
             viewAllLbl.setOnClickListener(this@ProfileFragment)
+            search.setOnClickListener(this@ProfileFragment)
         }
     }
 

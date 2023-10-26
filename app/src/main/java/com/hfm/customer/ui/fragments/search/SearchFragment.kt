@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.search
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -21,6 +20,7 @@ import com.hfm.customer.ui.fragments.search.adapter.SearchSuggestionsAdapter
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
+import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
@@ -42,6 +42,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
 
     @Inject
     lateinit var relatedSearchTermAdapter: SearchSuggestionsAdapter
+    @Inject lateinit var sessionManager:SessionManager
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,8 +66,12 @@ class SearchFragment : Fragment(), View.OnClickListener {
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { noInternetDialog.dismiss() }
+        if(sessionManager.searchPlaceHolder.isNullOrEmpty()){
+            binding.searchBar.hint = "Search here.."
+        }else{
+            binding.searchBar.hint = sessionManager.searchPlaceHolder
+        }
 
-        binding.searchBar.hint = arguments?.getString("searchHint").toString()
         with(binding) {
             binding.clearSearch.isVisible = false
             lifecycleScope.launch {
@@ -160,6 +165,12 @@ class SearchFragment : Fragment(), View.OnClickListener {
             }
 
         }
+    }
+
+    override fun onPause() {
+        val imm = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.searchBar.windowToken, 0)
+        super.onPause()
     }
 
 }

@@ -6,13 +6,14 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -44,6 +45,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class ChatFragment : Fragment(), View.OnClickListener {
 
@@ -73,7 +75,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
     private var orderDateTime = ""
     private var orderAmount = ""
     private var qty = ""
-    var keyBoardOpened = false
+    private var keyBoardOpened = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -238,6 +240,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
         val message = binding.edtMessage.text.toString()
         if(message.isEmpty()){
             showToast("Please type a message to send..")
+            return
         }
         if (containsSensitiveWords(message)) {
             val currentTime = LocalTime.now()

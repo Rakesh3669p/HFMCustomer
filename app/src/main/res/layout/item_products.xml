@@ -168,7 +168,7 @@
         android:layout_marginTop="@dimen/_2sdp"
         android:gravity="center"
         android:paddingHorizontal="@dimen/_15sdp"
-        android:text="RM 53"
+        android:text=""
         android:textColor="@color/red"
         app:layout_constraintEnd_toEndOf="@id/productImageCard"
         app:layout_constraintStart_toStartOf="@id/productImageCard"

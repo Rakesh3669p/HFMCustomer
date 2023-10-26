@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.hfm.customer.R
 
 import com.hfm.customer.databinding.ItemShopsBinding
 import com.hfm.customer.ui.fragments.wishlist.model.Favourite
@@ -21,7 +23,10 @@ class WishlistShopAdapter @Inject constructor(): RecyclerView.Adapter<WishlistSh
         fun bind(data: Favourite) {
 
             with(itemBannerBinding){
-                shopImage.load(replaceBaseUrl(data.logo))
+                shopImage.load(replaceBaseUrl(data.logo)){
+                    placeholder(R.drawable.logo)
+                    
+                }
                 shopName.text = data.store_name
                 ratingBar.rating = data.store_rating.toFloat()
                 ratingType.text ="${data.postive_review.roundToInt()} % Positive"
