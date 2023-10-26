@@ -45,6 +45,7 @@ import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucher
 import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
 import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
 import com.hfm.customer.ui.fragments.support.model.SupportTicketsModel
+import com.hfm.customer.ui.fragments.vouchers.model.VoucherListModel
 import com.hfm.customer.ui.fragments.wallet.model.WalletModel
 import com.hfm.customer.ui.fragments.wishlist.model.StoreWishlistModel
 import com.hfm.customer.ui.fragments.wishlist.model.WishListModel
@@ -167,12 +168,12 @@ interface HFMCustomerAPI {
     @POST("customer/seller-coupon-list")
     suspend fun getSellerVouchers(
         @Body jsonObject: JsonObject
-    ): Response<SellerVoucherModel>
+    ): Response<VoucherListModel>
 
     @POST("customer/coupon-list")
     suspend fun getPlatFormVouchers(
         @Body jsonObject: JsonObject
-    ): Response<SellerVoucherModel>
+    ): Response<VoucherListModel>
 
     @POST("customer/coupon/platform")
     suspend fun applyPlatFormVouchers(

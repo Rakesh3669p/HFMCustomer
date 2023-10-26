@@ -57,27 +57,27 @@ class MyOrdersListAdapter @Inject constructor() :
                 requestedDate.text = "${data.order_date} | ${data.order_time}"
 
                 when(paymentStatus){
-                    "pending"->{
+                    "to_pay"->{
                         requestStatus.text = "Payment Pending"
                         requestStatus.setTextColor(orangeColor)
                     }
-                    "confirmed"->{
+                    "to_ship"->{
                         requestStatus.text = "In Process"
                         requestStatus.setTextColor(orangeColor)
                     }
 
-                    "progress"->{
+                    "to_receive"->{
                         requestStatus.text = "Estimated delivery on "
                         requestStatus.setTextColor(greenColor)
                     }
 
-                    "delivered"->{
-                        requestStatus.text = "Delivered on ${data.delivered_date}"
+                    "completed"->{
+                        requestStatus.text = "Delivered"
                         requestStatus.setTextColor(greenColor)
                     }
 
-                    "rejected"->{
-                        requestStatus.text = "Cancelled on "
+                    "cancelled"->{
+                        requestStatus.text = "Cancelled"
                         requestStatus.setTextColor(redColor)
                     }
                 }

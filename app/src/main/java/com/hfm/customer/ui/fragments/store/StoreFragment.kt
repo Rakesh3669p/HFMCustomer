@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.store
 
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -18,16 +19,19 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentStoreBinding
 import com.hfm.customer.ui.fragments.store.adapter.StorePagerAdapter
 import com.hfm.customer.ui.fragments.store.model.StoreData
+import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.PromotionBanner
 import com.hfm.customer.utils.Resource
+import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -42,8 +46,8 @@ class StoreFragment : Fragment(), View.OnClickListener {
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var noInternetDialog: NoInternetDialog
     private lateinit var appLoader: Loader
-    private var catID: String = ""
-    private var subCatID: String = ""
+    @Inject
+    lateinit var sessionManager: SessionManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -92,6 +96,8 @@ class StoreFragment : Fragment(), View.OnClickListener {
         val viewPagerAdapter = StorePagerAdapter(fragmentManager, lifecycle, data)
         binding.storeVp.adapter = viewPagerAdapter
         binding.storeVp.isSaveEnabled = false
+        binding.storeVp.currentItem = 1
+        binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1))
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -138,12 +144,22 @@ class StoreFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if (response.data?.httpcode == 200) {
-                        storeData.shop_detail[0].is_following = 1
-                        binding.follow.text =
-                            if (storeData.shop_detail[0].is_following == 0) "Follow" else "Following"
-                    } else {
-                        showToast(response.data?.status.toString())
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            storeData.shop_detail[0].is_following = 1
+                            binding.follow.text =
+                                if (storeData.shop_detail[0].is_following == 0) "Follow" else "Following"
+                        }
+
+                        401 -> {
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
+
+                        else -> {
+                            showToast(response.data?.status.toString())
+                        }
                     }
                 }
 
@@ -182,19 +198,19 @@ class StoreFragment : Fragment(), View.OnClickListener {
                     promotionBanner = PromotionBanner(
                         requireContext(),
                         replaceBaseUrl(shopDetail.promotion_image)
-                    ){}
+                    ) {}
                     if (!shopDetail.promotion_image.isNullOrEmpty()) {
                         promotionBanner.show()
                     }
 
                     storeName.text = shopDetail.store_name
-                    storeImage.load(replaceBaseUrl(shopDetail.logo)){
+                    storeImage.load(replaceBaseUrl(shopDetail.logo)) {
                         placeholder(R.drawable.logo)
-                        
+
                     }
-                    storeBanner.load(replaceBaseUrl(shopDetail.banner)){
+                    storeBanner.load(replaceBaseUrl(shopDetail.banner)) {
                         placeholder(R.drawable.logo)
-                        
+
                     }
                     storeFollowers.text = "${
                         formatToTwoDecimalPlaces(

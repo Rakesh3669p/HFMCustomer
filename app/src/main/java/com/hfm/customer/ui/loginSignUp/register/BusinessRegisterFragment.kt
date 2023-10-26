@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.CountryData
@@ -22,6 +23,7 @@ import com.hfm.customer.databinding.FragmentBusinessRegisterBinding
 import com.hfm.customer.databinding.TermsAndConditionsPopUpBinding
 import com.hfm.customer.ui.loginSignUp.LoginSignUpViewModel
 import com.hfm.customer.ui.loginSignUp.register.model.BusinessData
+import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.business
@@ -41,9 +43,15 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentBusinessRegisterBinding
     private var currentView: View? = null
-    private val loginSignUpViewModel: LoginSignUpViewModel by activityViewModels()
+    private val loginSignUpViewModel: LoginSignUpViewModel by viewModels()
     private lateinit var noInternetDialog: NoInternetDialog
 
+    private var companyName = ""
+    private var companyRegisterNo = ""
+    private var companyContactNo = ""
+    private var email = ""
+
+    private lateinit var appLoader:Loader
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,6 +72,7 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
 
     }
     private fun init() {
+        appLoader = Loader(requireContext())
         loginSignUpViewModel.getBusinessCategories()
         loginSignUpViewModel.getCountriesList()
         loginSignUpViewModel.getTermsConditions()
@@ -125,6 +134,39 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
 
                 is Resource.Loading -> Unit
                 is Resource.Error -> {
+                    if (response.message == netWorkFailure) {
+                        showToast("Check your internet connection")
+                    }
+                }
+            }
+        }
+
+
+        loginSignUpViewModel.sendRegisterOtp.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (response.data?.httpcode == 200) {
+                        showToast(response.data.message)
+                        val bundle = Bundle().apply {
+                            putString("from", business)
+                            putString("companyName", companyName)
+                            putString("companyRegisterNo", companyRegisterNo)
+                            putString("companyContactNo", companyContactNo)
+                            putString("email", email)
+                            putString("phoneCode", phoneCode)
+                            putInt("natureOfBusiness", natureOfBusinessId)
+                        }
+
+                        findNavController().navigate(R.id.otpFragment, bundle)
+                    } else {
+                        showToast(response.data?.message.toString())
+                    }
+                }
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> {
+                    appLoader.dismiss()
                     if (response.message == netWorkFailure) {
                         showToast("Check your internet connection")
                     }
@@ -200,10 +242,10 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
     }
 
     private fun validateAndRedirect() {
-        val companyName = binding.companyName.text.toString()
-        val companyRegisterNo = binding.companyRegisterNo.text.toString()
-        val companyContactNo = binding.companyContactNo.text.toString()
-        val email = binding.email.text.toString()
+        companyName = binding.companyName.text.toString()
+        companyRegisterNo = binding.companyRegisterNo.text.toString()
+        companyContactNo = binding.companyContactNo.text.toString()
+        email = binding.email.text.toString()
 
         if (companyName.isEmpty()) {
             showToast("Please enter a valid company name")
@@ -229,17 +271,10 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
             return
         }
 
-        val bundle = Bundle().apply {
-            putString("from", business)
-            putString("companyName", companyName)
-            putString("companyRegisterNo", companyRegisterNo)
-            putString("companyContactNo", companyContactNo)
-            putString("email", email)
-            putString("phoneCode", phoneCode)
-            putInt("natureOfBusiness", natureOfBusinessId)
-        }
+        loginSignUpViewModel.sendRegisterOTP(email)
 
-        findNavController().navigate(R.id.otpFragment, bundle)
+
+
     }
 
     private fun showTermsAndConditions() {

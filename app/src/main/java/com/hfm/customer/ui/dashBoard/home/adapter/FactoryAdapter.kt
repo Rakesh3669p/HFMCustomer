@@ -34,6 +34,12 @@ class FactoryAdapter @Inject constructor() :
                 }
                 productName.text = data.product_name
 
+                if(data.is_out_of_stock!=null){
+                    try {
+                        soldOut.isVisible = data.is_out_of_stock.toString().toBoolean()
+                    }catch (e:Exception){}
+                }
+
                 if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.offer_price.toString().toDouble())}"
                 }else{
@@ -42,10 +48,14 @@ class FactoryAdapter @Inject constructor() :
 
                 frozenLbl.isVisible =data.frozen.toString().toDouble() > 0
                 wholeSaleLbl.isVisible =data.wholesale.toString().toDouble() > 0
+                if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
+                    val difference = data.actual_price.toString().toDouble() - data.offer_price.toString().toDouble()
+                    saveLbl.isVisible = difference>0
+                    saveLbl.text = "Save RM ${formatToTwoDecimalPlaces(difference)}"
+                }else{
+                    saveLbl.isVisible = false
+                }
 
-//                val difference = data.actual_price.toString().toDouble() - data.offer_price.toString().toDouble()
-
-                saveLbl.isVisible = false
 
                 root.setOnClickListener {
                     onProductClick?.let {

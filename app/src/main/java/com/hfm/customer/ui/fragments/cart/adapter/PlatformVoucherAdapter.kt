@@ -11,6 +11,7 @@ import com.hfm.customer.databinding.ItemCartListBinding
 import com.hfm.customer.databinding.ItemChatBinding
 import com.hfm.customer.databinding.ItemChatUsersBinding
 import com.hfm.customer.databinding.ItemPlatformVoucherBinding
+import com.hfm.customer.ui.fragments.cart.model.Coupon
 import com.hfm.customer.ui.fragments.cart.model.SellerProduct
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModelItem
@@ -25,12 +26,12 @@ class PlatformVoucherAdapter @Inject constructor() : RecyclerView.Adapter<Platfo
     private var selectedPosition = -1
     inner class ViewHolder(private val bind: ItemPlatformVoucherBinding) :
         RecyclerView.ViewHolder(bind.root) {
-        fun bind(data: SellerVoucherModelItem) {
+        fun bind(data: Coupon) {
             with(bind) {
 
                 discountPercent.text = data.offer
-                discountDescription.text = "Min. Spend RM${data.minimum_purchase} Capped at ${data.offer_value}"
-                voucherExpiry.text = "Expires on: ${data.valid_upto}"
+                discountDescription.text = "Min. Spend RM${data.minimumPurchase} Capped at ${data.offerValue}"
+                voucherExpiry.text = "Expires on: ${data.validUpto}"
 
                 radioBtn.isChecked = selectedPosition == absoluteAdapterPosition
 
@@ -52,12 +53,12 @@ class PlatformVoucherAdapter @Inject constructor() : RecyclerView.Adapter<Platfo
         }
     }
 
-    private val diffUtil = object : DiffUtil.ItemCallback<SellerVoucherModelItem>() {
-        override fun areItemsTheSame(oldItem: SellerVoucherModelItem, newItem: SellerVoucherModelItem): Boolean {
+    private val diffUtil = object : DiffUtil.ItemCallback<Coupon>() {
+        override fun areItemsTheSame(oldItem: Coupon, newItem: Coupon): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: SellerVoucherModelItem, newItem: SellerVoucherModelItem): Boolean {
+        override fun areContentsTheSame(oldItem: Coupon, newItem: Coupon): Boolean {
             return oldItem == newItem
         }
 

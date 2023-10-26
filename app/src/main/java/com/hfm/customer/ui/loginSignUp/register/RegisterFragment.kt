@@ -40,6 +40,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             val viewPagerAdapter = LoginAdapter(childFragmentManager, lifecycle)
             adapter = viewPagerAdapter
             isUserInputEnabled = false
+            isSaveEnabled = false
         }
     }
 

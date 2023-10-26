@@ -5,6 +5,8 @@ import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -89,7 +91,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private lateinit var promotionBanner: PromotionBanner
     private lateinit var noInternetDialog: NoInternetDialog
     @Inject lateinit var sessionManager: SessionManager
-
+    var handler: Handler = Handler(Looper.getMainLooper())
+    var runnable: Runnable? = null
+    var delay = 2000
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -139,6 +143,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
             val tabLayoutMediator =
                 TabLayoutMediator(binding.indicator, binding.homeMainBanner, true) { _, _ -> }
             tabLayoutMediator.attach()
+
+
         }
     }
 
@@ -224,6 +230,18 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     response.data?.data?.let {
 
                         homeMainBannerAdapter.differ.submitList(it.app_top_banner)
+
+                        handler.postDelayed(Runnable {
+                            handler.postDelayed(runnable!!, delay.toLong())
+                            if (binding.homeMainBanner.currentItem == it.app_top_banner.size - 1) {
+                                binding.homeMainBanner.currentItem = 0
+                            } else {
+                                val increaseItem = binding.homeMainBanner.currentItem + 1
+                                binding.homeMainBanner.setCurrentItem(increaseItem, true)
+                            }
+
+                        }.also { runnable = it }, delay.toLong())
+
                         if(it.promotion_popup!=null && !it.promotion_popup.promotion_image.isNullOrEmpty())
                             setPromotionalPopup(response.data.data.promotion_popup)
                         sessionManager.searchPlaceHolder = it.search_placeholder_text

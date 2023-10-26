@@ -50,7 +50,7 @@ class BulkOrdersFragment : Fragment(){
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
-        mainViewModel.getBulkOrders(pageNo)
+        mainViewModel.getBulkOrders()
 
     }
 

@@ -65,10 +65,8 @@ class IPay88 : Fragment() {
                     appLoader.dismiss()
                     if (url.toString().contains("status=success")) {
                         showSuccessDialog()
-
                     } else if (url.toString().contains("status=failed")) {
                         showFailedDialog()
-
                     }
                 }
 
@@ -94,7 +92,6 @@ class IPay88 : Fragment() {
     }
 
     private fun showSuccessDialog() {
-
         val appCompatDialog = Dialog(requireContext())
         val bindingDialog = DialogueOrderSuccessBinding.inflate(layoutInflater)
         appCompatDialog.setContentView(bindingDialog.root)
@@ -119,7 +116,7 @@ class IPay88 : Fragment() {
         bindingDialog.desc.text = "Unable to make Payment,\n Please try again.."
         bindingDialog.ok.setOnClickListener {
             appCompatDialog.dismiss()
-            findNavController().navigate(R.id.action_online_paymentFragment_to_home)
+            findNavController().navigate(R.id.action_online_paymentFragment_to_myOrdersFragment)
         }
         appCompatDialog.show()
 

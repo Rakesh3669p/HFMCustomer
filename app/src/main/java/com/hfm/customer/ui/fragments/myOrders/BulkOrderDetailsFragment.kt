@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentBulkOrderDetailsBinding
 import com.hfm.customer.ui.fragments.myOrders.adapter.MyAllOrdersProductsAdapter
@@ -72,7 +71,7 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         orderId = arguments?.getString("orderId").toString()
-        mainViewModel.getBulkOrders(0, orderId)
+        mainViewModel.getBulkOrders(orderId)
     }
 
     private fun setObserver() {
@@ -102,7 +101,7 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     binding.loader.isVisible = false
                     if (response.data?.httpcode == 200) {
-                        mainViewModel.getBulkOrders(0, orderId)
+                        mainViewModel.getBulkOrders(orderId)
                     } else {
                         showToast(response.data?.message.toString())
                     }

@@ -44,7 +44,7 @@ class BulkOrdersAdapter @Inject constructor() :
                 orderId.text = "Order #:${data.bulkrequest_order_id}"
 
 
-                requestStatus.text = if(data.request_status==0) "Pending" else "Done"
+                requestStatus.text = if(data.request_status==0) "Pending" else "Accepted"
                 val orangeColor = ContextCompat.getColor(context,R.color.orange)
                 val greenColor = ContextCompat.getColor(context,R.color.green)
                 if(data.request_status==0)  {

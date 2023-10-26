@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.databinding.ItemVoucherBinding
+import com.hfm.customer.ui.fragments.cart.model.Coupon
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModelItem
 import javax.inject.Inject
 
@@ -17,30 +18,29 @@ class VouchersAdapter @Inject constructor() :
 
     inner class ViewHolder(private val bind: ItemVoucherBinding) :
         RecyclerView.ViewHolder(bind.root) {
-        fun bind(data:SellerVoucherModelItem) {
+        fun bind(data: Coupon) {
             with(bind) {
                 discountPercent.text = data.offer
-                discountDescription.text = "Min. Spend RM${data.minimum_purchase} Capped at ${data.offer_value}"
-                voucherExpiry.text = "Expires on: ${data.valid_upto}"
+                discountDescription.text =
+                    "Min. Spend RM${data.minimumPurchase} Capped at ${data.offerValue}"
+                voucherExpiry.text = "Expires on: ${data.validUpto}"
                 userNow.setOnClickListener {
-                    onItemClick?.let {
-                        it(adapterPosition)
-                    }
+                    onItemClick?.invoke(absoluteAdapterPosition)
                 }
             }
         }
     }
 
-      private val diffUtil = object : DiffUtil.ItemCallback<SellerVoucherModelItem>(){
-          override fun areItemsTheSame(oldItem: SellerVoucherModelItem, newItem: SellerVoucherModelItem): Boolean {
-              return oldItem == newItem
-          }
+    private val diffUtil = object : DiffUtil.ItemCallback<Coupon>() {
+        override fun areItemsTheSame(oldItem: Coupon, newItem: Coupon): Boolean {
+            return oldItem == newItem
+        }
 
-          override fun areContentsTheSame(oldItem: SellerVoucherModelItem, newItem: SellerVoucherModelItem): Boolean {
-              return oldItem == newItem
-          }
-      }
-      val differ = AsyncListDiffer(this,diffUtil)
+        override fun areContentsTheSame(oldItem: Coupon, newItem: Coupon): Boolean {
+            return oldItem == newItem
+        }
+    }
+    val differ = AsyncListDiffer(this, diffUtil)
 
 
     override fun onCreateViewHolder(

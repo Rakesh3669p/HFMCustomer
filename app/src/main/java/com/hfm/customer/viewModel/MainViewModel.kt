@@ -12,7 +12,6 @@ import com.hfm.customer.ui.dashBoard.home.model.FeatureProductsModel
 import com.hfm.customer.ui.dashBoard.home.model.FlashSaleModel
 import com.hfm.customer.ui.dashBoard.home.model.HomeBottomBannerModel
 import com.hfm.customer.ui.dashBoard.home.model.HomeBrandsModel
-import com.hfm.customer.ui.dashBoard.home.model.HomeFlashSaleCategory
 import com.hfm.customer.ui.dashBoard.home.model.HomeMiddleBanner
 import com.hfm.customer.ui.dashBoard.home.model.TrendingNowModel
 import com.hfm.customer.ui.dashBoard.home.model.WholeSaleModel
@@ -41,10 +40,10 @@ import com.hfm.customer.ui.fragments.products.productDetails.model.AddToCartMode
 import com.hfm.customer.ui.fragments.products.productDetails.model.BulkOrderRequestModel
 import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetailsModel
-import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
 import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
 import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
 import com.hfm.customer.ui.fragments.support.model.SupportTicketsModel
+import com.hfm.customer.ui.fragments.vouchers.model.VoucherListModel
 import com.hfm.customer.ui.fragments.wallet.model.WalletModel
 import com.hfm.customer.ui.fragments.wishlist.model.StoreWishlistModel
 import com.hfm.customer.ui.fragments.wishlist.model.WishListModel
@@ -91,8 +90,8 @@ class MainViewModel @Inject constructor(
     val chatMessages = SingleLiveEvent<Resource<ChatMessageModel>>()
 
     val productList = SingleLiveEvent<Resource<ProductListModel>>()
-    val sellerVouchers = SingleLiveEvent<Resource<SellerVoucherModel>>()
-    val platformVouchers = SingleLiveEvent<Resource<SellerVoucherModel>>()
+    val sellerVouchers = SingleLiveEvent<Resource<VoucherListModel>>()
+    val platformVouchers = SingleLiveEvent<Resource<VoucherListModel>>()
     val applyPlatformVoucher = SingleLiveEvent<Resource<CouponAppliedModel>>()
     val applySellerVoucher = SingleLiveEvent<Resource<CouponAppliedModel>>()
     val relatedSearchTerms = SingleLiveEvent<Resource<RelatedSearchTermsModel>>()
@@ -274,7 +273,7 @@ class MainViewModel @Inject constructor(
         val homeTrendingResponse = async { safeGetTrendingCall(trendingJson) }
         val homeFlashSaleProductsResponse = async { safeGetHomeFlashSaleProducts(mainCatJson, "1") }
         val homeWholeSaleProductsResponse = async { safeGetHomeWholeSaleProducts(mainCatJson, "1") }
-        val homeFeaturesProductsResponse = async { safeGetHomeFeatureProducts(featureProductsJson, "1") }
+        val homeFeaturesProductsResponse = async { safeGetHomeFeatureProducts(featureProductsJson) }
 
         when (val homeMainBannerData = homeMainBannerResponse.await()) {
             is Resource.Success -> homeMainBanner.postValue(Resource.Success(homeMainBannerData.data as HomeMainCategoriesModel?))
@@ -481,8 +480,7 @@ class MainViewModel @Inject constructor(
     }
 
     private suspend fun safeGetHomeFeatureProducts(
-        jsonObject: JsonObject,
-        page: String
+        jsonObject: JsonObject
     ): Resource<out Any> {
         homeFeatureProducts.postValue(Resource.Loading())
         return try {
@@ -528,14 +526,14 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("popular", popular)
         jsonObject.addProperty("frozen", frozen)
         jsonObject.addProperty("wholesale", wholeSale)
-        jsonObject.addProperty("flashsale", flashSale)
+        jsonObject.addProperty("flash_deal", flashSale)
         jsonObject.addProperty("chilled", chilled)
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("keyword", search)
         jsonObject.addProperty("device_id", deviceId)
         jsonObject.addProperty("page_url", "products/us/img")
-        jsonObject.addProperty("os_type", "APP")
-        jsonObject.addProperty("limit", 20)
+        jsonObject.addProperty("os_type", "app")
+        jsonObject.addProperty("limit", 60)
         jsonObject.addProperty("offset", page)
         safeGetProductListCall(jsonObject)
     }
@@ -568,7 +566,7 @@ class MainViewModel @Inject constructor(
         try {
             val response = repository.getSellerVouchers(jsonObject)
             if (response.isSuccessful)
-                sellerVouchers.postValue(Resource.Success(checkResponseBody(response.body()) as SellerVoucherModel))
+                sellerVouchers.postValue(Resource.Success(checkResponseBody(response.body()) as VoucherListModel))
             else
                 sellerVouchers.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
@@ -635,7 +633,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getBulkOrders(pageNo: Int,search:String="") = viewModelScope.launch {
+    fun getBulkOrders(search: String = "") = viewModelScope.launch {
         val jsonObject = JsonObject().apply {
             addProperty("access_token", sessionManager.token)
             addProperty("lang_id", 1)
@@ -1074,7 +1072,7 @@ class MainViewModel @Inject constructor(
         try {
             val response = repository.getPlatFormVouchers(jsonObject)
             if (response.isSuccessful)
-                platformVouchers.postValue(Resource.Success(checkResponseBody(response.body()) as SellerVoucherModel))
+                platformVouchers.postValue(Resource.Success(checkResponseBody(response.body()) as VoucherListModel))
             else
                 platformVouchers.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {

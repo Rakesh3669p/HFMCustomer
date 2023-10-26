@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.products.productList
 
+import android.R.attr
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -21,7 +22,6 @@ import com.hfm.customer.databinding.BottomSheetSortingBinding
 import com.hfm.customer.databinding.FragmentProductListBinding
 import com.hfm.customer.ui.dashBoard.home.model.Brand
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
-
 import com.hfm.customer.ui.fragments.products.productList.adapter.FilterProductListBrandsAdapter
 import com.hfm.customer.ui.fragments.products.productList.adapter.ProductCategoryListAdapter
 import com.hfm.customer.ui.fragments.products.productList.adapter.ProductListAdapter
@@ -37,17 +37,23 @@ import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
+import java.util.Collections
+import java.util.Collections.shuffle
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+
+@Suppress("CAST_NEVER_SUCCEEDS")
 @AndroidEntryPoint
 class ProductListFragment : Fragment(), View.OnClickListener {
 
     companion object {
         var selectedBrandFilters: MutableList<Int> = ArrayList()
     }
+
+    private var showProductsRandomly: Boolean  =false
 
     @Inject
     lateinit var sessionManager: SessionManager
@@ -123,6 +129,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         wholeSale = arguments?.getInt("wholeSale") ?: 0
         flashSale = arguments?.getInt("flashSale") ?: 0
         val endTime = arguments?.getString("endTime")?:""
+        showProductsRandomly = catId.isEmpty()&&subCatId.isEmpty()&&brandId.isEmpty()&&search.isEmpty()&&wholeSale==0&&flashSale==0&&endTime.isEmpty()
         makeProductListApiCall()
         mainViewModel.getBrandsList()
 
@@ -223,23 +230,30 @@ class ProductListFragment : Fragment(), View.OnClickListener {
     private fun setProductData(data: ProductListData) {
         if (pageNo == 0) {
             productList.clear()
-            if (!data.subcategory_data.subcategory.isNullOrEmpty()) {
-                val subCategories: MutableList<Subcategory> = ArrayList()
-                val subcategory = Subcategory(id = 0, subcategory_name = "ALL")
-                subCategories.add(subcategory)
-                subCategories.addAll(data.subcategory_data.subcategory)
-                initRecyclerView(
-                    requireContext(),
-                    binding.categoriesListRv,
-                    productCategoryListAdapter,
-                    true
-                )
-                productCategoryListAdapter.differ.submitList(subCategories)
+            if(data.subcategory_data!=null) {
+                if (!data.subcategory_data.subcategory.isNullOrEmpty()) {
+                    val subCategories: MutableList<Subcategory> = ArrayList()
+                    val subcategory = Subcategory(id = 0, subcategory_name = "ALL")
+                    subCategories.add(subcategory)
+                    subCategories.addAll(data.subcategory_data.subcategory)
+                    initRecyclerView(
+                        requireContext(),
+                        binding.categoriesListRv,
+                        productCategoryListAdapter,
+                        true
+                    )
+                    productCategoryListAdapter.differ.submitList(subCategories)
+                }
             }
         }
 
         isLoading = data.products.isEmpty()
-        productList.addAll(data.products)
+        if(showProductsRandomly) {
+            productList.addAll(data.products.shuffled())
+        }else{
+            productList.addAll(data.products)
+        }
+
         binding.noData.root.isVisible = productList.isEmpty()
         productListAdapter.differ.submitList(productList)
         productListAdapter.notifyDataSetChanged()

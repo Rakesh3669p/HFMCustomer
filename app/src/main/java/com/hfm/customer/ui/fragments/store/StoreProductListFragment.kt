@@ -50,7 +50,6 @@ class StoreProductListFragment(private val storeData: StoreData) : Fragment(){
 
             initRecyclerView(requireContext(),categoriesListRv,productCategoryListAdapter,true)
             initRecyclerViewGrid(requireContext(),productListRv,productListAdapter,2)
-
             val categories:MutableList<Category> = ArrayList()
             val category = Category(id = 0,"ALL")
             categories.add(category)

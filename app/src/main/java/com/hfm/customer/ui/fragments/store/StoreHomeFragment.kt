@@ -26,6 +26,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentStoreHomeBinding
 import com.hfm.customer.ui.fragments.cart.adapter.PlatformVoucherAdapter
+import com.hfm.customer.ui.fragments.cart.model.Coupon
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.VouchersAdapter
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
 import com.hfm.customer.ui.fragments.store.adapter.StoreBannerAdapter
@@ -57,7 +58,7 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
     @Inject
     lateinit var vouchersAdapter: VouchersAdapter
 
-    private var sellerVouchers: SellerVoucherModel? = null
+    private var sellerVouchers: List<Coupon> = ArrayList()
 
     private lateinit var binding: FragmentStoreHomeBinding
     private var currentView: View? = null
@@ -147,26 +148,30 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    binding.storeVouchers.isVisible = !response.data.isNullOrEmpty()
-                        sellerVouchers = response.data
+                    if(response.data?.httpcode==200){
+                        binding.storeVouchers.isVisible = response.data.data.coupon_list.isNotEmpty()
+
+                        sellerVouchers = response.data.data.coupon_list
                         initRecyclerView(
                             requireContext(),
                             binding.vouchersRv,
                             vouchersAdapter, true
                         )
-                        vouchersAdapter.differ.submitList(sellerVouchers)
+                        vouchersAdapter.differ.submitList(response.data.data.coupon_list)
                         vouchersAdapter.setOnItemClickListener { position ->
-                            val couponCode = if (sellerVouchers != null) {
-                                sellerVouchers!![position].coupon_code
-                            } else {
-                                ""
-                            }
+                            val couponCode = sellerVouchers[position].couponCode
                             val clipboardManager =
                                 requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             val clipData = ClipData.newPlainText("text", couponCode)
                             clipboardManager.setPrimaryClip(clipData)
                             showToast("Coupon code copied")
                         }
+
+                    }else{
+                        binding.storeVouchers.isVisible = true
+                    }
+
+
                 }
 
                 is Resource.Loading -> appLoader.show()

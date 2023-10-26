@@ -46,10 +46,11 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     private var customerType: String = ""
     private lateinit var binding: FragmentProfileBinding
     private var currentView: View? = null
+
     @Inject
     lateinit var sessionManager: SessionManager
 
-    private val mainViewModel:MainViewModel by activityViewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
 
@@ -59,7 +60,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
 
-        if(!sessionManager.isLogin){
+        if (!sessionManager.isLogin) {
             startActivity(Intent(requireActivity(), LoginActivity::class.java))
             requireActivity().finish()
             return currentView
@@ -80,27 +81,27 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         binding.loader.isVisible = true
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
-        binding.logout.isVisible  = sessionManager.isLogin
+        binding.logout.isVisible = sessionManager.isLogin
         binding.version.text = "Version ${BuildConfig.VERSION_NAME}"
         mainViewModel.getProfile()
     }
 
     private fun setObserver() {
-        mainViewModel.profile.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.profile.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     binding.loader.isVisible = false
                     appLoader.dismiss()
-                    if(response.data?.httpcode=="200"){
+                    if (response.data?.httpcode == "200") {
                         setProfile(response.data.data)
-                    }else{
+                    } else {
                         showToast(response.data?.message.toString())
                     }
                 }
-                is Resource.Loading->Unit
-                is Resource.Error->apiError(response.message)
-            }
 
+                is Resource.Loading -> Unit
+                is Resource.Error -> apiError(response.message)
+            }
         }
     }
 
@@ -114,7 +115,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
     @SuppressLint("SetTextI18n")
     private fun setProfile(data: ProfileData) {
-        with(binding){
+        with(binding) {
             data.profile[0].let {
                 val imageOriginal = it.profile_image
                 val imageReplaced =
@@ -124,7 +125,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                     .logger(DebugLogger())
                     .build()
 
-                 val request = ImageRequest.Builder(requireContext())
+                val request = ImageRequest.Builder(requireContext())
                     .data(imageReplaced)
                     .target(profileImage)
                     .placeholder(R.drawable.user)
@@ -133,8 +134,8 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 lifecycleScope.launch {
                     imageLoader.execute(request)
                 }
-                userName.text = "${it.first_name} ${it.last_name?:""}"
-                if(it.customer_type !=null) {
+                userName.text = "${it.first_name} ${it.last_name ?: ""}"
+                if (it.customer_type != null) {
                     customerType = it.customer_type.uppercase()
                     userType.text = "Customer Type: ${customerType.uppercase()}"
                 }
@@ -171,7 +172,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             binding.chat.id -> findNavController().navigate(R.id.chatUsersFragment2)
             binding.support.id -> findNavController().navigate(R.id.supportFragment)
             binding.referral.id -> findNavController().navigate(R.id.referralFragment)
-            binding.search.id ->  findNavController().navigate(R.id.searchFragment)
+            binding.search.id -> findNavController().navigate(R.id.searchFragment)
             binding.logout.id -> {
                 when (sessionManager.loginType) {
 
@@ -200,34 +201,35 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             }
 
             binding.basicDetailsBg.id -> {
-                if(customerType == business){
+                if (customerType == business) {
                     findNavController().navigate(R.id.profileSettingsBusiness)
-                }else {
+                } else {
                     findNavController().navigate(R.id.profileSettingsFragment)
                 }
             }
+
             binding.toPay.id -> {
                 val bundle = Bundle()
-                bundle.putString("from","toPay")
-                findNavController().navigate(R.id.myOrdersFragment,bundle)
+                bundle.putString("from", "toPay")
+                findNavController().navigate(R.id.myOrdersFragment, bundle)
             }
 
             binding.toShip.id -> {
                 val bundle = Bundle()
-                bundle.putString("from","toShip")
-                findNavController().navigate(R.id.myOrdersFragment,bundle)
+                bundle.putString("from", "toShip")
+                findNavController().navigate(R.id.myOrdersFragment, bundle)
             }
 
             binding.toReceive.id -> {
                 val bundle = Bundle()
-                bundle.putString("from","toReceive")
-                findNavController().navigate(R.id.myOrdersFragment,bundle)
+                bundle.putString("from", "toReceive")
+                findNavController().navigate(R.id.myOrdersFragment, bundle)
             }
 
             binding.bulkOrders.id -> {
                 val bundle = Bundle()
-                bundle.putString("from","bulkOrders")
-                findNavController().navigate(R.id.myOrdersFragment,bundle)
+                bundle.putString("from", "bulkOrders")
+                findNavController().navigate(R.id.myOrdersFragment, bundle)
             }
 
             binding.viewAllLbl.id -> findNavController().navigate(R.id.myOrdersFragment)

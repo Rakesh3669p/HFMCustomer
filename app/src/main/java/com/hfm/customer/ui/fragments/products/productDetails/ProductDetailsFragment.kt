@@ -192,22 +192,16 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         mainViewModel.sellerVouchers.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    if (response.data?.isNotEmpty() == true) {
+                    if(response.data?.httpcode==200){
                         binding.voucherListCv.isVisible = true
-                        initRecyclerView(
-                            requireContext(),
-                            binding.vouchersRv,
-                            vouchersAdapter,
-                            true
-                        )
-                        vouchersAdapter.differ.submitList(response.data)
-                        binding.voucherListCv.isVisible = response.data.isNotEmpty()
-                    } else {
+                        initRecyclerView(requireContext(), binding.vouchersRv, vouchersAdapter, true)
+                        vouchersAdapter.differ.submitList(response.data.data.coupon_list)
+                        binding.voucherListCv.isVisible = response.data.data.coupon_list.isNotEmpty()
+                    }else{
                         binding.voucherListCv.isVisible = false
                     }
                 }
-
-                is Resource.Loading -> {}
+                is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
         }
@@ -1059,7 +1053,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             binding.checkPinCode.id -> {
                 val pinCode = binding.pinCode.text.toString()
                 if (pinCode.isEmpty()) {
-                    showToast("Please Enter a valid pincode.")
+                    showToast("Please Enter a valid postCode.")
                     return
                 }
                 mainViewModel.checkAvailability(productData.product.product_id.toString(), pinCode)

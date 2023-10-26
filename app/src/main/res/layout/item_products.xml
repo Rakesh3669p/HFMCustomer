@@ -90,59 +90,72 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productImageCard">
 
-        <TextView
-            android:id="@+id/saveLbl"
-            style="@style/textSmall"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/labelsLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_box"
-            android:backgroundTint="@color/red"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="Save RM10"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@id/frozenLbl"
-            app:layout_constraintHorizontal_chainStyle="spread"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:layout_marginHorizontal="@dimen/_4sdp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/saveLbl"
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_box"
+                android:backgroundTint="@color/red"
+                android:gravity="start"
+                android:layout_gravity="start"
+                android:text="Save RM10"
+                android:layout_marginEnd="@dimen/_2sdp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_8ssp"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_2sdp"/>
+
+            <TextView
+
+                android:id="@+id/frozenLbl"
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_box"
+                android:backgroundTint="@color/orange"
+                android:gravity="center"
+                android:layout_gravity="start"
+                android:text="Chilled"
+                android:layout_marginEnd="@dimen/_2sdp"
+                android:textSize="@dimen/_8ssp"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/white"
+                />
 
 
-        <TextView
-            android:id="@+id/frozenLbl"
-            style="@style/textSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_box"
-            android:backgroundTint="@color/orange"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="Frozen"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@id/wholeSaleLbl"
-            app:layout_constraintStart_toEndOf="@id/saveLbl"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+
+                android:id="@+id/wholeSaleLbl"
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_box"
+                android:backgroundTint="@color/purple"
+                android:gravity="center"
+                android:layout_gravity="start"
+                android:text="WholeSale"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_8ssp"
+                />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-        <TextView
-            android:id="@+id/wholeSaleLbl"
-            style="@style/textSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_box"
-            android:backgroundTint="@color/purple"
-            android:gravity="center"
-            android:paddingHorizontal="@dimen/_4sdp"
-            android:paddingVertical="@dimen/_2sdp"
-            android:text="WholeSale"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/frozenLbl"
-            app:layout_constraintTop_toTopOf="@id/saveLbl" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

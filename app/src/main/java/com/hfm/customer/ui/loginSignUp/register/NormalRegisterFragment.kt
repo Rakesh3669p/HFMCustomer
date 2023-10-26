@@ -37,7 +37,7 @@ class NormalRegisterFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentNormalRegisterBinding
     private var currentView: View? = null
-    private val loginSignUpViewModel: LoginSignUpViewModel by activityViewModels()
+    private val loginSignUpViewModel: LoginSignUpViewModel by viewModels()
     private lateinit var appLoader: Loader
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

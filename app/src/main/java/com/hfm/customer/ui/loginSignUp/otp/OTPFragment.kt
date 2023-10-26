@@ -97,14 +97,36 @@ class OTPFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
-                        val bundle = Bundle().apply {
-                            putString("name", firstName)
-                            putString("email", email)
-                            putString("customerType", customerType)
+                        if (from == business) {
+                            val bundle = Bundle().apply {
+                                putString("companyName", companyName)
+                                putString("companyRegisterNo", companyRegisterNo)
+                                putString("companyContactNo", companyContactNo)
+                                putString("natureOfBusiness", natureOfBusiness)
+                                putString("email", email)
+                                putString("country", country)
+                                putString("state", state)
+                                putString("city", city)
+                                putString("phoneCode", phoneCode)
+                            }
+                            findNavController().popBackStack()
+                            findNavController().navigate(
+                                R.id.businessCreatePasswordFragment,
+                                bundle
+                            )
+
+                        } else {
+                            val bundle = Bundle().apply {
+                                putString("name", firstName)
+                                putString("email", email)
+                                putString("customerType", customerType)
+                            }
+
+                            findNavController().popBackStack()
+                            findNavController().navigate(R.id.createPasswordFragment, bundle)
                         }
 
-                        findNavController().navigate(R.id.createPasswordFragment, bundle)
-                        findNavController().popBackStack()
+
 
                     } else showToast(response.data?.message.toString())
                 }
@@ -159,20 +181,7 @@ class OTPFragment : Fragment(), View.OnClickListener {
                 return
             }
             if (from == business) {
-                val bundle = Bundle().apply {
-                    putString("companyName", companyName)
-                    putString("companyRegisterNo", companyRegisterNo)
-                    putString("companyContactNo", companyContactNo)
-                    putString("natureOfBusiness", natureOfBusiness)
-                    putString("email", email)
-                    putString("country", country)
-                    putString("state", state)
-                    putString("city", city)
-                    putString("phoneCode", phoneCode)
-                }
-
-                findNavController().navigate(R.id.businessCreatePasswordFragment, bundle)
-                appLoader.dismiss()
+                loginSignUpViewModel.registerVerifyOtp(email, otp)
             } else {
                 loginSignUpViewModel.registerVerifyOtp(email, otp)
             }

@@ -117,7 +117,7 @@
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/walletLbl"
+                android:text="@string/pointsLbl"
                 android:textColor="@color/black"
                 android:layout_marginTop="@dimen/_10sdp"
                 app:layout_constraintStart_toStartOf="parent"

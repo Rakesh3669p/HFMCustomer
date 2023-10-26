@@ -11,8 +11,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/productImageCard"
-        android:layout_width="@dimen/_115sdp"
-        android:layout_height="@dimen/_120sdp"
+        android:layout_width="@dimen/_125sdp"
+        android:layout_height="@dimen/_130sdp"
         app:cardUseCompatPadding="true"
         app:cardCornerRadius="@dimen/_4sdp"
         app:cardElevation="@dimen/_1sdp"
@@ -26,7 +26,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:scaleType="fitXY"
             android:background="@color/white"
             android:src="@drawable/red_chilli"
             app:roundPercent="0.05" />
@@ -72,12 +71,15 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/labelsLayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:weightSum="3"
+        android:layout_marginHorizontal="@dimen/_3sdp"
         app:layout_constraintEnd_toEndOf="@+id/productImageCard"
         app:layout_constraintStart_toStartOf="@id/productImageCard"
         app:layout_constraintTop_toBottomOf="@id/productImageCard" >
+
     <TextView
         android:id="@+id/saveLbl"
         style="@style/textSmall"
@@ -85,15 +87,17 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rectangle_box"
         android:backgroundTint="@color/red"
-        android:gravity="center"
+        android:gravity="start"
+        android:layout_gravity="start"
         android:text="Save RM10"
-
+        android:layout_marginEnd="@dimen/_2sdp"
         android:textColor="@color/white"
         android:textSize="@dimen/_8ssp"
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_2sdp"/>
 
     <TextView
+
         android:id="@+id/frozenLbl"
         style="@style/textSmall"
         android:layout_width="wrap_content"
@@ -101,8 +105,9 @@
         android:background="@drawable/rectangle_box"
         android:backgroundTint="@color/orange"
         android:gravity="center"
+        android:layout_gravity="start"
         android:text="Chilled"
-        android:layout_marginHorizontal="@dimen/_3sdp"
+        android:layout_marginEnd="@dimen/_2sdp"
         android:textSize="@dimen/_8ssp"
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_2sdp"
@@ -111,6 +116,7 @@
 
 
     <TextView
+
         android:id="@+id/wholeSaleLbl"
         style="@style/textSmall"
         android:layout_width="wrap_content"
@@ -118,6 +124,7 @@
         android:background="@drawable/rectangle_box"
         android:backgroundTint="@color/purple"
         android:gravity="center"
+        android:layout_gravity="start"
         android:text="WholeSale"
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_2sdp"

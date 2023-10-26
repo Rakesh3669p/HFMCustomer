@@ -1,5 +1,9 @@
 package com.hfm.customer.ui.fragments.vouchers
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,11 +15,14 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.AppLoaderBinding
 import com.hfm.customer.databinding.FragmentVouchersBinding
 import com.hfm.customer.databinding.FragmentWalletBinding
+import com.hfm.customer.ui.fragments.cart.model.Coupon
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
 import com.hfm.customer.ui.fragments.vouchers.adapter.VouchersAdapter
+import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
+import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
@@ -28,16 +35,19 @@ import javax.inject.Inject
 class VouchersFragment : Fragment(), View.OnClickListener {
 
 
-    private var platformVouchers: SellerVoucherModel? = null
+    private var platformVouchers: List<Coupon> = ArrayList()
 
     private lateinit var binding: FragmentVouchersBinding
     private var currentView: View? = null
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
+
     @Inject
     lateinit var vouchersAdapter: VouchersAdapter
 
+    @Inject
+    lateinit var sessionManager: SessionManager
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,9 +82,15 @@ class VouchersFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    platformVouchers = response.data
-                    initRecyclerView(requireContext(), binding.vouchersRv, vouchersAdapter)
-                    vouchersAdapter.differ.submitList(platformVouchers)
+                    if (response.data?.httpcode == 200) {
+                        platformVouchers = response.data.data.coupon_list
+                        initRecyclerView(requireContext(), binding.vouchersRv, vouchersAdapter)
+                        vouchersAdapter.differ.submitList(platformVouchers)
+                    } else if (response.data?.httpcode == 401) {
+                        sessionManager.isLogin = false
+                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                        requireActivity().finish()
+                    }
                 }
 
                 is Resource.Loading -> appLoader.show()
@@ -96,6 +112,15 @@ class VouchersFragment : Fragment(), View.OnClickListener {
         with(binding) {
             back.setOnClickListener(this@VouchersFragment)
         }
+
+        vouchersAdapter.setOnItemClickListener { position ->
+            val couponCode = platformVouchers[position].couponCode
+            val clipboardManager =
+                requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newPlainText("text", couponCode)
+            clipboardManager.setPrimaryClip(clipData)
+            showToast("Coupon code copied")
+        }
     }
 
 
@@ -103,5 +128,7 @@ class VouchersFragment : Fragment(), View.OnClickListener {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
         }
+
+
     }
 }

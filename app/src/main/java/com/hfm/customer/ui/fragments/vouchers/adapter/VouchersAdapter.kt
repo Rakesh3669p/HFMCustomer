@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemVoucherFullBinding
 import com.hfm.customer.databinding.ItemWalletTransactionBinding
+import com.hfm.customer.ui.fragments.cart.model.Coupon
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModelItem
 import javax.inject.Inject
 
@@ -18,21 +19,24 @@ class VouchersAdapter @Inject constructor() : RecyclerView.Adapter<VouchersAdapt
 
     inner class ViewHolder(private val binding: ItemVoucherFullBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: SellerVoucherModelItem) {
+        fun bind(data: Coupon) {
             with(binding) {
                 discountPercent.text = data.offer
-                discountDescription.text = "Min. Spend RM${data.minimum_purchase} Capped at ${data.offer_value}"
-                voucherExpiry.text = "Expires on: ${data.valid_upto}"
+                discountDescription.text = "Min. Spend RM${data.minimumPurchase} Capped at ${data.offerValue}"
+                voucherExpiry.text = "Expires on: ${data.validUpto}"
+                userNow.setOnClickListener {
+                    onItemClick?.invoke(absoluteAdapterPosition)
+                }
             }
         }
     }
 
-    private val diffUtil = object : DiffUtil.ItemCallback<SellerVoucherModelItem>() {
-        override fun areItemsTheSame(oldItem: SellerVoucherModelItem, newItem: SellerVoucherModelItem): Boolean {
+    private val diffUtil = object : DiffUtil.ItemCallback<Coupon>() {
+        override fun areItemsTheSame(oldItem: Coupon, newItem: Coupon): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: SellerVoucherModelItem, newItem: SellerVoucherModelItem): Boolean {
+        override fun areContentsTheSame(oldItem: Coupon, newItem: Coupon): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
 
@@ -55,4 +59,10 @@ class VouchersAdapter @Inject constructor() : RecyclerView.Adapter<VouchersAdapt
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+
+    private var onItemClick: ((position: Int) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (position: Int) -> Unit) {
+        onItemClick = listener
+    }
 }

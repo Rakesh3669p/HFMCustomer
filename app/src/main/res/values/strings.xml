@@ -46,6 +46,7 @@
     <string name="manage_address_lbl">Manage Address</string>
     <string name="my_wishlist_lbl">My WishList</string>
     <string name="walletLbl">Wallet</string>
+    <string name="pointsLbl">Points</string>
     <string name="walletCashLbl">Wallet Cash</string>
     <string name="vouchersLbl">Vouchers</string>
     <string name="chatLbl">Chat</string>
@@ -208,4 +209,5 @@
     <string name="grand_totalLbl">Grand Total</string>
     <string name="rejectLbl">Reject</string>
     <string name="delete_allLbl">Delete All</string>
+    <string name="points_redemption_lbl">Points Redemption</string>
 </resources>

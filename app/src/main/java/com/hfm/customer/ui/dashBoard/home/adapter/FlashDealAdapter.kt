@@ -41,15 +41,22 @@ class FlashDealAdapter @Inject constructor() :
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
                 }
 
+                if(data.is_out_of_stock!=null){
+                    try {
+                        soldOut.isVisible = data.is_out_of_stock.toString().toBoolean()
+                    }catch (e:Exception){}
+                }
 
                 frozenLbl.isVisible =data.frozen.toString().toDouble() > 0
                 wholeSaleLbl.isVisible =data.wholesale.toString().toDouble() > 0
 
-                val difference = data.actual_price.toString().toDouble() - data.offer_price.toString().toDouble()
-
-                saveLbl.isVisible = false
-//                saveLbl.isVisible = difference > 0
-                saveLbl.text = "Save RM ${formatToTwoDecimalPlaces(difference)}"
+                if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
+                    val difference = data.actual_price.toString().toDouble() - data.offer_price.toString().toDouble()
+                    saveLbl.isVisible = difference>0
+                    saveLbl.text = "Save RM ${formatToTwoDecimalPlaces(difference)}"
+                }else{
+                    saveLbl.isVisible = false
+                }
 
                 root.setOnClickListener {
                     onProductClick?.let {
@@ -100,3 +107,5 @@ class FlashDealAdapter @Inject constructor() :
     }
 
 }
+
+

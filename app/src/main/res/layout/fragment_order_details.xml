@@ -536,12 +536,13 @@
                     <androidx.constraintlayout.utils.widget.ImageFilterView
                         android:visibility="gone"
                         android:id="@+id/uploadedImage"
-                        android:layout_width="@dimen/_80sdp"
-                        android:layout_height="@dimen/_80sdp"
+                        android:layout_width="@dimen/_150sdp"
+                        android:layout_height="0dp"
                         android:layout_marginTop="@dimen/_3sdp"
                         app:layout_constraintEnd_toEndOf="@id/uploadPaymentMethodLbl"
                         app:layout_constraintStart_toStartOf="@id/uploadPaymentMethodLbl"
                         app:layout_constraintTop_toBottomOf="@id/uploadPaymentMethodLbl"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         />
 
 
@@ -852,7 +853,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_10sdp"
-                        android:text="@string/walletCashLbl"
+                        android:text="@string/pointsLbl"
                         android:textColor="@color/black"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/discountLbl" />

@@ -122,7 +122,7 @@ data class Product(
     val offer_name: Any,
     val end_time: String,
     val offer_price: Any,
-    val out_of_stock_selling: Boolean,
+    val out_of_stock_selling: Any,
     val product_id: Any,
     val product_name: String,
     val product_type: String,

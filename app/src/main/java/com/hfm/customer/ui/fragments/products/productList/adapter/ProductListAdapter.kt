@@ -81,14 +81,21 @@ class ProductListAdapter @Inject constructor() :
 
 
                 saleTime.isVisible = data.offer_name == "Flash Sale"
+
                 if (saleTime.isVisible) {
                     setTimer(data.end_time, bind)
                 }
-                if (data.offer != null) {
-                    saveLbl.isVisible = data.offer.toString().isNotEmpty() && data.offer != "false"
+
+                if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
+                    val difference = data.actual_price.toString().toDouble() - data.offer_price.toString().toDouble()
+                    saveLbl.isVisible = difference>0
+                    saveLbl.text = "Save RM ${formatToTwoDecimalPlaces(difference)}"
+                }else{
+                    saveLbl.isVisible = false
                 }
 
-                saveLbl.text = data.offer.toString()
+
+
                 if (data.frozen != null)
                     frozenLbl.isVisible = data.frozen.toString().toDouble() > 0
                 if (data.wholesale != null) wholeSaleLbl.isVisible =

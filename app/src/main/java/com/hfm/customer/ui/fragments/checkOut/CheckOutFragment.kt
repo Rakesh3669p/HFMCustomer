@@ -24,6 +24,7 @@ import com.hfm.customer.databinding.FragmentCheckoutBinding
 import com.hfm.customer.ui.fragments.address.model.Address
 import com.hfm.customer.ui.fragments.cart.adapter.PlatformVoucherAdapter
 import com.hfm.customer.ui.fragments.cart.model.CartData
+import com.hfm.customer.ui.fragments.cart.model.Coupon
 import com.hfm.customer.ui.fragments.checkOut.adapter.CheckOutStoreAdapter
 import com.hfm.customer.ui.fragments.checkOut.model.CheckOutData
 import com.hfm.customer.ui.fragments.checkOut.model.ShippingOption
@@ -53,10 +54,10 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
 
     private var grandTotal: Double = 0.0
     private var selectingVoucherSellerId: String = ""
-    private var platformVouchers: SellerVoucherModel? = null
-
-    private var sellerSelectedVoucher: SellerVoucherModelItem? = null
-    private var platFormSelectedVoucher: SellerVoucherModelItem? = null
+    private var platformVouchers: List<Coupon> = ArrayList()
+    private var sellerVouchers: List<Coupon> = ArrayList()
+    private var sellerSelectedVoucher: Coupon? = null
+    private var platFormSelectedVoucher: Coupon? = null
 
     private var shippingOptions: List<ShippingOption> = ArrayList()
 
@@ -71,7 +72,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
     private val mainViewModel: MainViewModel by viewModels()
-    private var sellerVouchers: SellerVoucherModel? = null
+
     private lateinit var platformVoucherDialog: BottomSheetDialog
 
     @Inject
@@ -148,8 +149,9 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         mainViewModel.platformVouchers.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-
-                    platformVouchers = response.data
+                    if(response.data?.httpcode==200){
+                    platformVouchers = response.data.data.coupon_list
+                    }
                 }
 
                 is Resource.Loading -> appLoader.show()
@@ -162,8 +164,11 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    sellerVouchers = response.data
-                    showSellerVoucherBottomSheet()
+                    if(response.data?.httpcode == 200){
+
+                        sellerVouchers = response.data.data.coupon_list
+                        showSellerVoucherBottomSheet()
+                    }
                 }
 
                 is Resource.Loading -> appLoader.show()
@@ -281,7 +286,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             checkOutAdapter.differ.submitList(checkOutData)
             checkOutAdapter.setShippingOptions(shippingOptions)
 
-            val productCount = checkOutData.sumBy { sellerProducts ->
+            val productCount = checkOutData.sumOf { sellerProducts ->
                 sellerProducts.seller.products.count { product ->
                     product.cart_selected.toString().toDouble() > 0
                 }
@@ -333,7 +338,8 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         platformVoucherDialog =
             BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         platformVoucherDialog.setContentView(platformVoucherBinding.root)
-        val bottomSheet: FrameLayout? = platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        val bottomSheet: FrameLayout? =
+            platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
         if (bottomSheet != null) {
             BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }
@@ -344,11 +350,11 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         )
 
         platformVoucherAdapter.setOnItemClickListener { position ->
-            platFormSelectedVoucher = platformVouchers?.get(position)
+            platFormSelectedVoucher = platformVouchers[position]
         }
 
         with(platformVoucherBinding) {
-            noVouchers.isVisible = platformVouchers?.isEmpty() == true
+            noVouchers.isVisible = platformVouchers.isEmpty() == true
             requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
             titleLbl.text = "Select Platform Vouchers"
             voucherCode.setOnClickListener {
@@ -361,7 +367,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
 
             apply.setOnClickListener {
                 mainViewModel.applyPlatFormVouchers(
-                    platFormSelectedVoucher?.coupon_code ?: "",
+                    platFormSelectedVoucher?.couponCode ?: "",
                     cartData.total_offer_cost.toString()
                 )
             }
@@ -382,18 +388,19 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         platformVoucherDialog =
             BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         platformVoucherDialog.setContentView(sellerVoucherBinding.root)
-        val bottomSheet: FrameLayout? = platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        val bottomSheet: FrameLayout? =
+            platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
         if (bottomSheet != null) {
             BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }
         initRecyclerView(requireContext(), sellerVoucherBinding.vouchersRv, sellerVoucherAdapter)
         sellerVoucherAdapter.differ.submitList(sellerVouchers)
         sellerVoucherAdapter.setOnItemClickListener { position ->
-            sellerSelectedVoucher = sellerVouchers?.get(position)
+            sellerSelectedVoucher = sellerVouchers.get(position)
         }
 
         with(sellerVoucherBinding) {
-            noVouchers.isVisible = sellerVouchers?.isEmpty() == true
+            noVouchers.isVisible = sellerVouchers.isEmpty() == true
             requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
             titleLbl.text = "Select Shop Vouchers"
             voucherCode.setOnClickListener {
@@ -414,7 +421,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                     cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
                 mainViewModel.applySellerVouchers(
                     selectingVoucherSellerId,
-                    sellerSelectedVoucher?.coupon_code ?: "",
+                    sellerSelectedVoucher?.couponCode ?: "",
                     sellerData?.seller_subtotal ?: 0.0
                 )
                 sellerSelectedVoucher = null
@@ -514,14 +521,24 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             return
         }
 
-        cartData.seller_product.filter { it.seller.cart_selected.toString().toDouble() > 0 }
-            .forEach { sellerData ->
+        cartData.seller_product.forEach { sellerData ->
+            val anyProductSelected = sellerData.seller.products.any { it.cart_selected.toString().toDouble()>0 }
+            if(anyProductSelected) {
+
                 val sellerObject = JsonObject()
 
-                val totalTax = sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }.sumOf { it.total_tax_value.toString().toDouble() }
-                val commission = sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }.sumOf { it.commission.toString().toDouble() }
-                val discountAmt = sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }.sumOf { it.total_discount_price.toString().toDouble() }
-                val totalCost = sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }.sumOf { it.total_actual_price.toString().toDouble() }
+                val totalTax =
+                    sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }
+                        .sumOf { it.total_tax_value.toString().toDouble() }
+                val commission =
+                    sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }
+                        .sumOf { it.commission.toString().toDouble() }
+                val discountAmt =
+                    sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }
+                        .sumOf { it.total_discount_price.toString().toDouble() }
+                val totalCost =
+                    sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }
+                        .sumOf { it.total_actual_price.toString().toDouble() }
 
 
                 sellerObject.addProperty("shipping_method", sellerData.shipping_method)
@@ -542,6 +559,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 sellerArray.add(sellerIndex.toString(), sellerObject)
                 sellerIndex++
             }
+        }
 
         jsonObject.add("seller_array", sellerArray)
         jsonObject.addProperty("access_token", sessionManager.token)
@@ -557,17 +575,16 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         jsonObject.addProperty("reward_amt", "")
         jsonObject.addProperty("device_id", sessionManager.deviceId)
         jsonObject.addProperty("page_url", "https://dev-kangtao.vercel.app/account/checkout")
-        jsonObject.addProperty("os_type", "APP")
+        jsonObject.addProperty("os_type", "app")
         jsonObject.addProperty("invite_coupon_id", "")
         jsonObject.addProperty("payment_type", 1)
         jsonObject.addProperty("total_amt", binding.totalAmount.text.toString())
         jsonObject.addProperty("discount_amt", 0)
         jsonObject.addProperty("grand_total", binding.totalAmount.text.toString())
-        println(jsonObject)
+
         val bundle = Bundle()
         bundle.putString("payLoad", jsonObject.toString())
         findNavController().navigate(R.id.paymentMethodFragment, bundle)
-
     }
 
     override fun onClick(v: View?) {

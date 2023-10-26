@@ -67,15 +67,15 @@ class CartFragment : Fragment(), View.OnClickListener {
     private lateinit var cartData: CartData
 
     private var selectingVoucherSellerId: String = ""
-    private var sellerSelectedVoucher: SellerVoucherModelItem? = null
-    private var platFormSelectedVoucher: SellerVoucherModelItem? = null
+    private var sellerSelectedVoucher: Coupon? = null
+    private var platFormSelectedVoucher: Coupon? = null
 
     private var cartProductDeleted: Boolean = false
     private lateinit var platformVoucherDialog: BottomSheetDialog
     private lateinit var variantsDialog: BottomSheetDialog
 
-    private var platformVouchers: SellerVoucherModel? = null
-    private var sellerVouchers: SellerVoucherModel? = null
+    private var platformVouchers: List<Coupon> = ArrayList()
+    private var sellerVouchers: List<Coupon> = ArrayList()
 
 
     private lateinit var binding: FragmentCartBinding
@@ -186,7 +186,9 @@ class CartFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
 //                    appLoader.dismiss()
-                    platformVouchers = response.data
+                    if(response.data?.httpcode == 200) {
+                        platformVouchers = response.data.data.coupon_list
+                    }
                 }
 
                 is Resource.Loading -> appLoader.show()
@@ -199,8 +201,10 @@ class CartFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    sellerVouchers = response.data
-                    showSellerVoucherBottomSheet()
+                    if(response.data?.httpcode ==200) {
+                        sellerVouchers = response.data.data.coupon_list
+                        showSellerVoucherBottomSheet()
+                    }
                 }
 
                 is Resource.Loading -> appLoader.show()
@@ -535,12 +539,12 @@ class CartFragment : Fragment(), View.OnClickListener {
 
 
         platformVoucherAdapter.setOnItemClickListener { position ->
-            platFormSelectedVoucher = platformVouchers?.get(position)
+            platFormSelectedVoucher = platformVouchers[position]
         }
 
         with(platformVoucherBinding) {
 
-            noVouchers.isVisible = platformVouchers?.isEmpty() == true
+            noVouchers.isVisible = platformVouchers.isEmpty() == true
             requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
             titleLbl.text = "Select Platform Vouchers"
             voucherCode.setOnClickListener {
@@ -553,7 +557,7 @@ class CartFragment : Fragment(), View.OnClickListener {
 
             apply.setOnClickListener {
                 mainViewModel.applyPlatFormVouchers(
-                    platFormSelectedVoucher?.coupon_code ?: "",
+                    platFormSelectedVoucher?.couponCode ?: "",
                     cartData.total_offer_cost.toString()
                 )
             }
@@ -581,11 +585,11 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         sellerVoucherAdapter.differ.submitList(sellerVouchers)
         sellerVoucherAdapter.setOnItemClickListener { position ->
-            sellerSelectedVoucher = sellerVouchers?.get(position)
+            sellerSelectedVoucher = sellerVouchers[position]
         }
 
         with(sellerVoucherBinding) {
-            noVouchers.isVisible = sellerVouchers?.isEmpty() == true
+            noVouchers.isVisible = sellerVouchers.isEmpty() == true
             requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
             titleLbl.text = "Select Shop Vouchers"
 
@@ -602,7 +606,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                     cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
                 mainViewModel.applySellerVouchers(
                     selectingVoucherSellerId,
-                    sellerSelectedVoucher?.coupon_code ?: "", sellerData?.seller_subtotal ?: 0.0
+                    sellerSelectedVoucher?.couponCode ?: "", sellerData?.seller_subtotal ?: 0.0
                 )
             }
             cancel.setOnClickListener { platformVoucherDialog.dismiss() }
