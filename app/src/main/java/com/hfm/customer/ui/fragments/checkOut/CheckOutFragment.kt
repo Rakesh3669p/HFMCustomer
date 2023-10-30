@@ -1,13 +1,19 @@
 package com.hfm.customer.ui.fragments.checkOut
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -21,6 +27,7 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.BottomSheetStoreVoucherBinding
 import com.hfm.customer.databinding.BottomSheetVoucherBinding
 import com.hfm.customer.databinding.FragmentCheckoutBinding
+import com.hfm.customer.databinding.TermsAndConditionsPopUpBinding
 import com.hfm.customer.ui.fragments.address.model.Address
 import com.hfm.customer.ui.fragments.cart.adapter.PlatformVoucherAdapter
 import com.hfm.customer.ui.fragments.cart.model.CartData
@@ -50,6 +57,7 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class CheckOutFragment : Fragment(), View.OnClickListener {
 
+    private var goodsTermsAndConditions: String = ""
     private lateinit var cartData: CartData
 
     private var grandTotal: Double = 0.0
@@ -122,6 +130,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         binding.loader.isVisible = true
         mainViewModel.getPlatFormVouchers(1)
         mainViewModel.getAddress()
+        mainViewModel.getTermsConditions()
 //        mainViewModel.getCheckoutInfo()
     }
 
@@ -144,13 +153,26 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 is Resource.Error -> apiError(response.message)
             }
         }
+        mainViewModel.termsConditions.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+
+                    if (response.data?.httpcode == "200") {
+                        goodsTermsAndConditions = response.data.data.terms_conditions.goods_tc
+                    }
+                }
+
+                is Resource.Loading -> Unit
+                is Resource.Error -> apiError(response.message)
+            }
+        }
 
 
         mainViewModel.platformVouchers.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    if(response.data?.httpcode==200){
-                    platformVouchers = response.data.data.coupon_list
+                    if (response.data?.httpcode == 200) {
+                        platformVouchers = response.data.data.coupon_list
                     }
                 }
 
@@ -164,7 +186,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode == 200){
+                    if (response.data?.httpcode == 200) {
 
                         sellerVouchers = response.data.data.coupon_list
                         showSellerVoucherBottomSheet()
@@ -298,10 +320,8 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 if (cartData.platform_voucher_amt > 0) "- RM ${cartData.platform_voucher_amt}" else "RM 0.00"
 
             subtotalLbl.text = if (productCount > 0) "Subtotal($productCount Items)" else "Subtotal"
-            subtotal.text =
-                "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
-            shippingAmount.text =
-                "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
+            subtotal.text = "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
+            shippingAmount.text = "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
             grandTotal = cartData.grand_total.toString().toDouble()
             totalAmount.text = formatToTwoDecimalPlaces(grandTotal)
 
@@ -309,15 +329,12 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             addVoucher.isVisible = cartData.is_platform_coupon_applied == 0
 
             voucherName.text = cartData.platform_coupon_data.title
-            voucherDescription.text =
-                "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
+            voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
 
             val walletBalance = cartData.wallet_balance
             if (walletBalance != "false") {
                 val pointToRM = walletBalance.toDouble() / 100
-                points.text = "${walletBalance.toDouble().roundToInt()} Points (RM ${
-                    formatToTwoDecimalPlaces(pointToRM)
-                })"
+                points.text = "${walletBalance.toDouble().roundToInt()} Points (RM ${formatToTwoDecimalPlaces(pointToRM)})"
             } else {
                 points.text = "0 (RM 0.00)"
                 wallet.text = "RM 0.00"
@@ -365,6 +382,17 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
             }
 
+            applyVoucher.setOnClickListener {
+                val couponCode = voucherCode.text.toString()
+                if (couponCode.isEmpty()) {
+                    showToast("Please enter a coupon code to apply")
+                }
+
+                mainViewModel.applyPlatFormVouchers(
+                    couponCode,
+                    cartData.total_offer_cost.toString()
+                )
+            }
             apply.setOnClickListener {
                 mainViewModel.applyPlatFormVouchers(
                     platFormSelectedVoucher?.couponCode ?: "",
@@ -411,14 +439,35 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
             }
 
+
+
+            applyVoucher.setOnClickListener {
+                val sellerData =
+                    cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+
+                val couponCode = voucherCode.text.toString()
+                if (couponCode.isEmpty()) {
+                    showToast("Please enter a coupon code to apply")
+                }
+
+                mainViewModel.applySellerVouchers(
+                    selectingVoucherSellerId,
+                    couponCode,
+                    sellerData?.seller_subtotal ?: 0.0
+                )
+            }
+
             apply.setOnClickListener {
+                val sellerData =
+                    cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+
                 if (sellerSelectedVoucher == null) {
                     showToast("please select any coupon to apply.")
                     return@setOnClickListener
                 }
 
-                val sellerData =
-                    cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+
+
                 mainViewModel.applySellerVouchers(
                     selectingVoucherSellerId,
                     sellerSelectedVoucher?.couponCode ?: "",
@@ -438,7 +487,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             addressId = address.id
             customerName.text = address.name.toString()
             customerAddress.text =
-                "${address.address1},\n${address.city}, ${address.state}, ${address.country}, ${address.pincode}"
+                "${address.house},${address.street},\n${address.city}, ${address.state}, ${address.country}, ${address.pincode}"
             customerMobile.text = address.phone.toString()
             mainViewModel.getCheckoutInfo()
         }
@@ -508,7 +557,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             checkOutAdapter.differ.currentList.filter { it.seller.cart_selected == 1 }
                 .any { seller ->
                     seller.seller.products.filter { it.cart_selected == 1 }.any { product ->
-                        product.is_out_of_stock.toString().toBoolean()
+                        product.is_out_of_stock == 1
                     }
                 }
 
@@ -522,8 +571,9 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         }
 
         cartData.seller_product.forEach { sellerData ->
-            val anyProductSelected = sellerData.seller.products.any { it.cart_selected.toString().toDouble()>0 }
-            if(anyProductSelected) {
+            val anyProductSelected =
+                sellerData.seller.products.any { it.cart_selected.toString().toDouble() > 0 }
+            if (anyProductSelected) {
 
                 val sellerObject = JsonObject()
 
@@ -587,6 +637,40 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         findNavController().navigate(R.id.paymentMethodFragment, bundle)
     }
 
+    private fun showTermsAndConditions() {
+        val appCompatDialog = AppCompatDialog(requireContext())
+        val bindingDialog = TermsAndConditionsPopUpBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.window!!.attributes.width = LinearLayout.LayoutParams.MATCH_PARENT
+        appCompatDialog.setCancelable(false)
+        bindingDialog.description.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(goodsTermsAndConditions, Html.FROM_HTML_MODE_COMPACT)
+        } else {
+            Html.fromHtml(goodsTermsAndConditions)
+        }
+        bindingDialog.decline.isVisible = true
+        bindingDialog.accept.isVisible = true
+        bindingDialog.agreeCheckBox.isVisible = true
+        appCompatDialog.show()
+        bindingDialog.close.setOnClickListener {
+            appCompatDialog.dismiss()
+        }
+        bindingDialog.decline.setOnClickListener {
+            appCompatDialog.dismiss()
+        }
+
+        bindingDialog.accept.setOnClickListener {
+            if(bindingDialog.agreeCheckBox.isChecked){
+                placeOrder()
+                appCompatDialog.dismiss()
+            }else{
+                showToast("Please check terms and conditions to proceed.")
+            }
+
+        }
+    }
+
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
@@ -599,7 +683,12 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             }
 
             binding.placeOrder.id -> {
-                placeOrder()
+                if (cartData.shipping_customer_type == "international") {
+                    showTermsAndConditions()
+                } else {
+
+                    placeOrder()
+                }
             }
 
             binding.manageAddress.id -> {

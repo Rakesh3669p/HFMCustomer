@@ -84,6 +84,10 @@ class ChatListFragment : Fragment(), View.OnClickListener {
                             initRecyclerView(requireContext(), binding.chatUsersRv, chatUserAdapter)
                             chatUserAdapter.differ.submitList(response.data.data.list)
                         }
+                    }  else if (response.data?.httpcode == 401) {
+                        sessionManager.isLogin = false
+                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                        requireActivity().finish()
                     } else {
                         showToast(response.data?.message.toString())
                     }

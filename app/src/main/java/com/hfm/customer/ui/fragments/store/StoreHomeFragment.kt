@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -75,6 +76,7 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
 
     private lateinit var exoPause: ImageView
     private lateinit var exoPlay: ImageView
+    private lateinit var exoBuffer:ProgressBar
 
     private val videoPlayer: ExoPlayer by lazy {
         ExoPlayer.Builder(requireContext()).build().apply {
@@ -95,6 +97,7 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
             currentView = inflater.inflate(R.layout.fragment_store_home, container, false)
             binding = FragmentStoreHomeBinding.bind(currentView!!)
             init()
+
             setBanner()
             setOnClickListener()
         }
@@ -117,6 +120,8 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
         binding.storeVideo.player = videoPlayer
         exoPlay = binding.storeVideo.findViewById(androidx.media3.ui.R.id.exo_play)
         exoPause = binding.storeVideo.findViewById(androidx.media3.ui.R.id.exo_pause)
+        exoBuffer = binding.storeVideo.findViewById(androidx.media3.ui.R.id.exo_buffering)
+
 
     }
 
@@ -144,6 +149,8 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
 
 
     private fun setObserver() {
+
+
         mainViewModel.sellerVouchers.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -190,6 +197,9 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
     }
 
     private fun playVideo() {
+        exoBuffer.isVisible = true
+        exoPlay.isVisible = false
+        exoPause.isVisible = false
         val yt = YTExtractor(con = requireActivity(), CACHING = false, LOGGING = true, retryCount = 3)
         lifecycleScope.launch {
             yt.extract(extractYouTubeVideoId(storeData.shop_detail[0].video).toString())
@@ -232,9 +242,11 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
             super.onIsPlayingChanged(isPlaying)
             if(isPlaying){
                 binding.playBtn.isVisible = false
+                exoBuffer.isVisible = false
                 exoPlay.isVisible = false
                 exoPause.isVisible = true
             }else{
+                exoBuffer.isVisible = true
                 exoPlay.isVisible = true
                 exoPause.isVisible = false
             }
@@ -277,5 +289,15 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
                 binding.playBtn.isVisible = false
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        videoPlayer.pause()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        videoPlayer.pause()
+        videoPlayer.release()
     }
 }

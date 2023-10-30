@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
@@ -46,8 +46,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_8sdp"
-                app:cardCornerRadius="@dimen/_6sdp"
                 app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/_6sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -127,8 +127,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:cardCornerRadius="@dimen/_6sdp"
                 app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/_6sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/orderDetailsCv">
@@ -143,8 +143,8 @@
                         android:id="@+id/ordered"
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
-                        android:src="@drawable/ordered"
                         android:alpha="0.7"
+                        android:src="@drawable/ordered"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -234,8 +234,8 @@
                         android:id="@+id/readyToShip"
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
-                        android:src="@drawable/shipping"
                         android:alpha="0.7"
+                        android:src="@drawable/shipping"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/inProcessTrack" />
 
@@ -278,8 +278,8 @@
                         android:id="@+id/deliveryInProgress"
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
-                        android:src="@drawable/inprogress"
                         android:alpha="0.7"
+                        android:src="@drawable/inprogress"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/readyToShipTrack" />
 
@@ -321,8 +321,8 @@
                         android:id="@+id/delivered"
                         android:layout_width="@dimen/_35sdp"
                         android:layout_height="@dimen/_35sdp"
-                        android:src="@drawable/delivered"
                         android:alpha="0.7"
+                        android:src="@drawable/delivered"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/deliveryInProgressTrack" />
 
@@ -360,8 +360,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:cardCornerRadius="@dimen/_6sdp"
                 app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/_6sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/orderTrackingCv">
@@ -378,7 +378,7 @@
                         android:layout_height="wrap_content"
                         android:singleLine="false"
                         android:text="@string/payment_method_lbl"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/paymentStatusLbl"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -391,26 +391,50 @@
                         android:singleLine="false"
                         android:text="Bank Slip"
                         android:textColor="@color/textGreyDark"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/paymentStatus"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/paymentMethodLbl" />
+
+                    <TextView
+                        android:id="@+id/paymentStatusLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="@string/payment_status_lbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/paymentMethodLbl"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/paymentStatus"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:singleLine="false"
+                        android:text="Bank Slip"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/paymentMethodLbl"
                         app:layout_constraintTop_toBottomOf="@+id/paymentMethodLbl" />
 
                     <View
                         android:id="@+id/paymentMethodDivider"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_1sdp"
-                        android:background="@color/grey_lite"
                         android:layout_marginTop="@dimen/_8sdp"
-                        app:layout_constraintTop_toBottomOf="@id/paymentMethod"/>
+                        android:background="@color/grey_lite"
+                        app:layout_constraintTop_toBottomOf="@id/paymentMethod" />
 
                     <TextView
                         android:id="@+id/billingAddressLbl"
                         style="@style/textMediumSemiBold"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:singleLine="false"
                         android:text="@string/billing_address_lbl"
-                        android:layout_marginTop="@dimen/_10sdp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/paymentMethodDivider" />
@@ -432,14 +456,14 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                
+
                 android:id="@+id/shippingAddressCv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:cardCornerRadius="@dimen/_6sdp"
                 app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/_6sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/paymentMethodCv">
@@ -474,18 +498,18 @@
                         app:layout_constraintTop_toBottomOf="@+id/shippingAddressLbl" />
 
 
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+
                 android:id="@+id/paymentReceiptCv"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_150sdp"
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:cardCornerRadius="@dimen/_6sdp"
                 app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/_6sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/shippingAddressCv">
@@ -510,14 +534,14 @@
                         android:id="@+id/uploadImage"
                         android:layout_width="@dimen/_40sdp"
                         android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:src="@drawable/add_photo_alternate"
                         android:tint="@color/grey_lite"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        app:layout_constraintVertical_chainStyle="packed"
                         app:layout_constraintBottom_toTopOf="@id/uploadPaymentMethod"
                         app:layout_constraintEnd_toEndOf="@id/uploadPaymentMethodLbl"
                         app:layout_constraintStart_toStartOf="@id/uploadPaymentMethodLbl"
-                        app:layout_constraintTop_toBottomOf="@id/uploadPaymentMethodLbl"/>
+                        app:layout_constraintTop_toBottomOf="@id/uploadPaymentMethodLbl"
+                        app:layout_constraintVertical_chainStyle="packed" />
 
                     <TextView
                         android:id="@+id/uploadPaymentMethod"
@@ -534,40 +558,36 @@
                         app:layout_constraintTop_toBottomOf="@+id/uploadImage" />
 
                     <androidx.constraintlayout.utils.widget.ImageFilterView
-                        android:visibility="gone"
                         android:id="@+id/uploadedImage"
                         android:layout_width="@dimen/_150sdp"
                         android:layout_height="0dp"
                         android:layout_marginTop="@dimen/_3sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@id/uploadPaymentMethodLbl"
                         app:layout_constraintStart_toStartOf="@id/uploadPaymentMethodLbl"
-                        app:layout_constraintTop_toBottomOf="@id/uploadPaymentMethodLbl"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        />
-
-
+                        app:layout_constraintTop_toBottomOf="@id/uploadPaymentMethodLbl" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
             <com.google.android.material.button.MaterialButton
-                
+
                 android:id="@+id/submit"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_30sdp"
-                android:backgroundTint="@color/red"
-                android:text="@string/submitLbl"
-                android:paddingVertical="0dp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_4sdp"
+                android:backgroundTint="@color/red"
+                android:paddingVertical="0dp"
+                android:text="@string/submitLbl"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_12ssp"
                 app:cornerRadius="@dimen/_6sdp"
-                app:layout_constraintTop_toBottomOf="@id/paymentReceiptCv"
                 app:layout_constraintEnd_toEndOf="@id/paymentReceiptCv"
-                />
+                app:layout_constraintTop_toBottomOf="@id/paymentReceiptCv" />
 
 
             <TextView
@@ -575,8 +595,8 @@
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginStart="@dimen/_1sdp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:singleLine="false"
                 android:text="@string/itemsLbl"
                 android:textColor="@color/textGreyDark"
@@ -585,37 +605,36 @@
 
 
             <androidx.recyclerview.widget.RecyclerView
-                
+
                 android:id="@+id/productsRv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:background="@drawable/edt_box_smaa_radius"
                 android:elevation="@dimen/_1sdp"
-                tools:itemCount="2"
                 android:padding="@dimen/_6sdp"
-                tools:listitem="@layout/item_checkout_product"
-                app:layout_constraintTop_toBottomOf="@id/itemsLbl"
+                app:layout_constraintEnd_toEndOf="@id/orderDetailsCv"
                 app:layout_constraintStart_toStartOf="@id/orderDetailsCv"
-                app:layout_constraintEnd_toEndOf="@id/orderDetailsCv"/>
+                app:layout_constraintTop_toBottomOf="@id/itemsLbl"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_checkout_product" />
 
             <TextView
                 android:id="@+id/downLoadInvoice"
                 style="@style/textMediumSemiBold"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_40sdp"
-                android:elevation="@dimen/_1sdp"
-                android:text="@string/download_invoice_lbl"
-                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/edt_box_smaa_radius"
                 android:drawableEnd="@drawable/ic_arrow_forward"
                 android:drawableTint="@color/textGreyDark"
+                android:elevation="@dimen/_1sdp"
+                android:gravity="center_vertical"
                 android:paddingHorizontal="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@+id/productsRv"
-                app:layout_constraintStart_toStartOf="@id/productsRv"
+                android:text="@string/download_invoice_lbl"
                 app:layout_constraintEnd_toEndOf="@+id/productsRv"
-                />
+                app:layout_constraintStart_toStartOf="@id/productsRv"
+                app:layout_constraintTop_toBottomOf="@+id/productsRv" />
 
             <androidx.cardview.widget.CardView
 
@@ -624,8 +643,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:cardCornerRadius="@dimen/_6sdp"
                 app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/_6sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/downLoadInvoice">
@@ -668,10 +687,9 @@
                         android:textColor="@color/white"
                         android:textSize="@dimen/_12ssp"
                         app:cornerRadius="@dimen/_4sdp"
-                        app:layout_constraintTop_toTopOf="@id/sellerLbl"
                         app:layout_constraintBottom_toBottomOf="@id/seller"
                         app:layout_constraintEnd_toEndOf="parent"
-                        />
+                        app:layout_constraintTop_toTopOf="@id/sellerLbl" />
 
 
                     <TextView
@@ -679,9 +697,9 @@
                         style="@style/textMediumSemiBold"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:singleLine="false"
                         android:text="@string/delivery_partner"
-                        android:layout_marginTop="@dimen/_10sdp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/seller" />
@@ -703,11 +721,11 @@
                         style="@style/textMediumSemiBold"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:singleLine="false"
-                        android:text="View Track Details"
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:singleLine="false"
+                        android:text="View Track Details"
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/deliveryPartnerLbl" />
@@ -742,13 +760,13 @@
                 android:id="@+id/cartBillCv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_6sdp"
                 app:cardElevation="@dimen/_1sdp"
                 app:cardUseCompatPadding="true"
-                android:layout_marginTop="@dimen/_5sdp"
-                app:layout_constraintStart_toStartOf="@id/orderDetailsCv"
                 app:layout_constraintEnd_toEndOf="@id/orderDetailsCv"
+                app:layout_constraintStart_toStartOf="@id/orderDetailsCv"
                 app:layout_constraintTop_toBottomOf="@+id/billDetailsLbl">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -917,8 +935,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
-
-
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

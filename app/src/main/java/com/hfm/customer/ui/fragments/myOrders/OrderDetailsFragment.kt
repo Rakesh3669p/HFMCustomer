@@ -36,6 +36,7 @@ import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
+import com.hfm.customer.utils.toOrderDetailsFormattedDate
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -48,7 +49,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class     OrderDetailsFragment : Fragment(), View.OnClickListener {
+class OrderDetailsFragment : Fragment(), View.OnClickListener {
     private lateinit var orderData: MyOrdersData
 
     private lateinit var orderDetails: Purchase
@@ -158,27 +159,27 @@ class     OrderDetailsFragment : Fragment(), View.OnClickListener {
             data.order.forEach {
                 when (it.identifier) {
                     "created" -> {
-                        orderedDate.text = it.date
+                        orderedDate.text = it.date.toOrderDetailsFormattedDate()
                         ordered.alpha = if (it.available == 1) 1f else 0.7f
                     }
 
                     "processing" -> {
-                        inProcessDate.text = it.date
+                        inProcessDate.text = it.date.toOrderDetailsFormattedDate()
                         inProcess.alpha = if (it.available == 1) 1f else 0.7f
                     }
 
                     "pickup" -> {
-                        readyToShipDate.text = it.date
+                        readyToShipDate.text = it.date.toOrderDetailsFormattedDate()
                         readyToShip.alpha = if (it.available == 1) 1f else 0.7f
                     }
 
                     "delivery_inprogress" -> {
-                        deliveryInProgressDate.text = it.date
+                        deliveryInProgressDate.text = it.date.toOrderDetailsFormattedDate()
                         deliveryInProgress.alpha = if (it.available == 1) 1f else 0.7f
                     }
 
                     "delivered" -> {
-                        deliveredDate.text = it.date
+                        deliveredDate.text = it.date.toOrderDetailsFormattedDate()
                         delivered.alpha = if (it.available == 1) 1f else 0.7f
                     }
                 }
@@ -197,12 +198,34 @@ class     OrderDetailsFragment : Fragment(), View.OnClickListener {
                 val orangeColor = ContextCompat.getColor(requireContext(), R.color.orange)
                 val greenColor = ContextCompat.getColor(requireContext(), R.color.green)
                 val redColor = ContextCompat.getColor(requireContext(), R.color.red)
+                viewTrackDetails.isVisible =
+                    orderDetails.delivery_partner.lowercase() == "dhl shipping" || orderDetails.delivery_partner.lowercase() == "citylink shipping"
 
                 when (it.order_status) {
+
+                    "pending" -> {
+                        requestStatus.setTextColor(orangeColor)
+                        requestStatus.text = "Payment Pending"
+                    }
+                    "accepted" -> {
+                        requestStatus.setTextColor(orangeColor)
+                        requestStatus.text = "In Process"
+                    }
+
+                   /* "accepted" -> {
+                        requestStatus.setTextColor(orangeColor)
+                        requestStatus.text = "In Process"
+                    }*/
                     "delivered" -> {
                         requestStatus.setTextColor(greenColor)
                         requestStatus.text = "Delivered on ${it.delivered_date}"
                     }
+
+                    "cancelled" -> {
+                        requestStatus.setTextColor(redColor)
+                        requestStatus.text = "Cancelled"
+                    }
+
                     else -> {
                         val input = it.order_status
                         val output = input.substring(0, 1).uppercase() + input.substring(1)
@@ -213,7 +236,53 @@ class     OrderDetailsFragment : Fragment(), View.OnClickListener {
                 requestedDate.text = "${it.order_date}"
                 orderAmount.text =
                     "RM ${formatToTwoDecimalPlaces(it.grand_total)} (${it.products.size} Items)"
+
                 paymentMethod.text = it.payment_mode
+
+                when (it.order_status) {
+                    "accepted" -> {
+                        when (it.payment_upload_status) {
+                            0 -> {
+                                paymentStatus.text = "Not Uploaded"
+                            }
+
+                            1 -> {
+                                paymentStatus.text = "Uploaded"
+                            }
+
+                            2 -> {
+                                val remarks =
+                                    if (it.reject_remarks.isNullOrEmpty()) "" else "(${it.reject_remarks})"
+                                paymentStatus.text = "Rejected $remarks"
+                                paymentStatus.setTextColor(redColor)
+                            }
+                        }
+
+                    }
+
+                    "delivered" -> {
+                        when (it.payment_upload_status) {
+                            0 -> {
+                                paymentStatus.text = "Not Uploaded"
+                            }
+
+                            1 -> {
+                                paymentStatus.text = "Uploaded"
+                            }
+
+                            2 -> {
+                                val remarks =
+                                    if (it.reject_remarks.isNullOrEmpty()) "" else "(${it.reject_remarks})"
+                                paymentStatus.text = "Rejected $remarks"
+                            }
+                        }
+                    }
+
+                    "cancelled" -> {
+                        paymentStatus.isVisible = false
+                        paymentStatusLbl.isVisible = false
+                    }
+                }
                 billingAddress.text =
                     "${it.shipping_address.address1}, ${it.shipping_address.address2},\n${it.shipping_address.city}, ${it.shipping_address.state}, ${it.shipping_address.country}, ${it.shipping_address.zip_code}\nPhone: ${it.shipping_address.phone}"
                 shippingAddress.text =
@@ -256,16 +325,22 @@ class     OrderDetailsFragment : Fragment(), View.OnClickListener {
 
                 totalAmount.text = "RM ${formatToTwoDecimalPlaces(it.grand_total)}"
                 totalSavings.isVisible = false
-                if (it.payment_uploaded_image.isNullOrEmpty()) {
+
+                if (it.payment_uploaded_image.isNullOrEmpty() && it.order_status == "cancelled") {
+                    paymentReceiptCv.isVisible = false
+                    submit.isVisible = false
+                }   else if (it.payment_uploaded_image.isNullOrEmpty()||it.payment_status== "rejected") {
+                    uploadPaymentMethodLbl.text = "Upload Payment Receipt"
                     binding.uploadedImage.isVisible = false
                     binding.uploadImage.isVisible = true
                     binding.uploadPaymentMethod.isVisible = true
                     binding.submit.isVisible = true
                 } else {
+                    uploadPaymentMethodLbl.text = "Uploaded Payment Receipt"
                     binding.uploadedImage.isVisible = true
-                    binding.uploadedImage.load(replaceBaseUrl(it.payment_uploaded_image)){
+                    binding.uploadedImage.load(replaceBaseUrl(it.payment_uploaded_image)) {
                         placeholder(R.drawable.logo)
-                        
+
                     }
                     binding.uploadImage.isVisible = false
                     binding.uploadPaymentMethod.isVisible = false
@@ -290,8 +365,6 @@ class     OrderDetailsFragment : Fragment(), View.OnClickListener {
         appCompatDialog.setCancelable(true)
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-
-        appCompatDialog.setCancelable(false)
         appCompatDialog.show()
         bindingDialog.camera.setOnClickListener {
             ImagePicker.with(this).cameraOnly()
@@ -349,7 +422,12 @@ class     OrderDetailsFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
-            binding.viewTrackDetails.id -> findNavController().navigate(R.id.orderTrackingFragment)
+            binding.viewTrackDetails.id -> {
+                val bundle = Bundle()
+                bundle.putString("saleId", orderDetails.sale_id.toString())
+                findNavController().navigate(R.id.orderTrackingFragment, bundle)
+            }
+
             binding.downLoadInvoice.id -> {}
             binding.uploadImage.id -> showImagePickupDialog()
             binding.submit.id -> uploadPaymentSlip()

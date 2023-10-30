@@ -115,7 +115,7 @@
     <string name="variantsLbl">Variants</string>
     <string name="confirmLbl">Confirm</string>
     <string name="no_default_address_found_please_add_address_lbl">No default address found. Please add address.</string>
-    <string name="add_new_address_lbl">+ Add New Address</string>
+    <string name="add_new_address_lbl">Add New Address</string>
     <string name="add_new_address_lbl2">Add New Address</string>
     <string name="standard_delivery_lbl">Standard Delivery</string>
     <string name="order_total_lbl">Order Total</string>
@@ -145,6 +145,7 @@
     <string name="browse_images_lbl">Browse Images</string>
     <string name="messageLbl">Message</string>
     <string name="notificationsLbl">Notifications</string>
+    <string name="notAvailable">Not Available</string>
     <string name="account_settings_lbl">Account Settings</string>
     <string name="date_of_birth_lbl">Date Of Birth</string>
     <string name="change_password_lbl">Change Password</string>
@@ -210,4 +211,7 @@
     <string name="rejectLbl">Reject</string>
     <string name="delete_allLbl">Delete All</string>
     <string name="points_redemption_lbl">Points Redemption</string>
+    <string name="usedlbl">Used</string>
+    <string name="expiredLbl">Expired</string>
+    <string name="payment_status_lbl">Payment Status</string>
 </resources>

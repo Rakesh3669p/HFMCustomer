@@ -90,6 +90,7 @@
         app:layout_constraintTop_toBottomOf="@+id/sendOtp" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/facebook"
         style="@style/textMedium"
         android:layout_width="match_parent"
@@ -99,7 +100,7 @@
         android:drawableStart="@drawable/facebook"
         android:drawableEnd="@drawable/ic_arrow_forward"
         android:drawablePadding="@dimen/_5sdp"
-        android:elevation="2dp"
+        android:elevation="1dp"
         android:gravity="center_vertical"
         android:paddingHorizontal="@dimen/_12sdp"
         android:paddingVertical="@dimen/_10sdp"
@@ -109,6 +110,7 @@
         app:layout_constraintTop_toBottomOf="@id/alreadyHaveAccount" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/google"
         style="@style/textMedium"
         android:layout_width="match_parent"
@@ -119,7 +121,8 @@
         android:drawableStart="@drawable/google"
         android:drawableEnd="@drawable/ic_arrow_forward"
         android:drawablePadding="@dimen/_5sdp"
-        android:elevation="2dp"
+        android:elevation="1dp"
+
         android:gravity="center_vertical"
         android:paddingHorizontal="@dimen/_12sdp"
         android:paddingVertical="@dimen/_10sdp"

@@ -2,6 +2,7 @@ package com.hfm.customer.ui.dashBoard.chat
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
@@ -23,6 +24,7 @@ import com.hfm.customer.databinding.FragmentChatBinding
 import com.hfm.customer.ui.dashBoard.chat.adapter.ChatAdapter
 import com.hfm.customer.ui.dashBoard.chat.model.Message
 import com.hfm.customer.ui.dashBoard.chat.model.Messages
+import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
@@ -152,6 +154,10 @@ class ChatFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
                         setChatData(response.data.data.messages)
+                    } else if (response.data?.httpcode == 401) {
+                        sessionManager.isLogin = false
+                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                        requireActivity().finish()
                     } else {
 //                        showToast(response.data?.message.toString())
                     }
@@ -179,6 +185,10 @@ class ChatFragment : Fragment(), View.OnClickListener {
                                 }, 150)
                             }
                         }
+                    } else if (response.data?.httpcode == 401) {
+                        sessionManager.isLogin = false
+                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                        requireActivity().finish()
                     } else {
                         showToast(response.data?.message.toString())
                     }
@@ -238,7 +248,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
 
     private fun validAndSendMessage() {
         val message = binding.edtMessage.text.toString()
-        if(message.isEmpty()){
+        if(message.isEmpty() && imgFile==null){
             showToast("Please type a message to send..")
             return
         }

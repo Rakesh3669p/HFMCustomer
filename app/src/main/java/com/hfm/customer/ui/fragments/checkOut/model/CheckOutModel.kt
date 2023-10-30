@@ -18,7 +18,9 @@ data class CheckOutData(
 data class PaymentMethod(
     val desc: String,
     val id: Int,
-    val title: String
+    val title: String,
+    val payment_type_id: Int,
+    val is_online: Int
 )
 
 data class ShippingOption(

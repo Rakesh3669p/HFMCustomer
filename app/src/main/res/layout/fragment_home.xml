@@ -238,7 +238,7 @@
                 android:id="@+id/flashDealsGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="flashDealsProductsRv,flashDealsLbl,flashDealsTimer,flashDealsViewAll"/>
+                app:constraint_referenced_ids="flashDealsProductsRv,flashDealsLbl,flashDealsTimer,flashDealsViewAll,endsInLbl"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/adsRv"
                 android:layout_width="match_parent"
@@ -387,6 +387,7 @@
                 tools:listitem="@layout/item_trending_now" />
 
             <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:visibility="gone"
                 android:id="@+id/referBanner"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_90sdp"
@@ -400,6 +401,7 @@
                 app:roundPercent="0.1" />
 
             <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:visibility="gone"
                 android:id="@+id/adBanner"
                 android:layout_width="0dp"
                 android:layout_height="0dp"

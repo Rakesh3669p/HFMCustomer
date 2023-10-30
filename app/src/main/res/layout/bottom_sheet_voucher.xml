@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_500sdp"
+    android:layout_height="match_parent"
     android:background="@drawable/bottom_sort_bg"
     android:layout_gravity="bottom"
     android:elevation="@dimen/_10sdp"
@@ -49,12 +49,12 @@
         android:hint="Enter Voucher Code"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_9sdp"
-        app:layout_constraintEnd_toStartOf="@id/addVoucher"
+        app:layout_constraintEnd_toStartOf="@id/applyVoucher"
         app:layout_constraintStart_toStartOf="@id/addVoucherLbl"
         app:layout_constraintTop_toBottomOf="@+id/addVoucherLbl" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/addVoucher"
+        android:id="@+id/applyVoucher"
         style="@style/textSmallSemiBold"
         android:layout_width="@dimen/_65sdp"
         android:layout_height="0dp"
@@ -76,12 +76,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/vouchersRv"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_350sdp"
-        tools:itemCount="2"
+        android:layout_height="0dp"
+        tools:itemCount="14"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_platform_voucher"
         app:layout_constraintVertical_bias="0"
-        app:layout_constraintTop_toBottomOf="@+id/addVoucher"
+        app:layout_constraintTop_toBottomOf="@+id/applyVoucher"
         app:layout_constraintBottom_toTopOf="@+id/cancel"
 
         />
@@ -99,7 +99,7 @@
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addVoucher"
+        app:layout_constraintTop_toBottomOf="@+id/applyVoucher"
         app:layout_constraintBottom_toTopOf="@id/cancel"/>
 
     <com.google.android.material.button.MaterialButton

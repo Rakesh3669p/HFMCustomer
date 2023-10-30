@@ -238,6 +238,7 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
         with(binding) {
             sendOtp.setOnClickListener(this@BusinessRegisterFragment)
             termsAndConditions.setOnClickListener(this@BusinessRegisterFragment)
+            alreadyHaveAccount.setOnClickListener(this@BusinessRegisterFragment)
         }
     }
 
@@ -306,7 +307,7 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
         when (v?.id) {
             binding.sendOtp.id -> validateAndRedirect()
             binding.termsAndConditions.id -> showTermsAndConditions()
-
+            binding.alreadyHaveAccount.id -> findNavController().popBackStack()
         }
 
     }

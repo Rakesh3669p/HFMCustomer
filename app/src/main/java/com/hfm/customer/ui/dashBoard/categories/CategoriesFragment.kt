@@ -92,6 +92,7 @@ class CategoriesFragment : Fragment() {
         categoryMainAdapter.differ.submitList(mainCategoryData)
         categoriesAdapter.differ.submitList(mainCategoryData[0].subcategory)
         catId = mainCategoryData[0].category_id
+        binding.categoryName.text = mainCategoryData[0].category_name
     }
 
     private fun setOnClickListener() {

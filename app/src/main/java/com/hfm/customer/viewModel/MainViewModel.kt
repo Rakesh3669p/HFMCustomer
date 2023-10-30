@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
+import com.hfm.customer.BuildConfig
+import com.hfm.customer.commonModel.AppUpdateModel
 import com.hfm.customer.commonModel.HomeMainCategoriesModel
 import com.hfm.customer.commonModel.SuccessModel
 import com.hfm.customer.commonModel.TermsConditionsModel
@@ -34,6 +36,7 @@ import com.hfm.customer.ui.fragments.myOrders.model.BulkOrdersListModel
 import com.hfm.customer.ui.fragments.myOrders.model.MyOrdersModel
 import com.hfm.customer.ui.fragments.myOrders.model.OrderHistoryModel
 import com.hfm.customer.ui.fragments.notifications.model.NotificationModel
+import com.hfm.customer.ui.fragments.orderTracking.OrderTrackingModel
 import com.hfm.customer.ui.fragments.payment.model.PaymentFAQModel
 import com.hfm.customer.ui.fragments.payment.model.PlaceOrderModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.AddToCartModel
@@ -65,6 +68,7 @@ class MainViewModel @Inject constructor(
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
+    val checkAppUpdate = SingleLiveEvent<Resource<AppUpdateModel>>()
     val productDetails = SingleLiveEvent<Resource<ProductDetailsModel>>()
     val categories: MutableLiveData<Resource<HomeMainCategoriesModel>> = MutableLiveData()
 
@@ -132,16 +136,36 @@ class MainViewModel @Inject constructor(
     val stateCode = SingleLiveEvent<Resource<StateCodeModel>>()
     val cityCode = SingleLiveEvent<Resource<CityCodeModel>>()
     val termsConditions = SingleLiveEvent<Resource<TermsConditionsModel>>()
+    val orderTracking = SingleLiveEvent<Resource<OrderTrackingModel>>()
 
 
-    fun getProductDetails(productId: String) = viewModelScope.launch {
+    fun getAppUpdate() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("platform", "android")
+        jsonObject.addProperty("version_code", BuildConfig.VERSION_CODE)
+        safeGetAppUpdateCall(jsonObject)
+    }
+
+    private suspend fun safeGetAppUpdateCall(jsonObject: JsonObject) {
+        checkAppUpdate.postValue(Resource.Loading())
+        try {
+            val response = repository.getAppUpdate(jsonObject)
+            if (response.isSuccessful)
+                checkAppUpdate.postValue(Resource.Success(checkResponseBody(response.body()) as AppUpdateModel))
+            else
+                checkAppUpdate.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            checkAppUpdate.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+   fun getProductDetails(productId: String) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("id", productId)
         jsonObject.addProperty("lang_id", "1")
         jsonObject.addProperty("device_id", "876546587")
         jsonObject.addProperty("page_url", "products/us/img")
-        jsonObject.addProperty("os_type", "APP")
+        jsonObject.addProperty("os_type", "app")
         safeGetProductDetailsCall(jsonObject)
     }
 
@@ -165,7 +189,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("lang_id", "1")
         jsonObject.addProperty("page_url", "https://www.dummy.com/blog/")
         jsonObject.addProperty("device_id", "876546587")
-        jsonObject.addProperty("os_type", "APP")
+        jsonObject.addProperty("os_type", "app")
         safeGetCategoriesCall(jsonObject)
     }
 
@@ -189,7 +213,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("lang_id", "1")
         jsonObject.addProperty("page_url", "https://www.dummy.com/blog/")
         jsonObject.addProperty("device_id", "876546587")
-        jsonObject.addProperty("os_type", "APP")
+        jsonObject.addProperty("os_type", "app")
         safeGetMainBannerCall(jsonObject)
     }
 
@@ -213,7 +237,7 @@ class MainViewModel @Inject constructor(
         jsonObject1.addProperty("lang_id", "1")
         jsonObject1.addProperty("page_url", "https://www.dummy.com/blog/")
         jsonObject1.addProperty("device_id", sessionManager.deviceId)
-        jsonObject1.addProperty("os_type", "APP")
+        jsonObject1.addProperty("os_type", "app")
 
 
         val middleBannerJson = JsonObject()
@@ -221,14 +245,14 @@ class MainViewModel @Inject constructor(
         middleBannerJson.addProperty("lang_id", "1")
         middleBannerJson.addProperty("device_id", sessionManager.deviceId)
         middleBannerJson.addProperty("page_url", "https://www.dummy.com/blog/")
-        middleBannerJson.addProperty("os_type", "APP")
+        middleBannerJson.addProperty("os_type", "app")
 
         val bottomBannerJson = JsonObject()
         bottomBannerJson.addProperty("access_token", "")
         bottomBannerJson.addProperty("lang_id", "1")
         bottomBannerJson.addProperty("device_id", sessionManager.deviceId)
         bottomBannerJson.addProperty("page_url", "https://www.dummy.com/blog/")
-        bottomBannerJson.addProperty("os_type", "APP")
+        bottomBannerJson.addProperty("os_type", "app")
 
         val brandsJson = JsonObject()
         brandsJson.addProperty("sort_by_name", "")
@@ -245,7 +269,7 @@ class MainViewModel @Inject constructor(
         mainCatJson.addProperty("lang_id", "1")
         mainCatJson.addProperty("page_url", "https://www.dummy.com/blog/")
         mainCatJson.addProperty("device_id", sessionManager.deviceId)
-        mainCatJson.addProperty("os_type", "APP")
+        mainCatJson.addProperty("os_type", "app")
         safeGetCategoriesCall(mainCatJson)
 
         val featureProductsJson = JsonObject()
@@ -261,7 +285,7 @@ class MainViewModel @Inject constructor(
         featureProductsJson.addProperty("latest", "")
         featureProductsJson.addProperty("device_id", sessionManager.deviceId)
         featureProductsJson.addProperty("page_url", "http://brands/us/img")
-        featureProductsJson.addProperty("os_type", "APP")
+        featureProductsJson.addProperty("os_type", "app")
 
         safeGetCategoriesCall(mainCatJson)
 
@@ -684,24 +708,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getStoreDetails() = viewModelScope.launch {
-        val jsonObject = JsonObject()
-        jsonObject.addProperty("access_token", sessionManager.token)
-        safeStoreDetailsCall(jsonObject)
-    }
-
-    private suspend fun safeStoreDetailsCall(jsonObject: JsonObject) {
-        profile.postValue(Resource.Loading())
-        try {
-            val response = repository.getProfile(jsonObject)
-            if (response.isSuccessful)
-                profile.postValue(Resource.Success(checkResponseBody(response.body()) as ProfileModel))
-            else
-                profile.postValue(Resource.Error(response.message(), null))
-        } catch (t: Throwable) {
-            profile.postValue(Resource.Error(checkThrowable(t), null))
-        }
-    }
 
 
     fun addToWishList(productId: String) = viewModelScope.launch {
@@ -709,8 +715,10 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("product_id", productId)
         jsonObject.addProperty("type", "APP")
+        jsonObject.addProperty("os_type", "app")
         safeAddToWishListCall(jsonObject)
     }
+
 
     private suspend fun safeAddToWishListCall(jsonObject: JsonObject) {
         addToWishList.postValue(Resource.Loading())
@@ -729,7 +737,7 @@ class MainViewModel @Inject constructor(
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("product_id", productId)
-        jsonObject.addProperty("type", "APP")
+        jsonObject.addProperty("type", "app")
         safeRemoveFromWishListCall(jsonObject)
     }
 
@@ -974,7 +982,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("product_id", productId)
         jsonObject.addProperty("quantity", quantity)
-        jsonObject.addProperty("cart_type", "APP")
+        jsonObject.addProperty("cart_type", "app")
         safeAddToCartCall(jsonObject)
     }
 
@@ -997,7 +1005,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("product_id", productId)
         jsonObject.addProperty("quantity", quantity)
-        jsonObject.addProperty("cart_type", "APP")
+        jsonObject.addProperty("cart_type", "app")
         safeAddToCartMultipleCall(jsonObject)
     }
 
@@ -1021,7 +1029,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("lang_id", "1")
         jsonObject.addProperty("device_id", sessionManager.deviceId)
         jsonObject.addProperty("page_url", "CART")
-        jsonObject.addProperty("os_type", "APP")
+        jsonObject.addProperty("os_type", "app")
         safeGetCartCall(jsonObject)
     }
 
@@ -1086,7 +1094,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("lang_id", 1)
         jsonObject.addProperty("cart_subtotal", subTotal)
         jsonObject.addProperty("coupon_code", couponCode)
-        jsonObject.addProperty("os_type", "APP")
+        jsonObject.addProperty("os_type", "app")
         safeApplyPlatFormVouchersCall(jsonObject)
     }
 
@@ -1111,7 +1119,7 @@ class MainViewModel @Inject constructor(
             jsonObject.addProperty("coupon_code", couponCode)
             jsonObject.addProperty("seller_id", sellerId)
             jsonObject.addProperty("seller_subtotal", sellerSubtotal)
-            jsonObject.addProperty("os_type", "APP")
+            jsonObject.addProperty("os_type", "app")
             safeApplySellerVouchersCall(jsonObject)
         }
 
@@ -1133,7 +1141,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("keyword", keyword)
         jsonObject.addProperty("device_id", 1)
         jsonObject.addProperty("page_url", "products/us/img")
-        jsonObject.addProperty("os_type", "APP")
+        jsonObject.addProperty("os_type", "app")
         safeRelatedSearchTermsCall(jsonObject)
     }
 
@@ -1270,7 +1278,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("cart_id", cartId)
         jsonObject.addProperty("quantity", qty)
-        jsonObject.addProperty("cart_type", "APP")
+        jsonObject.addProperty("cart_type", "app")
         safeUpdateCartQtyCall(jsonObject)
     }
 
@@ -1288,11 +1296,21 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun getStoreDetails(sellerId: String) = viewModelScope.launch {
+    fun getStoreDetails(sellerId: String,categoryId:String="") = viewModelScope.launch {
         val jsonObject = JsonObject()
-        jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("seller_id", sellerId)
-        jsonObject.addProperty("lang_id", 1)
+        jsonObject.addProperty("category_id", categoryId)
+        jsonObject.addProperty("limit", 150)
+        jsonObject.addProperty("offset", 0)
+        jsonObject.addProperty("frozen", "")
+        jsonObject.addProperty("wholesale", "")
+        jsonObject.addProperty("chilled", "")
+        jsonObject.addProperty("low_to_high", "")
+        jsonObject.addProperty("high_to_low", "")
+        jsonObject.addProperty("latest", "")
+        jsonObject.addProperty("popular", "")
+        jsonObject.addProperty("lang_id", "1")
+        jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("device_id", sessionManager.deviceId)
         jsonObject.addProperty("page_url", "http://shopproducts/us/img")
         jsonObject.addProperty("os_type", "app")
@@ -1318,14 +1336,14 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("lang_id", 1)
         jsonObject.addProperty("order_status", orderStatus)
 
-        if (orderStatus == "pending") {
+        jsonObject.addProperty("payment_status", "")
+        /*if (orderStatus == "to_pay") {
             jsonObject.addProperty("payment_status", "pending")
         } else {
-            jsonObject.addProperty("payment_status", "")
-        }
+        }*/
 
         jsonObject.addProperty("order_time", "")
-        jsonObject.addProperty("limit", 50)
+        jsonObject.addProperty("limit", 15)
         jsonObject.addProperty("offset", pageNo)
         jsonObject.addProperty("search", search)
         jsonObject.addProperty("os_type", "app")
@@ -1716,10 +1734,9 @@ class MainViewModel @Inject constructor(
             cityCode.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
-    fun getTermsConditions() =
-        viewModelScope.launch {
+    fun getTermsConditions() = viewModelScope.launch {
             safeGetTermsConditionsCall()
-        }
+    }
 
     private suspend fun safeGetTermsConditionsCall() {
         termsConditions.postValue(Resource.Loading())
@@ -1733,6 +1750,25 @@ class MainViewModel @Inject constructor(
             termsConditions.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
+    fun getOrderTracking(saleId:String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("sale_id", saleId)
+        jsonObject.addProperty("lang_id", 1)
+        safeGetOrderHistoryCall(jsonObject)
+        safeGetOrderTrackingCall(jsonObject)
+    }
 
-
+    private suspend fun safeGetOrderTrackingCall(jsonObject: JsonObject) {
+        orderTracking.postValue(Resource.Loading())
+        try {
+            val response = repository.orderTracking(jsonObject)
+            if (response.isSuccessful)
+                orderTracking.postValue(Resource.Success(checkResponseBody(response.body()) as OrderTrackingModel))
+            else
+                orderTracking.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            orderTracking.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
 }

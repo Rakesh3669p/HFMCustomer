@@ -86,13 +86,15 @@ class ProfileSettings : Fragment(), View.OnClickListener {
         setObserver()
         lifecycleScope.launch {
             delay(1000)
-            navigation.currentBackStackEntry?.savedStateHandle?.getLiveData<String>("password")
-                ?.observe(viewLifecycleOwner) {
-                    password = it.toString()
+            try {
+                navigation.currentBackStackEntry?.savedStateHandle?.getLiveData<String>("password")
+                    ?.observe(viewLifecycleOwner) {
+                        password = it.toString()
+                    }
+                if (password.isNotEmpty()) {
+                    binding.changePasswordEdt.text = password
                 }
-            if (password.isNotEmpty()) {
-                binding.changePasswordEdt.text = password
-            }
+            }catch (e:Exception){}
         }
     }
 

@@ -2,6 +2,7 @@ package com.hfm.customer.data
 
 import com.google.gson.JsonObject
 import com.hfm.customer.BuildConfig
+import com.hfm.customer.commonModel.AppUpdateModel
 import com.hfm.customer.commonModel.CityListModel
 import com.hfm.customer.commonModel.CountryListModel
 import com.hfm.customer.commonModel.HomeMainCategoriesModel
@@ -35,6 +36,7 @@ import com.hfm.customer.ui.fragments.myOrders.model.BulkOrdersListModel
 import com.hfm.customer.ui.fragments.myOrders.model.MyOrdersModel
 import com.hfm.customer.ui.fragments.myOrders.model.OrderHistoryModel
 import com.hfm.customer.ui.fragments.notifications.model.NotificationModel
+import com.hfm.customer.ui.fragments.orderTracking.OrderTrackingModel
 import com.hfm.customer.ui.fragments.payment.model.PaymentFAQModel
 import com.hfm.customer.ui.fragments.payment.model.PlaceOrderModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.AddToCartModel
@@ -360,6 +362,16 @@ interface HFMCustomerAPI {
 
     @GET("customer/terms-conditions")
     suspend fun getTermsConditions(): Response<TermsConditionsModel>
+
+    @POST("customer/check-app-update")
+    suspend fun getAppUpdate(
+        @Body jsonObject: JsonObject
+    ): Response<AppUpdateModel>
+
+ @POST("customer/dhl-tracking")
+    suspend fun orderTracking(
+        @Body jsonObject: JsonObject
+    ): Response<OrderTrackingModel>
 
 
 }

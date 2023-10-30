@@ -3,6 +3,7 @@ package com.hfm.customer.ui.fragments.cart
 import android.annotation.SuppressLint
 import android.app.ActionBar
 import android.content.Context
+import android.content.Intent
 import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,6 +34,7 @@ import com.hfm.customer.ui.fragments.products.productDetails.adapter.ProductVari
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModelItem
 import com.hfm.customer.ui.fragments.products.productDetails.model.Variants
+import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
@@ -103,6 +105,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
         if (currentView == null) {
 
@@ -164,15 +167,25 @@ class CartFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     binding.loader.isVisible = false
 
-                    if (response.data?.httpcode == 200) {
-                        binding.noDataFound.root.isVisible = false
-                        setCartData(response.data.data)
-                        cartCount.postValue(response.data.data.cart_count)
-                    } else {
-                        cartCount.postValue(0)
-                        binding.noDataFound.root.isVisible = true
-                        binding.noDataFound.noDataLbl.text = "No Products Added.."
-                        showToast(response.data?.message.toString())
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            binding.noDataFound.root.isVisible = false
+                            setCartData(response.data.data)
+                            cartCount.postValue(response.data.data.cart_count)
+                        }
+
+                        401 -> {
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
+
+                        else -> {
+                            cartCount.postValue(0)
+                            binding.noDataFound.root.isVisible = true
+                            binding.noDataFound.noDataLbl.text = "No Products Added.."
+                            showToast(response.data?.message.toString())
+                        }
                     }
                 }
 
@@ -186,7 +199,7 @@ class CartFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
 //                    appLoader.dismiss()
-                    if(response.data?.httpcode == 200) {
+                    if (response.data?.httpcode == 200) {
                         platformVouchers = response.data.data.coupon_list
                     }
                 }
@@ -201,7 +214,7 @@ class CartFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode ==200) {
+                    if (response.data?.httpcode == 200) {
                         sellerVouchers = response.data.data.coupon_list
                         showSellerVoucherBottomSheet()
                     }
@@ -523,8 +536,7 @@ class CartFragment : Fragment(), View.OnClickListener {
     private fun showVoucherBottomSheet() {
 
         val platformVoucherBinding = BottomSheetVoucherBinding.inflate(layoutInflater)
-        platformVoucherDialog =
-            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
+        platformVoucherDialog = BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         platformVoucherDialog.setContentView(platformVoucherBinding.root)
         val bottomSheet: FrameLayout? = platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
         if (bottomSheet != null) {
@@ -542,6 +554,7 @@ class CartFragment : Fragment(), View.OnClickListener {
             platFormSelectedVoucher = platformVouchers[position]
         }
 
+
         with(platformVoucherBinding) {
 
             noVouchers.isVisible = platformVouchers.isEmpty() == true
@@ -555,6 +568,17 @@ class CartFragment : Fragment(), View.OnClickListener {
                 imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
             }
 
+            applyVoucher.setOnClickListener {
+                val couponCode = voucherCode.text.toString()
+                if (couponCode.isEmpty()) {
+                    showToast("Please enter a coupon code to apply")
+                }
+
+                mainViewModel.applyPlatFormVouchers(
+                    couponCode,
+                    cartData.total_offer_cost.toString()
+                )
+            }
             apply.setOnClickListener {
                 mainViewModel.applyPlatFormVouchers(
                     platFormSelectedVoucher?.couponCode ?: "",
@@ -573,10 +597,12 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     private fun showSellerVoucherBottomSheet() {
         val sellerVoucherBinding = BottomSheetVoucherBinding.inflate(layoutInflater)
-        platformVoucherDialog = BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
+        platformVoucherDialog =
+            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         platformVoucherDialog.setContentView(sellerVoucherBinding.root)
 
-        val bottomSheet: FrameLayout? = platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        val bottomSheet: FrameLayout? =
+            platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
         if (bottomSheet != null) {
             BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }
@@ -589,6 +615,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         }
 
         with(sellerVoucherBinding) {
+
             noVouchers.isVisible = sellerVouchers.isEmpty() == true
             requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
             titleLbl.text = "Select Shop Vouchers"
@@ -601,9 +628,25 @@ class CartFragment : Fragment(), View.OnClickListener {
                 imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
             }
 
+            applyVoucher.setOnClickListener {
+                val sellerData =
+                    cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+                val couponCode = voucherCode.text.toString()
+                if (couponCode.isEmpty()) {
+                    showToast("Please enter a coupon code to apply")
+                }
+
+                mainViewModel.applySellerVouchers(
+                    selectingVoucherSellerId,
+                    couponCode,
+                    sellerData?.seller_subtotal ?: 0.0
+                )
+            }
+
             apply.setOnClickListener {
                 val sellerData =
                     cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+
                 mainViewModel.applySellerVouchers(
                     selectingVoucherSellerId,
                     sellerSelectedVoucher?.couponCode ?: "", sellerData?.seller_subtotal ?: 0.0
@@ -630,28 +673,41 @@ class CartFragment : Fragment(), View.OnClickListener {
                         }
                     }
 
-  val someSelectedProductNotDeliverable =
-                    cartAdapter.differ.currentList.any { seller ->
-                        seller.seller.products.any { product ->
-                            product.cart_selected.toString()
-                                .toDouble() > 0 && product.check_shipping_availability.toString()
-                                .toDouble() < 1
-                        }
+                /*  val someSelectedProductNotDeliverable =
+                      cartAdapter.differ.currentList.any { seller ->
+                          seller.seller.products.any { product ->
+                              product.cart_selected.toString()
+                                  .toDouble() > 0 && product.check_shipping_availability.toString()
+                                  .toDouble() < 1
+                          }
+                      }*/
+
+                val notDeliverableProduct = cartAdapter.differ.currentList
+                    .flatMap { seller ->
+                        seller.seller.products
+                            .filter { product ->
+                                product.cart_selected.toString()
+                                    .toDouble() > 0 && product.check_shipping_availability.toString()
+                                    .toDouble() < 1
+                            }
                     }
+                    .firstOrNull { it.check_shipping_availability.toString().toDouble() == 0.0 }
+
+                if (notDeliverableProduct != null) {
+                    showToast(notDeliverableProduct.check_shipping_availability_text)
+                    return
+                }
 
                 val someSelectedProductOutOfStock: Boolean =
                     cartAdapter.differ.currentList.filter { it.seller.cart_selected == 1 }
                         .any { seller ->
                             seller.seller.products.any { product ->
-                                product.is_out_of_stock.toString().toBoolean()
+                                product.is_out_of_stock == 1
                             }
                         }
 
-
-                if (someSelectedProductNotDeliverable) {
-                    showToast("Some selected products is not available in your Delivery Address.")
-                } else if (someSelectedProductOutOfStock) {
-                    showToast("Some selected products is Sold Out.")
+                if (someSelectedProductOutOfStock) {
+                    showToast("Some products is Sold Out.")
 
                 } else if (!selectedAnyProduct) {
                     showToast("Please select any product to checkout.")
@@ -692,5 +748,10 @@ class CartFragment : Fragment(), View.OnClickListener {
                 mainViewModel.selectCart(cartIds, if (binding.selectAll.isChecked) 1 else 0)
             }
         }
+    }
+    override fun onPause() {
+        super.onPause()
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+
     }
 }

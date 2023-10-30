@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentNotificationsBinding
 import com.hfm.customer.ui.fragments.notifications.adapter.NotificationAdapter
@@ -85,12 +86,14 @@ class NotificationFragment : Fragment(), View.OnClickListener {
 
     private fun setOnClickListener() {
         with(binding) {
+            back.setOnClickListener(this@NotificationFragment)
         }
     }
 
 
     override fun onClick(v: View?) {
         when (v?.id) {
+            binding.back.id -> findNavController().popBackStack()
         }
     }
 }

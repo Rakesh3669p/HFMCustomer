@@ -35,7 +35,6 @@ class WishListFragment : Fragment() , View.OnClickListener {
             binding = FragmentWishlistBinding.bind(currentView!!)
             init()
             setTabLayoutAndViewPager()
-            setObserver()
             setOnClickListener()
         }
         return currentView!!
@@ -61,12 +60,8 @@ class WishListFragment : Fragment() , View.OnClickListener {
                 binding.storeVp.currentItem = tab!!.position
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
 
@@ -75,19 +70,13 @@ class WishListFragment : Fragment() , View.OnClickListener {
                 binding.tabLayout.selectTab(binding.tabLayout.getTabAt(position))
             }
         })
-
     }
-
-
-    private fun setObserver() {}
 
     private fun setOnClickListener() {
         with(binding) {
             back.setOnClickListener(this@WishListFragment)
         }
     }
-
-
 
     override fun onClick(v: View?) {
         when (v?.id) {

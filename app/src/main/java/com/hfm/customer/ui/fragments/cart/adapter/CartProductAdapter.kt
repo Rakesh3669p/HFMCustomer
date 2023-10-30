@@ -79,8 +79,8 @@ class CartProductAdapter @Inject constructor() :
                     variant.text = data.attr_name1
                 }
 
-                soldOut.isVisible = data.is_out_of_stock.toString().toBoolean()
-                if(data.is_out_of_stock.toString().toBoolean()){
+                soldOut.isVisible = data.is_out_of_stock==1
+                if(data.is_out_of_stock==1){
                     checkBox.makeInvisible()
                     checkBox.isEnabled = false
                 }else{

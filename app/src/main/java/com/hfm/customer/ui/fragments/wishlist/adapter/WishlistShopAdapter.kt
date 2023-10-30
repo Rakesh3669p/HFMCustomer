@@ -23,9 +23,8 @@ class WishlistShopAdapter @Inject constructor(): RecyclerView.Adapter<WishlistSh
         fun bind(data: Favourite) {
 
             with(itemBannerBinding){
-                shopImage.load(replaceBaseUrl(data.logo)){
+                shopImage.load(replaceBaseUrl(data.banner)){
                     placeholder(R.drawable.logo)
-                    
                 }
                 shopName.text = data.store_name
                 ratingBar.rating = data.store_rating.toFloat()

@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
         android:ellipsize="marquee"
+        android:singleLine="false"
         android:layout_marginEnd="@dimen/_10sdp"
         android:text="@string/cart_details_lbl"
         app:layout_constraintVertical_chainStyle="packed"

@@ -33,7 +33,8 @@ data class Purchase(
     val order_type: String,
     val payment_mode: String,
     val payment_status: String,
-    val payment_upload_status: Any,
+    val payment_upload_status: Int,
+    val reject_remarks: String,
     val payment_uploaded_image: String,
     val platform_voucher_amount: Any,
     val products: List<Product>,
@@ -60,7 +61,7 @@ data class ShippingAddress(
     val latitude: String,
     val longitude: String,
     val name: String,
-    val phone: Long,
+    val phone: String,
     val state: String,
     val zip_code: String
 )

@@ -84,4 +84,6 @@ class Repository @Inject constructor(private val service: HFMCustomerAPI) {
     suspend fun getStateCode(name:String,countryId:String) = service.getStateCode(name,countryId)
     suspend fun getCityCode(name:String,stateId:String) = service.getCityCode(name,  stateId)
     suspend fun getTermsConditions() = service.getTermsConditions()
+    suspend fun getAppUpdate(jsonObject: JsonObject) = service.getAppUpdate(jsonObject)
+    suspend fun orderTracking(jsonObject: JsonObject) = service.orderTracking(jsonObject)
 }

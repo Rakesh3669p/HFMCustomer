@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -66,6 +67,27 @@ class StoreFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setObserver()
+        setSearchView()
+    }
+
+    private fun setSearchView() {
+
+        binding.search.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                if (binding.search.text.toString().isNotEmpty()) {
+
+                    mainViewModel.getStoreDetails(sellerId = storeId,)
+                    /*findNavController().popBackStack()
+
+                    val bundle = Bundle()
+                    bundle.putString("keyword", binding.search.text.toString())
+                    findNavController().navigate(R.id.productListFragment, bundle)*/
+                }
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+
     }
 
     private fun init() {
@@ -80,6 +102,8 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
         mainViewModel.getStoreDetails(storeId)
         mainViewModel.getProfile()
+
+
     }
 
 
@@ -254,6 +278,13 @@ class StoreFragment : Fragment(), View.OnClickListener {
     }
 
     private fun followStore() {
+        if(!sessionManager.isLogin){
+            showToast("Please login first")
+            startActivity(Intent(requireActivity(),LoginActivity::class.java))
+            requireActivity().finish()
+            return
+        }
+
         if (storeData.shop_detail[0].is_following == 1) {
             mainViewModel.unFollowShop(storeId)
         } else {
@@ -276,6 +307,14 @@ class StoreFragment : Fragment(), View.OnClickListener {
             binding.back.id -> findNavController().popBackStack()
             binding.follow.id -> followStore()
             binding.chat.id -> {
+
+                if(!sessionManager.isLogin){
+                    showToast("Please login first")
+                    startActivity(Intent(requireActivity(),LoginActivity::class.java))
+                    requireActivity().finish()
+                    return
+                }
+
                 storeData.shop_detail[0].let { shopDetail ->
                     val chatId =
                         if (shopDetail.chat_id.isNullOrEmpty()) 0 else shopDetail.chat_id.toInt()

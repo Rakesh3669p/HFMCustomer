@@ -33,7 +33,7 @@ class IPay88 : Fragment() {
     private var currentView: View? = null
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
-
+    private var orderId= ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,7 +53,7 @@ class IPay88 : Fragment() {
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
 
-        val orderId = arguments?.getString("orderId")
+        orderId = arguments?.getString("orderId").toString()
         val amount = arguments?.getString("amount")
         with(binding) {
             paymentGateWayWebView.loadUrl("https://uat.hfm.synuos.com/UAT/admin/ipay/request?order_id=$orderId&amount=$amount&os_type=app")
@@ -97,6 +97,8 @@ class IPay88 : Fragment() {
         appCompatDialog.setContentView(bindingDialog.root)
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         appCompatDialog.setCancelable(false)
+        bindingDialog.title.text = "Thank you for placing order.\nYour order id is $orderId"
+        bindingDialog.desc.text = "We will notify you regarding the status of the order."
         bindingDialog.ok.setOnClickListener {
             appCompatDialog.dismiss()
             findNavController().navigate(R.id.action_online_paymentFragment_to_myOrdersFragment)

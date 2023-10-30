@@ -44,7 +44,7 @@ class MyOrdersListAdapter @Inject constructor() :
                 requestStatusLbl.makeGone()
                 if(data.products.isNotEmpty()) {
                     data.products[0].let {
-                        if (it.product_image!=null&&it.product_image.isNotEmpty()) {
+                        if (!it.product_image.isNullOrEmpty()) {
                             productImage.load(replaceBaseUrl(it.product_image[0].image)){
                                 placeholder(R.drawable.logo)
                                 

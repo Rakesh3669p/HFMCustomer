@@ -30,7 +30,6 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:scaleType="fitXY"
-
                 android:background="@color/white"
                 android:src="@drawable/red_chilli"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -119,6 +118,24 @@
 
             <TextView
 
+                android:id="@+id/wholeSaleLbl"
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_box"
+                android:backgroundTint="@color/purple"
+                android:gravity="center"
+                android:layout_marginEnd="@dimen/_2sdp"
+
+                android:layout_gravity="start"
+                android:text="WholeSale"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_8ssp"
+                />
+            <TextView
+
                 android:id="@+id/frozenLbl"
                 style="@style/textSmall"
                 android:layout_width="wrap_content"
@@ -127,8 +144,7 @@
                 android:backgroundTint="@color/orange"
                 android:gravity="center"
                 android:layout_gravity="start"
-                android:text="Chilled"
-                android:layout_marginEnd="@dimen/_2sdp"
+                android:text="Frozen"
                 android:textSize="@dimen/_8ssp"
                 android:paddingHorizontal="@dimen/_4sdp"
                 android:paddingVertical="@dimen/_2sdp"
@@ -136,22 +152,7 @@
                 />
 
 
-            <TextView
 
-                android:id="@+id/wholeSaleLbl"
-                style="@style/textSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rectangle_box"
-                android:backgroundTint="@color/purple"
-                android:gravity="center"
-                android:layout_gravity="start"
-                android:text="WholeSale"
-                android:paddingHorizontal="@dimen/_4sdp"
-                android:paddingVertical="@dimen/_2sdp"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_8ssp"
-                />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -5,13 +5,16 @@ import android.app.ActionBar.LayoutParams
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Context
+import android.content.Intent
 import android.graphics.Point
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +24,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.util.TypedValueCompat.dpToPx
 import androidx.core.view.isVisible
@@ -49,9 +53,11 @@ import com.hfm.customer.ui.fragments.products.productDetails.adapter.SpecsAdapte
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.VouchersAdapter
 import com.hfm.customer.ui.fragments.products.productDetails.model.Image
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductData
+import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
+import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.cartCount
 import com.hfm.customer.utils.extractYouTubeVideoId
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
@@ -82,17 +88,20 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
     private lateinit var exoPause: ImageView
     private lateinit var exoPlay: ImageView
-
+    private lateinit var exoBuffer: ProgressBar
     private var selectedVariant: String = ""
-
     private var qty: Int = 0
+
     private lateinit var bulkOrderDialog: BottomSheetDialog
     private lateinit var bottomSheetBinding: BottomSheetBulkOrderBinding
     private lateinit var productData: ProductData
     private lateinit var profileData: Profile
-
     private lateinit var binding: FragmentProductDetailBinding
+
     private var currentView: View? = null
+
+    @Inject
+    lateinit var sessionManager: SessionManager
 
     @Inject
     lateinit var productsImagesAdapter: ProductImagesAdapter
@@ -138,6 +147,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     ): View? {
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
+
         if (currentView == null) {
             currentView = inflater.inflate(R.layout.fragment_product_detail, container, false)
             binding = FragmentProductDetailBinding.bind(currentView!!)
@@ -160,6 +170,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         binding.productVideo.player = videoPlayer
         exoPlay = binding.productVideo.findViewById(androidx.media3.ui.R.id.exo_play)
         exoPause = binding.productVideo.findViewById(androidx.media3.ui.R.id.exo_pause)
+        exoBuffer = binding.productVideo.findViewById(androidx.media3.ui.R.id.exo_buffering)
         noInternetDialog.setOnDismissListener { init() }
         binding.loader.isVisible = true
         val productId = arguments?.getString("productId").toString()
@@ -192,15 +203,22 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         mainViewModel.sellerVouchers.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    if(response.data?.httpcode==200){
+                    if (response.data?.httpcode == 200) {
                         binding.voucherListCv.isVisible = true
-                        initRecyclerView(requireContext(), binding.vouchersRv, vouchersAdapter, true)
+                        initRecyclerView(
+                            requireContext(),
+                            binding.vouchersRv,
+                            vouchersAdapter,
+                            true
+                        )
                         vouchersAdapter.differ.submitList(response.data.data.coupon_list)
-                        binding.voucherListCv.isVisible = response.data.data.coupon_list.isNotEmpty()
-                    }else{
+                        binding.voucherListCv.isVisible =
+                            response.data.data.coupon_list.isNotEmpty()
+                    } else {
                         binding.voucherListCv.isVisible = false
                     }
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
@@ -225,8 +243,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     if (response.data?.httpcode == 200) {
                         bulkOrderDialog.dismiss()
                         val bundle = Bundle()
-                        bundle.putString("from","bulkOrders")
-                        findNavController().navigate(R.id.action_productDetailsFragment_to_myOrdersFragment,bundle)
+                        bundle.putString("from", "bulkOrders")
+                        findNavController().navigate(
+                            R.id.action_productDetailsFragment_to_myOrdersFragment,
+                            bundle
+                        )
                     } else showToast(response.data?.message.toString())
                 }
 
@@ -240,11 +261,24 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if (response.data?.httpcode == 200) {
-                        binding.addToWishlist.setImageResource(R.drawable.like_active)
-                        productData.product.in_wishlist = 1
-                    } else {
-                        binding.addToWishlist.setImageResource(R.drawable.ic_fav)
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            binding.addToWishlist.setImageResource(R.drawable.like_active)
+                            productData.product.in_wishlist = 1
+                            showToast("Product added to wishlist")
+
+                        }
+
+                        401 -> {
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
+
+                        else -> {
+                            showToast(response.data?.message.toString())
+                            binding.addToWishlist.setImageResource(R.drawable.ic_fav)
+                        }
                     }
                 }
 
@@ -257,11 +291,24 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if (response.data?.httpcode == 200) {
-                        binding.addToWishlist.setImageResource(R.drawable.ic_fav)
-                        productData.product.in_wishlist = 0
-                    } else {
-                        binding.addToWishlist.setImageResource(R.drawable.ic_fav_fill)
+
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            binding.addToWishlist.setImageResource(R.drawable.ic_fav)
+                            productData.product.in_wishlist = 0
+                            showToast("Product removed from wishlist")
+                        }
+
+                        401 -> {
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
+
+                        else -> {
+                            showToast(response.data?.message.toString())
+                            binding.addToWishlist.setImageResource(R.drawable.ic_fav_fill)
+                        }
                     }
                 }
 
@@ -282,6 +329,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                         qty = 1
                         cartId = response.data.data.cart_id.toString()
                         cartCount.postValue(cartCount.value?.plus(1) ?: 1)
+                    } else if (response.data?.httpcode == 401) {
+                        sessionManager.isLogin = false
+                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                        requireActivity().finish()
                     } else {
                         showToast(response.data?.message.toString())
                     }
@@ -299,30 +350,51 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     if (response.data?.httpcode == 200) {
                         if (response.data.status == "error") {
                             binding.estimateDeliveryDate.isVisible = true
-                            binding.estimateDeliveryDate.text = "Not Available"
+                            binding.estimateDeliveryDate.text = getString(R.string.notAvailable)
 
                         } else {
                             binding.estimateDeliveryDate.isVisible = true
                             val responseMessage = response.data.message
-                            val spannableString =
-                                SpannableString("Estimated delivery between $responseMessage")
-                            val redColorSpan = ForegroundColorSpan(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    R.color.red
+                            if (responseMessage == "Not Available") {
+                                binding.estimateDeliveryDate.isVisible = true
+                                binding.estimateDeliveryDate.text = getString(R.string.notAvailable)
+                                binding.estimateDeliveryDate.setTextColor(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.red
+                                    )
                                 )
-                            )
-                            spannableString.setSpan(
-                                redColorSpan,
-                                spannableString.indexOf(responseMessage),
-                                spannableString.indexOf(responseMessage) + responseMessage.length,
-                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
-                            binding.estimateDeliveryDate.text = spannableString
+                            } else {
 
+
+                                val spannableString =
+                                    SpannableString("Estimated delivery between $responseMessage")
+                                val redColorSpan = ForegroundColorSpan(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.red
+                                    )
+                                )
+                                spannableString.setSpan(
+                                    redColorSpan,
+                                    spannableString.indexOf(responseMessage),
+                                    spannableString.indexOf(responseMessage) + responseMessage.length,
+                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                                )
+
+                                val boldSpan = StyleSpan(Typeface.BOLD)
+
+                                spannableString.setSpan(
+                                    boldSpan,
+                                    spannableString.indexOf(responseMessage),
+                                    spannableString.indexOf(responseMessage) + responseMessage.length,
+                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                                )
+                                binding.estimateDeliveryDate.text = spannableString
+                            }
                         }
                     } else {
-                        showToast(response.data?.message.toString())
+//                        showToast(response.data?.message.toString())
                     }
                 }
 
@@ -334,11 +406,16 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    binding.addToCart.text = "Added to Cart"
-                    binding.addToCartMain.makeInvisible()
-                    binding.cartCount.makeVisible()
-                    binding.qty.text = "1"
-                    cartCount.postValue(cartCount.value?.plus(1) ?: 1)
+                    if (response.data?.httpcode == 200) {
+                        binding.addToCartMain.makeInvisible()
+                        binding.cartCount.makeVisible()
+                        binding.qty.text = "1"
+                        cartCount.postValue(cartCount.value?.plus(1) ?: 1)
+                    } else if (response.data?.httpcode == 401) {
+                        sessionManager.isLogin = false
+                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                        requireActivity().finish()
+                    }
                 }
 
                 is Resource.Loading -> appLoader.show()
@@ -351,10 +428,15 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-
-                    binding.addToCartMain.makeInvisible()
-                    binding.cartCount.makeVisible()
-                    binding.qty.text = qty.toString()
+                    if (response.data?.httpcode == 200) {
+                        binding.addToCartMain.makeInvisible()
+                        binding.cartCount.makeVisible()
+                        binding.qty.text = qty.toString()
+                    } else if (response.data?.httpcode == 401) {
+                        sessionManager.isLogin = false
+                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                        requireActivity().finish()
+                    }
                 }
 
                 is Resource.Loading -> appLoader.show()
@@ -366,11 +448,24 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            binding.addToCartMain.makeVisible()
+                            binding.cartCount.makeInvisible()
+                            binding.qty.text = "0"
+                            cartCount.postValue(cartCount.value?.minus(1) ?: 1)
+                        }
 
-                    binding.addToCartMain.makeVisible()
-                    binding.cartCount.makeInvisible()
-                    binding.qty.text = "0"
-                    cartCount.postValue(cartCount.value?.minus(1) ?: 1)
+                        401 -> {
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
+
+                        else -> {
+
+                        }
+                    }
                 }
 
                 is Resource.Loading -> appLoader.show()
@@ -396,10 +491,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     private fun setProductDetails(productData: ProductData) {
         this.productData = productData
 
-        if(productData.customer_addr!=null){
-            if(!productData.customer_addr.pincode.isNullOrEmpty()){
+        if (productData.customer_addr != null) {
+            if (!productData.customer_addr.pincode.isNullOrEmpty()) {
                 binding.pinCode.setText(productData.customer_addr.pincode)
-                mainViewModel.checkAvailability(productData.product.product_id.toString(), productData.customer_addr.pincode)
+                mainViewModel.checkAvailability(
+                    productData.product.product_id.toString(),
+                    productData.customer_addr.pincode
+                )
             }
         }
         initRecyclerView(requireContext(), binding.productsImagesRv, productsImagesAdapter, true)
@@ -417,9 +515,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
         with(binding) {
             if (productData.product.image?.isNotEmpty() == true) {
-                productImage.load(replaceBaseUrl(productData.product.image[0].image)){
+                productImage.load(replaceBaseUrl(productData.product.image[0].image)) {
                     placeholder(R.drawable.logo)
-                    
+
                 }
             }
             productName.text = productData.product.product_name
@@ -436,9 +534,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             reviewCv.isVisible = productData.product.rating.toString().toDouble() > 0
             reviewRatingBar.rating = productData.product.rating.toString().toFloat()
-            reviewRatingCount.text = productData.product.rating.toString().toDouble().roundToInt().toString()
-            reviewLbl.text = "Customer Reviews (${productData.product.total_reviews.toString().toDouble().roundToInt()})"
-            reviewRatingDetails.text = "${productData.product.total_reviews.toString().toDouble().roundToInt()} Reviews"
+            reviewRatingCount.text =
+                productData.product.rating.toString().toDouble().roundToInt().toString()
+            reviewLbl.text = "Customer Reviews (${
+                productData.product.total_reviews.toString().toDouble().roundToInt()
+            })"
+            reviewRatingDetails.text =
+                "${productData.product.total_reviews.toString().toDouble().roundToInt()} Reviews"
 
 
             if (productData.product.offer_price != null && productData.product.offer_price.toString() != "false") {
@@ -462,9 +564,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     val imageOriginal = it.logo
                     val imageReplaced =
                         imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    storeImage.load(imageReplaced){
+                    storeImage.load(imageReplaced) {
                         placeholder(R.drawable.logo)
-                        
+
                     }
                     storeName.text = it.store_name
                     /*chatResponse.text = "${
@@ -479,8 +581,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             binding.descriptionWebView.settings.javaScriptEnabled = true
             val htmlContent = productData.product.long_description
-            val descriptionContent = Html.fromHtml(htmlContent).toString().replace("\\s+".toRegex(), "")
-            descriptionCv.isVisible =descriptionContent.isNotEmpty()
+            val descriptionContent =
+                Html.fromHtml(htmlContent).toString().replace("\\s+".toRegex(), "")
+            descriptionCv.isVisible = descriptionContent.isNotEmpty()
             descriptionWebView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
             descriptionWebView.webViewClient = WebViewClient()
 
@@ -500,8 +603,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 specificationsDivider.isVisible = true
                 binding.specificationsWebView.settings.javaScriptEnabled = true
                 val specificationHtmlContent = productData.product.specification
-                val specificationContent = Html.fromHtml(specificationHtmlContent).toString().replace("\\s+".toRegex(), "")
-                specificationsCv.isVisible =specificationContent.isNotEmpty()
+                val specificationContent =
+                    Html.fromHtml(specificationHtmlContent).toString().replace("\\s+".toRegex(), "")
+                specificationsCv.isVisible = specificationContent.isNotEmpty()
                 specificationsWebView.loadDataWithBaseURL(
                     null,
                     specificationHtmlContent,
@@ -517,9 +621,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     val imageOriginal = productData.product.image[0].image
                     val imageReplaced =
                         imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    productImage.load(imageReplaced){
+                    productImage.load(imageReplaced) {
                         placeholder(R.drawable.logo)
-                        
+
                     }
                 }
                 productName.text = productData.product.product_name
@@ -542,15 +646,19 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                                 "https://uat.hfm.synuos.com",
                                 "http://4.194.191.242"
                             )
-                            productImage.load(imageReplaced){
+                            productImage.load(imageReplaced) {
                                 placeholder(R.drawable.logo)
-                                
+
                             }
                         }
                         productName.text = it.product_name
-                        if(it.actual_price!=null)
-                        productPrice.text =
-                            "RM ${formatToTwoDecimalPlaces(it.actual_price.toString().toDouble())}"
+                        if (it.actual_price != null)
+                            productPrice.text =
+                                "RM ${
+                                    formatToTwoDecimalPlaces(
+                                        it.actual_price.toString().toDouble()
+                                    )
+                                }"
 
                         total.text = "RM ${
                             formatToTwoDecimalPlaces(
@@ -562,17 +670,14 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     }
                 }
             }
-            if (productData.product.is_out_of_stock != null) {
-                soldOut.isVisible = productData.product.is_out_of_stock.toString().toBoolean()
-            }
+            soldOut.isVisible = productData.product.is_out_of_stock == 1
+
 
             initRecyclerView(requireContext(), productsVariantsRv, productsVariantsAdapter, true)
             if (productData.varaiants_list.isNotEmpty()) {
                 selectedVariant = productData.varaiants_list[0].pro_id.toString()
-                soldOut.isVisible = productData.varaiants_list[0].is_out_of_stock.toString().toBoolean()
-                if (productData.varaiants_list[0].offer_price.toString()
-                        .isNotEmpty() && productData.varaiants_list[0].offer_price.toString() != "false"
-                ) {
+                soldOut.isVisible = productData.varaiants_list[0].is_out_of_stock == 1
+                if (productData.varaiants_list[0].offer_price!=null && productData.varaiants_list[0].offer_price.toString() != "false") {
                     binding.productListingPrice.isVisible = true
                     binding.productPrice.text = "RM ${
                         formatToTwoDecimalPlaces(
@@ -652,6 +757,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
 
     private fun showBulkOrderBottomSheet() {
+        if (!sessionManager.isLogin) {
+            showToast("Please login first")
+            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+            requireActivity().finish()
+            return
+        }
+
         if (!this::productData.isInitialized) return
         var unitOfMeasures = ""
         bottomSheetBinding = BottomSheetBulkOrderBinding.inflate(layoutInflater)
@@ -675,7 +787,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             layoutParams.width = LayoutParams.MATCH_PARENT
             layoutParams.height = desiredHeight
             scrollView.layoutParams = layoutParams
-            val bottomSheet: FrameLayout? = bulkOrderDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+            val bottomSheet: FrameLayout? =
+                bulkOrderDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) {
                 BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
             }
@@ -683,9 +796,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             val imageOriginal = productData.product.image?.get(0)?.image
             val imageReplaced =
                 imageOriginal?.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-            productImage.load(imageReplaced){
+            productImage.load(imageReplaced) {
                 placeholder(R.drawable.logo)
-                
+
             }
             name.setText("${profileData.first_name} ${profileData.last_name}")
             email.setText(profileData.email)
@@ -705,14 +818,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 "Carton"
             )
 
-            val adapter: ArrayAdapter<String> =
-                ArrayAdapter<String>(
-                    requireContext(),
-                    R.layout.spinner_text_units_of_measurement,
-                    items
-                )
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
+            val adapter: ArrayAdapter<String> =
+                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, items)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
             unitsSpinner.adapter = adapter
             unitsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -738,10 +847,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     requireContext(),
                     dateSetListener,
                     currentDate.year,
-                    currentDate.monthValue-1,
+                    currentDate.monthValue - 1,
                     currentDate.dayOfMonth
                 )
-                datePickerDialog.datePicker.minDate = System.currentTimeMillis()-1000
+                datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
                 datePickerDialog.show()
             }
 
@@ -814,6 +923,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
 
     private fun playVideo() {
+        exoBuffer.isVisible = true
+        exoPlay.isVisible = false
+        exoPause.isVisible = false
         val yt =
             YTExtractor(con = requireActivity(), CACHING = false, LOGGING = true, retryCount = 3)
         lifecycleScope.launch {
@@ -870,9 +982,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
             if (isPlaying) {
+                exoBuffer.isVisible = false
                 exoPlay.isVisible = false
                 exoPause.isVisible = true
             } else {
+                exoBuffer.isVisible = true
                 exoPlay.isVisible = true
                 exoPause.isVisible = false
             }
@@ -915,9 +1029,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
                 videoPlayer.pause()
                 binding.productVideo.isVisible = false
-                binding.productImage.load(data){
+                binding.productImage.load(data) {
                     placeholder(R.drawable.logo)
-                    
+
                 }
             }
         }
@@ -935,7 +1049,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             binding.cartCount.isVisible = false
 
             selectedVariant = productData.varaiants_list[position].pro_id.toString()
-            binding.soldOut.isVisible = productData.varaiants_list[position].is_out_of_stock.toString().toBoolean()
+            binding.soldOut.isVisible = productData.varaiants_list[position].is_out_of_stock == 1
             if (productData.varaiants_list[position].offer_price.toString()
                     .isNotEmpty() && productData.varaiants_list[position].offer_price.toString() != "false"
             ) {
@@ -989,10 +1103,14 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
 
             binding.addToCart.id -> {
-                if (binding.addToCart.text == "Added to Cart") {
-                    showToast("Already added to cart")
+
+                if (!sessionManager.isLogin) {
+                    showToast("Please login first")
+                    startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                    requireActivity().finish()
                     return
                 }
+
 
                 val productIds = selectedVariant.ifEmpty {
                     "${productData.product.product_id},${productData.cross_selling_products[0].product_id}"
@@ -1001,6 +1119,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
 
             binding.addToCartMain.id -> {
+                if (!sessionManager.isLogin) {
+                    showToast("Please login first")
+                    startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                    requireActivity().finish()
+                    return
+                }
+
                 if (selectedVariant.isNotEmpty()) {
                     mainViewModel.addToCart(selectedVariant, "1")
                 } else {
@@ -1096,5 +1221,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         super.onPause()
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         videoPlayer.pause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        videoPlayer.release()
     }
 }

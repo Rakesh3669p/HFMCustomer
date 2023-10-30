@@ -15,11 +15,13 @@
         android:text="#1234"
         android:textColor="@color/white"
         android:paddingHorizontal="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_12sdp"
-        android:paddingVertical="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:paddingTop="@dimen/_4sdp"
+        android:paddingBottom="@dimen/_7sdp"
+        android:gravity="center"
         android:background="@drawable/edt_box_smaa_radius"
         android:backgroundTint="@color/red"
-        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_11sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

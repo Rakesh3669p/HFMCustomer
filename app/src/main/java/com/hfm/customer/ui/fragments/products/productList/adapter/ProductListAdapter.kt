@@ -75,22 +75,22 @@ class ProductListAdapter @Inject constructor() :
                     }
                 }
 
-
-                soldOut.isVisible =
-                    data.is_out_of_stock.toString() == "true" || data.is_out_of_stock.toString() == "1"
-
-
+                soldOut.isVisible = data.is_out_of_stock==1
                 saleTime.isVisible = data.offer_name == "Flash Sale"
 
                 if (saleTime.isVisible) {
                     setTimer(data.end_time, bind)
                 }
 
-                if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
-                    val difference = data.actual_price.toString().toDouble() - data.offer_price.toString().toDouble()
-                    saveLbl.isVisible = difference>0
+                if (data.offer_price != null && data.offer_price.toString() != "false" && data.offer_price.toString()
+                        .toDouble() > 0
+                ) {
+                    val difference =
+                        data.actual_price.toString().toDouble() - data.offer_price.toString()
+                            .toDouble()
+                    saveLbl.isVisible = difference > 0
                     saveLbl.text = "Save RM ${formatToTwoDecimalPlaces(difference)}"
-                }else{
+                } else {
                     saveLbl.isVisible = false
                 }
 

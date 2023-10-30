@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -22,9 +23,54 @@ class VouchersAdapter @Inject constructor() : RecyclerView.Adapter<VouchersAdapt
         fun bind(data: Coupon) {
             with(binding) {
                 discountPercent.text = data.offer
-                discountDescription.text = "Min. Spend RM${data.minimumPurchase} Capped at ${data.offerValue}"
-                voucherExpiry.text = "Expires on: ${data.validUpto}"
-                userNow.setOnClickListener {
+                discountDescription.text =
+                    "Min. Spend RM${data.minimumPurchase} Capped at ${data.offerValue}"
+
+                val red = ContextCompat.getColorStateList(context, R.color.red)
+                val grey = ContextCompat.getColorStateList(context, R.color.textGreyDark)
+                when (data.status) {
+                    "not_available" -> {
+                        useNow.backgroundTintList = grey
+                        useNow.text = "Not Available"
+                        useNow.isEnabled = false
+                        discountPercent.setTextColor(grey)
+                        discountDescription.setTextColor(grey)
+                        voucherExpiry.setTextColor(grey)
+                        voucherExpiry.text = "Expired on: ${data.validUpto}"
+                    }
+
+                    "available" -> {
+                        useNow.backgroundTintList = red
+                        useNow.text = "Use Now"
+                        useNow.isEnabled = true
+                        discountPercent.setTextColor(red)
+                        discountDescription.setTextColor(red)
+                        voucherExpiry.setTextColor(red)
+                        voucherExpiry.text = "Expires on: ${data.validUpto}"
+                    }
+
+                    "used" -> {
+                        useNow.backgroundTintList = grey
+                        useNow.text = "Not Available"
+                        useNow.isEnabled = false
+                        discountPercent.setTextColor(grey)
+                        discountDescription.setTextColor(grey)
+                        voucherExpiry.setTextColor(grey)
+                        voucherExpiry.text = "Used on: ${data.validUpto}"
+                    }
+
+                    "expired" -> {
+                        useNow.backgroundTintList = grey
+                        useNow.text = "Expired"
+                        useNow.isEnabled = false
+                        discountPercent.setTextColor(grey)
+                        discountDescription.setTextColor(grey)
+                        voucherExpiry.setTextColor(grey)
+                        voucherExpiry.text = "Expired on: ${data.validUpto}"
+                    }
+                }
+
+                useNow.setOnClickListener {
                     onItemClick?.invoke(absoluteAdapterPosition)
                 }
             }

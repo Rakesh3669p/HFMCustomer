@@ -115,6 +115,7 @@ class NormalRegisterFragment : Fragment(), View.OnClickListener {
         with(binding) {
             sendOtp.setOnClickListener(this@NormalRegisterFragment)
             termsAndConditions.setOnClickListener(this@NormalRegisterFragment)
+            alreadyHaveAccount.setOnClickListener(this@NormalRegisterFragment)
         }
     }
 
@@ -122,12 +123,12 @@ class NormalRegisterFragment : Fragment(), View.OnClickListener {
 
         val email = binding.email.text.toString()
         if (!email.isValidEmail()) {
-            showToast("please enter a valid email")
+            showToast("Please enter a valid email")
             return
         }
 
         if (!binding.termsAndConditionsCheckBox.isChecked) {
-            showToast("please agree terms and conditions")
+            showToast("Please agree terms and conditions")
             return
         }
 
@@ -162,6 +163,7 @@ class NormalRegisterFragment : Fragment(), View.OnClickListener {
         when (v?.id) {
             binding.sendOtp.id -> sendOTP()
             binding.termsAndConditions.id -> showTermsAndConditions()
+            binding.alreadyHaveAccount.id -> findNavController().popBackStack()
 
         }
 

@@ -96,6 +96,24 @@
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_2sdp"/>
 
+        <TextView
+
+            android:id="@+id/wholeSaleLbl"
+            style="@style/textSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_box"
+            android:backgroundTint="@color/purple"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/_2sdp"
+
+            android:layout_gravity="start"
+            android:text="WholeSale"
+            android:paddingHorizontal="@dimen/_4sdp"
+            android:paddingVertical="@dimen/_2sdp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_8ssp"
+            />
     <TextView
 
         android:id="@+id/frozenLbl"
@@ -106,8 +124,7 @@
         android:backgroundTint="@color/orange"
         android:gravity="center"
         android:layout_gravity="start"
-        android:text="Chilled"
-        android:layout_marginEnd="@dimen/_2sdp"
+        android:text="Frozen"
         android:textSize="@dimen/_8ssp"
         android:paddingHorizontal="@dimen/_4sdp"
         android:paddingVertical="@dimen/_2sdp"
@@ -115,22 +132,6 @@
         />
 
 
-    <TextView
-
-        android:id="@+id/wholeSaleLbl"
-        style="@style/textSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rectangle_box"
-        android:backgroundTint="@color/purple"
-        android:gravity="center"
-        android:layout_gravity="start"
-        android:text="WholeSale"
-        android:paddingHorizontal="@dimen/_4sdp"
-        android:paddingVertical="@dimen/_2sdp"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_8ssp"
-        />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -142,7 +143,7 @@
         android:layout_marginTop="@dimen/_5sdp"
         android:gravity="center"
         android:maxLines="2"
-        android:ellipsize="marquee"
+        android:ellipsize="end"
         android:text="Tom Yam Stramboat"
         android:singleLine="false"
         app:layout_constraintEnd_toEndOf="@id/productImageCard"

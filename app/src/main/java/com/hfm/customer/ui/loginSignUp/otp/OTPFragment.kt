@@ -2,6 +2,7 @@ package com.hfm.customer.ui.loginSignUp.otp
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -43,6 +44,9 @@ class OTPFragment : Fragment(), View.OnClickListener {
     private var country = ""
     private var state = ""
     private var city = ""
+
+    private var countdownTimer: CountDownTimer? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,6 +91,7 @@ class OTPFragment : Fragment(), View.OnClickListener {
             otpField3.doOnTextChanged { _, _, _, count -> if (count > 0) otpField4.requestFocus() else otpField2.requestFocus() }
             otpField4.doOnTextChanged { _, _, _, count -> if (count == 0) otpField3.requestFocus() else if (count > 0) validateAndVerifyOTP() }
         }
+        startCountdown()
     }
 
 
@@ -127,7 +132,6 @@ class OTPFragment : Fragment(), View.OnClickListener {
                         }
 
 
-
                     } else showToast(response.data?.message.toString())
                 }
 
@@ -153,7 +157,20 @@ class OTPFragment : Fragment(), View.OnClickListener {
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
+        }
+        loginSignUpViewModel.sendRegisterOtp.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    showToast(response.data?.message.toString())
+                    if (response.data?.httpcode == 200) {
+                        startCountdown()
+                    }
+                }
 
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
+            }
         }
     }
 
@@ -188,9 +205,35 @@ class OTPFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun startCountdown() {
+        countdownTimer = object : CountDownTimer(30000, 1000) { // 30 seconds, tick every 1 second
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsRemaining = millisUntilFinished / 1000
+                binding.alreadyHaveAccount.text = "Resend OTP in: "
+                binding.resend.text = "$secondsRemaining seconds"
+                binding.resend.isClickable = false
+            }
+
+            override fun onFinish() {
+                binding.alreadyHaveAccount.text = getString(R.string.receiveOtp)
+                binding.resend.text = getString(R.string.resendOtp)
+                binding.resend.isClickable = true
+
+                // You can enable a "Resend" button or perform the resend OTP action here.
+            }
+        }.start()
+    }
+
+
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.verify.id -> validateAndVerifyOTP()
+            binding.resend.id -> loginSignUpViewModel.sendRegisterOTP(email)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        countdownTimer?.cancel()
     }
 }

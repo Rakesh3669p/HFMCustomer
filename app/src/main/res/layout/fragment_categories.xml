@@ -32,7 +32,7 @@
         style="@style/textLargeSemiBold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/highlightLbl"
+
         android:layout_marginHorizontal="@dimen/_15sdp"
         android:textColor="@color/red"
         app:layout_constraintStart_toEndOf="@+id/categoriesMainRv"

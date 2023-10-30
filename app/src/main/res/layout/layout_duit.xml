@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/_4sdp"
         android:singleLine="false"
-        android:text="4. Make sure to click Place Order to confirm your order."
+        android:text="4. Make sure to click &quot;Place Order&quot; to confirm your order."
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

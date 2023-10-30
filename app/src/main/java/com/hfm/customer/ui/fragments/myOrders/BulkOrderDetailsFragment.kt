@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
-    private  var orderId: String =""
+    private var orderId: String = ""
 
     private lateinit var orderData: BulkOrdersData
 
@@ -95,7 +95,7 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
 
         }
 
-            mainViewModel.addBulkOrdersAction.observe(viewLifecycleOwner) { response ->
+        mainViewModel.addBulkOrdersAction.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
@@ -122,6 +122,7 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
                 orderDetails = it
                 requestId.text = "Request #:${it.bulkrequest_order_id}"
                 orderId.text = "OrderId #:${it.order_id}"
+                orderId.isVisible = false
                 requestedDate.text = "${it.request_date} | ${it.request_time}"
 
                 val orangeColor = ContextCompat.getColor(requireContext(), R.color.orange)
@@ -135,6 +136,7 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
                         requestStatus1.text = "Pending"
                         requestStatus1.setTextColor(orangeColor)
 
+
                     }
 
                     1 -> {
@@ -142,6 +144,7 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
                         requestStatus.setTextColor(greenColor)
                         requestStatus1.text = "Accepted"
                         requestStatus1.setTextColor(greenColor)
+
 
                     }
 
@@ -153,6 +156,26 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
 
                     }
                 }
+
+                if (it.request_status == 1 && it.quotation_status == 0) {
+                    accept.isVisible = true
+                    reject.isVisible = true
+
+                    summaryGroup.isVisible = true
+                    totalCv.isVisible = true
+                } else {
+                    accept.isVisible = false
+                    reject.isVisible = false
+
+                    summaryGroup.isVisible = false
+                    totalCv.isVisible = false
+                }
+
+                if (it.request_status == 1 && it.quotation_status == 1) {
+                    summaryGroup.isVisible = true
+                    totalCv.isVisible = true
+                }
+
                 if (it.product_image.isNotEmpty()) {
                     productImage.load(replaceBaseUrl(it.product_image[0].image)) {
                         placeholder(R.drawable.logo)
@@ -171,22 +194,18 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
 
                 quotationStatus.text = it.quotation_status.toString()
 
-                accept.isVisible = it.quotation_status == 0
-                reject.isVisible = it.quotation_status == 0
 
                 when (it.quotation_status) {
                     0 -> {
                         quotationStatus.text = "Pending"
                         quotationStatus.setTextColor(orangeColor)
-                        summaryGroup.isVisible = false
-                        totalCv.isVisible = false
+
                     }
 
                     1 -> {
                         quotationStatus.text = "Accepted"
                         quotationStatus.setTextColor(greenColor)
-                        summaryGroup.isVisible = true
-                        totalCv.isVisible = true
+
                     }
 
                     2 -> {
@@ -196,11 +215,15 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
                         totalCv.isVisible = false
                     }
                 }
-                subtotal.text = "RM ${it.sale_price}"
-                deliveryCharges.text = "RM ${it.shipping_charges}"
-                if (it.sale_price != null) {
-                    grandTotal.text =
-                        "RM ${formatToTwoDecimalPlaces(it.sale_price.toString().toDouble())}"
+
+                if (it.sale_price != null && it.shipping_charges != null) {
+                    val subTotal =
+                        it.sale_price.toString().toDouble() + it.hfm_margin.toString().toDouble()
+                    subtotal.text = "RM ${formatToTwoDecimalPlaces(subTotal)}"
+                    deliveryCharges.text = "RM ${it.shipping_charges}"
+
+                    val grandTotalFinal = it.shipping_charges.toString().toDouble() + subTotal
+                    grandTotal.text = "RM ${formatToTwoDecimalPlaces(grandTotalFinal)}"
                 } else {
                     grandTotal.text = "RM "
                 }
@@ -228,8 +251,15 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
-            binding.accept.id -> mainViewModel.addBulkOrdersAction(orderDetails.bulkrequest_id.toString(),1)
-            binding.reject.id -> mainViewModel.addBulkOrdersAction(orderDetails.bulkrequest_id.toString(),2)
+            binding.accept.id -> mainViewModel.addBulkOrdersAction(
+                orderDetails.bulkrequest_id.toString(),
+                1
+            )
+
+            binding.reject.id -> mainViewModel.addBulkOrdersAction(
+                orderDetails.bulkrequest_id.toString(),
+                2
+            )
 
         }
     }

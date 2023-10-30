@@ -12,20 +12,31 @@
         android:id="@+id/bulkOrdersRv"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        tools:itemCount="20"
-        tools:listitem="@layout/item_bulk_order"
+        app:layout_constraintBottom_toTopOf="@+id/bottomLoader"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        tools:itemCount="20"
+        tools:listitem="@layout/item_bulk_order" />
+
+
+    <ProgressBar
+        android:id="@+id/bottomLoader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        android:progressTint="@color/red"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <include
-        android:visibility="gone"
         android:id="@+id/noDataLayout"
-         android:layout_width="match_parent"
+        layout="@layout/no_data_found"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        layout="@layout/no_data_found"/>
-
+        android:visibility="gone" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

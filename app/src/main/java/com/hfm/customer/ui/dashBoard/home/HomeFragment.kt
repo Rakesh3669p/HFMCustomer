@@ -57,7 +57,7 @@ data class AdsImage(
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), View.OnClickListener {
-    private var saleTime: String=""
+    private var saleTime: String = ""
     private lateinit var binding: FragmentHomeBinding
     private var currentView: View? = null
 
@@ -90,7 +90,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private lateinit var appLoader: Loader
     private lateinit var promotionBanner: PromotionBanner
     private lateinit var noInternetDialog: NoInternetDialog
-    @Inject lateinit var sessionManager: SessionManager
+
+    @Inject
+    lateinit var sessionManager: SessionManager
     var handler: Handler = Handler(Looper.getMainLooper())
     var runnable: Runnable? = null
     var delay = 2000
@@ -113,11 +115,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private fun init() {
         appLoader = Loader(requireContext())
         binding.loader.isVisible = true
-        if(noInternetDialog.isShowing){ noInternetDialog.dismiss() }
+        if (noInternetDialog.isShowing) {
+            noInternetDialog.dismiss()
+        }
         noInternetDialog.setOnDismissListener { init() }
         setMainBanner()
-        if(this::promotionBanner.isInitialized){
-            if(promotionBanner.isShowing) promotionBanner.dismiss()
+        if (this::promotionBanner.isInitialized) {
+            if (promotionBanner.isShowing) promotionBanner.dismiss()
         }
 
         setAdsRv()
@@ -149,13 +153,14 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setPromotionalPopup(promotionData: PromotionPopup) {
-        promotionBanner = PromotionBanner(requireContext(), replaceBaseUrl(promotionData.promotion_image)){
-            val bundle = Bundle()
-            bundle.putString("catId", promotionData.category)
-            bundle.putString("subCatId",promotionData.sub_category)
-            findNavController().navigate(R.id.productListFragment,bundle)
-            promotionBanner.dismiss()
-        }
+        promotionBanner =
+            PromotionBanner(requireContext(), replaceBaseUrl(promotionData.promotion_image)) {
+                val bundle = Bundle()
+                bundle.putString("catId", promotionData.category)
+                bundle.putString("subCatId", promotionData.sub_category)
+                findNavController().navigate(R.id.productListFragment, bundle)
+                promotionBanner.dismiss()
+            }
 
         promotionBanner.show()
     }
@@ -213,6 +218,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     )
                     homeMainCatAdapter.differ.submitList(response.data?.data?.cat_subcat)
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> {
                     if (response.message == netWorkFailure) {
@@ -228,8 +234,30 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     binding.loader.isVisible = false
                     appLoader.dismiss()
                     response.data?.data?.let {
-
                         homeMainBannerAdapter.differ.submitList(it.app_top_banner)
+                        binding.homeMainBanner.currentItem = 1
+                        with(binding) {
+                            if (it.app_bottom_banner.isNotEmpty()) {
+                                it.app_bottom_banner.forEachIndexed { index, bottomBanner ->
+                                    if (index == 0) {
+                                        referBanner.isVisible = true
+                                        referBanner.load(replaceBaseUrl(bottomBanner.media)) {
+                                            placeholder(
+                                                R.drawable.logo
+                                            )
+                                        }
+                                    } else if (index == 1) {
+                                        adBanner.isVisible = true
+                                        adBanner.load(replaceBaseUrl(bottomBanner.media)) {
+                                            placeholder(
+                                                R.drawable.logo
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
 
                         handler.postDelayed(Runnable {
                             handler.postDelayed(runnable!!, delay.toLong())
@@ -242,12 +270,14 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
                         }.also { runnable = it }, delay.toLong())
 
-                        if(it.promotion_popup!=null && !it.promotion_popup.promotion_image.isNullOrEmpty())
+                        if (!sessionManager.popUpShown && it.promotion_popup != null && !it.promotion_popup.promotion_image.isNullOrEmpty()) {
+                            sessionManager.popUpShown = true
                             setPromotionalPopup(response.data.data.promotion_popup)
+                        }
                         sessionManager.searchPlaceHolder = it.search_placeholder_text
-                        if(sessionManager.searchPlaceHolder.isNullOrEmpty()){
+                        if (sessionManager.searchPlaceHolder.isNullOrEmpty()) {
                             binding.searchBar.text = "Search here.."
-                        }else{
+                        } else {
                             binding.searchBar.text = it.search_placeholder_text
                         }
                     }
@@ -267,8 +297,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
                     appLoader.dismiss()
-                    if(response.data?.httpcode == 200) {
-                        saleTime =response.data.data.flash_sale.end_time
+                    if (response.data?.httpcode == 200) {
+                        saleTime = response.data.data.flash_sale.end_time
                         setTimer(response.data.data.flash_sale)
                         initRecyclerView(
                             requireContext(),
@@ -277,11 +307,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
                             true
                         )
 
-                        binding.flashDealsGroup.isVisible = response.data.data.total_products>0
-                        if(response.data.data.total_products>0) {
+                        binding.flashDealsGroup.isVisible = response.data.data.total_products > 0
+                        if (response.data.data.total_products > 0) {
                             flashDealAdapter.differ.submitList(response.data.data.flash_sale.products)
                         }
-                    }else{
+                    } else {
                         binding.flashDealsGroup.isVisible = false
                     }
                 }
@@ -296,11 +326,18 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     binding.loader.isVisible = false
-                    binding.secondaryBanner.load(replaceBaseUrl(response.data?.data?.center_left_banner?.get(0)?.media.toString())){
+                    binding.secondaryBanner.load(
+                        replaceBaseUrl(
+                            response.data?.data?.center_left_banner?.get(
+                                0
+                            )?.media.toString()
+                        )
+                    ) {
                         placeholder(R.drawable.logo)
-                        
+
                     }
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
@@ -314,6 +351,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     initRecyclerView(requireContext(), binding.factoryDealsRv, factoryAdapter, true)
                     factoryAdapter.differ.submitList(response.data?.data?.flash_sale?.products)
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
@@ -325,16 +363,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     binding.loader.isVisible = false
                     appLoader.dismiss()
                     with(binding) {
-                        referBanner.load(replaceBaseUrl(response.data?.data?.bottom_left_banner?.get(0)?.media.toString())){
-                            placeholder(R.drawable.logo)
-                            
-                        }
-                        adBanner.load(replaceBaseUrl(response.data?.data?.bottom_right_banner?.get(0)?.media.toString())){
-                            placeholder(R.drawable.logo)
-                            
-                        }
+
                     }
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
@@ -347,6 +379,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     initRecyclerView(requireContext(), binding.brandsRv, brandStoreAdapter, true)
                     brandStoreAdapter.differ.submitList(response.data?.data?.brands)
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
@@ -364,6 +397,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     )
                     trendingNowAdapter.differ.submitList(response.data?.data?.events)
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
@@ -374,17 +408,23 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     binding.loader.isVisible = false
                     response.data?.let {
-                        if(it.httpcode.toString().toDouble().roundToInt() == 200){
-                            with(binding){
+                        if (it.httpcode.toString().toDouble().roundToInt() == 200) {
+                            with(binding) {
                                 featuresProductLbl.isVisible = it.data.products.isNotEmpty()
                                 featuresProductViewAll.isVisible = it.data.products.isNotEmpty()
-                                initRecyclerView(requireContext(), binding.featuresProductRv, featureProductsAdapter, true)
+                                initRecyclerView(
+                                    requireContext(),
+                                    binding.featuresProductRv,
+                                    featureProductsAdapter,
+                                    true
+                                )
                                 featureProductsAdapter.differ.submitList(it.data.products)
                             }
                         }
                     }
 
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
@@ -393,8 +433,12 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    binding.notificationCount.text = response.data?.data?.notification_count.toString()
+                    if (response.data?.httpcode == "200") {
+                        binding.notificationCount.isVisible = response.data.data.notification_count > 0
+                        binding.notificationCount.text = response.data.data.notification_count.toString()
+                    }
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
@@ -405,18 +449,21 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     cartCount.postValue(response.data?.data?.cart_count)
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
         }
 
-        cartCount.observe(requireActivity()){ count->
+        cartCount.observe(requireActivity()) { count ->
+            binding.cartCount.isVisible = count > 0
             binding.cartCount.text = count.toString()
+
         }
     }
 
     private fun setTimer(flashSale: FlashSale?) {
-        if(flashSale?.end_time.isNullOrEmpty()) return
+        if (flashSale?.end_time.isNullOrEmpty()) return
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val endTimeString = flashSale?.end_time.toString()
         val endTime = dateFormat.parse(endTimeString) ?: Date()
@@ -426,7 +473,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
             override fun onTick(millisUntilFinished: Long) {
                 updateCountdownText(millisUntilFinished)
             }
-            override fun onFinish() { updateCountdownText(0) }
+
+            override fun onFinish() {
+                updateCountdownText(0)
+            }
         }
         countdownTimer.start()
     }
@@ -476,22 +526,31 @@ class HomeFragment : Fragment(), View.OnClickListener {
             findNavController().navigate(R.id.productListFragment, bundle)
         }
 
-        trendingNowAdapter.setOnCategoryClickListener {catId,subCatId->
+        trendingNowAdapter.setOnCategoryClickListener { catId, subCatId ->
             val bundle = Bundle()
-            bundle.putString("catId",catId)
-            bundle.putString("subCatId",subCatId)
-            findNavController().navigate(R.id.productListFragment,bundle)
+            bundle.putString("catId", catId)
+            bundle.putString("subCatId", subCatId)
+            findNavController().navigate(R.id.productListFragment, bundle)
         }
 
-        brandsAdapter.setOnItemClickListener {position->
-            when(position) {
+        brandsAdapter.setOnItemClickListener { position ->
+            when (position) {
                 0 -> {
                     val bundle = Bundle()
                     bundle.putInt("pageId", 6)
                     findNavController().navigate(R.id.commonPageFragment, bundle)
                 }
 
-                1 -> findNavController().navigate(R.id.vouchersFragment)
+                1 -> {
+                    if (!sessionManager.isLogin) {
+                        showToast("Please login first")
+                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                        requireActivity().finish()
+                        return@setOnItemClickListener
+                    }
+                    findNavController().navigate(R.id.vouchersFragment)
+                }
+
                 2 -> {
                     val bundle = Bundle()
                     bundle.putInt("wholeSale", 1)
@@ -524,47 +583,51 @@ class HomeFragment : Fragment(), View.OnClickListener {
             noInternetDialog.show()
         }
     }
+
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.notification.id -> {
-                if(sessionManager.isLogin) {
+                if (sessionManager.isLogin) {
                     findNavController().navigate(R.id.notificationFragment)
-                }else {
+                } else {
                     startActivity(Intent(requireActivity(), LoginActivity::class.java))
                     requireActivity().finish()
                 }
             }
+
             binding.officialBrandsViewAll.id -> findNavController().navigate(R.id.brandsFragment)
             binding.cart.id -> {
-                if(sessionManager.isLogin) {
+                if (sessionManager.isLogin) {
                     findNavController().navigate(R.id.cartFragment)
-                }else {
+                } else {
                     startActivity(Intent(requireActivity(), LoginActivity::class.java))
                     requireActivity().finish()
                 }
             }
+
             binding.searchBar.id -> {
                 val bundle = Bundle()
-                bundle.putString("searchHint",binding.searchBar.text.toString())
-                findNavController().navigate(R.id.searchFragment,bundle)
+                bundle.putString("searchHint", binding.searchBar.text.toString())
+                findNavController().navigate(R.id.searchFragment, bundle)
             }
+
             binding.searchFilter.id -> findNavController().navigate(R.id.categoriesFragmentHome)
             binding.factoryDealsViewAll.id -> {
                 val bundle = Bundle()
-                bundle.putInt("wholeSale",1)
-                findNavController().navigate(R.id.productListFragment,bundle)
+                bundle.putInt("wholeSale", 1)
+                findNavController().navigate(R.id.productListFragment, bundle)
             }
 
             binding.featuresProductViewAll.id -> {
                 val bundle = Bundle()
-                findNavController().navigate(R.id.productListFragment,bundle)
+                findNavController().navigate(R.id.productListFragment, bundle)
             }
 
             binding.flashDealsViewAll.id -> {
                 val bundle = Bundle()
-                bundle.putInt("flashSale",1)
-                bundle.putString("endTime",saleTime)
-                findNavController().navigate(R.id.productListFragment,bundle)
+                bundle.putInt("flashSale", 1)
+                bundle.putString("endTime", saleTime)
+                findNavController().navigate(R.id.productListFragment, bundle)
             }
         }
     }

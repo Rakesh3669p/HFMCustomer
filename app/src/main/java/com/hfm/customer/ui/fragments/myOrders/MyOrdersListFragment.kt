@@ -8,10 +8,15 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentBulkOrdersBinding
 import com.hfm.customer.ui.fragments.myOrders.adapter.MyOrdersListAdapter
 import com.hfm.customer.ui.fragments.myOrders.model.MyOrdersData
+import com.hfm.customer.ui.fragments.myOrders.model.Purchase
+import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
@@ -24,6 +29,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MyOrdersListFragment(private val orderStatus:String) : Fragment() {
+    private val purchases: MutableList<Purchase> = ArrayList()
     private lateinit var binding: FragmentBulkOrdersBinding
     private var currentView: View? = null
     private val mainViewModel: MainViewModel by viewModels()
@@ -32,6 +38,8 @@ class MyOrdersListFragment(private val orderStatus:String) : Fragment() {
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
     var pageNo = 0
+    private var isLoading = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,23 +70,31 @@ class MyOrdersListFragment(private val orderStatus:String) : Fragment() {
         mainViewModel.myOrders.observe(viewLifecycleOwner){response->
             when(response){
                 is Resource.Success->{
+                    binding.bottomLoader.isVisible = false
                     if(response.data?.httpcode == "200"){
                         binding.noDataLayout.root.isVisible = false
+                        isLoading = response.data.data.purchase.isEmpty()
                         setMyOrders(response.data.data)
                     }else{
-                        binding.noDataLayout.root.isVisible = true
-//                        showToast(response.data?.message.toString())
+                        binding.noDataLayout.root.isVisible = purchases.isEmpty()
                     }
                 }
-                is Resource.Loading->Unit
+                is Resource.Loading-> if(pageNo==0) Unit else binding.bottomLoader.isVisible = true
                 is Resource.Error->apiError(response.message)
             }
         }
     }
 
     private fun setMyOrders(data: MyOrdersData) {
-        initRecyclerView(requireContext(),binding.bulkOrdersRv,myOrdersListAdapter)
-        myOrdersListAdapter.differ.submitList(data.purchase)
+        if(pageNo==0) {
+            initRecyclerView(requireContext(), binding.bulkOrdersRv, myOrdersListAdapter)
+            binding.bulkOrdersRv.addOnScrollListener(scrollListener)
+        }
+        if(data.purchase.isNotEmpty()) {
+            purchases.addAll(data.purchase)
+        }
+        myOrdersListAdapter.differ.submitList(purchases)
+        myOrdersListAdapter.notifyDataSetChanged()
         myOrdersListAdapter.setPaymentStatus(orderStatus)
 
         myOrdersListAdapter.setOnOrderClickListener {
@@ -90,6 +106,7 @@ class MyOrdersListFragment(private val orderStatus:String) : Fragment() {
     }
 
     private fun apiError(message: String?) {
+        binding.bottomLoader.isVisible = false
         appLoader.dismiss()
         showToast(message.toString())
         if (message == netWorkFailure) {
@@ -97,5 +114,18 @@ class MyOrdersListFragment(private val orderStatus:String) : Fragment() {
         }
     }
 
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            val pastVisibleItems = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val visibleItemCount = layoutManager.childCount
+            val totalItemCount = layoutManager.itemCount
 
+            if (!isLoading && (visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                pageNo++
+                mainViewModel.getMyOrders(orderStatus, pageNo)
+                isLoading = true
+            }
+        }
+    }
 }

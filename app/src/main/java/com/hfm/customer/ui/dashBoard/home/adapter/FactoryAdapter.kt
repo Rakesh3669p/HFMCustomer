@@ -34,11 +34,8 @@ class FactoryAdapter @Inject constructor() :
                 }
                 productName.text = data.product_name
 
-                if(data.is_out_of_stock!=null){
-                    try {
-                        soldOut.isVisible = data.is_out_of_stock.toString().toBoolean()
-                    }catch (e:Exception){}
-                }
+                soldOut.isVisible = data.is_out_of_stock==1
+
 
                 if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.offer_price.toString().toDouble())}"

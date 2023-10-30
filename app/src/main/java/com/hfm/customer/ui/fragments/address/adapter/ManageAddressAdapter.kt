@@ -31,7 +31,7 @@ class ManageAddressAdapter @Inject constructor() :
                 customerName.text = data.name.toString()
                 customerAddress.text =
                     "${data.house} ${data.street},\n${data.city}, ${data.state}, ${data.country}, ${data.pincode}"
-                customerMobile.text = data.phone.toString()
+                customerMobile.text = "+${data.country_code} ${data.phone}"
                 selectedAddressSwitch.isChecked = data.is_default == 1
 
                 if (selectedAddressSwitch.isChecked) {

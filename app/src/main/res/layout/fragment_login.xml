@@ -139,6 +139,7 @@
             app:layout_constraintTop_toBottomOf="@+id/forgotPassword" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/facebook"
             style="@style/textMediumSemiBold"
             android:layout_width="match_parent"
@@ -154,6 +155,7 @@
             app:layout_constraintTop_toBottomOf="@id/newToHFM" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/google"
             style="@style/textMediumSemiBold"
             android:layout_width="match_parent"

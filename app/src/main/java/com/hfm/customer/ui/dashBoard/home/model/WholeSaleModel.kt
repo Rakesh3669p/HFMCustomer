@@ -27,7 +27,7 @@ data class WholeSaleProduct(
     val frozen: Any,
     val product_id: Int,
     val product_name: String,
-    val is_out_of_stock: Any,
+    val is_out_of_stock: Int,
     val product_type: String,
     val rating: Any,
     val sale_price: Any,

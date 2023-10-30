@@ -255,38 +255,39 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         }
 
         binding.noData.root.isVisible = productList.isEmpty()
+        binding.noData.noDataLbl.text = "No Products Found"
         productListAdapter.differ.submitList(productList)
         productListAdapter.notifyDataSetChanged()
 
         if (data.products.isNotEmpty()) {
-            binding.result.text =
-                "${data.total_products} results for ${data.products[0].category_name}"
+            binding.result.text = "${data.total_products} results for "
+            binding.category.text = "${data.products[0].category_name}"
         }
     }
 
-    private val scrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            val recycleLayoutManager =
-                binding.productListRv.layoutManager as StaggeredGridLayoutManager
-            var pastVisibleItems = 0
-            val visibleItemCount = recycleLayoutManager.childCount
-            val totalItemCount = recycleLayoutManager.itemCount
-            var firstVisibleItems: IntArray? = null
-            firstVisibleItems =
-                recycleLayoutManager.findFirstVisibleItemPositions(firstVisibleItems)
-            if (firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
-                pastVisibleItems = firstVisibleItems[0]
-            }
+        private val scrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val recycleLayoutManager =
+                    binding.productListRv.layoutManager as StaggeredGridLayoutManager
+                var pastVisibleItems = 0
+                val visibleItemCount = recycleLayoutManager.childCount
+                val totalItemCount = recycleLayoutManager.itemCount
+                var firstVisibleItems: IntArray? = null
+                firstVisibleItems =
+                    recycleLayoutManager.findFirstVisibleItemPositions(firstVisibleItems)
+                if (firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
+                    pastVisibleItems = firstVisibleItems[0]
+                }
 
-            if (!isLoading) {
-                if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                    pageNo++
-                    makeProductListApiCall()
-                    isLoading = true
+                if (!isLoading) {
+                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                        pageNo++
+                        makeProductListApiCall()
+                        isLoading = true
+                    }
                 }
             }
         }
-    }
 
     private fun setOnClickListener() {
         with(binding) {

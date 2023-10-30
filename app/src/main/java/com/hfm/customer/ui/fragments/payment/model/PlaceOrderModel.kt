@@ -8,5 +8,7 @@ data class PlaceOrderModel(
 )
 
 data class PlaceOrderData(
-    val order_id: String
+    val order_id: String,
+    val amount: String,
+    val link: String,
 )

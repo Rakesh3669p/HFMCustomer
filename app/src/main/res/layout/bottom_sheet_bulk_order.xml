@@ -91,6 +91,7 @@
         android:background="@drawable/edt_line_box"
         android:gravity="start"
         android:hint="Purchase Quantity"
+        android:inputType="number"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_12sdp"
         app:layout_constraintEnd_toEndOf="parent"

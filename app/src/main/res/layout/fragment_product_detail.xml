@@ -393,7 +393,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/checkPinCode"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/_40sdp"
+                        android:layout_height="@dimen/_38sdp"
                         android:layout_marginStart="@dimen/_10sdp"
                         android:backgroundTint="@color/red"
                         android:text="@string/checkLbl"
@@ -1210,8 +1210,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cartCount"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_37sdp"
+            android:layout_height="@dimen/_34sdp"
             android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_1sdp"
             android:layout_marginEnd="@dimen/_10sdp"
             android:background="@drawable/edt_box_smaa_radius"
             android:backgroundTint="@color/red"

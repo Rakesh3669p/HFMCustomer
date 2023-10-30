@@ -4,24 +4,67 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <View
+        android:id="@+id/dot"
+        android:layout_width="@dimen/_8sdp"
+        android:layout_height="@dimen/_8sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:background="@drawable/selected_dot"
+        android:backgroundTint="@color/green"
+        android:translationY="-2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/firstLine"
+        android:layout_width="@dimen/_1sdp"
+        android:layout_height="@dimen/_60sdp"
+        android:background="@color/green"
+        android:layout_marginTop="@dimen/_4sdp"
+        app:layout_constraintEnd_toEndOf="@id/dot"
+        app:layout_constraintStart_toStartOf="@id/dot"
+        app:layout_constraintTop_toTopOf="@id/dot" />
+
     <TextView
         android:id="@+id/orderPlacedLbl"
-        style="@style/textSmallSemiBold"
-        android:layout_width="wrap_content"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_7sdp"
-        android:text="Your order has been place."
-        app:layout_constraintStart_toStartOf="parent"
+        android:singleLine="false"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:translationY="-4dp"
+        android:text="Your order has been place. Your order has been place."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/dot"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/date"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_1sdp"
+        android:text="Thursday, 25th July 2023"
+        android:textColor="@color/textGreyDark"
+        app:layout_constraintStart_toEndOf="@id/dot"
+        app:layout_constraintTop_toBottomOf="@id/orderPlacedLbl" />
+
+
+    <TextView
+        android:id="@+id/viewOrderProof"
         style="@style/textSmallSemiBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Thursday, 25th July 2023"
-        android:textColor="@color/textGreyDark"
-        app:layout_constraintStart_toStartOf="@id/orderPlacedLbl"
-        app:layout_constraintTop_toBottomOf="@id/orderPlacedLbl" />
+        android:text="View"
+        android:padding="@dimen/_4sdp"
+        android:textColor="@color/green"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/date"
+        app:layout_constraintBottom_toBottomOf="@id/date"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

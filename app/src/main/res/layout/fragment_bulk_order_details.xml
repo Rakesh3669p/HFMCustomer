@@ -506,10 +506,10 @@
                 app:strokeColor="@color/red"
                 app:strokeWidth="1dp"
                 android:layout_marginHorizontal="@dimen/_5sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/accept"
-                app:layout_constraintBottom_toBottomOf="@id/accept"
-                app:layout_constraintTop_toTopOf="@id/accept"/>
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/accept"
+                app:layout_constraintTop_toBottomOf="@id/totalCv"/>
 
 
             <com.google.android.material.button.MaterialButton
@@ -526,9 +526,10 @@
                 android:textSize="@dimen/_12ssp"
                 android:layout_marginHorizontal="@dimen/_5sdp"
                 app:cornerRadius="@dimen/_6sdp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/reject"
-                app:layout_constraintTop_toBottomOf="@id/totalCv"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/reject"
+                app:layout_constraintBottom_toBottomOf="@id/reject"
+                app:layout_constraintTop_toTopOf="@id/reject"
                 tools:ignore="UnusedAttribute"
                 tools:layout_editor_absoluteX="13dp" />
 

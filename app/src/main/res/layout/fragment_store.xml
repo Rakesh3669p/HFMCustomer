@@ -41,6 +41,7 @@
         android:background="@drawable/store_search_box"
         android:drawableStart="@drawable/ic_search"
         android:drawablePadding="@dimen/_5sdp"
+        android:imeOptions="actionSearch"
         android:drawableTint="@color/white"
         android:hint="@string/search_in_store_lbl"
         android:paddingHorizontal="@dimen/_5sdp"
@@ -134,7 +135,6 @@
         android:id="@+id/storeDataGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         app:constraint_referenced_ids="storeName,storeImage,follow,storeFollowers,chat,search,back"/>
 
     <com.google.android.material.tabs.TabLayout

@@ -41,11 +41,8 @@ class FlashDealAdapter @Inject constructor() :
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
                 }
 
-                if(data.is_out_of_stock!=null){
-                    try {
-                        soldOut.isVisible = data.is_out_of_stock.toString().toBoolean()
-                    }catch (e:Exception){}
-                }
+                soldOut.isVisible = data.is_out_of_stock==1
+
 
                 frozenLbl.isVisible =data.frozen.toString().toDouble() > 0
                 wholeSaleLbl.isVisible =data.wholesale.toString().toDouble() > 0

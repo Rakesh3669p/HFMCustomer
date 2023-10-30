@@ -26,6 +26,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.Locale
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -257,5 +259,39 @@ fun copyStreamToFile(inputStream: InputStream, outputFile: File) {
             output.write(buffer, 0, byteCount)
         }
         output.flush()
+    }
+}
+
+
+fun RecyclerView.setupLoadMoreListener(
+    isLoading:Boolean,
+    layoutManager: LinearLayoutManager,
+    loadMoreCallback: () -> Unit
+) {
+    val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val pastVisibleItems = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val visibleItemCount = layoutManager.childCount
+            val totalItemCount = layoutManager.itemCount
+
+            if (!isLoading && (visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                loadMoreCallback()
+//                isLoading = true
+            }
+        }
+    }
+    addOnScrollListener(scrollListener)
+}
+
+fun String.toOrderDetailsFormattedDate(): String {
+    val inputDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
+    val outputDateFormat = SimpleDateFormat("E, d' 'MMM yyyy", Locale.US)
+
+    return try {
+        val date = inputDateFormat.parse(this)
+        outputDateFormat.format(date)
+    } catch (e: Exception) {
+        // Handle parsing or formatting errors here
+        this // Return the original string if there's an error
     }
 }

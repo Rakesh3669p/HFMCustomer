@@ -92,10 +92,18 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
                     appLoader.dismiss()
-                    if (response.data?.httpcode == "200") {
-                        setProfile(response.data.data)
-                    } else {
-                        showToast(response.data?.message.toString())
+                    when (response.data?.httpcode) {
+                        "200" -> {
+                            setProfile(response.data.data)
+                        }
+                        "401" -> {
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
+                        else -> {
+                            showToast(response.data?.message.toString())
+                        }
                     }
                 }
 
