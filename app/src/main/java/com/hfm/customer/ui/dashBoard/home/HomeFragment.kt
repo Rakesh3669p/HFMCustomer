@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.dashBoard.home
 
+import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
@@ -11,7 +12,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -20,6 +23,7 @@ import androidx.viewpager2.widget.MarginPageTransformer
 import coil.load
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hfm.customer.R
+import com.hfm.customer.commonModel.MainBanner
 import com.hfm.customer.commonModel.PromotionPopup
 import com.hfm.customer.databinding.FragmentHomeBinding
 import com.hfm.customer.ui.dashBoard.home.adapter.BrandStoreAdapter
@@ -127,10 +131,12 @@ class HomeFragment : Fragment(), View.OnClickListener {
         setAdsRv()
         mainViewModel.apply {
             getHomePageData()
-            getNotifications()
+            getNotifications(0)
             getCart()
         }
         appLoader.show()
+        val imm = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
     }
 
     private fun setMainBanner() {
@@ -259,16 +265,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
                         }
 
-                        handler.postDelayed(Runnable {
-                            handler.postDelayed(runnable!!, delay.toLong())
-                            if (binding.homeMainBanner.currentItem == it.app_top_banner.size - 1) {
-                                binding.homeMainBanner.currentItem = 0
-                            } else {
-                                val increaseItem = binding.homeMainBanner.currentItem + 1
-                                binding.homeMainBanner.setCurrentItem(increaseItem, true)
-                            }
+                        startCarousel(it.app_top_banner)
 
-                        }.also { runnable = it }, delay.toLong())
 
                         if (!sessionManager.popUpShown && it.promotion_popup != null && !it.promotion_popup.promotion_image.isNullOrEmpty()) {
                             sessionManager.popUpShown = true
@@ -434,8 +432,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == "200") {
+                        binding.notificationCountBg.isVisible = response.data.data.notification_count > 0
                         binding.notificationCount.isVisible = response.data.data.notification_count > 0
                         binding.notificationCount.text = response.data.data.notification_count.toString()
+                    }else{
+                        binding.notificationCountBg.isVisible =false
+                        binding.notificationCount.isVisible = false
+
                     }
                 }
 
@@ -456,10 +459,29 @@ class HomeFragment : Fragment(), View.OnClickListener {
         }
 
         cartCount.observe(requireActivity()) { count ->
+            binding.cartCountBg.isVisible = count > 0
             binding.cartCount.isVisible = count > 0
             binding.cartCount.text = count.toString()
 
         }
+    }
+
+
+    private fun startCarousel(appTopBanner: List<MainBanner>) {
+        runnable = Runnable {
+            val currentItem = binding.homeMainBanner.currentItem
+            val itemCount = appTopBanner.size
+
+            if (currentItem == itemCount - 1) {
+                binding.homeMainBanner.setCurrentItem(0, true)
+            } else {
+                binding.homeMainBanner.setCurrentItem(currentItem + 1, true)
+            }
+
+            handler.postDelayed(runnable!!, delay.toLong())
+        }
+
+        handler.postDelayed(runnable!!, 2000)
     }
 
     private fun setTimer(flashSale: FlashSale?) {
@@ -509,6 +531,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
         homeMainCatAdapter.setOnCategoryClickListener { data ->
             val bundle = Bundle().apply { putString("catId", data.category_id.toString()) }
             findNavController().navigate(R.id.productListFragment, bundle)
+        }
+
+        featureProductsAdapter.setOnCategoryClickListener { data ->
+            val bundle = Bundle().apply { putString("productId", data.product_id.toString()) }
+            findNavController().navigate(R.id.productDetailsFragment, bundle)
         }
 
         flashDealAdapter.setOnProductClickListener {

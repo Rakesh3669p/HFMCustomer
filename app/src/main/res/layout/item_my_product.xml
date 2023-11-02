@@ -14,7 +14,7 @@
         android:background="@drawable/edt_box_smaa_radius"
         android:elevation="@dimen/_1sdp"
         android:scaleType="fitXY"
-        android:src="@drawable/red_chilli"
+        android:src="@drawable/logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
         android:text="Quantity: 1"
-        app:layout_constraintBottom_toBottomOf="@id/productImage"
+        app:layout_constraintBottom_toTopOf="@id/rateProduct"
         app:layout_constraintStart_toEndOf="@id/productImage"
         app:layout_constraintTop_toBottomOf="@id/productName" />
 
@@ -60,6 +60,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/productName" />
 
+    <com.google.android.material.button.MaterialButton
+        android:visibility="gone"
+        style="@style/textSmallSemiBold"
+        android:id="@+id/rateProduct"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_24sdp"
+        android:text="@string/write_a_review_lbl"
+        android:textColor="@color/red"
+        app:backgroundTint="@android:color/transparent"
+        app:cornerRadius="@dimen/_6sdp"
+        app:strokeColor="@color/red"
+        app:strokeWidth="1dp"
+        android:paddingVertical="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginHorizontal="@dimen/_5sdp"
+        app:layout_constraintStart_toEndOf="@id/productImage"
+        app:layout_constraintTop_toBottomOf="@id/productQty"/>
 
 
 

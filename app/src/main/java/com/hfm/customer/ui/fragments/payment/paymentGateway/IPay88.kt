@@ -13,6 +13,7 @@ import android.webkit.JsResult
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -55,8 +56,9 @@ class IPay88 : Fragment() {
 
         orderId = arguments?.getString("orderId").toString()
         val amount = arguments?.getString("amount")
+        val paymentUrl = arguments?.getString("paymentUrl").toString()
         with(binding) {
-            paymentGateWayWebView.loadUrl("https://uat.hfm.synuos.com/UAT/admin/ipay/request?order_id=$orderId&amount=$amount&os_type=app")
+            paymentGateWayWebView.loadUrl(paymentUrl)
             paymentGateWayWebView.settings.javaScriptEnabled = true
 
             paymentGateWayWebView.webViewClient = object : WebViewClient() {
@@ -95,6 +97,7 @@ class IPay88 : Fragment() {
         val appCompatDialog = Dialog(requireContext())
         val bindingDialog = DialogueOrderSuccessBinding.inflate(layoutInflater)
         appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.window!!.attributes.width = LinearLayout.LayoutParams.MATCH_PARENT
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         appCompatDialog.setCancelable(false)
         bindingDialog.title.text = "Thank you for placing order.\nYour order id is $orderId"
@@ -112,6 +115,7 @@ class IPay88 : Fragment() {
         val appCompatDialog = Dialog(requireContext())
         val bindingDialog = DialogueOrderSuccessBinding.inflate(layoutInflater)
         appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.window!!.attributes.width = LinearLayout.LayoutParams.MATCH_PARENT
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         appCompatDialog.setCancelable(false)
         bindingDialog.title.text = "Failed!"

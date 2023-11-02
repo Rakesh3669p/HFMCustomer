@@ -22,6 +22,7 @@ class SessionManager(mcxt: Context) {
         const val USER_DISPLAY_NAME = "USER_DISPLAY_NAME"
         const val SEARCH_PLACE_HOLDER = "SEARCH_PLACE_HOLDER"
         const val POP_UP_SHOWN = "POP_UP_SHOWN"
+        const val SELLER_POP_UP_SHOWN = "SELLER_POP_UP_SHOWN"
     }
 
 
@@ -123,6 +124,13 @@ class SessionManager(mcxt: Context) {
         get() = generalPref.getBoolean(POP_UP_SHOWN, false)
         set(status) {
             generalEditor.putBoolean(POP_UP_SHOWN, status)
+            generalEditor.commit()
+        }
+
+    var sellerPopUpShown: Boolean
+        get() = generalPref.getBoolean(SELLER_POP_UP_SHOWN, false)
+        set(status) {
+            generalEditor.putBoolean(SELLER_POP_UP_SHOWN, status)
             generalEditor.commit()
         }
 

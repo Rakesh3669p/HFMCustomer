@@ -47,9 +47,10 @@ class StoreFragment : Fragment(), View.OnClickListener {
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var noInternetDialog: NoInternetDialog
     private lateinit var appLoader: Loader
+
     @Inject
     lateinit var sessionManager: SessionManager
-
+    private var storeDetailsAlreadySetted = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,6 +69,9 @@ class StoreFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         setObserver()
         setSearchView()
+
+        arguments?.let { storeId = it.getString("storeId").toString() }
+        mainViewModel.getStoreDetails(storeId)
     }
 
     private fun setSearchView() {
@@ -75,10 +79,8 @@ class StoreFragment : Fragment(), View.OnClickListener {
         binding.search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (binding.search.text.toString().isNotEmpty()) {
-
-                    mainViewModel.getStoreDetails(sellerId = storeId,)
+                    mainViewModel.getStoreDetails(sellerId = storeId)
                     /*findNavController().popBackStack()
-
                     val bundle = Bundle()
                     bundle.putString("keyword", binding.search.text.toString())
                     findNavController().navigate(R.id.productListFragment, bundle)*/
@@ -96,11 +98,7 @@ class StoreFragment : Fragment(), View.OnClickListener {
         noInternetDialog = NoInternetDialog(requireContext())
 
 
-        arguments?.let {
-            storeId = it.getString("storeId").toString()
-        }
 
-        mainViewModel.getStoreDetails(storeId)
         mainViewModel.getProfile()
 
 
@@ -153,13 +151,16 @@ class StoreFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
                         storeData = response.data.data
-                        setStoreDetails()
+                        if (!storeDetailsAlreadySetted) {
+                            setStoreDetails()
+                        }
                     } else {
                         showToast(response.data?.status.toString())
                     }
                 }
 
-                is Resource.Loading -> appLoader.show()
+                is Resource.Loading -> if(!storeDetailsAlreadySetted)
+                    appLoader.show()
                 is Resource.Error -> apiError(response.message)
             }
         }
@@ -214,8 +215,9 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
     }
 
-    private fun setStoreDetails() {
 
+    private fun setStoreDetails() {
+        storeDetailsAlreadySetted = true
         with(binding) {
             if (storeData.shop_detail.isNotEmpty()) {
                 storeData.shop_detail[0].let { shopDetail ->
@@ -278,9 +280,9 @@ class StoreFragment : Fragment(), View.OnClickListener {
     }
 
     private fun followStore() {
-        if(!sessionManager.isLogin){
+        if (!sessionManager.isLogin) {
             showToast("Please login first")
-            startActivity(Intent(requireActivity(),LoginActivity::class.java))
+            startActivity(Intent(requireActivity(), LoginActivity::class.java))
             requireActivity().finish()
             return
         }
@@ -308,9 +310,9 @@ class StoreFragment : Fragment(), View.OnClickListener {
             binding.follow.id -> followStore()
             binding.chat.id -> {
 
-                if(!sessionManager.isLogin){
+                if (!sessionManager.isLogin) {
                     showToast("Please login first")
-                    startActivity(Intent(requireActivity(),LoginActivity::class.java))
+                    startActivity(Intent(requireActivity(), LoginActivity::class.java))
                     requireActivity().finish()
                     return
                 }

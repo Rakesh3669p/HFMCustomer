@@ -5,91 +5,112 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/chatDate"
+        style="@style/textSmallSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:padding="@dimen/_5sdp"
+        android:singleLine="false"
+        android:text="20-10-2023"
+        android:textColor="@color/textGreyDark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
+
         android:id="@+id/rightChatLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-    <TextView
-        android:id="@+id/rightTimeAgo"
-        style="@style/textSmallSemiBold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:padding="@dimen/_5sdp"
-        android:singleLine="false"
-        android:text="1m ago"
-        android:textColor="@color/textGreyDark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/chatDate">
+
+        <TextView
+            android:id="@+id/rightTimeAgo"
+            style="@style/textSmallSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:padding="@dimen/_5sdp"
+            android:singleLine="false"
+            android:text="1m ago"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.utils.widget.ImageFilterView
-            android:visibility="gone"
             android:id="@+id/warning"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
-            android:src="@drawable/ic_warning"
             android:layout_marginEnd="@dimen/_10sdp"
-            app:layout_constraintTop_toTopOf="@id/rightChat"
+            android:src="@drawable/ic_warning"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/rightChat"
-            app:layout_constraintEnd_toStartOf="@id/rightChat"/>
-    <TextView
-        android:id="@+id/rightChat"
-        style="@style/textSmallSemiBold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:background="@drawable/chat_right_bg"
-        android:maxWidth="@dimen/_250sdp"
-        android:padding="@dimen/_5sdp"
-        android:singleLine="false"
-        android:elevation="@dimen/_1sdp"
-        android:text="@string/largeText"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rightTimeAgo" />
+            app:layout_constraintEnd_toStartOf="@id/rightChat"
+            app:layout_constraintTop_toTopOf="@id/rightChat" />
 
-    <androidx.constraintlayout.utils.widget.ImageFilterView
-        android:id="@+id/rightChatImage"
-        style="@style/textSmallSemiBold"
-        android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_150sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:src="@drawable/red_chilli"
-        android:scaleType="fitCenter"
-        android:maxWidth="@dimen/_250sdp"
-        android:maxHeight="@dimen/_350sdp"
-        android:padding="@dimen/_5sdp"
-        android:elevation="@dimen/_1sdp"
-        android:text="@string/largeText"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rightTimeAgo" />
+        <TextView
+            android:id="@+id/rightChat"
+            style="@style/textSmallSemiBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:background="@drawable/chat_right_bg"
+            android:elevation="@dimen/_1sdp"
+            android:maxWidth="@dimen/_250sdp"
+            android:padding="@dimen/_5sdp"
+            android:singleLine="false"
+            android:text="@string/largeText"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rightTimeAgo" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/rightChatImage"
+            style="@style/textSmallSemiBold"
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:elevation="@dimen/_1sdp"
+            android:maxWidth="@dimen/_250sdp"
+            android:maxHeight="@dimen/_350sdp"
+            android:padding="@dimen/_5sdp"
+
+            android:scaleType="fitEnd"
+            android:src="@drawable/logo"
+            android:text="@string/largeText"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rightChat" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/agentImage"
         android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
-        android:src="@drawable/user"
-        app:roundPercent="1"
-        android:scaleType="fitXY"
         android:layout_margin="@dimen/_10sdp"
+        android:scaleType="fitXY"
+        android:src="@drawable/user"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rightChatLayout"/>
+        app:layout_constraintTop_toBottomOf="@+id/rightChatLayout"
+        app:roundPercent="1" />
 
 
     <TextView
         android:id="@+id/agentName"
         style="@style/textSmallSemiBold"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_10sdp"
         android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:singleLine="false"
         android:text="Agent"
         android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/leftTimeAgo"
         app:layout_constraintStart_toEndOf="@+id/agentImage"
         app:layout_constraintTop_toTopOf="@id/agentImage" />
@@ -99,14 +120,14 @@
         style="@style/textSmallSemiBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_10sdp"
         android:singleLine="false"
         android:text="1m ago"
-        android:layout_marginStart="@dimen/_5sdp"
         android:textColor="@color/textGreyDark"
+        app:layout_constraintBottom_toBottomOf="@id/agentImage"
         app:layout_constraintStart_toEndOf="@id/agentImage"
-        app:layout_constraintTop_toBottomOf="@+id/agentName"
-        app:layout_constraintBottom_toBottomOf="@id/agentImage"/>
+        app:layout_constraintTop_toBottomOf="@+id/agentName" />
 
     <TextView
         android:id="@+id/leftChat"
@@ -115,16 +136,17 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_10sdp"
         android:background="@drawable/chat_left_bg"
+        android:elevation="@dimen/_1sdp"
         android:maxWidth="@dimen/_250sdp"
         android:padding="@dimen/_5sdp"
         android:singleLine="false"
-        android:elevation="@dimen/_1sdp"
         android:text="hello"
+
         android:textColor="@color/textGreyDark"
-        app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/agentImage" />
+        app:layout_constraintTop_toBottomOf="@+id/agentImage"
+        app:layout_constraintVertical_bias="0" />
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/leftChatImage"
@@ -132,29 +154,27 @@
         android:layout_width="@dimen/_150sdp"
         android:layout_height="@dimen/_150sdp"
         android:layout_margin="@dimen/_10sdp"
-        android:src="@drawable/red_chilli"
-        android:scaleType="fitCenter"
+        android:elevation="@dimen/_1sdp"
         android:maxWidth="@dimen/_250sdp"
         android:maxHeight="@dimen/_350sdp"
         android:padding="@dimen/_5sdp"
-        android:elevation="@dimen/_1sdp"
+        android:scaleType="fitStart"
+        android:src="@drawable/logo"
         android:text="@string/largeText"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/agentImage" />
+        app:layout_constraintTop_toBottomOf="@+id/leftChat" />
 
 
     <include
-        android:visibility="gone"
         android:id="@+id/warningMessage"
+        layout="@layout/chat_warning"
         android:layout_width="@dimen/_260sdp"
         android:layout_height="wrap_content"
-        layout="@layout/chat_warning"
         android:layout_marginTop="@dimen/_10sdp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/rightChatLayout"
-        app:layout_constraintTop_toBottomOf="@id/rightChatLayout"/>
-
-
+        app:layout_constraintTop_toBottomOf="@id/rightChatLayout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

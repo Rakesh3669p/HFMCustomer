@@ -6,6 +6,7 @@ import com.hfm.customer.commonModel.AppUpdateModel
 import com.hfm.customer.commonModel.CityListModel
 import com.hfm.customer.commonModel.CountryListModel
 import com.hfm.customer.commonModel.HomeMainCategoriesModel
+import com.hfm.customer.commonModel.RatingReviewsModel
 import com.hfm.customer.commonModel.StateListModel
 import com.hfm.customer.commonModel.SuccessModel
 import com.hfm.customer.commonModel.TermsConditionsModel
@@ -46,6 +47,7 @@ import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetail
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
 import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
 import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
+import com.hfm.customer.ui.fragments.support.model.SupportMessagesModel
 import com.hfm.customer.ui.fragments.support.model.SupportTicketsModel
 import com.hfm.customer.ui.fragments.vouchers.model.VoucherListModel
 import com.hfm.customer.ui.fragments.wallet.model.WalletModel
@@ -263,6 +265,9 @@ interface HFMCustomerAPI {
     @POST("customer/view/notifications")
     suspend fun getNotifications(@Body jsonObject: JsonObject): Response<NotificationModel>
 
+    @POST("customer/notification/update")
+    suspend fun notificationViewed(@Body jsonObject: JsonObject): Response<SuccessModel>
+
     @POST("customer/shipping-availability")
     suspend fun checkAvailability(@Body jsonObject: JsonObject): Response<SuccessModel>
 
@@ -271,6 +276,17 @@ interface HFMCustomerAPI {
     suspend fun updateProfileCustomer(
         @PartMap map: MutableMap<String, RequestBody?>,
     ): Response<SuccessModel>
+
+    @Multipart
+    @POST("customer/product/post-product-review")
+    suspend fun submitReview(
+        @PartMap map: MutableMap<String, RequestBody?>,
+    ): Response<SuccessModel>
+
+    @POST("customer/product/reviews")
+    suspend fun getReviews(
+        @Body jsonObject: JsonObject,
+    ): Response<RatingReviewsModel>
 
     @Multipart
     @POST("customer/edit/business/profile")
@@ -321,6 +337,13 @@ interface HFMCustomerAPI {
     @POST("customer/chat/message")
     suspend fun getChatMessage(@Body jsonObject: JsonObject): Response<ChatMessageModel>
 
+    @POST("customer/support-message")
+    suspend fun getSupportMessage(@Body jsonObject: JsonObject): Response<SupportMessagesModel>
+
+    @Multipart
+    @POST("customer/add-ticket-message")
+    suspend fun sendSupportMessage(@PartMap map: MutableMap<String, RequestBody?>): Response<SuccessModel>
+
     @POST("customer/chat/list")
     suspend fun getChatList(@Body jsonObject: JsonObject): Response<ChatListModel>
 
@@ -367,6 +390,11 @@ interface HFMCustomerAPI {
     suspend fun getAppUpdate(
         @Body jsonObject: JsonObject
     ): Response<AppUpdateModel>
+
+    @POST("customer/checkLogin")
+    suspend fun checkLogin(
+        @Body jsonObject: JsonObject
+    ): Response<SuccessModel>
 
  @POST("customer/dhl-tracking")
     suspend fun orderTracking(

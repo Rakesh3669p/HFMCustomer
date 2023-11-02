@@ -1,10 +1,13 @@
 package com.hfm.customer.ui.dashBoard
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -44,8 +47,9 @@ class DashBoardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDashBoardBinding
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var navController: NavController
-    @Inject lateinit var sessionManager: SessionManager
-    private val mainViewModel:MainViewModel by viewModels()
+    @Inject
+    lateinit var sessionManager: SessionManager
+    private val mainViewModel: MainViewModel by viewModels()
     private lateinit var appUpdateManager: AppUpdateManager
     private var updateType = AppUpdateType.FLEXIBLE
     private var isCriticalUpdate: Boolean = false
@@ -61,14 +65,33 @@ class DashBoardActivity : AppCompatActivity() {
     private fun init() {
         appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
         navController = findNavController(R.id.nav_host_fragment_content_main)
-        navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         setupWithNavController(binding.bottomNavigationView, navHostFragment.navController)
         navController.addOnDestinationChangedListener(destinationListener)
         sessionManager.deviceId = getDeviceIdInternal(this)
         mainViewModel.getAppUpdate()
+        val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
+        mainViewModel.checkLogin()
     }
 
     private fun setObserver() {
+
+        mainViewModel.checkLogin.observe(this) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    response.data?.let {
+                        if (it.httpcode == 401) {
+                            sessionManager.isLogin = false
+                        }
+                    }
+                }
+                is Resource.Loading -> Unit
+                is Resource.Error -> Unit
+            }
+        }
+
         mainViewModel.checkAppUpdate.observe(this) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -198,7 +221,7 @@ class DashBoardActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if(navController.currentDestination?.id == R.id.homeFragment) {
+        if (navController.currentDestination?.id == R.id.homeFragment) {
             if (doubleBackToExitPressedOnce) {
                 super.onBackPressed()
                 return
@@ -209,7 +232,7 @@ class DashBoardActivity : AppCompatActivity() {
                 { doubleBackToExitPressedOnce = false },
                 DOUBLE_CLICK_EXIT_DELAY.toLong()
             )
-        }else{
+        } else {
             navController.popBackStack()
         }
     }

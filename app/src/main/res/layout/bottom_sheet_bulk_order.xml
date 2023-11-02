@@ -49,7 +49,7 @@
         android:id="@+id/productImage"
         android:layout_width="@dimen/_50sdp"
         android:layout_height="@dimen/_50sdp"
-        android:src="@drawable/red_chilli"
+        android:src="@drawable/logo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -67,7 +67,7 @@
         app:layout_constraintBottom_toBottomOf="@id/productImage"
         app:layout_constraintTop_toTopOf="@id/productImage" />
 
-    <EditText
+    <TextView
         android:id="@+id/name"
         style="@style/textMedium"
         android:layout_width="match_parent"
@@ -76,6 +76,7 @@
         android:background="@drawable/edt_line_box"
         android:gravity="start"
         android:hint="@string/name_lbl"
+
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_12sdp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -144,7 +145,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date" />
 
-    <EditText
+    <TextView
         android:id="@+id/email"
         style="@style/textMedium"
         android:layout_width="match_parent"

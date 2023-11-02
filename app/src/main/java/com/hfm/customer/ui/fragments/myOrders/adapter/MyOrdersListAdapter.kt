@@ -47,7 +47,8 @@ class MyOrdersListAdapter @Inject constructor() :
                         if (!it.product_image.isNullOrEmpty()) {
                             productImage.load(replaceBaseUrl(it.product_image[0].image)){
                                 placeholder(R.drawable.logo)
-                                
+                                error(R.drawable.logo)
+
                             }
                         }
                     }

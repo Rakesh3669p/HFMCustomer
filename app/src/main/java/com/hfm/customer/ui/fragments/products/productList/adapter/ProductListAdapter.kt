@@ -94,10 +94,19 @@ class ProductListAdapter @Inject constructor() :
                     saveLbl.isVisible = false
                 }
 
+                if(data.frozen==1){
+                    frozenLbl.isVisible = true
+                    frozenLbl.text = "frozen"
+                }else if(data.chilled==1){
+                    frozenLbl.isVisible = true
+                    frozenLbl.text = "chilled"
+                }else if(data.chilled==1&&data.frozen==1){
+                    frozenLbl.isVisible = true
+                    frozenLbl.text = "frozen/chilled"
+                }else{
+                    frozenLbl.isVisible = false
+                }
 
-
-                if (data.frozen != null)
-                    frozenLbl.isVisible = data.frozen.toString().toDouble() > 0
                 if (data.wholesale != null) wholeSaleLbl.isVisible =
                     data.wholesale.toString().toDouble() > 0
 

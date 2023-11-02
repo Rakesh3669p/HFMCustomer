@@ -15,6 +15,7 @@ data class SupportTicketData(
 data class SupportTickets(
     val created_at: String,
     val subject: String,
+    val last_message: String,
     val support_id: Int,
     val ticket_id: String
 )

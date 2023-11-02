@@ -10,5 +10,6 @@ data class PlaceOrderModel(
 data class PlaceOrderData(
     val order_id: String,
     val amount: String,
+    val payment_url: String,
     val link: String,
 )

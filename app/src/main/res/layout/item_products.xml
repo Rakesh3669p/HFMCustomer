@@ -31,7 +31,7 @@
                 android:layout_gravity="center"
                 android:scaleType="fitXY"
                 android:background="@color/white"
-                android:src="@drawable/red_chilli"
+                android:src="@drawable/logo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -61,9 +61,9 @@
                 android:id="@+id/saleTime"
                 style="@style/textSmallSemiBold"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_20sdp"
+                android:layout_height="@dimen/_24sdp"
                 android:layout_marginHorizontal="@dimen/_15sdp"
-                android:layout_marginBottom="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
                 android:background="@drawable/rectangle_box"
                 android:backgroundTint="@color/red"
                 android:elevation="@dimen/_4sdp"
@@ -118,24 +118,6 @@
 
             <TextView
 
-                android:id="@+id/wholeSaleLbl"
-                style="@style/textSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rectangle_box"
-                android:backgroundTint="@color/purple"
-                android:gravity="center"
-                android:layout_marginEnd="@dimen/_2sdp"
-
-                android:layout_gravity="start"
-                android:text="WholeSale"
-                android:paddingHorizontal="@dimen/_4sdp"
-                android:paddingVertical="@dimen/_2sdp"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_8ssp"
-                />
-            <TextView
-
                 android:id="@+id/frozenLbl"
                 style="@style/textSmall"
                 android:layout_width="wrap_content"
@@ -145,11 +127,28 @@
                 android:gravity="center"
                 android:layout_gravity="start"
                 android:text="Frozen"
+                android:layout_marginEnd="@dimen/_2sdp"
                 android:textSize="@dimen/_8ssp"
                 android:paddingHorizontal="@dimen/_4sdp"
                 android:paddingVertical="@dimen/_2sdp"
                 android:textColor="@color/white"
                 />
+            <TextView
+                android:id="@+id/wholeSaleLbl"
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_box"
+                android:backgroundTint="@color/purple"
+                android:gravity="center"
+                android:layout_gravity="start"
+                android:text="WholeSale"
+                android:paddingHorizontal="@dimen/_4sdp"
+                android:paddingVertical="@dimen/_2sdp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_8ssp"
+                />
+
 
 
 

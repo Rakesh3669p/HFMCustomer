@@ -146,6 +146,8 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 if (it.customer_type != null) {
                     customerType = it.customer_type.uppercase()
                     userType.text = "Customer Type: ${customerType.uppercase()}"
+                }else{
+                    userType.text = "Customer Type: Normal"
                 }
             }
         }

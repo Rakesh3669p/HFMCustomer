@@ -1,29 +1,43 @@
 package com.hfm.customer.ui.fragments.search.adapter
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.hfm.customer.R
-import com.hfm.customer.databinding.ItemFilterBrandBinding
 import com.hfm.customer.databinding.ItemSearchTextBinding
-import com.hfm.customer.ui.fragments.products.productList.ProductListFragment.Companion.selectedBrandFilters
 import com.hfm.customer.ui.fragments.search.model.RelatedTerm
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 
 class SearchSuggestionsAdapter @Inject constructor() :
     RecyclerView.Adapter<SearchSuggestionsAdapter.ViewHolder>() {
     private lateinit var context: Context
-
+    var searchValue =""
     inner class ViewHolder(private val bind: ItemSearchTextBinding) :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: RelatedTerm) {
             with(bind) {
-                seachText.text = data.name
+                val spannableString = SpannableString(data.name)
+                val pattern: Pattern = Pattern.compile(Pattern.quote(searchValue), Pattern.CASE_INSENSITIVE)
+                val matcher: Matcher = pattern.matcher(data.name)
+                while (matcher.find()) {
+                    val start = matcher.start()
+                    val end = matcher.end()
+                    spannableString.setSpan(StyleSpan(Typeface.BOLD), start, end, 0)
+                    spannableString.setSpan(ForegroundColorSpan(Color.BLACK), start, end, 0)
+                }
+                seachText.text = spannableString
+
+
                 root.setOnClickListener {
                     onItemClick?.let {
                         it(data.name)
@@ -70,6 +84,10 @@ class SearchSuggestionsAdapter @Inject constructor() :
 
     fun setOnItemClickListener(listener: (searchTerm: String) -> Unit) {
         onItemClick = listener
+    }
+
+    fun setOnSearchValue(search:String) {
+        searchValue = search
     }
 
 }

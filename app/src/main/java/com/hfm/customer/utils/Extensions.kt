@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.OpenableColumns
 import android.provider.Settings
+import android.text.format.DateUtils
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -27,6 +28,10 @@ import java.io.IOException
 import java.io.InputStream
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.util.Date
 import java.util.Locale
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -283,9 +288,10 @@ fun RecyclerView.setupLoadMoreListener(
     addOnScrollListener(scrollListener)
 }
 
+
 fun String.toOrderDetailsFormattedDate(): String {
     val inputDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
-    val outputDateFormat = SimpleDateFormat("E, d' 'MMM yyyy", Locale.US)
+    val outputDateFormat = SimpleDateFormat("E, d' 'MMM yyyy | hh:mm a", Locale.US)
 
     return try {
         val date = inputDateFormat.parse(this)
@@ -294,4 +300,26 @@ fun String.toOrderDetailsFormattedDate(): String {
         // Handle parsing or formatting errors here
         this // Return the original string if there's an error
     }
+}
+
+fun Long.toTimeAgo(): CharSequence {
+    val currentTimeMillis = System.currentTimeMillis()
+    return DateUtils.getRelativeTimeSpanString(
+        this,
+        currentTimeMillis,
+        DateUtils.MINUTE_IN_MILLIS,
+        DateUtils.FORMAT_ABBREV_RELATIVE
+    )
+}
+
+fun String.toUnixTimestamp(): Long {
+    val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
+    val date = dateFormat.parse(this)
+    return date?.time ?: 0
+}
+
+fun Long.toFormattedDateTimeChat(): String {
+    val date = Date(this)
+    val format = SimpleDateFormat("hh:mm a", Locale.US)
+    return format.format(date)
 }

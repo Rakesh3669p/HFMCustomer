@@ -84,6 +84,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
                 if (text.toString().isNotEmpty()) {
                     binding.clearSearch.isVisible = true
                     mainViewModel.relatedSearchTerms(text.toString())
+
                 } else {
                     binding.clearSearch.isVisible = false
                     binding.searchSuggestionsRv.isVisible = false
@@ -118,6 +119,7 @@ class SearchFragment : Fragment(), View.OnClickListener {
                             relatedSearchTermAdapter
                         )
                         relatedSearchTermAdapter.differ.submitList(response.data.data.related_terms)
+                        relatedSearchTermAdapter.setOnSearchValue(binding.searchBar.text.toString())
 
                     } else {
                         binding.searchSuggestionsRv.isVisible = false

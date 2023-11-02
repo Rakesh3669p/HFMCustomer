@@ -27,6 +27,7 @@
         android:layout_height="@dimen/_30sdp"
         android:backgroundTint="@color/red"
         android:text="@string/ok"
+        android:paddingVertical="0dp"
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="@dimen/_12ssp"

@@ -22,7 +22,7 @@ class MyAllOrdersProductsAdapter @Inject constructor() : RecyclerView.Adapter<My
 
     private lateinit var context: Context
     private var from = ""
-
+    private var isDeliveredOrder = false
     inner class ViewHolder(private val bind: ItemMyProductBinding) :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: Product) {
@@ -30,7 +30,7 @@ class MyAllOrdersProductsAdapter @Inject constructor() : RecyclerView.Adapter<My
                 if(data.product_image?.isNotEmpty() == true){
                     productImage.load(replaceBaseUrl(data.product_image[0].image)){
                         placeholder(R.drawable.logo)
-                        
+                        error(R.drawable.logo)
                     }
                 }
                 productName.text = data.product_name
@@ -41,6 +41,12 @@ class MyAllOrdersProductsAdapter @Inject constructor() : RecyclerView.Adapter<My
                     amount.text = "RM ${formatToTwoDecimalPlaces(data.sale_price.toString().toDouble())}"
                 }else{
                     amount.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
+                }
+
+                rateProduct.isVisible = data.review_submitted == 0
+                rateProduct.isVisible = isDeliveredOrder
+                rateProduct.setOnClickListener {
+                    onRateProductClick?.invoke(data.product_id.toString())
                 }
             }
         }
@@ -86,5 +92,15 @@ class MyAllOrdersProductsAdapter @Inject constructor() : RecyclerView.Adapter<My
 
     fun setDataFrom(status:String){
         from = status
+    }
+
+    private var onRateProductClick: ((id: String) -> Unit)? = null
+
+    fun setOnRateProductClickListener(listener: (id: String) -> Unit) {
+        onRateProductClick = listener
+    }
+
+    fun setDeliveredOrder(orderDelivered:Boolean){
+        isDeliveredOrder = orderDelivered
     }
 }

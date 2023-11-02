@@ -42,7 +42,18 @@ class FeatureProductsAdapter @Inject constructor() :
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
                 }
 
-                frozenLbl.isVisible = data.frozen!=null && data.frozen.toString().toDouble() > 0
+                if(data.frozen==1){
+                    frozenLbl.isVisible = true
+                    frozenLbl.text = "frozen"
+                }else if(data.chilled==1){
+                    frozenLbl.isVisible = true
+                    frozenLbl.text = "chilled"
+                }else if(data.chilled==1&&data.frozen==1){
+                    frozenLbl.isVisible = true
+                    frozenLbl.text = "frozen/chilled"
+                }else{
+                    frozenLbl.isVisible = false
+                }
                 wholeSaleLbl.isVisible =data.wholesale!=null &&data.wholesale.toString().toDouble() > 0
 
                 if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
@@ -51,6 +62,10 @@ class FeatureProductsAdapter @Inject constructor() :
                     saveLbl.text = "Save RM ${formatToTwoDecimalPlaces(difference)}"
                 }else{
                     saveLbl.isVisible = false
+                }
+
+                root.setOnClickListener {
+                    onCategoryClick?.invoke(data)
                 }
             }
         }
@@ -89,9 +104,9 @@ class FeatureProductsAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onCategoryClick: ((id: Int) -> Unit)? = null
+    private var onCategoryClick: ((data: Product) -> Unit)? = null
 
-    fun setOnCategoryClickListener(listener: (id: Int) -> Unit) {
+    fun setOnCategoryClickListener(listener: (data: Product) -> Unit) {
         onCategoryClick = listener
     }
 

@@ -214,4 +214,5 @@
     <string name="usedlbl">Used</string>
     <string name="expiredLbl">Expired</string>
     <string name="payment_status_lbl">Payment Status</string>
+    <string name="write_a_review_lbl">Write a Review</string>
 </resources>

@@ -85,6 +85,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun init() {
+        binding.loader.isVisible = true
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
@@ -103,9 +104,12 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == "200") {
+                        binding.loader.isVisible = false
+                        binding.noDataLayout.root.isVisible = false
                         orderData = response.data.data
                         setOrderData(response.data.data)
                     } else {
+                        binding.noDataLayout.root.isVisible = true
                         showToast(response.data?.message.toString())
                     }
                 }
@@ -192,6 +196,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
 
             data.purchase[0].let {
                 orderDetails = it
+
                 orderId.text = "Order #:${it.order_id}"
                 orderedDate.text = "${it.order_date} | ${it.order_time}"
                 ordered.alpha = 1f
@@ -289,6 +294,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                     "${it.shipping_address.address1}, ${it.shipping_address.address2},\n${it.shipping_address.city}, ${it.shipping_address.state}, ${it.shipping_address.country}, ${it.shipping_address.zip_code}\nPhone: ${it.shipping_address.phone}"
                 initRecyclerView(requireContext(), productsRv, productAdapter)
                 productAdapter.differ.submitList(it.products)
+                productAdapter.setDeliveredOrder(it.order_status=="delivered")
                 productAdapter.setDataFrom("orderDetails")
                 seller.text = it.store_name
                 deliveryPartner.text = it.delivery_partner
@@ -416,6 +422,12 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
             uploadImage.setOnClickListener(this@OrderDetailsFragment)
             submit.setOnClickListener(this@OrderDetailsFragment)
             chat.setOnClickListener(this@OrderDetailsFragment)
+        }
+
+        productAdapter.setOnRateProductClickListener {productId->
+            val bundle = Bundle()
+            bundle.putString("productId",productId)
+            findNavController().navigate(R.id.submitReviewFragment,bundle)
         }
     }
 

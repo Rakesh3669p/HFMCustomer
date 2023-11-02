@@ -32,6 +32,7 @@ import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.makeInvisible
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
@@ -53,7 +54,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         var selectedBrandFilters: MutableList<Int> = ArrayList()
     }
 
-    private var showProductsRandomly: Boolean  =false
+    private var showProductsRandomly: Boolean = false
 
     @Inject
     lateinit var sessionManager: SessionManager
@@ -128,11 +129,13 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         search = arguments?.getString("keyword") ?: ""
         wholeSale = arguments?.getInt("wholeSale") ?: 0
         flashSale = arguments?.getInt("flashSale") ?: 0
-        val endTime = arguments?.getString("endTime")?:""
-        showProductsRandomly = catId.isEmpty()&&subCatId.isEmpty()&&brandId.isEmpty()&&search.isEmpty()&&wholeSale==0&&flashSale==0&&endTime.isEmpty()
+        val endTime = arguments?.getString("endTime") ?: ""
+        showProductsRandomly = catId.isEmpty() && subCatId.isEmpty() && brandId.isEmpty() && search.isEmpty() && wholeSale == 0 && flashSale == 0 && endTime.isEmpty()
+
         makeProductListApiCall()
         mainViewModel.getBrandsList()
-
+        binding.result.makeInvisible()
+        binding.category.makeInvisible()
         with(binding) {
             productListRv.apply {
                 setHasFixedSize(true)
@@ -141,9 +144,9 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             }.addOnScrollListener(scrollListener)
         }
 
-        if(flashSale == 1 && endTime.isNotEmpty()){
-            binding.flashDealsGroup.isVisible = true
-            setTimer(endTime)
+        if (flashSale == 1 && endTime.isNotEmpty()) {
+//            binding.flashDealsGroup.isVisible = true
+//            setTimer(endTime)
         }
     }
 
@@ -157,7 +160,10 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             override fun onTick(millisUntilFinished: Long) {
                 updateCountdownText(millisUntilFinished)
             }
-            override fun onFinish() { updateCountdownText(0) }
+
+            override fun onFinish() {
+                updateCountdownText(0)
+            }
         }
         countdownTimer.start()
     }
@@ -189,6 +195,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             page = pageNo,
             wholeSale = wholeSale,
             flashSale = flashSale,
+            random = if(showProductsRandomly)1 else 0,
 
             )
     }
@@ -200,7 +207,9 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     binding.loader.isVisible = false
                     binding.bottomLoader.isVisible = false
-                    if (response.data?.httpcode == 200) setProductData(response.data.data) else showToast(
+                    if (response.data?.httpcode == 200) {
+                        setProductData(response.data.data)
+                    } else showToast(
                         response.data?.message.toString()
                     )
                 }
@@ -229,8 +238,12 @@ class ProductListFragment : Fragment(), View.OnClickListener {
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     private fun setProductData(data: ProductListData) {
         if (pageNo == 0) {
+            if (flashSale == 1 && !data.end_time.isNullOrEmpty()) {
+                binding.flashDealsGroup.isVisible = true
+                setTimer(data.end_time)
+            }
             productList.clear()
-            if(data.subcategory_data!=null) {
+            if (data.subcategory_data != null) {
                 if (!data.subcategory_data.subcategory.isNullOrEmpty()) {
                     val subCategories: MutableList<Subcategory> = ArrayList()
                     val subcategory = Subcategory(id = 0, subcategory_name = "ALL")
@@ -248,11 +261,11 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         }
 
         isLoading = data.products.isEmpty()
-        if(showProductsRandomly) {
+        /*if (showProductsRandomly) {
             productList.addAll(data.products.shuffled())
-        }else{
-            productList.addAll(data.products)
-        }
+        } else {
+        }*/
+        productList.addAll(data.products)
 
         binding.noData.root.isVisible = productList.isEmpty()
         binding.noData.noDataLbl.text = "No Products Found"
@@ -265,29 +278,29 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         }
     }
 
-        private val scrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val recycleLayoutManager =
-                    binding.productListRv.layoutManager as StaggeredGridLayoutManager
-                var pastVisibleItems = 0
-                val visibleItemCount = recycleLayoutManager.childCount
-                val totalItemCount = recycleLayoutManager.itemCount
-                var firstVisibleItems: IntArray? = null
-                firstVisibleItems =
-                    recycleLayoutManager.findFirstVisibleItemPositions(firstVisibleItems)
-                if (firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
-                    pastVisibleItems = firstVisibleItems[0]
-                }
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val recycleLayoutManager =
+                binding.productListRv.layoutManager as StaggeredGridLayoutManager
+            var pastVisibleItems = 0
+            val visibleItemCount = recycleLayoutManager.childCount
+            val totalItemCount = recycleLayoutManager.itemCount
+            var firstVisibleItems: IntArray? = null
+            firstVisibleItems =
+                recycleLayoutManager.findFirstVisibleItemPositions(firstVisibleItems)
+            if (firstVisibleItems != null && firstVisibleItems.isNotEmpty()) {
+                pastVisibleItems = firstVisibleItems[0]
+            }
 
-                if (!isLoading) {
-                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                        pageNo++
-                        makeProductListApiCall()
-                        isLoading = true
-                    }
+            if (!isLoading) {
+                if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                    pageNo++
+                    makeProductListApiCall()
+                    isLoading = true
                 }
             }
         }
+    }
 
     private fun setOnClickListener() {
         with(binding) {
@@ -332,25 +345,28 @@ class ProductListFragment : Fragment(), View.OnClickListener {
 
         with(sortBinding) {
             popularityRadioButton.setOnClickListener {
+                sortDialog.dismiss()
                 popular = "1"
                 newest = ""
                 lowToHigh = ""
                 highToLow = ""
                 pageNo = 0
                 makeProductListApiCall()
-                sortDialog.dismiss()
+
             }
 
             newestRadioButton.setOnClickListener {
+                sortDialog.dismiss()
                 popular = ""
                 newest = "1"
                 lowToHigh = ""
                 highToLow = ""
                 pageNo = 0
                 makeProductListApiCall()
-                sortDialog.dismiss()
+
             }
             lowPriceRadioButton.setOnClickListener {
+                sortDialog.dismiss()
                 popular = ""
                 newest = ""
                 lowToHigh = "1"
@@ -360,12 +376,14 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                     catId,
                     lowToHigh = "1",
                     deviceId = sessionManager.deviceId,
-                    page = pageNo
+                    page = pageNo,
+                    random = if(showProductsRandomly)1 else 0
                 )
-                sortDialog.dismiss()
+
             }
 
             highPriceRadioButton.setOnClickListener {
+                sortDialog.dismiss()
                 popular = ""
                 newest = ""
                 lowToHigh = ""
@@ -375,9 +393,10 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                     catId,
                     highToLow = "1",
                     deviceId = sessionManager.deviceId,
-                    page = pageNo
+                    page = pageNo,
+                    random = if(showProductsRandomly)1 else 0
                 )
-                sortDialog.dismiss()
+
             }
         }
         sortBinding.popularityRadioButton.isChecked = popular.isNotEmpty()

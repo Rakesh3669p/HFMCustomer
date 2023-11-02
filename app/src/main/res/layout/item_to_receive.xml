@@ -12,7 +12,7 @@
         android:id="@+id/productImage"
         android:layout_width="@dimen/_60sdp"
         android:layout_height="@dimen/_60sdp"
-        android:src="@drawable/red_chilli"
+        android:src="@drawable/logo"
         android:elevation="@dimen/_1sdp"
         android:layout_marginVertical="@dimen/_4sdp"
         android:layout_marginHorizontal="@dimen/_5sdp"

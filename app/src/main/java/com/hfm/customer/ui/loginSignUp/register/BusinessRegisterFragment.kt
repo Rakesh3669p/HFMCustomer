@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -22,6 +23,7 @@ import com.hfm.customer.commonModel.CountryData
 import com.hfm.customer.databinding.FragmentBusinessRegisterBinding
 import com.hfm.customer.databinding.TermsAndConditionsPopUpBinding
 import com.hfm.customer.ui.loginSignUp.LoginSignUpViewModel
+import com.hfm.customer.ui.loginSignUp.register.model.BusinessCategoryy
 import com.hfm.customer.ui.loginSignUp.register.model.BusinessData
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
@@ -51,7 +53,7 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
     private var companyContactNo = ""
     private var email = ""
 
-    private lateinit var appLoader:Loader
+    private lateinit var appLoader: Loader
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -71,6 +73,7 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
     }
+
     private fun init() {
         appLoader = Loader(requireContext())
         loginSignUpViewModel.getBusinessCategories()
@@ -126,7 +129,8 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
 
                     if (response.data?.httpcode == "200") {
-                        termsAndCondition = response.data.data.terms_conditions.business_customer_terms
+                        termsAndCondition =
+                            response.data.data.terms_conditions.business_customer_terms
                     } else {
                         showToast(response.data?.message.toString())
                     }
@@ -176,62 +180,67 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setCountriesDropDown(data: CountryData) {
-        val countries: MutableList<String> = ArrayList()
-        data.country.forEach { countries.add(it.phonecode.toString()) }
-        val adapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, countries)
+        val phoneCodes = data.country.map { "+${it.phonecode}" }
+        val countries = data.country.map { it.country_name }
+        val countryIds = data.country.map { it.id.toString() }
+
+        setSpinnerWithList(binding.countryCodeSpinner, phoneCodes, 131) { position ->
+            phoneCode = data.country[position].phonecode.toString()
+        }
+
+    }
+
+
+    private fun setSpinnerWithList(
+        spinner: Spinner,
+        items: List<String>,
+        initialSelection: Int,
+        onItemSelectedAction: (position: Int) -> Unit
+    ) {
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            items
+        )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.countryCodeSpinner.adapter = adapter
-        binding.countryCodeSpinner.setSelection(131)
-        phoneCode = data.country[131].phonecode.toString()
-        binding.countryCodeSpinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parentView: AdapterView<*>,
-                    selectedItemView: View,
-                    position: Int,
-                    id: Long
-                ) {
-                    phoneCode = data.country[position].phonecode.toString()
+        spinner.adapter = adapter
+        spinner.setSelection(initialSelection)
 
-                }
-
-                override fun onNothingSelected(parentView: AdapterView<*>?) {}
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parentView: AdapterView<*>,
+                selectedItemView: View,
+                position: Int,
+                id: Long
+            ) {
+                onItemSelectedAction(position)
             }
+
+            override fun onNothingSelected(parentView: AdapterView<*>?) {}
+        }
     }
 
     private fun setNatureOfBusiness(businessData: BusinessData) {
-
-        val businessNames: MutableList<String> = ArrayList()
-
-        businessData.business_categoryies.forEach {
-            businessNames.add(it.name)
-        }
-
-        val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_spinner_item,
-            businessNames
+        val businessCategory: MutableList<BusinessCategoryy> =
+            businessData.business_categoryies as MutableList<BusinessCategoryy>
+        val businessCat = BusinessCategoryy(
+            created_at = "",
+            created_by = "",
+            crm_id = 0,
+            id = 0,
+            is_active = 0,
+            is_deleted = 0,
+            modified_by = 0,
+            name = "Nature of business",
+            updated_at = "",
         )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        natureOfBusinessId = businessData.business_categoryies[0].id
-        binding.natureOfBusiness.prompt = "Select Business"
-        binding.natureOfBusiness.adapter = adapter
-        binding.natureOfBusiness.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parentView: AdapterView<*>,
-                    selectedItemView: View,
-                    position: Int,
-                    id: Long
-                ) {
-                    natureOfBusiness = parentView.getItemAtPosition(position) as String
-                    natureOfBusinessId = businessData.business_categoryies[position].id
+        businessCategory.add(0, businessCat)
+        val businessNames = businessData.business_categoryies.map { it.name }
 
-                }
-
-                override fun onNothingSelected(parentView: AdapterView<*>?) {}
-            }
+        setSpinnerWithList(binding.natureOfBusiness, businessNames, 0) { position ->
+            natureOfBusiness = businessData.business_categoryies[position].name
+            natureOfBusinessId = businessData.business_categoryies[position].id
+        }
     }
 
     private fun setOnClickListener() {
@@ -249,31 +258,36 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
         email = binding.email.text.toString()
 
         if (companyName.isEmpty()) {
-            showToast("Please enter a valid company name")
+            showToast("please enter a valid company name")
             return
         }
 
         if (companyRegisterNo.isEmpty() || companyRegisterNo.length < 5) {
-            showToast("Please enter a valid company registered no")
+            showToast("please enter a valid company registered no")
             return
         }
+
+        if (natureOfBusinessId <= 0) {
+            showToast("please select your nature of business")
+            return
+        }
+
         if (companyContactNo.isEmpty() || companyContactNo.length < 5) {
-            showToast("Please enter a valid company contact no")
+            showToast("please enter a valid company contact no")
             return
         }
 
         if (!email.isValidEmail()) {
-            showToast("Please enter a valid email")
+            showToast("please enter a valid email")
             return
         }
 
         if (!binding.termsAndConditionsCheckBox.isChecked) {
-            showToast("Please check the Terms and Conditions..")
+            showToast("please check the Terms and Conditions..")
             return
         }
 
         loginSignUpViewModel.sendRegisterOTP(email)
-
 
 
     }

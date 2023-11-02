@@ -54,7 +54,6 @@ class SupportFragment : Fragment(), View.OnClickListener {
         return currentView!!
     }
 
-
     private fun init() {
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
@@ -102,8 +101,13 @@ class SupportFragment : Fragment(), View.OnClickListener {
             createNewTicket.setOnClickListener(this@SupportFragment)
             createNewTicket2.setOnClickListener(this@SupportFragment)
         }
-    }
 
+        supportAdapter.setOnItemClickListener {supportId->
+            val bundle = Bundle()
+            bundle.putInt("supportId",supportId)
+            findNavController().navigate(R.id.supportChatFragment,bundle)
+        }
+    }
 
     override fun onClick(v: View?) {
         when (v?.id) {

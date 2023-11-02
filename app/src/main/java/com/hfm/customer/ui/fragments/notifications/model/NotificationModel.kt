@@ -14,12 +14,14 @@ data class NotificationData(
 )
 
 data class Notification(
-    val created_at: String,
-    val description: String,
     val id: Int,
-    val notify_type: String,
-    val ref_id: Int,
-    val ref_link: String,
     val title: String,
-    val viewed: Int
+    val notify_type: String,
+    val app_target_page: String,
+    val ref_id: Int,
+    val bulk_order_sale_id: Int,
+    val description: String,
+    val ref_link: String,
+    val viewed: Int,
+    val created_at: String
 )

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="Akbar chai"
+    android:textColor="@color/textGreyDark"
     android:paddingVertical="@dimen/_4sdp"
     android:paddingHorizontal="@dimen/_7sdp"
     />

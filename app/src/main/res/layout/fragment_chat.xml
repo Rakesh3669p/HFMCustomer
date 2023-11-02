@@ -25,12 +25,15 @@
     <TextView
         android:id="@+id/toolBarTitle"
         style="@style/textLargeSemiBold"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Title"
+        android:paddingEnd="@dimen/_10sdp"
+        android:translationX="-10dp"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="@id/back"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/back"
         app:layout_constraintTop_toTopOf="@id/back" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -69,10 +72,10 @@
 
         <TextView
             android:id="@+id/amount"
-            style="@style/textSmall"
+            style="@style/textMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:singleLine="false"
             android:text="RM 20,000.00 (3 Items)"
             android:textColor="@color/white"
@@ -82,10 +85,10 @@
 
         <TextView
             android:id="@+id/viewOrder"
-            style="@style/textSmall"
+            style="@style/textMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:singleLine="false"
             android:text="@string/view_order_lbl"
             android:textColor="@color/white"
@@ -104,6 +107,7 @@
         app:layout_constraintBottom_toTopOf="@id/noticeMessage"
         app:layout_constraintEnd_toEndOf="parent"
         android:paddingBottom="@dimen/_14sdp"
+        android:layout_marginTop="@dimen/_5sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ordersLayout"
         tools:listitem="@layout/item_chat" />

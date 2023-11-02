@@ -362,12 +362,14 @@ class CartFragment : Fragment(), View.OnClickListener {
                 subtotalLbl.text = "Subtotal"
             }
 
-            subtotal.text =
-                "RM ${formatToTwoDecimalPlaces(data.total_offer_cost.toString().toDouble())}"
-            shippingAmount.text =
-                "RM ${formatToTwoDecimalPlaces(data.shipping_charges.toString().toDouble())}"
+            subtotal.text = "RM ${formatToTwoDecimalPlaces(data.total_offer_cost.toString().toDouble())}"
+            shippingAmount.text = "RM ${formatToTwoDecimalPlaces(data.shipping_charges.toString().toDouble())}"
             grandTotal = data.grand_total.toString().toDouble()
             totalAmount.text = formatToTwoDecimalPlaces(grandTotal)
+
+            if(data.total_offer_cost.toString().toDouble()>0){
+
+            }
 
             if (cartData.seller_voucher_amt > 0) {
                 storeVoucher.text = "- RM ${cartData.seller_voucher_amt}"

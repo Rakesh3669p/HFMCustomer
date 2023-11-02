@@ -16,7 +16,7 @@
         android:layout_height="@dimen/_50sdp"
         android:elevation="@dimen/_4sdp"
         android:scaleType="fitCenter"
-        android:src="@drawable/red_chilli"
+        android:src="@drawable/logo"
         app:layout_constraintBottom_toTopOf="@id/categoryName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

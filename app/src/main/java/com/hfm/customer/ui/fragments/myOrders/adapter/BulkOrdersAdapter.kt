@@ -35,9 +35,9 @@ class BulkOrdersAdapter @Inject constructor() :
                         imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
                     productImage.load(imageReplaced){
                         placeholder(R.drawable.logo)
+                        error(R.drawable.logo)
                         
                     }
-                    println("imageLoad $imageReplaced")
                 }
 
                 requestId.text = "Request #:${data.bulkrequest_id}"

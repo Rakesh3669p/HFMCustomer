@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/_95sdp"
+    android:layout_width="@dimen/_70sdp"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal">
 
@@ -11,7 +11,7 @@
         android:layout_height="@dimen/_60sdp"
         android:background="@color/white"
         android:elevation="@dimen/_1sdp"
-        android:src="@drawable/red_chilli"
+        android:src="@drawable/logo"
         android:layout_margin="@dimen/_5sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

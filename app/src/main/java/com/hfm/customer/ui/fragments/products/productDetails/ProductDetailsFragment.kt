@@ -7,6 +7,7 @@ import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Context
 import android.content.Intent
 import android.graphics.Point
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -18,6 +19,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.WindowManager
 import android.webkit.WebViewClient
 import android.widget.AdapterView
@@ -72,6 +74,7 @@ import com.hfm.customer.viewModel.MainViewModel
 import com.maxrave.kotlinyoutubeextractor.State
 import com.maxrave.kotlinyoutubeextractor.YTExtractor
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -120,6 +123,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
     @Inject
     lateinit var specsAdapter: SpecsAdapter
+    private var keyBoardOpened = false
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -177,9 +181,31 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         mainViewModel.getProductDetails(productId)
         mainViewModel.getProfile()
 
+        /* binding.pinCode.rootView.viewTreeObserver.addOnGlobalLayoutListener {
+             val rect = Rect()
+             binding.root.getWindowVisibleDisplayFrame(rect)
+             val screenHeight = binding.pinCode.rootView.height
+             val keypadHeight = screenHeight - rect.bottom
+             val isKeyboardOpen = keypadHeight > screenHeight * 0.15
+             if (isKeyboardOpen) {
+                 binding.pinCode.clearFocus()
+             } else {
+                 binding.pinCode.requestFocus()
+             }
+         }*/
+
 
     }
 
+    private fun scrollToView(view: View) {
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val viewY = location[1]
+        val screenHeight: Int = binding.root.height
+        val scrollY: Int = binding.scrollView.scrollY
+        val newScrollY = scrollY + (viewY - screenHeight / 2)
+        binding.scrollView.scrollTo(0, newScrollY)
+    }
 
     private fun setObserver() {
 
@@ -241,6 +267,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
+                        val message = "Your bulk Order request has successfully submitted"
+                        showToast(message)
                         bulkOrderDialog.dismiss()
                         val bundle = Bundle()
                         bundle.putString("from", "bulkOrders")
@@ -265,8 +293,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                         200 -> {
                             binding.addToWishlist.setImageResource(R.drawable.like_active)
                             productData.product.in_wishlist = 1
-                            showToast("Product added to wishlist")
-
+                            showToast("Product added to favourites")
                         }
 
                         401 -> {
@@ -296,7 +323,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                         200 -> {
                             binding.addToWishlist.setImageResource(R.drawable.ic_fav)
                             productData.product.in_wishlist = 0
-                            showToast("Product removed from wishlist")
+                            showToast("Product removed from favourites")
                         }
 
                         401 -> {
@@ -321,20 +348,26 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if (response.data?.httpcode == 200) {
-                        showToast(response.data.message)
-                        binding.addToCartMain.makeInvisible()
-                        binding.cartCount.makeVisible()
-                        binding.qty.text = "1"
-                        qty = 1
-                        cartId = response.data.data.cart_id.toString()
-                        cartCount.postValue(cartCount.value?.plus(1) ?: 1)
-                    } else if (response.data?.httpcode == 401) {
-                        sessionManager.isLogin = false
-                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
-                        requireActivity().finish()
-                    } else {
-                        showToast(response.data?.message.toString())
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            showToast(response.data.message)
+                            binding.addToCartMain.makeInvisible()
+                            binding.cartCount.makeVisible()
+                            binding.qty.text = "1"
+                            qty = 1
+                            cartId = response.data.data.cart_id.toString()
+                            cartCount.postValue(cartCount.value?.plus(1) ?: 1)
+                        }
+
+                        401 -> {
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
+
+                        else -> {
+                            showToast(response.data?.message.toString())
+                        }
                     }
                 }
 
@@ -677,7 +710,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             if (productData.varaiants_list.isNotEmpty()) {
                 selectedVariant = productData.varaiants_list[0].pro_id.toString()
                 soldOut.isVisible = productData.varaiants_list[0].is_out_of_stock == 1
-                if (productData.varaiants_list[0].offer_price!=null && productData.varaiants_list[0].offer_price.toString() != "false") {
+                if (productData.varaiants_list[0].offer_price != null && productData.varaiants_list[0].offer_price.toString() != "false") {
                     binding.productListingPrice.isVisible = true
                     binding.productPrice.text = "RM ${
                         formatToTwoDecimalPlaces(
@@ -918,7 +951,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
     private var dateSetListener =
         OnDateSetListener { _, year, month, dayOfMonth ->
-            bottomSheetBinding.date.text = "$dayOfMonth-$month-$year"
+            bottomSheetBinding.date.text = "$dayOfMonth-${month + 1}-$year"
         }
 
 
@@ -1010,6 +1043,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             cart.setOnClickListener(this@ProductDetailsFragment)
             addToWishlist.setOnClickListener(this@ProductDetailsFragment)
             chat.setOnClickListener(this@ProductDetailsFragment)
+            pinCode.setOnClickListener(this@ProductDetailsFragment)
 
             exoPlay.setOnClickListener {
                 videoPlayer.play()
@@ -1019,6 +1053,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 videoPlayer.pause()
             }
         }
+
 
 
         productsImagesAdapter.setOnImageClickListener { data ->
@@ -1086,6 +1121,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
+            binding.pinCode.id -> {
+                      scrollToView(binding.pinCode)
+            }
+
             binding.cart.id -> findNavController().navigate(R.id.cartFragment)
             binding.chat.id -> {
 
@@ -1176,6 +1215,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
 
             binding.checkPinCode.id -> {
+                binding.pinCode.clearFocus()
                 val pinCode = binding.pinCode.text.toString()
                 if (pinCode.isEmpty()) {
                     showToast("Please Enter a valid postCode.")

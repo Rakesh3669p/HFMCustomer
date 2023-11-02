@@ -111,7 +111,7 @@ class CreatePasswordFragment : Fragment(), View.OnClickListener {
         if (password.length <= 8) {
             showToast("password length must be more than 8")
         } else if (password != confirmPassword) {
-            showToast("Passwords do not match.")
+            showToast("password and confirm password does not match!")
         } else {
             if (from == "profile") {
                 findNavController().previousBackStackEntry?.savedStateHandle?.set(

@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.databinding.ItemNotificationBinding
 import com.hfm.customer.ui.fragments.notifications.model.Notification
+import com.hfm.customer.utils.toTimeAgo
+import com.hfm.customer.utils.toUnixTimestamp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -22,12 +24,13 @@ class NotificationAdapter @Inject constructor() : RecyclerView.Adapter<Notificat
 
             with(binding) {
                 notificationTitle.text = data.title
-
-
-
-                val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-                val timeAgo = dateFormat.parse(data.created_at) ?: Date()
+                val timestamp = data.created_at.toUnixTimestamp()
+                val timeAgo = timestamp.toTimeAgo()
                 time.text = timeAgo.toString()
+
+                root.setOnClickListener {
+                    onItemClick?.invoke(absoluteAdapterPosition)
+                }
             }
         }
     }
@@ -55,9 +58,12 @@ class NotificationAdapter @Inject constructor() : RecyclerView.Adapter<Notificat
         )
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(differ.currentList[position])
-    }
-
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(differ.currentList[position])
     override fun getItemCount(): Int = differ.currentList.size
+
+    private var onItemClick: ((id: Int) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (id: Int) -> Unit) {
+        onItemClick = listener
+    }
 }

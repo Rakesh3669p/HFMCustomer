@@ -1,4 +1,4 @@
-package com.hfm.customer.ui.dashBoard.chat
+package com.hfm.customer.ui.fragments.support
 
 import android.app.Activity
 import android.app.Dialog
@@ -12,7 +12,6 @@ import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -24,8 +23,10 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.DialogueMediaPickupBinding
 import com.hfm.customer.databinding.FragmentChatBinding
 import com.hfm.customer.ui.dashBoard.chat.adapter.ChatAdapter
-import com.hfm.customer.ui.dashBoard.chat.model.Message
-import com.hfm.customer.ui.dashBoard.chat.model.Messages
+import com.hfm.customer.ui.fragments.support.adapter.SupportChatAdapter
+import com.hfm.customer.ui.fragments.support.model.Message
+
+import com.hfm.customer.ui.fragments.support.model.SupportMessages
 import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
@@ -51,7 +52,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class ChatFragment : Fragment(), View.OnClickListener {
+class SupportChatFragment : Fragment(), View.OnClickListener {
 
     private var messagesList: MutableList<Message> = ArrayList()
 
@@ -63,7 +64,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
     private var currentView: View? = null
 
     @Inject
-    lateinit var chatAdapter: ChatAdapter
+    lateinit var supportChatAdapter: SupportChatAdapter
 
     @Inject
     lateinit var sessionManager: SessionManager
@@ -76,10 +77,8 @@ class ChatFragment : Fragment(), View.OnClickListener {
 
     private var orderIdData = ""
     private var saleId = ""
-    private var orderDateTime = ""
-    private var orderAmount = ""
-    private var qty = ""
     private var keyBoardOpened = false
+    private var supportId = 0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -99,40 +98,21 @@ class ChatFragment : Fragment(), View.OnClickListener {
     }
 
     private fun init() {
-        initRecyclerView(requireContext(), binding.chatRv, chatAdapter)
+        binding.toolBarTitle.text = "HFM Support"
 
         val spannable = SpannableString(getString(R.string.view_order_lbl))
         spannable.setSpan(UnderlineSpan(), 0, getString(R.string.view_order_lbl).length, 0)
         binding.viewOrder.text = spannable
 
+        binding.noticeMessage.root.isVisible = false
+        initRecyclerView(requireContext(), binding.chatRv, supportChatAdapter)
+
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
 
-        val from = arguments?.getString("from").toString()
-        val storeName = arguments?.getString("storeName").toString()
-        sellerId = arguments?.getString("sellerId").toString()
-        chatId = arguments?.getInt("chatId").toString()
-        saleId = arguments?.getString("saleId").toString()
-        binding.noticeMessage.root.isVisible = from == "chatList"
-        binding.toolBarTitle.text = storeName
-        mainViewModel.getChatMessage(sellerId, chatId)
-
-        orderIdData = arguments?.getString("orderId") ?: ""
-        orderDateTime = arguments?.getString("orderDateTime") ?: ""
-        orderAmount = arguments?.getString("orderAmount") ?: ""
-        qty = arguments?.getString("itemsCount") ?: ""
-
-        with(binding) {
-            ordersLayout.isVisible = !orderIdData.isNullOrEmpty()
-            orderDate.isVisible = !orderDateTime.isNullOrEmpty()
-            amount.isVisible = !orderAmount.isNullOrEmpty()
-
-            orderId.text = "# $orderIdData"
-            orderDate.text = orderDateTime
-            amount.text = "RM $orderAmount ($qty Items)"
-
-        }
+        supportId = arguments?.getInt("supportId") ?: 0
+        mainViewModel.getSupportMessages(supportId)
 
         binding.root.viewTreeObserver.addOnGlobalLayoutListener {
             val r = Rect()
@@ -143,7 +123,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
             if (isKeyboardOpen) {
                 if (!keyBoardOpened) {
                     keyBoardOpened = true
-                    binding.chatRv.scrollToPosition(chatAdapter.itemCount - 1)
+                    binding.chatRv.scrollToPosition(supportChatAdapter.itemCount - 1)
                 }
             } else {
                 keyBoardOpened = false
@@ -154,13 +134,13 @@ class ChatFragment : Fragment(), View.OnClickListener {
 
 
     private fun setObserver() {
-        mainViewModel.chatMessages.observe(viewLifecycleOwner) { response ->
+        mainViewModel.supportChatMessages.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     when (response.data?.httpcode) {
                         200 -> {
-                            setChatData(response.data.data.messages)
+                            setChatData(response.data.data.support_messages)
                         }
 
                         401 -> {
@@ -170,7 +150,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
                         }
 
                         else -> {
-                            //                        showToast(response.data?.message.toString())
+                            showToast(response.data?.message.toString())
                         }
                     }
                 }
@@ -180,30 +160,34 @@ class ChatFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        mainViewModel.sendMessage.observe(viewLifecycleOwner) { response ->
+        mainViewModel.sendSupportMessage.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if (response.data?.httpcode == 200) {
-                        binding.edtMessage.setText("")
-                        binding.gallery.setImageResource(R.drawable.ic_gallery)
-                        if (response.data.data.chat_message.isNotEmpty()) {
-                            response.data.data.chat_message[0].let {
-                                messagesList.add(response.data.data.chat_message[0])
-                                chatAdapter.differ.submitList(messagesList)
-
-                                chatAdapter.notifyDataSetChanged()
-                                binding.chatRv.postDelayed({
-                                    binding.chatRv.scrollToPosition(chatAdapter.itemCount - 1)
-                                }, 150)
-                            }
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            binding.edtMessage.setText("")
+                            binding.gallery.setImageResource(R.drawable.ic_gallery)
+                            mainViewModel.getSupportMessages(supportId)
+                            /* if (response.data.data.chat_message.isNotEmpty()) {
+                                            response.data.data.chat_message[0].let {
+                                               *//* messagesList.add(response.data.data.chat_message[0])
+                                                chatAdapter.differ.submitList(messagesList)
+                                                chatAdapter.notifyDataSetChanged()
+                                                binding.chatRv.postDelayed({
+                                                    binding.chatRv.scrollToPosition(chatAdapter.itemCount - 1)
+                                                }, 150)*//*
+                                            }
+                                        }*/
                         }
-                    } else if (response.data?.httpcode == 401) {
-                        sessionManager.isLogin = false
-                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
-                        requireActivity().finish()
-                    } else {
-                        showToast(response.data?.message.toString())
+                        401 -> {
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
+                        else -> {
+                            showToast(response.data?.message.toString())
+                        }
                     }
                 }
 
@@ -213,29 +197,30 @@ class ChatFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun setChatData(messages: Messages) {
+    private fun setChatData(messages: SupportMessages) {
 
         messagesList = messages.messages.toMutableList()
-        chatAdapter.differ.submitList(messagesList)
-        chatAdapter.setSellerName(messages.seller_name)
+        supportChatAdapter.differ.submitList(messagesList)
         binding.chatRv.postDelayed({
-            binding.chatRv.scrollToPosition(chatAdapter.itemCount - 1)
+            binding.chatRv.scrollToPosition(supportChatAdapter.itemCount - 1)
         }, 150)
         with(binding) {
-            ordersLayout.isVisible = messages.order_id != null
-            orderIdData = messages.order_id
-            saleId = if (messages.sale_id != null) messages.sale_id.toString() else ""
+            if(messages.order_details.isNotEmpty()) {
+                ordersLayout.isVisible = true
+                messages.order_details[0].let {
+                    orderIdData = it.order_id
+                    saleId = if (it.sale_id != null) it.sale_id.toString() else ""
 
-            ordersLayout.isVisible = !messages.order_id.isNullOrEmpty()
-            orderDate.isVisible = !messages.order_id.isNullOrEmpty()
-            amount.isVisible = !messages.order_id.isNullOrEmpty()
+                    ordersLayout.isVisible = !it.order_id.isNullOrEmpty()
+                    orderDate.isVisible = !it.order_id.isNullOrEmpty()
+                    amount.isVisible = !it.order_id.isNullOrEmpty()
 
-            orderId.text = "Order #: ${messages.order_id}"
-            orderDate.text = "${messages.order_date}"
-            amount.text = "RM ${
-                messages.grand_total?.toDouble()
-                    ?.let { formatToTwoDecimalPlaces(it) }
-            } (${messages.quantity} Items)"
+                    orderId.text = "Order #: ${it.order_id}"
+                    orderDate.text = "${it.order_date} | ${it.order_time}"
+                    amount.text = "RM ${it.grand_total?.let { formatToTwoDecimalPlaces(it) }} (${it.products.size}  Items)"
+                }
+
+            }
         }
     }
 
@@ -250,10 +235,11 @@ class ChatFragment : Fragment(), View.OnClickListener {
 
     private fun setOnClickListener() {
         with(binding) {
-            back.setOnClickListener(this@ChatFragment)
-            viewOrder.setOnClickListener(this@ChatFragment)
-            sendMessage.setOnClickListener(this@ChatFragment)
-            gallery.setOnClickListener(this@ChatFragment)
+            back.setOnClickListener(this@SupportChatFragment)
+            viewOrder.setOnClickListener(this@SupportChatFragment)
+            sendMessage.setOnClickListener(this@SupportChatFragment)
+            gallery.setOnClickListener(this@SupportChatFragment)
+
         }
     }
 
@@ -272,8 +258,6 @@ class ChatFragment : Fragment(), View.OnClickListener {
             messagesList.map { it.warning = false }
             val warningMessage = Message(
                 align = "right",
-                chat_date = "",
-                chat_time = formattedTime,
                 created_at = formattedTime,
                 from = "You",
                 image = "",
@@ -284,11 +268,11 @@ class ChatFragment : Fragment(), View.OnClickListener {
                 warning = true,
             )
             messagesList.add(warningMessage)
-            chatAdapter.differ.submitList(messagesList)
-            chatAdapter.notifyDataSetChanged()
+            supportChatAdapter.differ.submitList(messagesList)
+            supportChatAdapter.notifyDataSetChanged()
 
             binding.chatRv.postDelayed({
-                binding.chatRv.scrollToPosition(chatAdapter.itemCount - 1)
+                binding.chatRv.scrollToPosition(supportChatAdapter.itemCount - 1)
             }, 100)
 
         } else {
@@ -300,10 +284,8 @@ class ChatFragment : Fragment(), View.OnClickListener {
             }
             requestBodyMap["access_token"] = sessionManager.token.toRequestBody(MultipartBody.FORM)
             requestBodyMap["message"] = message.toRequestBody(MultipartBody.FORM)
-            requestBodyMap["seller_id"] = sellerId.toRequestBody(MultipartBody.FORM)
-            requestBodyMap["prd_id"] = productId.toRequestBody(MultipartBody.FORM)
-            requestBodyMap["sale_id"] = saleId.toRequestBody(MultipartBody.FORM)
-            mainViewModel.sendMessage(requestBodyMap)
+            requestBodyMap["support_id"] = supportId.toString().toRequestBody(MultipartBody.FORM)
+            mainViewModel.sendSupportMessage(requestBodyMap)
         }
     }
 

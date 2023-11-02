@@ -44,7 +44,18 @@ class FlashDealAdapter @Inject constructor() :
                 soldOut.isVisible = data.is_out_of_stock==1
 
 
-                frozenLbl.isVisible =data.frozen.toString().toDouble() > 0
+                if(data.frozen==1){
+                    frozenLbl.isVisible = true
+                    frozenLbl.text = "frozen"
+                }else if(data.chilled==1){
+                    frozenLbl.isVisible = true
+                    frozenLbl.text = "chilled"
+                }else if(data.chilled==1&&data.frozen==1){
+                    frozenLbl.isVisible = true
+                    frozenLbl.text = "frozen/chilled"
+                }else{
+                    frozenLbl.isVisible = false
+                }
                 wholeSaleLbl.isVisible =data.wholesale.toString().toDouble() > 0
 
                 if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){

@@ -177,7 +177,7 @@
                 android:layout_height="0dp"
                 app:roundPercent="0.3"
                 android:scaleType="centerInside"
-                android:src="@drawable/red_chilli"
+                android:src="@drawable/logo"
                 android:layout_margin="@dimen/_5sdp"
                 android:background="@color/background"
                 app:layout_constraintStart_toStartOf="@id/uploadImages"

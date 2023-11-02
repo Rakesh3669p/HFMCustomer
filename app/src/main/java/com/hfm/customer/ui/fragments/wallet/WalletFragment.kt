@@ -65,7 +65,7 @@ class WalletFragment : Fragment(), View.OnClickListener {
                 is Resource.Success->{
                     appLoader.dismiss()
                     if(response.data?.httpcode=="200"){
-                        val pointToRM = response.data.data.total_balance/10
+                        val pointToRM = response.data.data.total_balance/100
                         binding.balance.text = "${response.data.data.total_balance.roundToInt()} Points (RM ${formatToTwoDecimalPlaces(pointToRM)})"
                         initRecyclerView(requireContext(),binding.walletRv,walletAdapter)
                         walletAdapter.differ.submitList(response.data.data.wallet)

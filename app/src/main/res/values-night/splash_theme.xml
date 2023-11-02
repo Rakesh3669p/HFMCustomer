@@ -3,6 +3,8 @@
     <!-- Splash Screen Theme. -->
     <style name="Theme.AppSplash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="background">@color/white</item>
+        <item name="backgroundColor">@color/white</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_image</item>
         <item name="windowSplashScreenAnimationDuration">200</item>
         <item name="postSplashScreenTheme">@style/Theme.HFMCustomer</item>

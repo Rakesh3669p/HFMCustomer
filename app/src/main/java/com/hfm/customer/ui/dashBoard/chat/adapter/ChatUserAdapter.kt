@@ -24,7 +24,7 @@ class ChatUserAdapter @Inject constructor() : RecyclerView.Adapter<ChatUserAdapt
             with(bind) {
                 userImage.load(replaceBaseUrl(data.logo)){
                     placeholder(R.drawable.logo)
-                    
+                    error(R.drawable.logo)
                 }
                 userName.text = data.store_name
                 lastMessage.text = data.last_message

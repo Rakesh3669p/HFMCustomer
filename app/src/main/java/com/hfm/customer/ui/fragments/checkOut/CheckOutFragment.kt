@@ -334,7 +334,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             val walletBalance = cartData.wallet_balance
             if (walletBalance != "false") {
                 val pointToRM = walletBalance.toDouble() / 100
-                points.text = "${walletBalance.toDouble().roundToInt()} Points (RM ${formatToTwoDecimalPlaces(pointToRM)})"
+                points.text = "${walletBalance.toDouble().roundToInt()} (RM ${formatToTwoDecimalPlaces(pointToRM)})"
             } else {
                 points.text = "0 (RM 0.00)"
                 wallet.text = "RM 0.00"

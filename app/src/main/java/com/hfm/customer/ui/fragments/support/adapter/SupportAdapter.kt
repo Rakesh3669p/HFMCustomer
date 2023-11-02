@@ -22,7 +22,11 @@ class SupportAdapter @Inject constructor() : RecyclerView.Adapter<SupportAdapter
                 ticketId.text = "#${data.ticket_id}"
                 dateLbl.text = data.created_at
                 titleLbl.text = data.subject
-                desc.isVisible = false
+                desc.text = data.last_message
+
+                root.setOnClickListener {
+                    onItemClick?.invoke(data.support_id)
+                }
             }
         }
     }
@@ -55,4 +59,10 @@ class SupportAdapter @Inject constructor() : RecyclerView.Adapter<SupportAdapter
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+
+    private var onItemClick: ((id: Int) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (id: Int) -> Unit) {
+        onItemClick = listener
+    }
 }

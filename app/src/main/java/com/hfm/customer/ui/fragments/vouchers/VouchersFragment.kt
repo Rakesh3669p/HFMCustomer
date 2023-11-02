@@ -57,7 +57,6 @@ class VouchersFragment : Fragment(), View.OnClickListener {
             currentView = inflater.inflate(R.layout.fragment_vouchers, container, false)
             binding = FragmentVouchersBinding.bind(currentView!!)
             init()
-
             setOnClickListener()
         }
         return currentView!!
@@ -68,14 +67,12 @@ class VouchersFragment : Fragment(), View.OnClickListener {
         setObserver()
     }
 
-
     private fun init() {
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         mainViewModel.getPlatFormVouchers(0)
     }
-
 
     private fun setObserver() {
         mainViewModel.platformVouchers.observe(viewLifecycleOwner) { response ->
@@ -128,7 +125,5 @@ class VouchersFragment : Fragment(), View.OnClickListener {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
         }
-
-
     }
 }

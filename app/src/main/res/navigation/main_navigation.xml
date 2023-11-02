@@ -289,5 +289,15 @@
             app:popUpToInclusive="true" />
 
     </fragment>
+    <fragment
+        android:id="@+id/supportChatFragment"
+        android:name="com.hfm.customer.ui.fragments.support.SupportChatFragment"
+        android:label="SupportChatFragment"
+        tools:layout="@layout/fragment_chat"/>
+    <fragment
+        android:id="@+id/submitReviewFragment"
+        android:name="com.hfm.customer.ui.fragments.review.SubmitReviewFragment"
+        android:label="SubmitReviewFragment"
+        tools:layout="@layout/fragment_submit_review"/>
 
 </navigation>

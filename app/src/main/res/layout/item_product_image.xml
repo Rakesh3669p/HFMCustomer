@@ -16,7 +16,7 @@
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_gravity="center"
-        android:src="@drawable/red_chilli"
+        android:src="@drawable/logo"
         android:scaleType="fitXY"
         android:padding="@dimen/_2sdp"
         app:layout_constraintBottom_toBottomOf="parent"

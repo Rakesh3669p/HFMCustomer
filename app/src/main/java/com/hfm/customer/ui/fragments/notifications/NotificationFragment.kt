@@ -7,9 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentNotificationsBinding
 import com.hfm.customer.ui.fragments.notifications.adapter.NotificationAdapter
+import com.hfm.customer.ui.fragments.notifications.model.Notification
+import com.hfm.customer.ui.fragments.notifications.model.NotificationData
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
@@ -24,14 +28,17 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class NotificationFragment : Fragment(), View.OnClickListener {
 
+    private val notificationsList: MutableList<Notification> = ArrayList()
     private lateinit var binding: FragmentNotificationsBinding
     private var currentView: View? = null
 
     @Inject
     lateinit var notificationAdapter: NotificationAdapter
-    private lateinit var appLoader:Loader
-    private lateinit var noInternetDialog:NoInternetDialog
-    private val mainViewModel:MainViewModel by  viewModels()
+    private lateinit var appLoader: Loader
+    private lateinit var noInternetDialog: NoInternetDialog
+    private val mainViewModel: MainViewModel by viewModels()
+    private var pageNo = 0
+    private var isLoading = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +57,7 @@ class NotificationFragment : Fragment(), View.OnClickListener {
 
 
     private fun init() {
-        mainViewModel.getNotifications()
+        mainViewModel.getNotifications(pageNo = pageNo)
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener {
@@ -58,20 +65,51 @@ class NotificationFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            val pastVisibleItems = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val visibleItemCount = layoutManager.childCount
+            val totalItemCount = layoutManager.itemCount
+
+            if (!isLoading && (visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                pageNo++
+                mainViewModel.getNotifications(pageNo)
+                isLoading = true
+            }
+        }
+    }
 
     private fun setObserver() {
-        mainViewModel.notifications.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.notifications.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode  == "200"){
-                        initRecyclerView(requireContext(),binding.notificationRv,notificationAdapter)
-                        notificationAdapter.differ.submitList(response.data.data.notifications)
+                    if (response.data?.httpcode == "200") {
+                        setNotificationsData(response.data.data)
                     }
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
+        }
+    }
+
+    private fun setNotificationsData(data: NotificationData) {
+        isLoading  = data.notifications.isEmpty()
+        if (pageNo == 0) {
+            initRecyclerView(
+                requireContext(),
+                binding.notificationRv,
+                notificationAdapter
+            )
+            notificationsList.addAll(data.notifications)
+            notificationAdapter.differ.submitList(data.notifications)
+        } else {
+            notificationsList.addAll(data.notifications)
+            notificationAdapter.differ.submitList(data.notifications)
+            notificationAdapter.notifyDataSetChanged()
         }
     }
 
@@ -87,6 +125,80 @@ class NotificationFragment : Fragment(), View.OnClickListener {
     private fun setOnClickListener() {
         with(binding) {
             back.setOnClickListener(this@NotificationFragment)
+        }
+
+        notificationAdapter.setOnItemClickListener { position ->
+            val notification = notificationAdapter.differ.currentList[position]
+            when (notification.app_target_page) {
+                "order" -> {
+                    when(notification.notify_type){
+                        "quotation_accepted","bulk_order_requested","quotation_rejected","quotation_created"->{
+                            val bundle = Bundle()
+                            bundle.putString("from", "bulkOrder")
+                            bundle.putString("orderId", notification.ref_id.toString())
+                            bundle.putString("saleId", notification.bulk_order_sale_id.toString())
+                            findNavController().navigate(R.id.bulkOrderDetailsFragment, bundle)
+                            mainViewModel.viewedNotification(notificationId = notification.id)
+                        }
+                        else->{
+                            val bundle = Bundle()
+                            bundle.putString("orderId", notification.ref_id.toString())
+//                    bundle.putString("saleId", it.sale_id.toString())
+                            findNavController().navigate(R.id.orderDetailsFragment, bundle)
+                            mainViewModel.viewedNotification(notificationId = notification.id)
+                        }
+                    }
+
+                }
+
+                "product" -> {
+                    val bundle =
+                        Bundle().apply { putString("productId", notification.ref_id.toString()) }
+                    findNavController().navigate(R.id.productDetailsFragment, bundle)
+                    mainViewModel.viewedNotification(notificationId = notification.id)
+                }
+
+                "flash_deal" -> {
+                    findNavController().popBackStack()
+                    val bundle = Bundle()
+                    bundle.putInt("flashSale", 1)
+                    findNavController().navigate(R.id.productListFragment, bundle)
+                    mainViewModel.viewedNotification(notificationId = notification.id)
+                }
+
+                "profile" -> {
+                    findNavController().popBackStack()
+                    findNavController().navigate(R.id.profileFragment)
+                    mainViewModel.viewedNotification(notificationId = notification.id)
+                }
+
+                "cart" -> {
+                    findNavController().popBackStack()
+                    findNavController().navigate(R.id.cartFragment)
+                    mainViewModel.viewedNotification(notificationId = notification.id)
+                }
+
+                "bulk_order" -> {
+                    val bundle = Bundle()
+                    bundle.putString("from", "bulkOrder")
+                    bundle.putString("orderId", notification.ref_id.toString())
+//                        bundle.putString("saleId", bulkOrders[position].sale_id ?: "")
+                    findNavController().popBackStack()
+                    findNavController().navigate(R.id.bulkOrderDetailsFragment, bundle)
+                    mainViewModel.viewedNotification(notificationId = notification.id)
+                }
+
+                "support" -> {
+                    /* val bundle = Bundle()
+                     bundle.putString("from", "bulkOrder")
+                     bundle.putString("orderId", notification.ref_id.toString())
+ //                  bundle.putString("saleId", bulkOrders[position].sale_id ?: "")
+                     findNavController().popBackStack()
+                     findNavController().navigate(R.id.bulkOrderDetailsFragment, bundle)*/
+                    mainViewModel.viewedNotification(notificationId = notification.id)
+
+                }
+            }
         }
     }
 

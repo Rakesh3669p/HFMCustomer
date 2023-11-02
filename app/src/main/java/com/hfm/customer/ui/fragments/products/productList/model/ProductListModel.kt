@@ -12,6 +12,9 @@ data class ProductListModel(
 
 data class ProductListData(
     val currency: String,
+    val shock_sale_title: String,
+    val start_time: String,
+    val end_time: String,
     val products: List<Product>,
     val subcategory_data: SubcategoryData,
     val total_products: Int

@@ -23,8 +23,8 @@ class VouchersAdapter @Inject constructor() : RecyclerView.Adapter<VouchersAdapt
         fun bind(data: Coupon) {
             with(binding) {
                 discountPercent.text = data.offer
-                discountDescription.text =
-                    "Min. Spend RM${data.minimumPurchase} Capped at ${data.offerValue}"
+                discountDescription.text = data.desc
+//                discountDescription.text = "Min. Spend RM${data.minimumPurchase} Capped at ${data.offerValue}"
 
                 val red = ContextCompat.getColorStateList(context, R.color.red)
                 val grey = ContextCompat.getColorStateList(context, R.color.textGreyDark)

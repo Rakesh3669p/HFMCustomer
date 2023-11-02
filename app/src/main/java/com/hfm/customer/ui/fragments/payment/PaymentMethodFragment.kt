@@ -99,6 +99,7 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
                             val bundle = Bundle()
                             bundle.putString("orderId",response.data.data.order_id)
                             bundle.putString("amount",response.data.data.amount)
+                            bundle.putString("paymentUrl",response.data.data.payment_url)
                             findNavController().navigate(R.id.IPay88Fragment,bundle)
                         } else {
                             showSuccessDialog(response.data.data.order_id)
@@ -150,7 +151,7 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
 
     private fun checkPaymentMethods() {
         if(paymentMethodId<=0||paymentMethodId==null){
-            showToast("Please Select any Payment Method to Proceed.")
+            showToast("Please select any payment method to proceed.")
         }else{
 
             mainViewModel.placeOrder(receivedJsonObject!!)
