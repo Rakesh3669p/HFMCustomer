@@ -91,7 +91,7 @@
                         android:singleLine="false"
                         android:text="Apr 20,2022 | 3.00pm"
                         android:textColor="@color/textGreyDark"
-                        app:layout_constraintBottom_toTopOf="@id/requestStatus"
+                        app:layout_constraintBottom_toTopOf="@id/quotationStatusfirst"
                         app:layout_constraintStart_toStartOf="@+id/requestStatusLbl"
                         app:layout_constraintTop_toBottomOf="@id/orderId" />
 
@@ -101,14 +101,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="false"
-                        android:text="Request Accept Status: "
+                        android:text="Quotation Accept Status: "
                         android:textColor="@color/textGreyDark"
-                        app:layout_constraintBottom_toBottomOf="@+id/requestStatus"
+                        app:layout_constraintBottom_toBottomOf="@+id/quotationStatusfirst"
                         app:layout_constraintStart_toStartOf="@+id/orderId"
-                        app:layout_constraintTop_toTopOf="@id/requestStatus" />
+                        app:layout_constraintTop_toTopOf="@id/quotationStatusfirst" />
 
                     <TextView
-                        android:id="@+id/requestStatus"
+                        android:id="@+id/quotationStatusfirst"
                         style="@style/textMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

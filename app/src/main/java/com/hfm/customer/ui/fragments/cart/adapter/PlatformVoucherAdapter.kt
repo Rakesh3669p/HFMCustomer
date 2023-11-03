@@ -29,8 +29,8 @@ class PlatformVoucherAdapter @Inject constructor() : RecyclerView.Adapter<Platfo
         fun bind(data: Coupon) {
             with(bind) {
 
-                discountPercent.text = data.offer
-                discountDescription.text = "Min. Spend RM${data.minimumPurchase} Capped at ${data.offerValue}"
+                discountPercent.text = data.title
+                discountDescription.text = data.desc
                 voucherExpiry.text = "Expires on: ${data.validUpto}"
 
                 radioBtn.isChecked = selectedPosition == absoluteAdapterPosition

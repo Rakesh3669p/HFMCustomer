@@ -7,11 +7,28 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/media"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/_60sdp"
+        android:layout_height="@dimen/_60sdp"
         android:scaleType="fitXY"
         app:roundPercent="0.2"
         android:elevation="@dimen/_1sdp"
-        android:src="@drawable/logo_new_2"/>
+        android:src="@drawable/logo_new_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/removeMedia"
+        android:layout_width="@dimen/_14sdp"
+        android:layout_height="@dimen/_14sdp"
+        android:scaleType="fitXY"
+        app:roundPercent="1"
+        android:padding="@dimen/_1sdp"
+        android:background="@color/red"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="@dimen/_1sdp"
+        android:src="@drawable/ic_close"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

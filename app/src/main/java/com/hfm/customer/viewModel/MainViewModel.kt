@@ -46,6 +46,7 @@ import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetailsModel
 import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
 import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
+import com.hfm.customer.ui.fragments.store.model.StoreReviewsModel
 import com.hfm.customer.ui.fragments.support.model.SupportMessagesModel
 import com.hfm.customer.ui.fragments.support.model.SupportTicketsModel
 import com.hfm.customer.ui.fragments.vouchers.model.VoucherListModel
@@ -105,6 +106,7 @@ class MainViewModel @Inject constructor(
     val relatedSearchTerms = SingleLiveEvent<Resource<RelatedSearchTermsModel>>()
     val notifications = SingleLiveEvent<Resource<NotificationModel>>()
     val profile: MutableLiveData<Resource<ProfileModel>> = MutableLiveData()
+    val productReview: MutableLiveData<Resource<RatingReviewsModel>> = MutableLiveData()
     val sendBulkOrderRequest = SingleLiveEvent<Resource<BulkOrderRequestModel>>()
     val bulkOrderList = SingleLiveEvent<Resource<BulkOrdersListModel>>()
     val addBulkOrdersAction = SingleLiveEvent<Resource<SuccessModel>>()
@@ -135,6 +137,7 @@ class MainViewModel @Inject constructor(
     val updateProfileBusiness = SingleLiveEvent<Resource<SuccessModel>>()
     val updateCartCount = SingleLiveEvent<Resource<SuccessModel>>()
     val storeDetails = SingleLiveEvent<Resource<StoreDetailsModel>>()
+    val storeReview = SingleLiveEvent<Resource<StoreReviewsModel>>()
     val myOrders = SingleLiveEvent<Resource<MyOrdersModel>>()
     val placeOrder = SingleLiveEvent<Resource<PlaceOrderModel>>()
     val uploadOrderReceipt = SingleLiveEvent<Resource<SuccessModel>>()
@@ -165,6 +168,7 @@ class MainViewModel @Inject constructor(
             checkAppUpdate.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
+
     fun checkLogin() = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
@@ -308,8 +312,8 @@ class MainViewModel @Inject constructor(
         featureProductsJson.addProperty("category_id", "")
         featureProductsJson.addProperty("subcategory_id", "")
         featureProductsJson.addProperty("brand_id", "")
-        featureProductsJson.addProperty("max_price", 1000)
-        featureProductsJson.addProperty("min_price", 500)
+        featureProductsJson.addProperty("max_price", "")
+        featureProductsJson.addProperty("min_price", "")
         featureProductsJson.addProperty("low_to_high", "")
         featureProductsJson.addProperty("high_to_low", "")
         featureProductsJson.addProperty("latest", "")
@@ -631,9 +635,12 @@ class MainViewModel @Inject constructor(
     }
 
     fun getProfile() = viewModelScope.launch {
+
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
-        safeGetProfileCall(jsonObject)
+        if (sessionManager.isLogin) {
+            safeGetProfileCall(jsonObject)
+        }
     }
 
     private suspend fun safeGetProfileCall(jsonObject: JsonObject) {
@@ -646,6 +653,39 @@ class MainViewModel @Inject constructor(
                 profile.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             profile.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getProductReview(
+        productId: String,
+        limit: Int,
+        pageNo: Int = 0,
+        rating: String = "",
+        media: String = ""
+    ) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("product_id", productId)
+        jsonObject.addProperty("limit", limit)
+        jsonObject.addProperty("offset", pageNo)
+        jsonObject.addProperty("rating", rating)
+        jsonObject.addProperty("media_filter", media)
+        jsonObject.addProperty("os_type", "app")
+        if (sessionManager.isLogin) {
+            safeGetProductReviewCall(jsonObject)
+        }
+    }
+
+    private suspend fun safeGetProductReviewCall(jsonObject: JsonObject) {
+        productReview.postValue(Resource.Loading())
+        try {
+            val response = repository.getProductReview(jsonObject)
+            if (response.isSuccessful)
+                productReview.postValue(Resource.Success(checkResponseBody(response.body()) as RatingReviewsModel))
+            else
+                productReview.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            productReview.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 
@@ -811,6 +851,7 @@ class MainViewModel @Inject constructor(
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("lang_id", 1)
+        jsonObject.addProperty("os_type", "app")
         safeWishListProductsCall(jsonObject)
     }
 
@@ -830,6 +871,7 @@ class MainViewModel @Inject constructor(
     fun getAddress() = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("os_type", "app")
         safeGetAddressCall(jsonObject)
     }
 
@@ -849,6 +891,7 @@ class MainViewModel @Inject constructor(
     fun getCheckoutInfo() = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("os_type", "app")
         safeGetCheckoutInfoCall(jsonObject)
     }
 
@@ -899,6 +942,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("latitude", latitude.toDouble())
         jsonObject.addProperty("longitude", longitude.toDouble())
         jsonObject.addProperty("is_default", is_default)
+        jsonObject.addProperty("os_type", "app")
         safeAddNewAddressCall(jsonObject)
     }
 
@@ -919,6 +963,7 @@ class MainViewModel @Inject constructor(
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("address_id", addressId)
+
         safeDeleteAddressCall(jsonObject)
     }
 
@@ -1423,6 +1468,31 @@ class MainViewModel @Inject constructor(
                 storeDetails.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             storeDetails.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getStoreReviews(sellerId: Int, rating: String, pageNo: Int) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_toke", sessionManager.token)
+        jsonObject.addProperty("seller_id", sellerId)
+        jsonObject.addProperty("rating", rating)
+        jsonObject.addProperty("limit", 50)
+        jsonObject.addProperty("offset", pageNo)
+        jsonObject.addProperty("lang_id", "")
+        jsonObject.addProperty("os_type", "app")
+        safeGetStoreReviewsCall(jsonObject)
+    }
+
+    private suspend fun safeGetStoreReviewsCall(jsonObject: JsonObject) {
+        storeReview.postValue(Resource.Loading())
+        try {
+            val response = repository.getStoreReviews(jsonObject)
+            if (response.isSuccessful)
+                storeReview.postValue(Resource.Success(checkResponseBody(response.body()) as StoreReviewsModel))
+            else
+                storeReview.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            storeReview.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 

@@ -128,11 +128,12 @@
                 <TextView
                     android:id="@+id/voucherName"
                     style="@style/textMediumSemiBold"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_9sdp"
                     android:text="NEW 10"
                     android:textColor="@color/black"
+                    app:layout_constraintEnd_toStartOf="@id/removeVoucher"
                     app:layout_constraintBottom_toTopOf="@id/voucherDescription"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -140,11 +141,12 @@
                 <TextView
                     android:id="@+id/voucherDescription"
                     style="@style/textMedium"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_9sdp"
                     android:text="you saved additional RM 12"
                     android:textColor="@color/black"
+                    app:layout_constraintEnd_toStartOf="@id/removeVoucher"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/voucherName"
                     app:layout_constraintBottom_toBottomOf="parent"/>
@@ -329,7 +331,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_9sdp"
                         android:text="RM 0.00"
-                        android:textColor="@color/red"
+                        android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="@id/subtotalLbl"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/subtotalLbl" />
@@ -421,7 +423,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_9sdp"
                         android:text="RM 0.00"
-                        android:textColor="@color/red"
+                        android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="@id/shippingChargesLbl"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/shippingChargesLbl" />

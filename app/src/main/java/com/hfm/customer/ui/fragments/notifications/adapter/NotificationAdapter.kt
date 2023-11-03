@@ -3,9 +3,11 @@ package com.hfm.customer.ui.fragments.notifications.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemNotificationBinding
 import com.hfm.customer.ui.fragments.notifications.model.Notification
 import com.hfm.customer.utils.toTimeAgo
@@ -23,10 +25,18 @@ class NotificationAdapter @Inject constructor() : RecyclerView.Adapter<Notificat
         fun bind(data: Notification) {
 
             with(binding) {
-                notificationTitle.text = data.title
+                notificationTitle.text = "${data.title}: ${data.description}"
                 val timestamp = data.created_at.toUnixTimestamp()
                 val timeAgo = timestamp.toTimeAgo()
                 time.text = timeAgo.toString()
+
+                if(data.viewed==1){
+                    notificationTitle.setTextColor(ContextCompat.getColor(context, R.color.grey))
+                    time.setTextColor(ContextCompat.getColor(context, R.color.grey))
+                }else{
+                    notificationTitle.setTextColor(ContextCompat.getColor(context, R.color.black))
+                    time.setTextColor(ContextCompat.getColor(context, R.color.textGreyDark))
+                }
 
                 root.setOnClickListener {
                     onItemClick?.invoke(absoluteAdapterPosition)

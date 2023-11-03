@@ -10,7 +10,7 @@ import com.hfm.customer.ui.fragments.store.StoreProductListFragment
 import com.hfm.customer.ui.fragments.store.StoreRatingFragment
 import com.hfm.customer.ui.fragments.store.model.StoreData
 
-class StorePagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle, val storeData: StoreData) :
+class StorePagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle, var storeData: StoreData) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun createFragment(position: Int): Fragment {

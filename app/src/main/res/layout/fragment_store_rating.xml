@@ -18,15 +18,11 @@
         android:padding="@dimen/_10sdp"
         app:layout_constraintTop_toTopOf="parent">
 
-
-
-
         <TextView
             android:id="@+id/reviewRatingCount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_25sdp"
-
             android:fontFamily="@font/roboto_bold"
             android:text="4.6"
             android:gravity="center"
@@ -86,9 +82,10 @@
                 style="@style/textMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edt_line_red_box"
-                android:backgroundTint="@color/grey_lite"
+                android:background="@drawable/edt_box_smaa_radius"
+                android:backgroundTint="@color/red"
                 android:clickable="true"
+                android:textColor="@color/white"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:gravity="center"
@@ -191,6 +188,17 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </HorizontalScrollView>
 
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/noReviews"
+        style="@style/textSmallSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="No Reviews Available"
+        app:layout_constraintTop_toBottomOf="@+id/ratingSelection"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reviewsRv"
         android:layout_width="match_parent"
@@ -212,9 +220,22 @@
         layout="@layout/no_data_found"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <View
+        android:visibility="gone"
+        android:id="@+id/loader"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

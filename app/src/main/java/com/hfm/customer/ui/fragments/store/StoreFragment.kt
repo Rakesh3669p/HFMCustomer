@@ -18,6 +18,7 @@ import coil.transform.CircleCropTransformation
 import com.google.android.material.tabs.TabLayout
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentStoreBinding
+import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.ui.fragments.store.adapter.StorePagerAdapter
 import com.hfm.customer.ui.fragments.store.model.StoreData
 import com.hfm.customer.ui.loginSignUp.LoginActivity
@@ -38,6 +39,8 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class StoreFragment : Fragment(), View.OnClickListener {
 
+    private lateinit var viewPagerAdapter: StorePagerAdapter
+
     private lateinit var storeData: StoreData
 
     private var storeId: String = ""
@@ -51,6 +54,8 @@ class StoreFragment : Fragment(), View.OnClickListener {
     @Inject
     lateinit var sessionManager: SessionManager
     private var storeDetailsAlreadySetted = false
+
+    val storeProducts :MutableList<Product> = ArrayList()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,19 +81,30 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
     private fun setSearchView() {
 
-        binding.search.setOnEditorActionListener { _, actionId, _ ->
+     /*   binding.search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                if (binding.search.text.toString().isNotEmpty()) {
-                    mainViewModel.getStoreDetails(sellerId = storeId)
-                    /*findNavController().popBackStack()
-                    val bundle = Bundle()
-                    bundle.putString("keyword", binding.search.text.toString())
-                    findNavController().navigate(R.id.productListFragment, bundle)*/
+                val searchValue = binding.search.text.toString().lowercase()
+                if(searchValue.isNotEmpty()) {
+                    val storeDataProducts = storeData.product.filter { it.product_name.lowercase().contains() }
+                    storeData.product = storeDataProducts
+                    if (this::viewPagerAdapter.isInitialized) {
+                        viewPagerAdapter.storeData = storeData
+                        viewPagerAdapter.notifyItemChanged(1)
+                        binding.storeVp.currentItem = 1
+                    }
+                }else{
+                    val storeDataProducts = storeData.product
+                    storeData.product = storeDataProducts
+                    if (this::viewPagerAdapter.isInitialized) {
+                        viewPagerAdapter.storeData = storeData
+                        viewPagerAdapter.notifyItemChanged(1)
+                        binding.storeVp.currentItem = 1
+                    }
                 }
                 return@setOnEditorActionListener true
             }
             false
-        }
+        }*/
 
     }
 
@@ -96,12 +112,7 @@ class StoreFragment : Fragment(), View.OnClickListener {
         binding.storeDataGroup.isVisible = false
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
-
-
-
         mainViewModel.getProfile()
-
-
     }
 
 
@@ -115,9 +126,10 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
 
         val fragmentManager = childFragmentManager
-        val viewPagerAdapter = StorePagerAdapter(fragmentManager, lifecycle, data)
+        viewPagerAdapter = StorePagerAdapter(fragmentManager, lifecycle, data)
         binding.storeVp.adapter = viewPagerAdapter
         binding.storeVp.isSaveEnabled = false
+        binding.storeVp.isUserInputEnabled = false
         binding.storeVp.currentItem = 1
         binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1))
 

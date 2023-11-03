@@ -57,12 +57,15 @@ class OTPFragment : Fragment(), View.OnClickListener {
             currentView = inflater.inflate(R.layout.fragment_otp, container, false)
             binding = FragmentOtpBinding.bind(currentView!!)
             init()
-            setObserver()
             setOnClickListener()
         }
         return currentView!!
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObserver()
+    }
     private fun init() {
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())

@@ -44,6 +44,7 @@ import coil.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.hfm.customer.R
+import com.hfm.customer.commonModel.RatingReviewsData
 import com.hfm.customer.databinding.BottomSheetBulkOrderBinding
 import com.hfm.customer.databinding.FragmentProductDetailBinding
 import com.hfm.customer.ui.dashBoard.profile.model.Profile
@@ -100,7 +101,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     private lateinit var productData: ProductData
     private lateinit var profileData: Profile
     private lateinit var binding: FragmentProductDetailBinding
-
+    private var dateNeeded = ""
     private var currentView: View? = null
 
     @Inject
@@ -179,7 +180,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         binding.loader.isVisible = true
         val productId = arguments?.getString("productId").toString()
         mainViewModel.getProductDetails(productId)
+
         mainViewModel.getProfile()
+        mainViewModel.getProductReview(productId = productId, limit = 4)
 
         /* binding.pinCode.rootView.viewTreeObserver.addOnGlobalLayoutListener {
              val rect = Rect()
@@ -215,6 +218,22 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     if (response.data?.httpcode == "200") {
                         profileData = response.data.data.profile[0]
+                    } else {
+                        showToast(response.data?.message.toString())
+                    }
+                }
+
+                is Resource.Loading -> Unit
+                is Resource.Error -> apiError(response.message)
+            }
+        }
+
+        mainViewModel.productReview.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (response.data?.httpcode == 200) {
+                        setReviewData(response.data.data)
                     } else {
                         showToast(response.data?.message.toString())
                     }
@@ -511,6 +530,26 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun setReviewData(data: RatingReviewsData) {
+        initRecyclerView(requireContext(),binding.reviewsRv,reviewsAdapter)
+        reviewsAdapter.differ.submitList(data.review)
+        with(binding){
+            fiveStarCount.text =data.rate_range.fiveStars.toString()
+            fourStarCount.text =data.rate_range.fourStars.toString()
+            threeStarCount.text =data.rate_range.threeStars.toString()
+            twoStarCount.text =data.rate_range.twoStars.toString()
+            oneStarCount.text =data.rate_range.oneStar.toString()
+
+            oneStarSlider.value = ((data.rate_range.oneStar/data.total_review) * 100).toFloat()
+            twoStarSlider.value = ((data.rate_range.twoStars/data.total_review) * 100).toFloat()
+            threeStarSlider.value = ((data.rate_range.threeStars/data.total_review) * 100).toFloat()
+            fourStarSlider.value = ((data.rate_range.fourStars/data.total_review) * 100).toFloat()
+            fiveStarSlider.value = ((data.rate_range.fiveStars/data.total_review) * 100).toFloat()
+
+        }
+
+    }
+
 
     private fun apiError(message: String?) {
         appLoader.dismiss()
@@ -556,7 +595,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             productName.text = productData.product.product_name
             ratingBar.rating = productData.product.rating.toString().toFloat()
             ratingCount.text =
-                productData.product.rating.toString().toDouble().roundToInt().toString()
+                productData.product.rating.toString().toDouble().toString()
             brand.text = "Brand: ${productData.product.brand_name}"
 
             ratingDetails.text = "(${
@@ -790,6 +829,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
 
     private fun showBulkOrderBottomSheet() {
+
         if (!sessionManager.isLogin) {
             showToast("Please login first")
             startActivity(Intent(requireActivity(), LoginActivity::class.java))
@@ -799,12 +839,15 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
         if (!this::productData.isInitialized) return
         var unitOfMeasures = ""
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         bottomSheetBinding = BottomSheetBulkOrderBinding.inflate(layoutInflater)
         bulkOrderDialog =
             BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
 
         bulkOrderDialog.setContentView(bottomSheetBinding.root)
-
+        bulkOrderDialog.setOnDismissListener {
+            requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+        }
 
         val windowManager =
             requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -907,26 +950,26 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     return@setOnClickListener
                 }
                 if (qty.isEmpty() || qty.toInt() < 1) {
-                    showToast("Quantity should be more than 0")
+                    showToast("Purchase Quantity is required")
                     return@setOnClickListener
                 }
 
                 if (unitOfMeasures.isEmpty() || unitOfMeasures == "Units of Measurement") {
-                    showToast("Please Select Unit of Measures")
+                    showToast("Unit of Measures is required!")
                     return@setOnClickListener
                 }
 
                 if (phone.isEmpty()) {
-                    showToast("Please Enter a valid phone")
+                    showToast("Contact Number is required")
                     return@setOnClickListener
                 }
-                if (date.isEmpty()) {
-                    showToast("Please select valid date")
+                if (date.isEmpty()||dateNeeded.isEmpty()) {
+                    showToast("Date is required!")
                     return@setOnClickListener
                 }
 
                 if (deliveryAddress.isEmpty()) {
-                    showToast("Please Enter a valid deliveryAddress")
+                    showToast("Delivery Address is required!")
                     return@setOnClickListener
                 }
 
@@ -936,7 +979,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     email,
                     qty,
                     phone,
-                    date,
+                    dateNeeded,
                     deliveryAddress,
                     remarks,
                     1
@@ -952,6 +995,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     private var dateSetListener =
         OnDateSetListener { _, year, month, dayOfMonth ->
             bottomSheetBinding.date.text = "$dayOfMonth-${month + 1}-$year"
+            dateNeeded = "$year-${month+1}-$dayOfMonth"
         }
 
 
@@ -1246,12 +1290,18 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             binding.cart.id -> findNavController().navigate(R.id.cartFragment)
             binding.addToWishlist.id -> {
-                if (productData.product.in_wishlist == 1) {
-                    mainViewModel.removeFromWishList(productData.product.product_id.toString())
-                    binding.addToWishlist.setImageResource(R.drawable.ic_fav)
-                } else {
-                    mainViewModel.addToWishList(productData.product.product_id.toString())
-                    binding.addToWishlist.setImageResource(R.drawable.like_active)
+                if(sessionManager.isLogin) {
+                    if (productData.product.in_wishlist == 1) {
+                        mainViewModel.removeFromWishList(productData.product.product_id.toString())
+                        binding.addToWishlist.setImageResource(R.drawable.ic_fav)
+                    } else {
+                        mainViewModel.addToWishList(productData.product.product_id.toString())
+                        binding.addToWishlist.setImageResource(R.drawable.like_active)
+                    }
+                }else{
+                    showToast("Please login first")
+                    startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                    requireActivity().finish()
                 }
             }
         }

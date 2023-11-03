@@ -11,7 +11,7 @@ data class StoreDetailsModel(
 
 data class StoreData(
     val best_products: List<Any>,
-    val product: List<Product>,
+    var product: List<Product>,
     val shop_detail: List<ShopDetail>,
     val subcategory_data: SubcategoryData,
     val total_products: Int

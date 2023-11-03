@@ -22,7 +22,7 @@ class VouchersAdapter @Inject constructor() : RecyclerView.Adapter<VouchersAdapt
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: Coupon) {
             with(binding) {
-                discountPercent.text = data.offer
+                discountPercent.text = data.title
                 discountDescription.text = data.desc
 //                discountDescription.text = "Min. Spend RM${data.minimumPurchase} Capped at ${data.offerValue}"
 

@@ -96,15 +96,10 @@ class ProductListAdapter @Inject constructor() :
 
                 if(data.frozen==1){
                     frozenLbl.isVisible = true
-                    frozenLbl.text = "frozen"
+                    frozenLbl.text = "fresh/frozen"
                 }else if(data.chilled==1){
                     frozenLbl.isVisible = true
                     frozenLbl.text = "chilled"
-                }else if(data.chilled==1&&data.frozen==1){
-                    frozenLbl.isVisible = true
-                    frozenLbl.text = "frozen/chilled"
-                }else{
-                    frozenLbl.isVisible = false
                 }
 
                 if (data.wholesale != null) wholeSaleLbl.isVisible =

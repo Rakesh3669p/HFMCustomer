@@ -76,8 +76,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/vouchersRv"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         tools:itemCount="14"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:paddingBottom="@dimen/_55sdp"
+        android:clipToPadding="true"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_platform_voucher"
         app:layout_constraintVertical_bias="0"
@@ -94,13 +97,20 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_10sdp"
         android:gravity="center"
-        android:paddingVertical="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_40sdp"
         android:text="No Vouchers Found"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/applyVoucher"
         app:layout_constraintBottom_toTopOf="@id/cancel"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="@id/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cancel"

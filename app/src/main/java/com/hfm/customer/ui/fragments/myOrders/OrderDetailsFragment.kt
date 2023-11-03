@@ -196,7 +196,11 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
 
             data.purchase[0].let {
                 orderDetails = it
-
+                if(orderDetails.order_type == "bulk_order"){
+                    chat.text = "Support"
+                }else if(orderDetails.order_type == "normal_order"){
+                    chat.text = "Chat"
+                }
                 orderId.text = "Order #:${it.order_id}"
                 orderedDate.text = "${it.order_date} | ${it.order_time}"
                 ordered.alpha = 1f
@@ -445,22 +449,24 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
             binding.submit.id -> uploadPaymentSlip()
             binding.chat.id -> {
                 orderData.purchase[0].let { it ->
-
-                    val chatId =
-                        if (it.chat_id.isNullOrEmpty()) 0 else orderData.purchase[0].chat_id.toInt()
-                    val bundle = Bundle()
-                    bundle.putString("orderId", it.order_id)
-                    bundle.putString(
-                        "orderDateTime",
-                        "${it.order_date} | ${it.order_time}"
-                    )
-                    bundle.putString("storeName", it.store_name)
-                    bundle.putString("orderAmount", it.grand_total.toString())
-                    bundle.putString("itemsCount", it.products.size.toString())
-                    bundle.putInt("chatId", chatId)
-                    bundle.putString("saleId", it.sale_id.toString())
-                    bundle.putString("sellerId", it.seller_id.toString())
-                    findNavController().navigate(R.id.chatFragment, bundle)
+                    if(it.order_type == "normal_order") {
+                        val chatId =
+                            if (it.chat_id.isNullOrEmpty()) 0 else orderData.purchase[0].chat_id.toInt()
+                        val bundle = Bundle()
+                        bundle.putString("orderId", it.order_id)
+                        bundle.putString(
+                            "orderDateTime", it.order_date
+                        )
+                        bundle.putString("storeName", it.store_name)
+                        bundle.putString("orderAmount", it.grand_total.toString())
+                        bundle.putString("itemsCount", it.products.size.toString())
+                        bundle.putInt("chatId", chatId)
+                        bundle.putString("saleId", it.sale_id.toString())
+                        bundle.putString("sellerId", it.seller_id.toString())
+                        findNavController().navigate(R.id.chatFragment, bundle)
+                    }else{
+                        findNavController().navigate(R.id.supportFragment)
+                    }
                 }
 
 

@@ -26,12 +26,15 @@ class ResetPasswordFragment : Fragment() ,View.OnClickListener {
             currentView = inflater.inflate(R.layout.fragment_reset_password, container, false)
             binding = FragmentResetPasswordBinding.bind(currentView!!)
             init()
-            setObserver()
             setOnClickListener()
         }
         return currentView!!
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObserver()
+    }
     private fun init() {
     }
 

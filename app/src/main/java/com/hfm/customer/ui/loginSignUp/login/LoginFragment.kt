@@ -52,12 +52,16 @@ class LoginFragment : Fragment(), View.OnClickListener {
             currentView = inflater.inflate(R.layout.fragment_login, container, false)
             binding = FragmentLoginBinding.bind(currentView!!)
             init()
-            setObserver()
+
             setOnClickListener()
         }
         return currentView!!
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObserver()
+    }
     private fun init() {
         appLoader = Loader(requireContext())
         sessionManager.deviceId = getDeviceIdInternal(requireContext())

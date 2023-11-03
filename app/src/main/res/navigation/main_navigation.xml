@@ -137,6 +137,11 @@
             app:destination="@id/myOrdersFragment"
             app:popUpTo="@id/cartFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_paymentMethodFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/cartFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -279,6 +284,12 @@
         <action
             android:id="@+id/action_online_paymentFragment_to_myOrdersFragment"
             app:destination="@id/myOrdersFragment"
+            app:popUpTo="@id/cartFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_online_paymentFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
             app:popUpTo="@id/cartFragment"
             app:popUpToInclusive="true" />
 

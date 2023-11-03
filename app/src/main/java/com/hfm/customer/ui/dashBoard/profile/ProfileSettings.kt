@@ -67,6 +67,10 @@ class ProfileSettings : Fragment(), View.OnClickListener {
         findNavController()
     }
 
+    private var name = ""
+    private var email = ""
+    private var dob = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -167,12 +171,17 @@ class ProfileSettings : Fragment(), View.OnClickListener {
                 lifecycleScope.launch {
                     imageLoader.execute(request)
                 }
+
                 nameEdt.setText("${it.first_name} ${it.last_name}")
                 emailEdt.setText(it.email)
                 dobEdt.text = if (it.birthday == "null") "" else it.birthday
                 pickImage.setOnClickListener {
                     showImagePickupDialog()
                 }
+
+                name = nameEdt.text.toString()
+                email = emailEdt.text.toString()
+                dob = dobEdt.text.toString()
             }
         }
     }
@@ -243,9 +252,9 @@ class ProfileSettings : Fragment(), View.OnClickListener {
     }
 
     private fun updateProfile() {
-        val name = binding.nameEdt.text.toString()
-        val email = binding.emailEdt.text.toString()
-        val dob = binding.dobEdt.text.toString()
+        name = binding.nameEdt.text.toString()
+        email = binding.emailEdt.text.toString()
+        dob = binding.dobEdt.text.toString()
         if (name.isEmpty()) {
             showToast("Please enter a valid name")
             return
@@ -263,8 +272,7 @@ class ProfileSettings : Fragment(), View.OnClickListener {
 
             val requestBodyMap = mutableMapOf<String, RequestBody?>()
             if(imgFile!=null) {
-                requestBodyMap["profile_img\"; filename=\"profile.jpg\""] =
-                    imgFile?.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                requestBodyMap["profile_img\"; filename=\"profile.jpg\""] = imgFile?.asRequestBody("image/jpeg".toMediaTypeOrNull())
             }
             requestBodyMap["access_token"] = sessionManager.token.toRequestBody(MultipartBody.FORM)
             requestBodyMap["first_name"] = name.toRequestBody(MultipartBody.FORM)
@@ -285,6 +293,9 @@ class ProfileSettings : Fragment(), View.OnClickListener {
             binding.changePasswordEdt.id -> {
                 val bundle = Bundle()
                 bundle.putString("from", "profile")
+                bundle.putString("name", name)
+                bundle.putString("email", email)
+                bundle.putString("dob", dob)
                 findNavController().navigate(R.id.createPasswordFragment, bundle)
             }
 

@@ -141,6 +141,22 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
         val title = binding.titleEdt.text.toString()
         val message = binding.messageEdt.text.toString()
 
+        if(title.isEmpty()){
+            showToast("please enter the title")
+            return
+        }
+
+        if(message.isEmpty()){
+            showToast("please enter the message")
+            return
+        }
+
+        if(binding.ticketSpinner.selectedItemPosition==1&&saleId.isEmpty()){
+            showToast("please select the order")
+            return
+        }
+
+
         val requestBodyMap = mutableMapOf<String, RequestBody?>()
         if(imgFile!=null) {
             requestBodyMap["image\"; filename=\"profile.jpg\""] =

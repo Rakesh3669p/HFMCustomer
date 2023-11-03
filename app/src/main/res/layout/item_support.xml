@@ -67,6 +67,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:singleLine="false"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:text="@string/largeText"
             android:textColor="@color/textGreyDark"
             android:layout_marginTop="@dimen/_5sdp"

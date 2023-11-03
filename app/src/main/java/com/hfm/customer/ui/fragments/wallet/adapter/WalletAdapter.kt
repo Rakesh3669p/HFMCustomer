@@ -26,12 +26,12 @@ class WalletAdapter @Inject constructor() : RecyclerView.Adapter<WalletAdapter.V
                     transactionType.text = "Received (${data.source})"
                     transactionType.setTextColor(ContextCompat.getColor(context, R.color.green))
                     amount.setTextColor(ContextCompat.getColor(context, R.color.green))
-                    amount.text = formatToTwoDecimalPlaces(data.credit.toDouble())
+                    amount.text = "RM ${formatToTwoDecimalPlaces(data.credit.toDouble()/100)}"
                 }else{
                     transactionType.text = "Paid (${data.source})"
                     transactionType.setTextColor(ContextCompat.getColor(context, R.color.red))
                     amount.setTextColor(ContextCompat.getColor(context, R.color.red))
-                    amount.text = formatToTwoDecimalPlaces(data.debit.toDouble())
+                    amount.text = "RM ${formatToTwoDecimalPlaces(data.debit.toDouble()/100)}"
                 }
                 dateLbl.text = "${data.source_ids} ${data.created_at}"
 

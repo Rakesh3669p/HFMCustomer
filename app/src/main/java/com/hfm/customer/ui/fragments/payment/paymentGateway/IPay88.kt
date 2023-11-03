@@ -15,6 +15,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
@@ -25,6 +26,8 @@ import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -107,8 +110,6 @@ class IPay88 : Fragment() {
             findNavController().navigate(R.id.action_online_paymentFragment_to_myOrdersFragment)
         }
         appCompatDialog.show()
-
-
     }
 
     private fun showFailedDialog() {
@@ -122,13 +123,18 @@ class IPay88 : Fragment() {
         bindingDialog.desc.text = "Unable to make Payment,\n Please try again.."
         bindingDialog.ok.setOnClickListener {
             appCompatDialog.dismiss()
-            findNavController().navigate(R.id.action_online_paymentFragment_to_myOrdersFragment)
+            findNavController().navigate(R.id.action_online_paymentFragment_to_homeFragment)
         }
         appCompatDialog.show()
 
+        lifecycleScope.launch {
+            delay(3000)
+            if(appCompatDialog.isShowing){
+                findNavController().navigate(R.id.action_online_paymentFragment_to_myOrdersFragment)
+            }
+        }
+
     }
-
-
 }
 
 class JSBridge() {

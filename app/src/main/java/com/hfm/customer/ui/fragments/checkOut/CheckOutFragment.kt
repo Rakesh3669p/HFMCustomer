@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -286,7 +287,8 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setProducts(cartData: CartData) {
-
+        val blackColor = ContextCompat.getColor(requireContext(),R.color.black)
+        val redColor = ContextCompat.getColor(requireContext(),R.color.red)
         this.cartData = cartData
 
         with(binding) {
@@ -315,9 +317,9 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             }
 
             storeVoucher.text =
-                if (cartData.seller_voucher_amt > 0) "- RM ${cartData.seller_voucher_amt}" else "RM 0.00"
+                if (cartData.seller_voucher_amt > 0) "RM -${cartData.seller_voucher_amt}" else "RM 0.00"
             platformVoucher.text =
-                if (cartData.platform_voucher_amt > 0) "- RM ${cartData.platform_voucher_amt}" else "RM 0.00"
+                if (cartData.platform_voucher_amt > 0) "RM -${cartData.platform_voucher_amt}" else "RM 0.00"
 
             subtotalLbl.text = if (productCount > 0) "Subtotal($productCount Items)" else "Subtotal"
             subtotal.text = "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
@@ -344,7 +346,9 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 delay(150)
                 scrollView.isVisible = true
             }
+
         }
+
 
         binding.loader.isVisible = false
     }
@@ -385,7 +389,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             applyVoucher.setOnClickListener {
                 val couponCode = voucherCode.text.toString()
                 if (couponCode.isEmpty()) {
-                    showToast("Please enter a coupon code to apply")
+                    showToast("Please enter a coupon code or select to apply")
                 }
 
                 mainViewModel.applyPlatFormVouchers(
@@ -394,6 +398,10 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 )
             }
             apply.setOnClickListener {
+                if(platFormSelectedVoucher?.couponCode.isNullOrEmpty()){
+                    showToast("Please enter a coupon code or select to apply")
+
+                }
                 mainViewModel.applyPlatFormVouchers(
                     platFormSelectedVoucher?.couponCode ?: "",
                     cartData.total_offer_cost.toString()
@@ -447,7 +455,8 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
 
                 val couponCode = voucherCode.text.toString()
                 if (couponCode.isEmpty()) {
-                    showToast("Please enter a coupon code to apply")
+                    showToast("Please enter a coupon code or select to apply")
+                    return@setOnClickListener
                 }
 
                 mainViewModel.applySellerVouchers(
@@ -460,13 +469,10 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             apply.setOnClickListener {
                 val sellerData =
                     cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
-
-                if (sellerSelectedVoucher == null) {
-                    showToast("please select any coupon to apply.")
+                if(sellerSelectedVoucher?.couponCode.isNullOrEmpty()){
+                    showToast("Please enter a coupon code or select to apply")
                     return@setOnClickListener
                 }
-
-
 
                 mainViewModel.applySellerVouchers(
                     selectingVoucherSellerId,

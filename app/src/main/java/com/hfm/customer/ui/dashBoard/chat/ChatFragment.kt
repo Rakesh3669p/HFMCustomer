@@ -37,6 +37,8 @@ import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
+import com.hfm.customer.utils.toOrderChatFormattedDate
+import com.hfm.customer.utils.toOrderDetailsFormattedDate
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -45,8 +47,10 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -128,8 +132,8 @@ class ChatFragment : Fragment(), View.OnClickListener {
             orderDate.isVisible = !orderDateTime.isNullOrEmpty()
             amount.isVisible = !orderAmount.isNullOrEmpty()
 
-            orderId.text = "# $orderIdData"
-            orderDate.text = orderDateTime
+            orderId.text = "Order #: $orderIdData"
+            orderDate.text = orderDateTime.toChatFormattedDate()
             amount.text = "RM $orderAmount ($qty Items)"
 
         }
@@ -151,6 +155,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
         }
 
     }
+
 
 
     private fun setObserver() {
@@ -185,6 +190,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
+                        imgFile = null
                         binding.edtMessage.setText("")
                         binding.gallery.setImageResource(R.drawable.ic_gallery)
                         if (response.data.data.chat_message.isNotEmpty()) {
@@ -231,7 +237,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
             amount.isVisible = !messages.order_id.isNullOrEmpty()
 
             orderId.text = "Order #: ${messages.order_id}"
-            orderDate.text = "${messages.order_date}"
+            orderDate.text = "${messages.order_date?.toChatFormattedDate()}"
             amount.text = "RM ${
                 messages.grand_total?.toDouble()
                     ?.let { formatToTwoDecimalPlaces(it) }
@@ -239,6 +245,18 @@ class ChatFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun String.toChatFormattedDate(): String {
+        val inputDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
+        val outputDateFormat = SimpleDateFormat("E, d' 'MMM yyyy", Locale.US)
+
+        return try {
+            val date = inputDateFormat.parse(this)
+            outputDateFormat.format(date)
+        } catch (e: Exception) {
+            // Handle parsing or formatting errors here
+            this // Return the original string if there's an error
+        }
+    }
     private fun apiError(message: String?) {
         appLoader.dismiss()
         showToast(message.toString())
@@ -315,7 +333,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
 
-        appCompatDialog.setCancelable(false)
+        appCompatDialog.setCancelable(true)
         appCompatDialog.show()
         bindingDialog.camera.setOnClickListener {
             ImagePicker.with(this).cameraOnly()

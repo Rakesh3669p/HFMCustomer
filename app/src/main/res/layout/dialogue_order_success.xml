@@ -53,7 +53,7 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:backgroundTint="@color/red"
         android:textColor="@color/white"
-        android:text="@string/ok"
+        android:text="@string/continue_shopping"
         app:cornerRadius="@dimen/_5sdp"
         app:layout_constraintTop_toBottomOf="@id/desc"
         app:layout_constraintStart_toStartOf="parent"

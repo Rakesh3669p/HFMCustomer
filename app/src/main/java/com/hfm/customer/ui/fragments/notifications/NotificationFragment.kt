@@ -142,8 +142,8 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                         }
                         else->{
                             val bundle = Bundle()
-                            bundle.putString("orderId", notification.ref_id.toString())
-//                    bundle.putString("saleId", it.sale_id.toString())
+                            bundle.putString("orderId", notification.order_id)
+                            bundle.putString("saleId", notification.ref_id.toString())
                             findNavController().navigate(R.id.orderDetailsFragment, bundle)
                             mainViewModel.viewedNotification(notificationId = notification.id)
                         }
@@ -159,7 +159,6 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 }
 
                 "flash_deal" -> {
-                    findNavController().popBackStack()
                     val bundle = Bundle()
                     bundle.putInt("flashSale", 1)
                     findNavController().navigate(R.id.productListFragment, bundle)
@@ -167,13 +166,11 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 }
 
                 "profile" -> {
-                    findNavController().popBackStack()
                     findNavController().navigate(R.id.profileFragment)
                     mainViewModel.viewedNotification(notificationId = notification.id)
                 }
 
                 "cart" -> {
-                    findNavController().popBackStack()
                     findNavController().navigate(R.id.cartFragment)
                     mainViewModel.viewedNotification(notificationId = notification.id)
                 }
@@ -183,7 +180,6 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                     bundle.putString("from", "bulkOrder")
                     bundle.putString("orderId", notification.ref_id.toString())
 //                        bundle.putString("saleId", bulkOrders[position].sale_id ?: "")
-                    findNavController().popBackStack()
                     findNavController().navigate(R.id.bulkOrderDetailsFragment, bundle)
                     mainViewModel.viewedNotification(notificationId = notification.id)
                 }

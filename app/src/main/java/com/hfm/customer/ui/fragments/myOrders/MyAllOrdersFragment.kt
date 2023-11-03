@@ -116,7 +116,7 @@ class MyAllOrdersFragment : Fragment(), View.OnClickListener {
             bundle.putString("orderId", myOrders[position].order_id)
             bundle.putString(
                 "orderDateTime",
-                "${myOrders[position].order_date} | ${myOrders[position].order_time}"
+                "${myOrders[position].order_date}"
             )
             bundle.putString("storeName", myOrders[position].store_name)
             bundle.putString("orderAmount", myOrders[position].grand_total.toString())

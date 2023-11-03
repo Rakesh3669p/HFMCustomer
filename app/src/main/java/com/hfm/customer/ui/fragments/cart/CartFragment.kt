@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -336,21 +337,22 @@ class CartFragment : Fragment(), View.OnClickListener {
             addVoucher.isVisible = cartData.is_platform_coupon_applied == 0
             if (!updateFrom) {
                 scrollView.isVisible = false
+                checkOut.isVisible = false
             }
-
 
             initRecyclerView(requireContext(), binding.cartDataRv, cartAdapter)
             val animator: RecyclerView.ItemAnimator? = cartDataRv.itemAnimator
+
             if (animator is DefaultItemAnimator) {
                 animator.supportsChangeAnimations = false
                 cartDataRv.itemAnimator = null
             }
 
-            cartAdapter.differ.submitList(data.seller_product)
-            totalItems.text = "${data.cart_count} Items"
-            selectAll.text = "Select All (${data.cart_count})"
+            cartAdapter.differ.submitList(cartData.seller_product)
+            totalItems.text = "${cartData.cart_count} Items"
+            selectAll.text = "Select All (${cartData.cart_count})"
 
-            val productCount = data.seller_product.sumOf { sellerProducts ->
+            val productCount = cartData.seller_product.sumOf { sellerProducts ->
                 sellerProducts.seller.products.count { product ->
                     product.cart_selected.toString().toDouble() > 0
                 }
@@ -362,51 +364,46 @@ class CartFragment : Fragment(), View.OnClickListener {
                 subtotalLbl.text = "Subtotal"
             }
 
-            subtotal.text = "RM ${formatToTwoDecimalPlaces(data.total_offer_cost.toString().toDouble())}"
-            shippingAmount.text = "RM ${formatToTwoDecimalPlaces(data.shipping_charges.toString().toDouble())}"
-            grandTotal = data.grand_total.toString().toDouble()
+            subtotal.text = "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
+            shippingAmount.text = "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
+            grandTotal = cartData.grand_total.toString().toDouble()
             totalAmount.text = formatToTwoDecimalPlaces(grandTotal)
 
-            if(data.total_offer_cost.toString().toDouble()>0){
-
-            }
-
             if (cartData.seller_voucher_amt > 0) {
-                storeVoucher.text = "- RM ${cartData.seller_voucher_amt}"
+                storeVoucher.text = "RM -${cartData.seller_voucher_amt}"
             } else {
                 storeVoucher.text = "RM 0.00"
             }
 
             if (cartData.platform_voucher_amt > 0) {
-                platformVoucher.text = "- RM ${cartData.platform_voucher_amt}"
+                platformVoucher.text = "RM -${cartData.platform_voucher_amt}"
             } else {
                 platformVoucher.text = "RM 0.00"
             }
 
 
-            if (data.wallet_balance != "false") {
-                val pointToRM = data.wallet_balance.toDouble() / 100
-                points.text = "${data.wallet_balance.toDouble().roundToInt()} (RM ${
-                    formatToTwoDecimalPlaces(pointToRM)
-                })"
+            if (cartData.wallet_balance != "false") {
+                val pointToRM = cartData.wallet_balance.toDouble() / 100
+                points.text = "${cartData.wallet_balance.toDouble().roundToInt()} (RM ${formatToTwoDecimalPlaces(pointToRM)})"
             } else {
                 points.text = "0 (RM 0.00)"
                 wallet.text = "RM 0.00"
             }
 
-
-            val allCartSelectedIsOne = data.seller_product.all { it.seller.cart_selected == 1 }
+            val allCartSelectedIsOne = cartData.seller_product.all { it.seller.cart_selected == 1 }
             selectAll.isChecked = allCartSelectedIsOne
 
             voucherName.text = cartData.platform_coupon_data.title
-            voucherDescription.text =
-                "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
+            voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
 
             lifecycleScope.launch {
                 delay(100)
                 cartProductDeleted = false
                 scrollView.isVisible = true
+                checkOut.isVisible = true
             }
+
+
             updateFrom = false
         }
     }
@@ -438,7 +435,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                         grandTotal
                     )
                     binding.wallet.text =
-                        "- RM ${formatToTwoDecimalPlaces(cartData.wallet_balance.toDouble() - walletUpdate.first)}"
+                        "RM -${formatToTwoDecimalPlaces(cartData.wallet_balance.toDouble() - walletUpdate.first)}"
                     binding.totalAmount.text = formatToTwoDecimalPlaces(walletUpdate.second)
                 } else {
                     showToast("There are no wallet points to use")
@@ -456,11 +453,9 @@ class CartFragment : Fragment(), View.OnClickListener {
         }
 
         cartAdapter.setOnAppliedCoupon { _, amount ->
-            binding.storeVoucher.text = "- RM $amount"
+            binding.storeVoucher.text = "RM -$amount"
             val finalAmount = formatToTwoDecimalPlaces(grandTotal - amount.toDouble())
             binding.totalAmount.text = finalAmount
-
-
         }
 
 
@@ -573,7 +568,8 @@ class CartFragment : Fragment(), View.OnClickListener {
             applyVoucher.setOnClickListener {
                 val couponCode = voucherCode.text.toString()
                 if (couponCode.isEmpty()) {
-                    showToast("Please enter a coupon code to apply")
+                    showToast("Please enter a coupon code or select to apply")
+                    return@setOnClickListener
                 }
 
                 mainViewModel.applyPlatFormVouchers(
@@ -582,6 +578,10 @@ class CartFragment : Fragment(), View.OnClickListener {
                 )
             }
             apply.setOnClickListener {
+                if(platFormSelectedVoucher?.couponCode.isNullOrEmpty()){
+                    showToast("Please enter a coupon code or select to apply")
+                    return@setOnClickListener
+                }
                 mainViewModel.applyPlatFormVouchers(
                     platFormSelectedVoucher?.couponCode ?: "",
                     cartData.total_offer_cost.toString()
@@ -635,7 +635,8 @@ class CartFragment : Fragment(), View.OnClickListener {
                     cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
                 val couponCode = voucherCode.text.toString()
                 if (couponCode.isEmpty()) {
-                    showToast("Please enter a coupon code to apply")
+                    showToast("Please enter a coupon code or select to apply")
+                    return@setOnClickListener
                 }
 
                 mainViewModel.applySellerVouchers(
@@ -645,9 +646,16 @@ class CartFragment : Fragment(), View.OnClickListener {
                 )
             }
 
+
+
             apply.setOnClickListener {
                 val sellerData =
                     cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+
+                if(sellerSelectedVoucher?.couponCode.isNullOrEmpty()){
+                    showToast("Please enter a coupon code or select to apply")
+                    return@setOnClickListener
+                }
 
                 mainViewModel.applySellerVouchers(
                     selectingVoucherSellerId,
@@ -715,6 +723,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                     showToast("Please select any product to checkout.")
 
                 } else {
+                    findNavController().popBackStack()
                     findNavController().navigate(R.id.checkOutFragment)
                 }
             }

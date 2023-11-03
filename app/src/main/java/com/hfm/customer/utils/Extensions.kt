@@ -301,6 +301,18 @@ fun String.toOrderDetailsFormattedDate(): String {
         this // Return the original string if there's an error
     }
 }
+fun String.toOrderChatFormattedDate(): String {
+    val inputDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
+    val outputDateFormat = SimpleDateFormat("E, d' 'MMM yyyy | hh:mm a", Locale.US)
+
+    return try {
+        val date = inputDateFormat.parse(this)
+        outputDateFormat.format(date)
+    } catch (e: Exception) {
+        // Handle parsing or formatting errors here
+        this // Return the original string if there's an error
+    }
+}
 
 fun Long.toTimeAgo(): CharSequence {
     val currentTimeMillis = System.currentTimeMillis()

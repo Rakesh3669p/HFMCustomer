@@ -342,7 +342,8 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         val sortDialog =
             BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         sortDialog.setContentView(sortBinding.root)
-
+        sortDialog.setCanceledOnTouchOutside(true)
+        sortDialog.setCancelable(true)
         with(sortBinding) {
             popularityRadioButton.setOnClickListener {
                 sortDialog.dismiss()
@@ -411,6 +412,9 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         val filterDialog =
             BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         filterDialog.setContentView(bottomSheetFilterBinding.root)
+        filterDialog.setCanceledOnTouchOutside(true)
+        filterDialog.setCancelable(true)
+
         filterBrandAdapter.differ.submitList(brands)
         with(bottomSheetFilterBinding) {
             filterBrandRv.apply {

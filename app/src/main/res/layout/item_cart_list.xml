@@ -88,31 +88,34 @@
                 <TextView
                     android:id="@+id/voucher"
                     style="@style/textMediumSemiBold"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="NEW 10"
                     android:textColor="@color/black"
+                    app:layout_constraintEnd_toStartOf="@id/removeCoupon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/voucherDescription"
                     style="@style/textMedium"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="you saved additional RM 12"
                     android:textColor="@color/black"
+                    app:layout_constraintEnd_toStartOf="@id/removeCoupon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/voucher" />
                 <TextView
                     android:id="@+id/voucherAmount"
                     style="@style/textMedium"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_9sdp"
                     android:text=""
                     android:visibility="invisible"
                     android:textColor="@color/black"
+                    app:layout_constraintEnd_toStartOf="@+id/removeCoupon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/voucher" />
 

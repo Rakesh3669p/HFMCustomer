@@ -49,6 +49,7 @@
 
 
             <androidx.cardview.widget.CardView
+                android:visibility="gone"
                 android:id="@+id/mapCV"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_120sdp"

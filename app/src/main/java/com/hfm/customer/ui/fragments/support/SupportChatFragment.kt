@@ -38,6 +38,7 @@ import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
+import com.hfm.customer.utils.toOrderChatFormattedDate
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -46,8 +47,10 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -166,6 +169,7 @@ class SupportChatFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     when (response.data?.httpcode) {
                         200 -> {
+                            imgFile = null
                             binding.edtMessage.setText("")
                             binding.gallery.setImageResource(R.drawable.ic_gallery)
                             mainViewModel.getSupportMessages(supportId)
@@ -216,11 +220,25 @@ class SupportChatFragment : Fragment(), View.OnClickListener {
                     amount.isVisible = !it.order_id.isNullOrEmpty()
 
                     orderId.text = "Order #: ${it.order_id}"
-                    orderDate.text = "${it.order_date} | ${it.order_time}"
+                    orderDate.text = it.order_date.toChatFormattedDate()
                     amount.text = "RM ${it.grand_total?.let { formatToTwoDecimalPlaces(it) }} (${it.products.size}  Items)"
                 }
 
             }
+        }
+    }
+
+
+    private fun String.toChatFormattedDate(): String {
+        val inputDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
+        val outputDateFormat = SimpleDateFormat("E, d' 'MMM yyyy", Locale.US)
+
+        return try {
+            val date = inputDateFormat.parse(this)
+            outputDateFormat.format(date)
+        } catch (e: Exception) {
+            // Handle parsing or formatting errors here
+            this // Return the original string if there's an error
         }
     }
 

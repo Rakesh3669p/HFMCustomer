@@ -3,7 +3,8 @@ package com.hfm.customer.commonModel
 data class RatingReviewsModel(
     val `data`: RatingReviewsData,
     val httpcode: Int,
-    val status: String
+    val status: String,
+    val message: String
 )
 
 data class RatingReviewsData(
@@ -18,12 +19,16 @@ data class Review(
     val customer_image: String,
     val customer_name: String,
     val date: String,
-    val image: String,
+    val image: Any,
     val product_variation: String,
     val rating: Int,
     val review_id: Int,
+    val review_date: String,
+    val review_time: String,
     val title: String,
-    val video_link: String
+    val video_link: String,
+
+
 )
 
 data class RateRange(

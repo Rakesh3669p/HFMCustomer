@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -25,6 +26,8 @@ import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -141,10 +144,15 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
         bindingDialog.desc.text = "We will notify you regarding the status of the order."
         bindingDialog.ok.setOnClickListener {
             appCompatDialog.dismiss()
-            findNavController().navigate(R.id.action_paymentMethodFragment_to_myOrdersFragment)
+            findNavController().navigate(R.id.action_paymentMethodFragment_to_homeFragment)
         }
         appCompatDialog.show()
-
+        lifecycleScope.launch {
+            delay(3000)
+            if(appCompatDialog.isShowing){
+                findNavController().navigate(R.id.action_paymentMethodFragment_to_myOrdersFragment)
+            }
+        }
 
     }
 

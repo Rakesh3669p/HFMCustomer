@@ -18,6 +18,7 @@ data class Notification(
     val title: String,
     val notify_type: String,
     val app_target_page: String,
+    val order_id: String,
     val ref_id: Int,
     val bulk_order_sale_id: Int,
     val description: String,
