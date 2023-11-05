@@ -17,6 +17,7 @@ import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
+import com.hfm.customer.utils.createFileFromContentUri
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
@@ -180,7 +181,7 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(4)) { uri ->
             if (uri != null) {
                 uri.forEach {
-                    imgFile = File(uri.toString())
+                    imgFile = createFileFromContentUri(requireActivity(),it)
                     imageUris.add(it)
                     imageFiles.add(imgFile)
                 }

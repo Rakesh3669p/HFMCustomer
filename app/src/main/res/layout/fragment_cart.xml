@@ -8,7 +8,6 @@
     android:id="@+id/mainLayout"
     tools:context=".ui.fragments.store.StoreFragment">
 
-
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/back"
         android:layout_width="@dimen/_35sdp"
@@ -81,12 +80,11 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/cartDataRv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginTop="@dimen/_5sdp"
                 app:layout_constraintTop_toBottomOf="@id/cartDetailsLbl"
                 tools:itemCount="1"
                 android:nestedScrollingEnabled="false"
-                tools:layout_editor_absoluteX="0dp"
                 tools:listitem="@layout/item_cart_list" />
 
             <TextView
@@ -519,7 +517,6 @@
         android:id="@+id/loader"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:elevation="@dimen/_4sdp"
         android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -3,6 +3,7 @@ package com.hfm.customer.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.ConnectivityManager
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.hfm.customer.ui.loginSignUp.LoginActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -334,4 +336,10 @@ fun Long.toFormattedDateTimeChat(): String {
     val date = Date(this)
     val format = SimpleDateFormat("hh:mm a", Locale.US)
     return format.format(date)
+}
+
+fun Activity.moveToLogin(sessionManager: SessionManager){
+    sessionManager.isLogin = false
+    startActivity(Intent(this, LoginActivity::class.java))
+    this.finish()
 }

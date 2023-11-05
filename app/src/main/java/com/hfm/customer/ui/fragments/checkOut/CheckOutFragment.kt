@@ -21,6 +21,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.JsonObject
@@ -45,6 +47,7 @@ import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.moveToLogin
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
@@ -136,10 +139,31 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setObserver() {
+        mainViewModel.updateshipingOption.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            mainViewModel.getCart()
+                        }
+                        401 -> {
+                            requireActivity().moveToLogin(sessionManager)
+                        }
+                        else -> {
+                            showToast(response.data?.message.toString())
+                        }
+                    }
+                }
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
+            }
+        }
+
         mainViewModel.address.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-
                     if (response.data?.httpcode == "200") {
                         addressList = response.data.data.address_list
                         response.data.data.address_list.forEach {
@@ -154,10 +178,54 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 is Resource.Error -> apiError(response.message)
             }
         }
+
+        mainViewModel.applyWallet.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            mainViewModel.getCart()
+                        }
+                        401 -> {
+                            requireActivity().moveToLogin(sessionManager)
+                        }
+                        else -> {
+//                            showToast(response.data?.message.toString())
+                        }
+                    }
+                }
+
+                is Resource.Loading -> Unit
+                is Resource.Error -> apiError(response.message)
+            }
+        }
+
+        mainViewModel.removeWallet.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            mainViewModel.getCart()
+                        }
+                        401 -> {
+                            requireActivity().moveToLogin(sessionManager)
+                        }
+                        else -> {
+//                            showToast(response.data?.message.toString())
+                        }
+                    }
+                }
+
+                is Resource.Loading -> Unit
+                is Resource.Error -> apiError(response.message)
+            }
+        }
+
         mainViewModel.termsConditions.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-
                     if (response.data?.httpcode == "200") {
                         goodsTermsAndConditions = response.data.data.terms_conditions.goods_tc
                     }
@@ -177,9 +245,8 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                     }
                 }
 
-                is Resource.Loading -> appLoader.show()
-                is Resource.Error ->
-                    apiError(response.message)
+                is Resource.Loading -> Unit
+                is Resource.Error -> apiError(response.message)
             }
         }
 
@@ -265,7 +332,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                     }
                 }
 
-                is Resource.Loading -> appLoader.dismiss()
+                is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
         }
@@ -287,13 +354,20 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setProducts(cartData: CartData) {
-        val blackColor = ContextCompat.getColor(requireContext(),R.color.black)
-        val redColor = ContextCompat.getColor(requireContext(),R.color.red)
         this.cartData = cartData
 
         with(binding) {
-            scrollView.isVisible = false
-            initRecyclerView(requireContext(), checkOutRv, checkOutAdapter)
+            checkOutRv.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = checkOutAdapter
+            }
+
+            val animator: RecyclerView.ItemAnimator? = checkOutRv.itemAnimator
+            if (animator is DefaultItemAnimator) {
+                animator.supportsChangeAnimations = false
+                checkOutRv.itemAnimator = null
+            }
+
             val checkOutData = cartData.seller_product.filter { sellerProductItem ->
                 sellerProductItem.seller.products.any {
                     it.cart_selected.toString().toDouble() > 0
@@ -342,14 +416,16 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 wallet.text = "RM 0.00"
             }
 
-            lifecycleScope.launch {
-                delay(150)
-                scrollView.isVisible = true
+            useWalletPoints.isChecked = cartData.is_wallet_applied==1
+            if(useWalletPoints.isChecked){
+                wallet.text = "RM -${formatToTwoDecimalPlaces(cartData.wallet_applied_cash.toDouble())}"
+            }else{
+                wallet.text = "RM 0.00"
             }
 
+            binding.root.invalidate()
+
         }
-
-
         binding.loader.isVisible = false
     }
 
@@ -381,9 +457,6 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             voucherCode.setOnClickListener {
                 voucherCode.isFocusable = true
                 voucherCode.requestFocus()
-                val imm =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
             }
 
             applyVoucher.setOnClickListener {
@@ -412,10 +485,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             }
         }
         platformVoucherAdapter.differ.submitList(platformVouchers)
-        lifecycleScope.launch {
-            delay(500)
-            platformVoucherBinding.voucherCode.clearFocus()
-        }
+        platformVoucherAdapter.notifyDataSetChanged()
         platformVoucherDialog.show()
     }
 
@@ -430,9 +500,9 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
         }
         initRecyclerView(requireContext(), sellerVoucherBinding.vouchersRv, sellerVoucherAdapter)
-        sellerVoucherAdapter.differ.submitList(sellerVouchers)
+
         sellerVoucherAdapter.setOnItemClickListener { position ->
-            sellerSelectedVoucher = sellerVouchers.get(position)
+            sellerSelectedVoucher = sellerVouchers[position]
         }
 
         with(sellerVoucherBinding) {
@@ -442,12 +512,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             voucherCode.setOnClickListener {
                 voucherCode.isFocusable = true
                 voucherCode.requestFocus()
-                val imm =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
             }
-
-
 
             applyVoucher.setOnClickListener {
                 val sellerData =
@@ -483,7 +548,8 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             }
             cancel.setOnClickListener { platformVoucherDialog.dismiss() }
         }
-
+        sellerVoucherAdapter.differ.submitList(sellerVouchers)
+        platformVoucherAdapter.notifyDataSetChanged()
         platformVoucherDialog.show()
     }
 
@@ -515,6 +581,18 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             removeVoucher.setOnClickListener(this@CheckOutFragment)
             manageAddress.setOnClickListener(this@CheckOutFragment)
             placeOrder.setOnClickListener(this@CheckOutFragment)
+
+            useWalletPoints.setOnCheckedChangeListener { _, checked ->
+                if (checked) {
+                    mainViewModel.applyWallet(cartData.wallet_balance)
+                }else{
+                    mainViewModel.removeWallet()
+                }
+            }
+        }
+
+        checkOutAdapter.setOnShippingOption { sellerId,shippingId->
+            mainViewModel.updateShipping(sellerId,shippingId)
         }
 
         checkOutAdapter.setOnMessageListener { message, position ->
@@ -537,12 +615,14 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 return@setOnShopVoucherClickListener
             }
             selectingVoucherSellerId = sellerId
-            mainViewModel.getSellerVouchers(sellerId)
+            mainViewModel.getSellerVouchers(sellerId,1)
         }
 
         checkOutAdapter.setOnSellerRemoveCoupon { id ->
             mainViewModel.removeCoupon(id.toString(), "seller")
         }
+
+
     }
 
     private fun placeOrder() {

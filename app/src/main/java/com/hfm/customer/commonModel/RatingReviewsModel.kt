@@ -32,11 +32,11 @@ data class Review(
 )
 
 data class RateRange(
-    val oneStar: Int,
-    val twoStars: Int,
-    val threeStars: Int,
-    val fourStars: Int,
-    val fiveStars: Int,
+    val FiveStars: Int,
+    val FourStars: Int,
+    val ThreeStars: Int,
+    val TwoStars: Int,
+    val OneStar: Int,
     val All: Int,
     val Media: Int
 )

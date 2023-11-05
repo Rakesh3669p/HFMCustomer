@@ -3,6 +3,7 @@ package com.hfm.customer.data
 import com.google.gson.JsonObject
 import com.hfm.customer.BuildConfig
 import com.hfm.customer.commonModel.AppUpdateModel
+import com.hfm.customer.commonModel.ApplyWalletModel
 import com.hfm.customer.commonModel.CityListModel
 import com.hfm.customer.commonModel.CountryListModel
 import com.hfm.customer.commonModel.HomeMainCategoriesModel
@@ -71,10 +72,10 @@ interface HFMCustomerAPI {
         @Body jsonObject: JsonObject
     ): Response<LoginModel>
 
-        @POST("customer/social/login")
-        suspend fun socialLogin(
-            @Body jsonObject: JsonObject
-        ): Response<LoginModel>
+    @POST("customer/social/login")
+    suspend fun socialLogin(
+        @Body jsonObject: JsonObject
+    ): Response<LoginModel>
 
     @POST("customer/register")
     suspend fun registerUser(
@@ -194,7 +195,8 @@ interface HFMCustomerAPI {
     suspend fun getProfile(
         @Body jsonObject: JsonObject
     ): Response<ProfileModel>
- @POST("customer/product/reviews")
+
+    @POST("customer/product/reviews")
     suspend fun getProductReview(
         @Body jsonObject: JsonObject
     ): Response<RatingReviewsModel>
@@ -304,6 +306,7 @@ interface HFMCustomerAPI {
 
     @POST("customer/shop-detail")
     suspend fun getStoreDetails(@Body jsonObject: JsonObject): Response<StoreDetailsModel>
+
     @POST("customer/shop-reviews")
     suspend fun getStoreReviews(@Body jsonObject: JsonObject): Response<StoreReviewsModel>
 
@@ -359,12 +362,14 @@ interface HFMCustomerAPI {
 
     @POST("customer/order/order-history")
     suspend fun getOrderHistory(@Body jsonObject: JsonObject): Response<OrderHistoryModel>
+
     @Multipart
     @POST("customer/chat/send")
     suspend fun sendMessage(@PartMap map: MutableMap<String, RequestBody?>): Response<MessageSentModel>
 
     @POST("customer/order/placeorder")
     suspend fun placeOrder(@Body jsonObject: JsonObject): Response<PlaceOrderModel>
+
     @Multipart
     @POST("customer/order/payment_upload")
     suspend fun uploadOrderReceipt(@PartMap map: MutableMap<String, RequestBody?>): Response<SuccessModel>
@@ -403,10 +408,26 @@ interface HFMCustomerAPI {
         @Body jsonObject: JsonObject
     ): Response<SuccessModel>
 
- @POST("customer/dhl-tracking")
+    @POST("customer/dhl-tracking")
     suspend fun orderTracking(
         @Body jsonObject: JsonObject
     ): Response<OrderTrackingModel>
+
+
+    @POST("customer/apply-wallet")
+    suspend fun applyWallet(
+        @Body jsonObject: JsonObject
+    ): Response<ApplyWalletModel>
+
+    @POST("customer/remove-wallet")
+    suspend fun removeWallet(
+        @Body jsonObject: JsonObject
+    ): Response<SuccessModel>
+
+    @POST("customer/shipping-option")
+    suspend fun updateShipping(
+        @Body jsonObject: JsonObject
+    ): Response<SuccessModel>
 
 
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.JsonObject
 import com.hfm.customer.BuildConfig
 import com.hfm.customer.commonModel.AppUpdateModel
+import com.hfm.customer.commonModel.ApplyWalletModel
 import com.hfm.customer.commonModel.HomeMainCategoriesModel
 import com.hfm.customer.commonModel.RatingReviewsModel
 import com.hfm.customer.commonModel.SuccessModel
@@ -32,6 +33,7 @@ import com.hfm.customer.ui.dashBoard.chat.model.ChatListModel
 import com.hfm.customer.ui.dashBoard.chat.model.ChatMessageModel
 import com.hfm.customer.ui.dashBoard.chat.model.MessageSentModel
 import com.hfm.customer.ui.fragments.checkOut.model.CheckOutModel
+import com.hfm.customer.ui.fragments.checkOut.model.ShippingOption
 import com.hfm.customer.ui.fragments.commonPage.model.PageModel
 import com.hfm.customer.ui.fragments.myOrders.model.BulkOrdersListModel
 import com.hfm.customer.ui.fragments.myOrders.model.MyOrdersModel
@@ -147,6 +149,9 @@ class MainViewModel @Inject constructor(
     val cityCode = SingleLiveEvent<Resource<CityCodeModel>>()
     val termsConditions = SingleLiveEvent<Resource<TermsConditionsModel>>()
     val orderTracking = SingleLiveEvent<Resource<OrderTrackingModel>>()
+    val applyWallet = SingleLiveEvent<Resource<ApplyWalletModel>>()
+    val removeWallet = SingleLiveEvent<Resource<SuccessModel>>()
+    val updateshipingOption = SingleLiveEvent<Resource<SuccessModel>>()
 
 
     fun getAppUpdate() = viewModelScope.launch {
@@ -612,12 +617,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getSellerVouchers(sellerId: String) = viewModelScope.launch {
+    fun getSellerVouchers(sellerId: String,available:Int) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("lang_id", "1")
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("seller_id", sellerId)
-//        jsonObject.addProperty("available", 1)
+        jsonObject.addProperty("available", available)
         safeGetSellerVouchersCall(jsonObject)
     }
 
@@ -1342,6 +1347,7 @@ class MainViewModel @Inject constructor(
             jsonObject.addProperty("offset", 0)
             jsonObject.addProperty("rating", rating)
             jsonObject.addProperty("media_filter", "")
+            jsonObject.addProperty("os_type", "app")
             safeGetReviewsCall(jsonObject)
         }
 
@@ -1976,6 +1982,65 @@ class MainViewModel @Inject constructor(
                 orderTracking.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             orderTracking.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun applyWallet(points: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("points", points)
+        safeApplyWalletCall(jsonObject)
+    }
+
+    private suspend fun safeApplyWalletCall(jsonObject: JsonObject) {
+        applyWallet.postValue(Resource.Loading())
+        try {
+            val response = repository.applyWallet(jsonObject)
+            if (response.isSuccessful)
+                applyWallet.postValue(Resource.Success(checkResponseBody(response.body()) as ApplyWalletModel))
+            else
+                applyWallet.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            applyWallet.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun removeWallet() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        safeRemoveWalletCall(jsonObject)
+    }
+
+    private suspend fun safeRemoveWalletCall(jsonObject: JsonObject) {
+        removeWallet.postValue(Resource.Loading())
+        try {
+            val response = repository.removeWallet(jsonObject)
+            if (response.isSuccessful)
+                removeWallet.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                removeWallet.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            removeWallet.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+    fun updateShipping(sellerId: Int,shippingOption: Int) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("seller_id", sellerId)
+        jsonObject.addProperty("shipping_option", shippingOption)
+        safeUpdateShippingCall(jsonObject)
+    }
+
+    private suspend fun safeUpdateShippingCall(jsonObject: JsonObject) {
+        updateshipingOption.postValue(Resource.Loading())
+        try {
+            val response = repository.updateShipping(jsonObject)
+            if (response.isSuccessful)
+                updateshipingOption.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                updateshipingOption.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            updateshipingOption.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 }

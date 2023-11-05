@@ -37,36 +37,20 @@ class CheckOutStoreAdapter @Inject constructor() :
         fun bind(data: SellerProduct) {
             with(bind) {
 
-                shippingOptions.forEach {
-
-                    if (it.title == "Standard Delivery") {
-                        standardDelivery.isVisible = it.is_active == 1
-                        if(!initialShippingSetupDone) {
-                            data.standardPickUp = true
-                            data.selfPickUp = false
-                            initialShippingSetupDone = true
-                        }
-                    }
-
-                    if (it.title == "Self Pickup") {
-                        selfPickup.isVisible = it.is_active == 1
-                        if(!initialShippingSetupDone) {
-                            if (!data.standardPickUp) {
-                                data.selfPickUp = true
-                            }
-                            initialShippingSetupDone = true
-                        }
-                    }
-                }
-
-
-
                 val red = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.red))
                 val greyLite = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.grey_lite))
                 val greyDark = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.textGreyDark))
                 val white = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white))
+                val hasStandardDelivery = shippingOptions.any { it.title == "Standard Delivery" && it.is_active == 1 }
+                val hasSelfPickup = shippingOptions.any { it.title == "Self Pickup" && it.is_active == 1 }
 
+                if (absoluteAdapterPosition<=differ.currentList.size-1) {
+                    data.standardPickUp = hasStandardDelivery
+                    data.selfPickUp = hasStandardDelivery && !hasSelfPickup
+                }
 
+                standardDelivery.isVisible = hasStandardDelivery
+                selfPickup.isVisible = hasSelfPickup
 
                 if (data.selfPickUp) {
                     selfPickup.backgroundTintList = red
@@ -84,18 +68,20 @@ class CheckOutStoreAdapter @Inject constructor() :
                     standardDelivery.setTextColor(greyDark)
                 }
 
-
-
                 standardDelivery.setOnClickListener {
                     data.selfPickUp = false
                     data.standardPickUp = true
+                    onShippingOption?.invoke(data.seller.seller_id,shippingOptions[0].id)
                     notifyDataSetChanged()
                 }
+
                 selfPickup.setOnClickListener {
                     data.selfPickUp = true
                     data.standardPickUp = false
+                    onShippingOption?.invoke(data.seller.seller_id,shippingOptions[1].id)
                     notifyDataSetChanged()
                 }
+
                 voucherDetailsLayout.isVisible = data.is_seller_coupon_applied == 1
                 if (data.is_seller_coupon_applied == 1) {
                     voucher.text = data.seller_coupon_data.title
@@ -122,7 +108,6 @@ class CheckOutStoreAdapter @Inject constructor() :
                 storeName.text = data.seller.seller
                 removeCoupon.setOnClickListener {
                     onRemoveCoupon?.invoke(data.seller_coupon_data.coupon_id)
-                    voucherDetailsLayout.isVisible = false
                 }
 
                 val productAdapter = CheckOutProductAdapter()
@@ -134,7 +119,7 @@ class CheckOutStoreAdapter @Inject constructor() :
                 checkOutProducts.addAll(checkOutStore)
                 productAdapter.differ.submitList(checkOutProducts)
 
-                val shippingCharge = data.shipping.toString().toDouble()
+                val shippingCharge = (if(data.shipping==null) 0 else data.shipping.toString().toDouble()).toDouble()
                 shippingCharges.isVisible = shippingCharge > 0
                 val formattedShipping =
                     "Shipping Charges: RM ${formatToTwoDecimalPlaces(shippingCharge)}"
@@ -228,6 +213,12 @@ class CheckOutStoreAdapter @Inject constructor() :
 
     fun setOnSellerRemoveCoupon(listener: (id: Int) -> Unit) {
         onRemoveCoupon = listener
+    }
+
+    private var onShippingOption: ((sellerId: Int,shippingId:Int) -> Unit)? = null
+
+    fun setOnShippingOption(listener: (sellerId: Int,shippingId:Int) -> Unit) {
+        onShippingOption = listener
     }
 
 

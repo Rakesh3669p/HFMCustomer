@@ -233,4 +233,10 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+    <style name="FullScreenDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
 </resources>

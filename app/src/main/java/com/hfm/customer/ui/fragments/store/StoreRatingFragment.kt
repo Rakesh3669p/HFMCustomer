@@ -33,12 +33,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.OnClickListener {
 
-    private val reviews: MutableList<Review> = ArrayList()
     private lateinit var binding: FragmentStoreRatingBinding
     private var currentView: View? = null
-
-    @Inject
-    lateinit var reviewsAdapter: ReviewsAdapter
+    @Inject lateinit var reviewsAdapter: ReviewsAdapter
+    private val reviews: MutableList<Review> = ArrayList()
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
     private val mainViewModel: MainViewModel by viewModels()
@@ -225,6 +223,8 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
             }
 
             binding.all.id -> {
+                setSelection(binding.all)
+
                 ratings = ""
                 pageNo = 0
                 mainViewModel.getStoreReviews(sellerId = sellerId, ratings, pageNo)

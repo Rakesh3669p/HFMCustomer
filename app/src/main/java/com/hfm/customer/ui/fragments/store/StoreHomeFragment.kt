@@ -113,7 +113,7 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
-        mainViewModel.getSellerVouchers(storeData.shop_detail[0].seller_id.toString())
+        mainViewModel.getSellerVouchers(storeData.shop_detail[0].seller_id.toString(),0)
         dataSourceFactory = DefaultDataSource.Factory(requireContext())
         binding.storeVideoLayout.isVisible = !storeData.shop_detail[0].video.isNullOrEmpty()
         binding.storeVideo.clipToOutline = true

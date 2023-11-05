@@ -25,8 +25,8 @@ android {
     buildTypes {
         debug {
 //             buildConfigField "String", "BASE_URL", "\"https://admin.halalfoodmaster.com/api/\""
-            buildConfigField "String", "BASE_URL", "\"http://4.194.191.242/QA/admin/api/\""
-//            buildConfigField "String", "BASE_URL", "\"http://4.194.191.242/UAT/admin/api/\""
+//            buildConfigField "String", "BASE_URL", "\"http://4.194.191.242/QA/admin/api/\""
+            buildConfigField "String", "BASE_URL", "\"http://4.194.191.242/UAT/admin/api/\""
         }
         release {
             buildConfigField "String", "BASE_URL", "\"https://admin.halalfoodmaster.com/api/\""

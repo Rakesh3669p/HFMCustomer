@@ -1,16 +1,13 @@
 package com.hfm.customer.ui.fragments.products.productDetails
 
 import android.annotation.SuppressLint
-import android.app.ActionBar.LayoutParams
-import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
-import android.content.Context
 import android.content.Intent
-import android.graphics.Point
-import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
@@ -19,12 +16,8 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.WindowManager
 import android.webkit.WebViewClient
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
@@ -41,7 +34,6 @@ import androidx.media3.exoplayer.source.MergingMediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.navigation.fragment.findNavController
 import coil.load
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.RatingReviewsData
@@ -79,7 +71,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -90,13 +81,13 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
+    private lateinit var bulkOrderBottomSheetFragment: BulkOrderBottomSheet
     private lateinit var exoPause: ImageView
     private lateinit var exoPlay: ImageView
     private lateinit var exoBuffer: ProgressBar
     private var selectedVariant: String = ""
     private var qty: Int = 0
 
-    private lateinit var bulkOrderDialog: BottomSheetDialog
     private lateinit var bottomSheetBinding: BottomSheetBulkOrderBinding
     private lateinit var productData: ProductData
     private lateinit var profileData: Profile
@@ -124,7 +115,6 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
     @Inject
     lateinit var specsAdapter: SpecsAdapter
-    private var keyBoardOpened = false
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -179,25 +169,14 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         noInternetDialog.setOnDismissListener { init() }
         binding.loader.isVisible = true
         val productId = arguments?.getString("productId").toString()
-        mainViewModel.getProductDetails(productId)
 
+        mainViewModel.getProductDetails(productId)
         mainViewModel.getProfile()
         mainViewModel.getProductReview(productId = productId, limit = 4)
 
-        /* binding.pinCode.rootView.viewTreeObserver.addOnGlobalLayoutListener {
-             val rect = Rect()
-             binding.root.getWindowVisibleDisplayFrame(rect)
-             val screenHeight = binding.pinCode.rootView.height
-             val keypadHeight = screenHeight - rect.bottom
-             val isKeyboardOpen = keypadHeight > screenHeight * 0.15
-             if (isKeyboardOpen) {
-                 binding.pinCode.clearFocus()
-             } else {
-                 binding.pinCode.requestFocus()
-             }
-         }*/
-
-
+        binding.pinCode.setOnFocusChangeListener { view, b ->
+            scrollToView(binding.pinCode)
+        }
     }
 
     private fun scrollToView(view: View) {
@@ -285,10 +264,12 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
+                    if(this::bulkOrderBottomSheetFragment.isInitialized) {
+                        bulkOrderBottomSheetFragment.dismiss()
+                    }
                     if (response.data?.httpcode == 200) {
                         val message = "Your bulk Order request has successfully submitted"
                         showToast(message)
-                        bulkOrderDialog.dismiss()
                         val bundle = Bundle()
                         bundle.putString("from", "bulkOrders")
                         findNavController().navigate(
@@ -534,17 +515,17 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         initRecyclerView(requireContext(),binding.reviewsRv,reviewsAdapter)
         reviewsAdapter.differ.submitList(data.review)
         with(binding){
-            fiveStarCount.text =data.rate_range.fiveStars.toString()
-            fourStarCount.text =data.rate_range.fourStars.toString()
-            threeStarCount.text =data.rate_range.threeStars.toString()
-            twoStarCount.text =data.rate_range.twoStars.toString()
-            oneStarCount.text =data.rate_range.oneStar.toString()
+            fiveStarCount.text =data.rate_range.FiveStars.toString()
+            fourStarCount.text =data.rate_range.FourStars.toString()
+            threeStarCount.text =data.rate_range.ThreeStars.toString()
+            twoStarCount.text =data.rate_range.TwoStars.toString()
+            oneStarCount.text =data.rate_range.OneStar.toString()
 
-            oneStarSlider.value = ((data.rate_range.oneStar/data.total_review) * 100).toFloat()
-            twoStarSlider.value = ((data.rate_range.twoStars/data.total_review) * 100).toFloat()
-            threeStarSlider.value = ((data.rate_range.threeStars/data.total_review) * 100).toFloat()
-            fourStarSlider.value = ((data.rate_range.fourStars/data.total_review) * 100).toFloat()
-            fiveStarSlider.value = ((data.rate_range.fiveStars/data.total_review) * 100).toFloat()
+            oneStarSlider.value = ((data.rate_range.OneStar/data.rate_range.All) * 100).toFloat()
+            twoStarSlider.value = ((data.rate_range.TwoStars/data.rate_range.All) * 100).toFloat()
+            threeStarSlider.value = ((data.rate_range.ThreeStars/data.rate_range.All) * 100).toFloat()
+            fourStarSlider.value = ((data.rate_range.FourStars/data.rate_range.All) * 100).toFloat()
+            fiveStarSlider.value = ((data.rate_range.FiveStars/data.rate_range.All) * 100).toFloat()
 
         }
 
@@ -583,7 +564,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         }
 
         productsImagesAdapter.differ.submitList(productImages)
-        mainViewModel.getSellerVouchers(sellerId = productData.product.seller_id.toString())
+        mainViewModel.getSellerVouchers(sellerId = productData.product.seller_id.toString(),0)
 
         with(binding) {
             if (productData.product.image?.isNotEmpty() == true) {
@@ -606,10 +587,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             reviewCv.isVisible = productData.product.rating.toString().toDouble() > 0
             reviewRatingBar.rating = productData.product.rating.toString().toFloat()
-            reviewRatingCount.text =
-                productData.product.rating.toString().toDouble().roundToInt().toString()
-            reviewLbl.text = "Customer Reviews (${
-                productData.product.total_reviews.toString().toDouble().roundToInt()
+            reviewRatingCount.text = productData.product.rating.toString().toDouble().toString()
+            reviewLbl.text = "Customer Reviews (${productData.product.total_reviews.toString().toDouble().roundToInt()
             })"
             reviewRatingDetails.text =
                 "${productData.product.total_reviews.toString().toDouble().roundToInt()} Reviews"
@@ -827,171 +806,6 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         }"
     }
 
-
-    private fun showBulkOrderBottomSheet() {
-
-        if (!sessionManager.isLogin) {
-            showToast("Please login first")
-            startActivity(Intent(requireActivity(), LoginActivity::class.java))
-            requireActivity().finish()
-            return
-        }
-
-        if (!this::productData.isInitialized) return
-        var unitOfMeasures = ""
-        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        bottomSheetBinding = BottomSheetBulkOrderBinding.inflate(layoutInflater)
-        bulkOrderDialog =
-            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
-
-        bulkOrderDialog.setContentView(bottomSheetBinding.root)
-        bulkOrderDialog.setOnDismissListener {
-            requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-        }
-
-        val windowManager =
-            requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
-        val screenHeight: Int = size.y
-        val desiredHeight = (screenHeight * 0.85).toInt() // Adjust the fraction as needed
-
-
-        with(bottomSheetBinding) {
-            val layoutParams = scrollView.layoutParams
-            layoutParams.width = LayoutParams.MATCH_PARENT
-            layoutParams.height = desiredHeight
-            scrollView.layoutParams = layoutParams
-            val bottomSheet: FrameLayout? =
-                bulkOrderDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
-            if (bottomSheet != null) {
-                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-            }
-            productName.text = productData.product.product_name
-            val imageOriginal = productData.product.image?.get(0)?.image
-            val imageReplaced =
-                imageOriginal?.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-            productImage.load(imageReplaced) {
-                placeholder(R.drawable.logo)
-
-            }
-            name.setText("${profileData.first_name} ${profileData.last_name}")
-            email.setText(profileData.email)
-            address.setText(profileData.address1)
-
-
-            // Define an array of items
-            val items = arrayOf(
-                "Units of Measurement",
-                "Pieces",
-                "Packs",
-                "Sets",
-                "Numbers",
-                "Kilograms",
-                "Boxes",
-                "Outers",
-                "Carton"
-            )
-
-
-            val adapter: ArrayAdapter<String> =
-                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, items)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-            unitsSpinner.adapter = adapter
-            unitsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parentView: AdapterView<*>,
-                    selectedItemView: View,
-                    position: Int,
-                    id: Long
-                ) {
-                    unitOfMeasures = parentView.getItemAtPosition(position) as String
-
-                }
-
-                override fun onNothingSelected(parentView: AdapterView<*>?) {
-                    // Do nothing here
-                }
-            }
-            val currentDate = LocalDate.now()
-
-
-            date.setOnClickListener {
-                val datePickerDialog = DatePickerDialog(
-                    requireContext(),
-                    dateSetListener,
-                    currentDate.year,
-                    currentDate.monthValue - 1,
-                    currentDate.dayOfMonth
-                )
-                datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
-                datePickerDialog.show()
-            }
-
-            send.setOnClickListener {
-
-                val name = name.text.toString()
-                val email = email.text.toString()
-                val qty = qty.text.toString()
-                val phone = contact.text.toString()
-                val date = date.text.toString()
-                val deliveryAddress = address.text.toString()
-                val remarks = remarks.text.toString()
-
-                if (name.isEmpty()) {
-                    showToast("Please Enter a valid Name")
-                    return@setOnClickListener
-                }
-
-                if (email.isEmpty()) {
-                    showToast("Please Enter a valid Email")
-                    return@setOnClickListener
-                }
-                if (qty.isEmpty() || qty.toInt() < 1) {
-                    showToast("Purchase Quantity is required")
-                    return@setOnClickListener
-                }
-
-                if (unitOfMeasures.isEmpty() || unitOfMeasures == "Units of Measurement") {
-                    showToast("Unit of Measures is required!")
-                    return@setOnClickListener
-                }
-
-                if (phone.isEmpty()) {
-                    showToast("Contact Number is required")
-                    return@setOnClickListener
-                }
-                if (date.isEmpty()||dateNeeded.isEmpty()) {
-                    showToast("Date is required!")
-                    return@setOnClickListener
-                }
-
-                if (deliveryAddress.isEmpty()) {
-                    showToast("Delivery Address is required!")
-                    return@setOnClickListener
-                }
-
-                mainViewModel.sendBulkOrderRequest(
-                    productData.product.product_id.toString(),
-                    name,
-                    email,
-                    qty,
-                    phone,
-                    dateNeeded,
-                    deliveryAddress,
-                    remarks,
-                    1
-                )
-            }
-            cancel.setOnClickListener {
-                bulkOrderDialog.dismiss()
-            }
-        }
-        bulkOrderDialog.show()
-    }
-
     private var dateSetListener =
         OnDateSetListener { _, year, month, dayOfMonth ->
             bottomSheetBinding.date.text = "$dayOfMonth-${month + 1}-$year"
@@ -1098,8 +912,6 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
         }
 
-
-
         productsImagesAdapter.setOnImageClickListener { data ->
             if (data == videoIcon) {
                 binding.productVideo.isVisible = true
@@ -1161,27 +973,28 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     }
 
 
-    private var isExpanded = false
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
-            binding.pinCode.id -> {
-                      scrollToView(binding.pinCode)
-            }
+            binding.pinCode.id -> scrollToView(binding.pinCode)
 
             binding.cart.id -> findNavController().navigate(R.id.cartFragment)
             binding.chat.id -> {
-
-                productData.seller_info[0].let { sellerDetail ->
-                    val chatId =
-                        if (sellerDetail.chat_id.isNullOrEmpty()) 0 else sellerDetail.chat_id.toInt()
-                    val bundle = Bundle()
-                    bundle.putString("from", "chatList")
-                    bundle.putString("storeName", binding.storeName.text.toString())
-                    bundle.putString("sellerId", sellerDetail.seller_id.toString())
-                    bundle.putString("saleId", "")
-                    bundle.putInt("chatId", chatId)
-                    findNavController().navigate(R.id.chatFragment, bundle)
+                if(sessionManager.isLogin) {
+                    productData.seller_info[0].let { sellerDetail ->
+                        val chatId =
+                            if (sellerDetail.chat_id.isNullOrEmpty()) 0 else sellerDetail.chat_id.toInt()
+                        val bundle = Bundle()
+                        bundle.putString("from", "chatList")
+                        bundle.putString("storeName", binding.storeName.text.toString())
+                        bundle.putString("sellerId", sellerDetail.seller_id.toString())
+                        bundle.putString("saleId", "")
+                        bundle.putInt("chatId", chatId)
+                        findNavController().navigate(R.id.chatFragment, bundle)
+                    }
+                }else{
+                    startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                    requireActivity().finish()
                 }
             }
 
@@ -1240,11 +1053,36 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
 
             binding.viewAllReviews.id -> {
-                showToast("Under Construction")
-//                findNavController().navigate(R.id.customerRatingFragment)
+                val bundle = Bundle()
+                bundle.putString("productId",productData.product.product_id.toString())
+                findNavController().navigate(R.id.customerRatingFragment,bundle)
             }
 
-            binding.bulkOrder.id -> showBulkOrderBottomSheet()
+            binding.bulkOrder.id -> {
+                bulkOrderBottomSheetFragment = BulkOrderBottomSheet(profileData,productData.product){
+                    product_id,
+                    name,
+                    email,
+                    qty,
+                    phone,
+                    dateNeeded,
+                    deliveryAddress,
+                    remarks->
+                    mainViewModel.sendBulkOrderRequest(
+                        productData.product.product_id.toString(),
+                        name,
+                        email,
+                        qty,
+                        phone,
+                        dateNeeded,
+                        deliveryAddress,
+                        remarks,
+                        1
+                    )
+
+                }
+                bulkOrderBottomSheetFragment.show(childFragmentManager, "BSDialogFragment")
+            }
 
             binding.visitStore.id -> {
                 val bundle = Bundle()

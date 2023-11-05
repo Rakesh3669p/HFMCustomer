@@ -17,6 +17,7 @@ class Loader(context: Context) : Dialog(context,R.style.loaderDialog) {
         super.onCreate(savedInstanceState)
         binding = AppLoaderBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setCancelable(false)
         window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
     }
 }

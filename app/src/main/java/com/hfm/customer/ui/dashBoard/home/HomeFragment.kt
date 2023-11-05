@@ -238,7 +238,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-                    appLoader.dismiss()
+//                    appLoader.dismiss()
                     response.data?.data?.let {
                         homeMainBannerAdapter.differ.submitList(it.app_top_banner)
                         binding.homeMainBanner.currentItem = 1
@@ -294,7 +294,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-                    appLoader.dismiss()
+//                    appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
                         saleTime = response.data.data.flash_sale.end_time
                         setTimer(response.data.data.flash_sale)
@@ -322,7 +322,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         mainViewModel.homeMiddleBanner.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
+//                    appLoader.dismiss()
                     binding.loader.isVisible = false
                     binding.secondaryBanner.load(
                         replaceBaseUrl(
@@ -345,7 +345,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-                    appLoader.dismiss()
+//                    appLoader.dismiss()
                     initRecyclerView(requireContext(), binding.factoryDealsRv, factoryAdapter, true)
                     factoryAdapter.differ.submitList(response.data?.data?.flash_sale?.products)
                 }
@@ -359,7 +359,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-                    appLoader.dismiss()
+//                    appLoader.dismiss()
                     with(binding) {
 
                     }
@@ -373,7 +373,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-                    appLoader.dismiss()
+//                    appLoader.dismiss()
                     initRecyclerView(requireContext(), binding.brandsRv, brandStoreAdapter, true)
                     brandStoreAdapter.differ.submitList(response.data?.data?.brands)
                 }
@@ -386,7 +386,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-                    appLoader.dismiss()
+//                    appLoader.dismiss()
                     initRecyclerView(
                         requireContext(),
                         binding.trendingNowRv,
@@ -403,7 +403,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         mainViewModel.homeFeatureProducts.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
+//                    appLoader.dismiss()
                     binding.loader.isVisible = false
                     response.data?.let {
                         if (it.httpcode.toString().toDouble().roundToInt() == 200) {
@@ -430,7 +430,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         mainViewModel.notifications.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
+//                    appLoader.dismiss()
                     if (response.data?.httpcode == "200") {
                         binding.notificationCountBg.isVisible = response.data.data.notification_count > 0
                         binding.notificationCount.isVisible = response.data.data.notification_count > 0
@@ -449,7 +449,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         mainViewModel.cart.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
+//                    appLoader.dismiss()
                     cartCount.postValue(response.data?.data?.cart_count)
                 }
 

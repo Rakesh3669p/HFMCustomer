@@ -42,7 +42,6 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
 
                 removeCoupon.setOnClickListener {
                     onRemoveCoupon?.invoke(data.seller_coupon_data.coupon_id)
-                    voucherDetailsLayout.isVisible = false
                 }
 
                 storeName.text = data.seller.seller
@@ -59,7 +58,7 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
                 }
 
                 delivery.isVisible = false
-                val shippingCharge = data.shipping.toString().toDouble()
+                val shippingCharge = (if(data.shipping==null) 0 else data.shipping.toString().toDouble()).toDouble()
                 shippingCharges.isVisible = shippingCharge > 0
                 val formattedShipping =
                     "Shipping Charges: RM ${formatToTwoDecimalPlaces(shippingCharge)}"

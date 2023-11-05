@@ -1,26 +1,20 @@
 package com.hfm.customer.ui.fragments.cart
 
 import android.annotation.SuppressLint
-import android.app.ActionBar
-import android.content.Context
 import android.content.Intent
-import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.hfm.customer.R
@@ -32,8 +26,6 @@ import com.hfm.customer.ui.fragments.cart.adapter.PlatformVoucherAdapter
 import com.hfm.customer.ui.fragments.cart.model.CartData
 import com.hfm.customer.ui.fragments.cart.model.Coupon
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.ProductVariantsAdapter
-import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
-import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModelItem
 import com.hfm.customer.ui.fragments.products.productDetails.model.Variants
 import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
@@ -44,24 +36,17 @@ import com.hfm.customer.utils.cartCount
 import com.hfm.customer.utils.deductFromWallet
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.moveToLogin
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-
+@SuppressLint("SetTextI18n")
 @AndroidEntryPoint
 class CartFragment : Fragment(), View.OnClickListener {
-
-    companion object {
-
-    }
-
-    private var updateFrom: Boolean = false
 
     private var grandTotal: Double = 0.0
     private var changingVariant: Boolean = false
@@ -137,6 +122,49 @@ class CartFragment : Fragment(), View.OnClickListener {
 
 
     private fun setObserver() {
+        mainViewModel.applyWallet.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            mainViewModel.getCart()
+                        }
+                        401 -> {
+                            requireActivity().moveToLogin(sessionManager)
+                        }
+                        else -> {
+//                            showToast(response.data?.message.toString())
+                        }
+                    }
+                }
+
+                is Resource.Loading -> Unit
+                is Resource.Error -> apiError(response.message)
+            }
+        }
+
+        mainViewModel.removeWallet.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            mainViewModel.getCart()
+                        }
+                        401 -> {
+                            requireActivity().moveToLogin(sessionManager)
+                        }
+                        else -> {
+//                            showToast(response.data?.message.toString())
+                        }
+                    }
+                }
+
+                is Resource.Loading -> Unit
+                is Resource.Error -> apiError(response.message)
+            }
+        }
         mainViewModel.addToCart.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -199,7 +227,6 @@ class CartFragment : Fragment(), View.OnClickListener {
         mainViewModel.platformVouchers.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-//                    appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
                         platformVouchers = response.data.data.coupon_list
                     }
@@ -249,22 +276,25 @@ class CartFragment : Fragment(), View.OnClickListener {
                     apiError(response.message)
             }
         }
+
         mainViewModel.applyPlatformVoucher.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if (response.data?.httpcode == 200) {
-                        if (this::platformVoucherDialog.isInitialized) {
-                            platformVoucherDialog.dismiss()
-                        }
-                        mainViewModel.getCart()
-                        showToast("Coupon Applied")
-                    } else {
+                    if (this::platformVoucherDialog.isInitialized) {
                         platformVoucherDialog.dismiss()
-                        showToast(response.data?.message.toString())
+                    }
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            mainViewModel.getCart()
+                            showToast("Coupon Applied")
+                        }
+                        401 -> {}
+                        else -> {
+                            showToast(response.data?.message.toString())
+                        }
                     }
                 }
-
                 is Resource.Loading -> appLoader.show()
                 is Resource.Error ->
                     apiError(response.message)
@@ -279,18 +309,22 @@ class CartFragment : Fragment(), View.OnClickListener {
                     if (this::platformVoucherDialog.isInitialized) {
                         platformVoucherDialog.dismiss()
                     }
-                    if (response.data?.httpcode == 200) {
 
-                        mainViewModel.getCart()
-//                        setSelectedSellerCoupon(response.data.data.coupon)
-                    } else {
-                        showToast(response.data?.message.toString())
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            mainViewModel.getCart()
+                        }
+
+
+                        401 -> {}
+                        else -> {
+                            showToast(response.data?.message.toString())
+                        }
                     }
                 }
 
                 is Resource.Loading -> appLoader.show()
-                is Resource.Error ->
-                    apiError(response.message)
+                is Resource.Error -> apiError(response.message)
             }
         }
         mainViewModel.removeCoupon.observe(viewLifecycleOwner) { response ->
@@ -305,8 +339,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                 }
 
                 is Resource.Loading -> appLoader.show()
-                is Resource.Error ->
-                    apiError(response.message)
+                is Resource.Error -> apiError(response.message)
             }
         }
 
@@ -314,41 +347,47 @@ class CartFragment : Fragment(), View.OnClickListener {
         mainViewModel.updateCartCount.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    if (response.data?.httpcode == 200) {
-                        updateFrom = true
-                        mainViewModel.getCart()
-                    } else {
-                        showToast(response.data?.message.toString())
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            mainViewModel.getCart()
+                        }
+
+                        401 -> {}
+                        else -> {
+                            showToast(response.data?.message.toString())
+                        }
                     }
                 }
 
                 is Resource.Loading -> appLoader.show()
-                is Resource.Error ->
-                    apiError(response.message)
+                is Resource.Error -> apiError(response.message)
             }
         }
     }
 
 
     private fun setCartData(data: CartData) {
+        binding.toolBarTitle.setOnClickListener {
+            binding.root.postInvalidate()
+            showToast("yeah")
+        }
         with(binding) {
             cartData = data
             voucherDetailsLayout.isVisible = cartData.is_platform_coupon_applied == 1
             addVoucher.isVisible = cartData.is_platform_coupon_applied == 0
-            if (!updateFrom) {
-                scrollView.isVisible = false
-                checkOut.isVisible = false
+            binding.cartDataRv.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = cartAdapter
             }
 
-            initRecyclerView(requireContext(), binding.cartDataRv, cartAdapter)
             val animator: RecyclerView.ItemAnimator? = cartDataRv.itemAnimator
-
             if (animator is DefaultItemAnimator) {
                 animator.supportsChangeAnimations = false
                 cartDataRv.itemAnimator = null
             }
 
             cartAdapter.differ.submitList(cartData.seller_product)
+            cartAdapter.notifyDataSetChanged()
             totalItems.text = "${cartData.cart_count} Items"
             selectAll.text = "Select All (${cartData.cart_count})"
 
@@ -364,8 +403,10 @@ class CartFragment : Fragment(), View.OnClickListener {
                 subtotalLbl.text = "Subtotal"
             }
 
-            subtotal.text = "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
-            shippingAmount.text = "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
+            subtotal.text =
+                "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
+            shippingAmount.text =
+                "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
             grandTotal = cartData.grand_total.toString().toDouble()
             totalAmount.text = formatToTwoDecimalPlaces(grandTotal)
 
@@ -382,11 +423,22 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
 
 
+
+
             if (cartData.wallet_balance != "false") {
                 val pointToRM = cartData.wallet_balance.toDouble() / 100
-                points.text = "${cartData.wallet_balance.toDouble().roundToInt()} (RM ${formatToTwoDecimalPlaces(pointToRM)})"
+                points.text = "${
+                    cartData.wallet_balance.toDouble().roundToInt()
+                } (RM ${formatToTwoDecimalPlaces(pointToRM)})"
             } else {
                 points.text = "0 (RM 0.00)"
+                wallet.text = "RM 0.00"
+            }
+
+            useWalletPoints.isChecked = cartData.is_wallet_applied==1
+            if(useWalletPoints.isChecked){
+                wallet.text = "RM -${formatToTwoDecimalPlaces(cartData.wallet_applied_cash.toDouble())}"
+            }else{
                 wallet.text = "RM 0.00"
             }
 
@@ -396,15 +448,9 @@ class CartFragment : Fragment(), View.OnClickListener {
             voucherName.text = cartData.platform_coupon_data.title
             voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
 
-            lifecycleScope.launch {
-                delay(100)
-                cartProductDeleted = false
-                scrollView.isVisible = true
-                checkOut.isVisible = true
-            }
-
-
-            updateFrom = false
+            binding.scrollView.invalidate()
+            binding.cartDataRv.invalidate()
+            binding.root.invalidate()
         }
     }
 
@@ -429,21 +475,9 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         binding.useWalletPoints.setOnCheckedChangeListener { _, checked ->
             if (checked) {
-                if (cartData.wallet_balance != "false") {
-                    val walletUpdate = deductFromWallet(
-                        cartData.wallet_balance.toDouble(),
-                        grandTotal
-                    )
-                    binding.wallet.text =
-                        "RM -${formatToTwoDecimalPlaces(cartData.wallet_balance.toDouble() - walletUpdate.first)}"
-                    binding.totalAmount.text = formatToTwoDecimalPlaces(walletUpdate.second)
-                } else {
-                    showToast("There are no wallet points to use")
-                }
-            } else {
-                binding.wallet.text = "RM 0.00"
-                binding.totalAmount.text =
-                    formatToTwoDecimalPlaces(grandTotal)
+                mainViewModel.applyWallet(cartData.wallet_balance)
+            }else{
+                mainViewModel.removeWallet()
             }
         }
 
@@ -502,7 +536,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                 return@setOnShopVoucherClickListener
             }
             selectingVoucherSellerId = sellerId
-            mainViewModel.getSellerVouchers(sellerId)
+            mainViewModel.getSellerVouchers(sellerId,1)
         }
     }
 
@@ -531,21 +565,15 @@ class CartFragment : Fragment(), View.OnClickListener {
     }
 
     private fun showVoucherBottomSheet() {
-
         val platformVoucherBinding = BottomSheetVoucherBinding.inflate(layoutInflater)
+
         platformVoucherDialog = BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         platformVoucherDialog.setContentView(platformVoucherBinding.root)
+
         val bottomSheet: FrameLayout? = platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
-        if (bottomSheet != null) {
-            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-        }
+        if (bottomSheet != null) { BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED }
 
-        initRecyclerView(
-            requireContext(),
-            platformVoucherBinding.vouchersRv,
-            platformVoucherAdapter
-        )
-
+        initRecyclerView(requireContext(), platformVoucherBinding.vouchersRv, platformVoucherAdapter)
 
         platformVoucherAdapter.setOnItemClickListener { position ->
             platFormSelectedVoucher = platformVouchers[position]
@@ -553,16 +581,13 @@ class CartFragment : Fragment(), View.OnClickListener {
 
 
         with(platformVoucherBinding) {
-
             noVouchers.isVisible = platformVouchers.isEmpty() == true
             requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
             titleLbl.text = "Select Platform Vouchers"
+
             voucherCode.setOnClickListener {
                 voucherCode.isFocusable = true
                 voucherCode.requestFocus()
-                val imm =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
             }
 
             applyVoucher.setOnClickListener {
@@ -577,47 +602,40 @@ class CartFragment : Fragment(), View.OnClickListener {
                     cartData.total_offer_cost.toString()
                 )
             }
+
             apply.setOnClickListener {
-                if(platFormSelectedVoucher?.couponCode.isNullOrEmpty()){
+                if (platFormSelectedVoucher?.couponCode.isNullOrEmpty()) {
                     showToast("Please enter a coupon code or select to apply")
                     return@setOnClickListener
                 }
-                mainViewModel.applyPlatFormVouchers(
-                    platFormSelectedVoucher?.couponCode ?: "",
-                    cartData.total_offer_cost.toString()
+                mainViewModel.applyPlatFormVouchers(platFormSelectedVoucher?.couponCode ?: "", cartData.total_offer_cost.toString()
                 )
             }
-            cancel.setOnClickListener {
-                platformVoucherDialog.dismiss()
-            }
+
+            cancel.setOnClickListener { platformVoucherDialog.dismiss() }
         }
+
         platformVoucherAdapter.differ.submitList(platformVouchers)
 
         platformVoucherDialog.show()
     }
 
-
     private fun showSellerVoucherBottomSheet() {
+
         val sellerVoucherBinding = BottomSheetVoucherBinding.inflate(layoutInflater)
-        platformVoucherDialog =
-            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
+        platformVoucherDialog = BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         platformVoucherDialog.setContentView(sellerVoucherBinding.root)
 
-        val bottomSheet: FrameLayout? =
-            platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
-        if (bottomSheet != null) {
-            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-        }
+        val bottomSheet: FrameLayout? = platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        if (bottomSheet != null) { BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED }
 
         initRecyclerView(requireContext(), sellerVoucherBinding.vouchersRv, sellerVoucherAdapter)
 
-        sellerVoucherAdapter.differ.submitList(sellerVouchers)
         sellerVoucherAdapter.setOnItemClickListener { position ->
             sellerSelectedVoucher = sellerVouchers[position]
         }
 
         with(sellerVoucherBinding) {
-
             noVouchers.isVisible = sellerVouchers.isEmpty() == true
             requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
             titleLbl.text = "Select Shop Vouchers"
@@ -625,14 +643,10 @@ class CartFragment : Fragment(), View.OnClickListener {
             voucherCode.setOnClickListener {
                 voucherCode.isFocusable = true
                 voucherCode.requestFocus()
-                val imm =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(voucherCode, InputMethodManager.SHOW_IMPLICIT)
             }
 
             applyVoucher.setOnClickListener {
-                val sellerData =
-                    cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+                val sellerData = cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
                 val couponCode = voucherCode.text.toString()
                 if (couponCode.isEmpty()) {
                     showToast("Please enter a coupon code or select to apply")
@@ -649,120 +663,94 @@ class CartFragment : Fragment(), View.OnClickListener {
 
 
             apply.setOnClickListener {
-                val sellerData =
-                    cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+                val sellerData = cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+                val couponCode = sellerSelectedVoucher?.couponCode.toString()
 
-                if(sellerSelectedVoucher?.couponCode.isNullOrEmpty()){
+                if (couponCode.isEmpty()) {
                     showToast("Please enter a coupon code or select to apply")
                     return@setOnClickListener
                 }
 
                 mainViewModel.applySellerVouchers(
                     selectingVoucherSellerId,
-                    sellerSelectedVoucher?.couponCode ?: "", sellerData?.seller_subtotal ?: 0.0
+                    couponCode,
+                    sellerData?.seller_subtotal ?: 0.0
                 )
             }
             cancel.setOnClickListener { platformVoucherDialog.dismiss() }
         }
-        lifecycleScope.launch {
-            delay(500)
-            sellerVoucherBinding.voucherCode.clearFocus()
-        }
+        sellerVoucherAdapter.differ.submitList(sellerVouchers)
+
         platformVoucherDialog.show()
+    }
+
+    private fun validateAndCheckOut() {
+        val selectedAnyProduct = cartAdapter.differ.currentList.any { seller ->
+            seller.seller.products.any { product ->
+                product.cart_selected.toString().toDouble() > 0
+            }
+        }
+
+        val notDeliverableProduct = cartAdapter.differ.currentList
+            .flatMap { seller ->
+                seller.seller.products.filter { product ->
+                    product.cart_selected.toString().toDouble() > 0 && product.check_shipping_availability.toString().toDouble() < 1
+                }
+            }
+            .firstOrNull { it.check_shipping_availability.toString().toDouble() == 0.0 }
+
+        if (notDeliverableProduct != null) {
+            showToast(notDeliverableProduct.check_shipping_availability_text)
+            return
+        }
+
+        val someSelectedProductOutOfStock = cartAdapter.differ.currentList
+            .any { seller ->
+                seller.seller.products.any { product ->
+                    product.is_out_of_stock == 1 && seller.seller.cart_selected == 1
+                }
+            }
+
+        if (someSelectedProductOutOfStock) {
+            showToast("Some products are Sold Out.")
+        } else if (!selectedAnyProduct) {
+            showToast("Please select any product to checkout.")
+        } else {
+            findNavController().popBackStack()
+            findNavController().navigate(R.id.checkOutFragment)
+        }
+    }
+    private fun deleteCart() {
+        val cartIds = cartData.seller_product.flatMap { it.seller.products }
+            .map { it.cart_id.toString().toDouble().roundToInt() }
+            .joinToString(",")
+        mainViewModel.deleterCartProduct(cartIds)
+    }
+    private fun selectCart() {
+        val cartIds = cartData.seller_product
+            .flatMap { it.seller.products }
+            .joinToString(",") { it.cart_id.toString().toDouble().roundToInt().toString() }
+        val selectAll = if (binding.selectAll.isChecked) 1 else 0
+        mainViewModel.selectCart(cartIds, selectAll)
+    }
+
+    private fun removePlatformVoucher() {
+        mainViewModel.removeCoupon(cartData.platform_coupon_data.coupon_id.toString(), "platform")
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
-            binding.checkOut.id -> {
-
-                val selectedAnyProduct =
-                    cartAdapter.differ.currentList.any { seller ->
-                        seller.seller.products.any { product ->
-                            product.cart_selected.toString().toDouble() > 0
-                        }
-                    }
-
-                /*  val someSelectedProductNotDeliverable =
-                      cartAdapter.differ.currentList.any { seller ->
-                          seller.seller.products.any { product ->
-                              product.cart_selected.toString()
-                                  .toDouble() > 0 && product.check_shipping_availability.toString()
-                                  .toDouble() < 1
-                          }
-                      }*/
-
-                val notDeliverableProduct = cartAdapter.differ.currentList
-                    .flatMap { seller ->
-                        seller.seller.products
-                            .filter { product ->
-                                product.cart_selected.toString()
-                                    .toDouble() > 0 && product.check_shipping_availability.toString()
-                                    .toDouble() < 1
-                            }
-                    }
-                    .firstOrNull { it.check_shipping_availability.toString().toDouble() == 0.0 }
-
-                if (notDeliverableProduct != null) {
-                    showToast(notDeliverableProduct.check_shipping_availability_text)
-                    return
-                }
-
-                val someSelectedProductOutOfStock: Boolean =
-                    cartAdapter.differ.currentList.filter { it.seller.cart_selected == 1 }
-                        .any { seller ->
-                            seller.seller.products.any { product ->
-                                product.is_out_of_stock == 1
-                            }
-                        }
-
-                if (someSelectedProductOutOfStock) {
-                    showToast("Some products is Sold Out.")
-
-                } else if (!selectedAnyProduct) {
-                    showToast("Please select any product to checkout.")
-
-                } else {
-                    findNavController().popBackStack()
-                    findNavController().navigate(R.id.checkOutFragment)
-                }
-            }
-
+            binding.checkOut.id -> validateAndCheckOut()
             binding.addVoucher.id -> showVoucherBottomSheet()
-            binding.deleteAll.id -> {
-                var cartIds = ""
-                cartData.seller_product.forEach {
-                    it.seller.products.forEach { product ->
-                        cartIds = if (cartIds.isEmpty()) {
-                            product.cart_id.toString().toDouble().roundToInt().toString()
-                        } else {
-                            "$cartIds,${product.cart_id.toString().toDouble().roundToInt()}"
-                        }
-                    }
-                }
-
-                mainViewModel.deleterCartProduct(cartIds)
-            }
-
-            binding.removeVoucher.id -> mainViewModel.removeCoupon(
-                cartData.platform_coupon_data.coupon_id.toString(),
-                "platform"
-            )
-
-            binding.selectAll.id -> {
-                var cartIds = ""
-                cartData.seller_product.forEach {
-                    it.seller.products.forEach {
-                        cartIds = "$cartIds,${it.cart_id.toString().toDouble().roundToInt()}"
-                    }
-                }
-                mainViewModel.selectCart(cartIds, if (binding.selectAll.isChecked) 1 else 0)
-            }
+            binding.deleteAll.id -> deleteCart()
+            binding.removeVoucher.id -> removePlatformVoucher()
+            binding.selectAll.id -> selectCart()
         }
     }
+
     override fun onPause() {
         super.onPause()
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-
     }
 }
