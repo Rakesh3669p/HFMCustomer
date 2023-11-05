@@ -19,7 +19,7 @@ data class Review(
     val customer_image: String,
     val customer_name: String,
     val date: String,
-    val image: Any,
+    val image: List<String>,
     val product_variation: String,
     val rating: Int,
     val review_id: Int,

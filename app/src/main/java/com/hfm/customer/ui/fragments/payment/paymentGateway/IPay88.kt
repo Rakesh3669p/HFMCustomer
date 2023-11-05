@@ -64,7 +64,7 @@ class IPay88 : Fragment() {
             paymentGateWayWebView.loadUrl(paymentUrl)
             paymentGateWayWebView.settings.javaScriptEnabled = true
 
-            paymentGateWayWebView.webViewClient = object : WebViewClient() {
+              paymentGateWayWebView.webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     appLoader.dismiss()

@@ -2,8 +2,13 @@ package com.hfm.customer.ui.fragments.products.productDetails
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog.OnDateSetListener
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -17,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -38,6 +44,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.RatingReviewsData
 import com.hfm.customer.databinding.BottomSheetBulkOrderBinding
+import com.hfm.customer.databinding.DeliveryProofBinding
 import com.hfm.customer.databinding.FragmentProductDetailBinding
 import com.hfm.customer.ui.dashBoard.profile.model.Profile
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.ProductImagesAdapter
@@ -119,6 +126,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     private val mainViewModel: MainViewModel by viewModels()
 
     private lateinit var noInternetDialog: NoInternetDialog
+
+    private var descriptionMeasuredHeight = 0
 
     private val videoIcon =
         "https://png.pngtree.com/png-vector/20190215/ourmid/pngtree-play-video-icon-graphic-design-template-vector-png-image_530837.jpg"
@@ -264,7 +273,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if(this::bulkOrderBottomSheetFragment.isInitialized) {
+                    if (this::bulkOrderBottomSheetFragment.isInitialized) {
                         bulkOrderBottomSheetFragment.dismiss()
                     }
                     if (response.data?.httpcode == 200) {
@@ -512,20 +521,23 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setReviewData(data: RatingReviewsData) {
-        initRecyclerView(requireContext(),binding.reviewsRv,reviewsAdapter)
+        initRecyclerView(requireContext(), binding.reviewsRv, reviewsAdapter)
         reviewsAdapter.differ.submitList(data.review)
-        with(binding){
-            fiveStarCount.text =data.rate_range.FiveStars.toString()
-            fourStarCount.text =data.rate_range.FourStars.toString()
-            threeStarCount.text =data.rate_range.ThreeStars.toString()
-            twoStarCount.text =data.rate_range.TwoStars.toString()
-            oneStarCount.text =data.rate_range.OneStar.toString()
+        with(binding) {
+            fiveStarCount.text = data.rate_range.FiveStars.toString()
+            fourStarCount.text = data.rate_range.FourStars.toString()
+            threeStarCount.text = data.rate_range.ThreeStars.toString()
+            twoStarCount.text = data.rate_range.TwoStars.toString()
+            oneStarCount.text = data.rate_range.OneStar.toString()
 
-            oneStarSlider.value = ((data.rate_range.OneStar/data.rate_range.All) * 100).toFloat()
-            twoStarSlider.value = ((data.rate_range.TwoStars/data.rate_range.All) * 100).toFloat()
-            threeStarSlider.value = ((data.rate_range.ThreeStars/data.rate_range.All) * 100).toFloat()
-            fourStarSlider.value = ((data.rate_range.FourStars/data.rate_range.All) * 100).toFloat()
-            fiveStarSlider.value = ((data.rate_range.FiveStars/data.rate_range.All) * 100).toFloat()
+            oneStarSlider.value = ((data.rate_range.OneStar / data.rate_range.All) * 100).toFloat()
+            twoStarSlider.value = ((data.rate_range.TwoStars / data.rate_range.All) * 100).toFloat()
+            threeStarSlider.value =
+                ((data.rate_range.ThreeStars / data.rate_range.All) * 100).toFloat()
+            fourStarSlider.value =
+                ((data.rate_range.FourStars / data.rate_range.All) * 100).toFloat()
+            fiveStarSlider.value =
+                ((data.rate_range.FiveStars / data.rate_range.All) * 100).toFloat()
 
         }
 
@@ -564,7 +576,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         }
 
         productsImagesAdapter.differ.submitList(productImages)
-        mainViewModel.getSellerVouchers(sellerId = productData.product.seller_id.toString(),0)
+        mainViewModel.getSellerVouchers(sellerId = productData.product.seller_id.toString(), 0)
 
         with(binding) {
             if (productData.product.image?.isNotEmpty() == true) {
@@ -588,7 +600,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             reviewCv.isVisible = productData.product.rating.toString().toDouble() > 0
             reviewRatingBar.rating = productData.product.rating.toString().toFloat()
             reviewRatingCount.text = productData.product.rating.toString().toDouble().toString()
-            reviewLbl.text = "Customer Reviews (${productData.product.total_reviews.toString().toDouble().roundToInt()
+            reviewLbl.text = "Customer Reviews (${
+                productData.product.total_reviews.toString().toDouble().roundToInt()
             })"
             reviewRatingDetails.text =
                 "${productData.product.total_reviews.toString().toDouble().roundToInt()} Reviews"
@@ -632,17 +645,37 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             binding.descriptionWebView.settings.javaScriptEnabled = true
             val htmlContent = productData.product.long_description
-            val descriptionContent =
-                Html.fromHtml(htmlContent).toString().replace("\\s+".toRegex(), "")
+            val descriptionContent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                Html.fromHtml(htmlContent)
+            }
             descriptionCv.isVisible = descriptionContent.isNotEmpty()
             descriptionWebView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
             descriptionWebView.webViewClient = WebViewClient()
-
-            val measuredHeight = binding.descriptionWebView.measuredHeight
-            binding.viewMore.isVisible = measuredHeight > 120
-            binding.viewMoreArrow.isVisible = measuredHeight > 120
+            val webViewLayoutParams = binding.descriptionWebView.layoutParams
 
 
+            descriptionWebView.webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    view?.postDelayed({
+                        descriptionMeasuredHeight = binding.descriptionWebView.measuredHeight
+                        if (descriptionMeasuredHeight < 209) {
+                            webViewLayoutParams.height = descriptionMeasuredHeight
+                        } else if (descriptionMeasuredHeight > 210) {
+                            webViewLayoutParams.height = 210
+                        }
+                        binding.descriptionWebView.layoutParams = webViewLayoutParams
+                        binding.viewMore.isVisible = descriptionMeasuredHeight >= 210
+                        binding.viewMoreArrow.isVisible = descriptionMeasuredHeight >= 210
+                    }, 500) // You can adjust the delay time as needed
+                }
+
+                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                }
+            }
 
             if (productData.product.specification == "false" || productData.product.specification.isEmpty()) {
                 specificationsCv.isVisible = false
@@ -809,7 +842,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     private var dateSetListener =
         OnDateSetListener { _, year, month, dayOfMonth ->
             bottomSheetBinding.date.text = "$dayOfMonth-${month + 1}-$year"
-            dateNeeded = "$year-${month+1}-$dayOfMonth"
+            dateNeeded = "$year-${month + 1}-$dayOfMonth"
         }
 
 
@@ -912,6 +945,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
         }
 
+        reviewsAdapter.setOnImageClickListener {
+            showImageDialog(it)
+        }
         productsImagesAdapter.setOnImageClickListener { data ->
             if (data == videoIcon) {
                 binding.productVideo.isVisible = true
@@ -972,6 +1008,20 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun showImageDialog(it: String) {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DeliveryProofBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.setCancelable(true)
+        bindingDialog.productImage.load(replaceBaseUrl(it)){
+            placeholder(R.drawable.logo)
+            error(R.drawable.logo)
+        }
+        bindingDialog.close.setOnClickListener { appCompatDialog.dismiss() }
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.show()
+    }
+
 
     override fun onClick(v: View?) {
         when (v?.id) {
@@ -980,7 +1030,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             binding.cart.id -> findNavController().navigate(R.id.cartFragment)
             binding.chat.id -> {
-                if(sessionManager.isLogin) {
+                if (sessionManager.isLogin) {
                     productData.seller_info[0].let { sellerDetail ->
                         val chatId =
                             if (sellerDetail.chat_id.isNullOrEmpty()) 0 else sellerDetail.chat_id.toInt()
@@ -992,7 +1042,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                         bundle.putInt("chatId", chatId)
                         findNavController().navigate(R.id.chatFragment, bundle)
                     }
-                }else{
+                } else {
                     startActivity(Intent(requireActivity(), LoginActivity::class.java))
                     requireActivity().finish()
                 }
@@ -1054,33 +1104,33 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             binding.viewAllReviews.id -> {
                 val bundle = Bundle()
-                bundle.putString("productId",productData.product.product_id.toString())
-                findNavController().navigate(R.id.customerRatingFragment,bundle)
+                bundle.putString("productId", productData.product.product_id.toString())
+                findNavController().navigate(R.id.customerRatingFragment, bundle)
             }
 
             binding.bulkOrder.id -> {
-                bulkOrderBottomSheetFragment = BulkOrderBottomSheet(profileData,productData.product){
-                    product_id,
-                    name,
-                    email,
-                    qty,
-                    phone,
-                    dateNeeded,
-                    deliveryAddress,
-                    remarks->
-                    mainViewModel.sendBulkOrderRequest(
-                        productData.product.product_id.toString(),
-                        name,
-                        email,
-                        qty,
-                        phone,
-                        dateNeeded,
-                        deliveryAddress,
-                        remarks,
-                        1
-                    )
+                bulkOrderBottomSheetFragment =
+                    BulkOrderBottomSheet(profileData, productData.product) { product_id,
+                                                                             name,
+                                                                             email,
+                                                                             qty,
+                                                                             phone,
+                                                                             dateNeeded,
+                                                                             deliveryAddress,
+                                                                             remarks ->
+                        mainViewModel.sendBulkOrderRequest(
+                            productData.product.product_id.toString(),
+                            name,
+                            email,
+                            qty,
+                            phone,
+                            dateNeeded,
+                            deliveryAddress,
+                            remarks,
+                            1
+                        )
 
-                }
+                    }
                 bulkOrderBottomSheetFragment.show(childFragmentManager, "BSDialogFragment")
             }
 
@@ -1108,14 +1158,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             binding.viewMore.id -> {
                 val webViewLayoutParams = binding.descriptionWebView.layoutParams
-                val measuredHeight = binding.descriptionWebView.measuredHeight
-                val maxExpandedHeight = dpToPx(
-                    240f,
-                    resources.displayMetrics
-                ) // Define the maximum expanded height in pixels
 
-                if (measuredHeight > maxExpandedHeight.roundToInt()) {
-                    webViewLayoutParams.height = maxExpandedHeight.roundToInt()
+
+                if (binding.viewMore.text == getString(R.string.view_less_lbl)) {
+                    webViewLayoutParams.height = 210
                     binding.viewMore.text = getString(R.string.view_more_lbl)
                     binding.viewMoreArrow.rotation = 0f
                 } else {
@@ -1128,7 +1174,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             binding.cart.id -> findNavController().navigate(R.id.cartFragment)
             binding.addToWishlist.id -> {
-                if(sessionManager.isLogin) {
+                if (sessionManager.isLogin) {
                     if (productData.product.in_wishlist == 1) {
                         mainViewModel.removeFromWishList(productData.product.product_id.toString())
                         binding.addToWishlist.setImageResource(R.drawable.ic_fav)
@@ -1136,7 +1182,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                         mainViewModel.addToWishList(productData.product.product_id.toString())
                         binding.addToWishlist.setImageResource(R.drawable.like_active)
                     }
-                }else{
+                } else {
                     showToast("Please login first")
                     startActivity(Intent(requireActivity(), LoginActivity::class.java))
                     requireActivity().finish()

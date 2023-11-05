@@ -11,6 +11,7 @@ import com.hfm.customer.R
 import com.hfm.customer.commonModel.Review
 import com.hfm.customer.databinding.ItemReviewCommentsBinding
 import com.hfm.customer.databinding.ItemVoucherBinding
+import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
@@ -28,11 +29,17 @@ class ReviewsAdapter @Inject constructor() :
                     placeholder(R.drawable.logo)
                     error(R.drawable.logo)
                 }
-
+                val mediaAdapter = StoreProductsReviewsMediaAdapter()
                 userName.text= data.customer_name
                 date.text = data.review_date
                 ratingBar.rating= data.rating.toFloat()
                 reviewText.text = data.comment
+                initRecyclerView(context,reviewMedia,mediaAdapter,true)
+                mediaAdapter.differ.submitList(data.image)
+                mediaAdapter.setOnItemClickListener {
+
+                    onImageClick?.invoke(it)
+                }
             }
         }
     }
@@ -70,10 +77,10 @@ class ReviewsAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onBrandFilterClick: ((id: Int) -> Unit)? = null
+    private var onImageClick: ((imageLink: String) -> Unit)? = null
 
-    fun setOnBrandFilterClickListener(listener: (id: Int) -> Unit) {
-        onBrandFilterClick = listener
+    fun setOnImageClickListener(listener: (imageLink: String) -> Unit) {
+        onImageClick = listener
     }
 
 }
