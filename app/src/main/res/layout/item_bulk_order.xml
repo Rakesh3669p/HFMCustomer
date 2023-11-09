@@ -31,10 +31,10 @@
         android:layout_marginStart="@dimen/_9sdp"
         android:text="Request #:5642"
         android:textColor="@color/textGreyDark"
+        app:layout_constraintStart_toEndOf="@+id/productImage"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintBottom_toTopOf="@id/orderId"
-        app:layout_constraintStart_toEndOf="@+id/productImage"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/productImage" />
 
     <TextView
         android:id="@+id/orderId"
@@ -45,34 +45,10 @@
         android:text="Order #:995566"
         android:textColor="@color/black"
         android:layout_marginStart="@dimen/_9sdp"
-        app:layout_constraintBottom_toTopOf="@id/requestStatus"
         app:layout_constraintStart_toEndOf="@+id/productImage"
+        app:layout_constraintBottom_toTopOf="@id/requestedDate"
         app:layout_constraintTop_toBottomOf="@id/requestId" />
 
-    <TextView
-        android:id="@+id/requestStatusLbl"
-        style="@style/textMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="false"
-        android:text="Request Accept Status: "
-        android:visibility="gone"
-        android:textColor="@color/textGreyDark"
-        app:layout_constraintBottom_toBottomOf="@+id/requestStatus"
-        app:layout_constraintStart_toStartOf="@+id/orderId"
-        app:layout_constraintTop_toTopOf="@id/requestStatus" />
-
-    <TextView
-        android:id="@+id/requestStatus"
-        style="@style/textMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="false"
-        android:text="Pending"
-        android:textColor="@color/orangeLite"
-        app:layout_constraintBottom_toTopOf="@id/requestedDate"
-        app:layout_constraintStart_toEndOf="@id/requestStatusLbl"
-        app:layout_constraintTop_toBottomOf="@+id/orderId" />
     <TextView
         android:id="@+id/requestedDate"
         style="@style/textMedium"
@@ -81,9 +57,54 @@
         android:singleLine="false"
         android:text="Apr 20,2022 | 3.00pm"
         android:textColor="@color/textGreyDark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/requestStatusLbl"
-        app:layout_constraintTop_toBottomOf="@id/requestStatus" />
+        android:layout_marginStart="@dimen/_9sdp"
+        app:layout_constraintStart_toEndOf="@id/productImage"
+        app:layout_constraintBottom_toTopOf="@id/requestStatusLayout"
+        app:layout_constraintTop_toBottomOf="@id/orderId" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/requestStatusLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="@dimen/_9sdp"
+
+        app:layout_constraintTop_toBottomOf="@id/requestedDate"
+        app:layout_constraintStart_toEndOf="@id/productImage">
+        <TextView
+            android:id="@+id/requestStatusLbl"
+            style="@style/textMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:text="Request Accept Status: "
+            android:visibility="gone"
+            android:textColor="@color/textGreyDark"
+            />
+
+        <TextView
+            android:id="@+id/requestStatus"
+            style="@style/textMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:text="Pending"
+            android:textColor="@color/orangeLite"
+            />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <TextView
+        android:id="@+id/orderAmount"
+        style="@style/textMediumSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:text="RM 20.000 (16 Items)"
+        android:textColor="@color/textGreyDark"
+
+        android:layout_marginStart="@dimen/_9sdp"
+        app:layout_constraintStart_toEndOf="@+id/productImage"
+        app:layout_constraintTop_toBottomOf="@id/requestStatusLayout" />
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/arrow"

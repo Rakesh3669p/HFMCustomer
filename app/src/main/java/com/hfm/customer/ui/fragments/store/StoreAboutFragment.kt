@@ -58,7 +58,6 @@ class StoreAboutFragment(private val storeData: StoreData) : Fragment(), View.On
     }
 
 
-
     private fun setObserver() {}
 
     private fun setOnClickListener() {

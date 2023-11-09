@@ -20,6 +20,7 @@ import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
@@ -117,7 +118,7 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
 
     private fun setOrderData(data: BulkOrdersData) {
         with(binding) {
-            if(data.bulkrequest_order_details.isEmpty()) return
+            if (data.bulkrequest_order_details.isEmpty()) return
 
             data.bulkrequest_order_details[0].let {
                 orderDetails = it
@@ -131,23 +132,9 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
                 val redColor = ContextCompat.getColor(requireContext(), R.color.red)
 
                 when (it.request_status) {
-                    0 -> {
-                        requestStatus1.text = "Pending"
-                        requestStatus1.setTextColor(orangeColor)
-
-                    }
-
-                    1 -> {
-                        requestStatus1.text = "Accepted"
-                        requestStatus1.setTextColor(greenColor)
-
-                    }
-
-                    2 -> {
-                        requestStatus1.text = "Rejected"
-                        requestStatus1.setTextColor(redColor)
-
-                    }
+                    0 -> requestStatus1.text = "Pending"
+                    1 -> requestStatus1.text = "Accepted"
+                    2 -> requestStatus1.text = "Rejected"
                 }
 
                 if (it.request_status == 1 && it.quotation_status == 0) {
@@ -170,10 +157,7 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
                 }
 
                 if (it.product_image.isNotEmpty()) {
-                    productImage.load(replaceBaseUrl(it.product_image[0].image)) {
-                        placeholder(R.drawable.logo)
-
-                    }
+                    productImage.loadImage(replaceBaseUrl(it.product_image[0].image))
                 }
                 productName.text = it.product_name
                 productVariant.text = "Qty: ${it.quantity}"
@@ -190,37 +174,29 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
 
                 when (it.quotation_status) {
                     0 -> {
-
                         quotationStatusfirst.text = "Pending"
                         quotationStatusfirst.setTextColor(orangeColor)
-
                         quotationStatus.text = "Pending"
-                        quotationStatus.setTextColor(orangeColor)
-
                     }
 
                     1 -> {
                         quotationStatusfirst.text = "Accepted"
                         quotationStatusfirst.setTextColor(greenColor)
-
                         quotationStatus.text = "Accepted"
-                        quotationStatus.setTextColor(greenColor)
-
                     }
 
                     2 -> {
                         quotationStatusfirst.text = "Rejected"
                         quotationStatusfirst.setTextColor(redColor)
-
                         quotationStatus.text = "Rejected"
-                        quotationStatus.setTextColor(redColor)
                         summaryGroup.isVisible = false
                         totalCv.isVisible = false
                     }
                 }
 
                 if (it.sale_price != null && it.shipping_charges != null) {
-                    val subTotal = it.sale_price.toString().toDouble() + it.hfm_margin.toString().toDouble()
+                    val subTotal =
+                        it.sale_price.toString().toDouble() + it.hfm_margin.toString().toDouble()
                     subtotal.text = "RM ${formatToTwoDecimalPlaces(subTotal)}"
                     deliveryCharges.text = "RM ${it.shipping_charges}"
                     val grandTotalFinal = it.shipping_charges.toString().toDouble() + subTotal
@@ -229,7 +205,6 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
                 } else {
                     grandTotal.text = "RM "
                 }
-
             }
         }
     }

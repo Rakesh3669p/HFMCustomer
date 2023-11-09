@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/edt_box_smaa_radius"
+    android:layout_gravity="center"
+    >
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/close"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:background="@color/white"
+        android:src="@drawable/ic_close"
+        android:tint="@color/textGreyDark"
+        android:layout_margin="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundPercent="1" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/productImage"
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="@dimen/_250sdp"
+        app:roundPercent="0.2"
+        android:layout_margin="@dimen/_10sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/close"
+         />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/left"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:src="@drawable/ic_arrow_forward_profile"
+        android:rotation="180"
+        app:roundPercent="1"
+        android:padding="@dimen/_4sdp"
+        android:background="@color/redLite"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/productImage"
+        app:layout_constraintBottom_toBottomOf="@id/productImage"/>
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/right"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:src="@drawable/ic_arrow_forward_profile"
+        app:roundPercent="1"
+        android:padding="@dimen/_4sdp"
+        android:background="@color/redLite"
+        android:layout_marginEnd="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/productImage"
+        app:layout_constraintBottom_toBottomOf="@id/productImage"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

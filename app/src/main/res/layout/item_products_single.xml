@@ -107,6 +107,7 @@
             android:layout_marginEnd="@dimen/_2sdp"
             android:layout_gravity="start"
             android:text="Frozen"
+            android:maxLength="5"
             android:textSize="@dimen/_8ssp"
             android:paddingHorizontal="@dimen/_4sdp"
             android:paddingVertical="@dimen/_2sdp"

@@ -10,10 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.R
-import com.hfm.customer.databinding.ItemAdsBinding
 import com.hfm.customer.databinding.ItemAlphabetsBinding
-import com.hfm.customer.ui.dashBoard.home.AdsImage
-import com.hfm.customer.ui.dashBoard.home.model.Brand
 import javax.inject.Inject
 
 

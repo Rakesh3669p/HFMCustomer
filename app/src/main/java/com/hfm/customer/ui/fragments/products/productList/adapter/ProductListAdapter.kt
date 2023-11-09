@@ -2,6 +2,7 @@ package com.hfm.customer.ui.fragments.products.productList.adapter
 
 import android.content.Context
 import android.os.CountDownTimer
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -14,6 +15,9 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductsBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.loadImage
+import com.hfm.customer.utils.makeGone
+import com.hfm.customer.utils.makeVisible
 import com.hfm.customer.utils.replaceBaseUrl
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -30,10 +34,7 @@ class ProductListAdapter @Inject constructor() :
         fun bind(data: Product) {
             with(bind) {
                 if (data.image?.isNotEmpty() == true) {
-                    productImage.load(replaceBaseUrl(data.image[0].image)) {
-                        placeholder(R.drawable.logo)
-
-                    }
+                    productImage.loadImage(replaceBaseUrl(data.image[0].image))
                 }
 
                 productName.text = data.product_name
@@ -95,11 +96,16 @@ class ProductListAdapter @Inject constructor() :
                 }
 
                 if(data.frozen==1){
-                    frozenLbl.isVisible = true
-                    frozenLbl.text = "fresh/frozen"
+                    frozenLbl.makeVisible()
+                    frozenLbl.text = "Fresh/Frozen"
                 }else if(data.chilled==1){
-                    frozenLbl.isVisible = true
-                    frozenLbl.text = "chilled"
+                    frozenLbl.makeVisible()
+                    val filters = arrayOfNulls<InputFilter>(10)
+                    filters[0] = InputFilter.LengthFilter(android.R.attr.maxLength)
+                    frozenLbl.filters = filters
+                    frozenLbl.text = "Chilled"
+                }else{
+                    frozenLbl.makeGone()
                 }
 
                 if (data.wholesale != null) wholeSaleLbl.isVisible =

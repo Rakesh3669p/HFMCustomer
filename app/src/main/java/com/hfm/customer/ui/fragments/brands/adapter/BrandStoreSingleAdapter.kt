@@ -11,6 +11,7 @@ import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemBrandsSingleBinding
 import com.hfm.customer.ui.fragments.brands.model.Brand
+import com.hfm.customer.utils.loadImage
 import javax.inject.Inject
 
 
@@ -24,10 +25,7 @@ class BrandStoreSingleAdapter @Inject constructor() :
             with(bind) {
                 val imageOriginal = data.brand_image
                 val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                brandImage.load(imageReplaced){
-                    placeholder(R.drawable.logo)
-                    
-                }
+                brandImage.loadImage(imageReplaced)
                 title.text = data.brand_name
                 root.setOnClickListener {
                     onBrandClick?.let {

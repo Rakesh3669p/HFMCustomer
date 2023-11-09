@@ -22,7 +22,7 @@ class PromotionBanner(context: Context, private val imageUrl: String, private va
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
-        binding.productImage.load(imageUrl)
+        binding.productImage.loadImage(imageUrl)
 
         binding.productImage.load(imageUrl){
             target(

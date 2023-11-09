@@ -16,6 +16,7 @@ import com.hfm.customer.databinding.ItemCartProductBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.ui.fragments.products.productDetails.model.Variants
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.makeInvisible
 import com.hfm.customer.utils.makeVisible
 import com.hfm.customer.utils.replaceBaseUrl
@@ -36,15 +37,9 @@ class CartProductAdapter @Inject constructor() :
         fun bind(data: Product) {
             with(bind) {
                 if (!data.image.isNullOrEmpty()) {
-                    productImage.load(replaceBaseUrl(data.image[0].image)){
-                        placeholder(R.drawable.logo)
-                        
-                    }
+                    productImage.loadImage(replaceBaseUrl(data.image[0].image))
                 } else if (!data.product_image.isNullOrEmpty()) {
-                    productImage.load(replaceBaseUrl(data.product_image[0].image)){
-                        placeholder(R.drawable.logo)
-                        
-                    }
+                    productImage.loadImage(replaceBaseUrl(data.product_image[0].image))
                 }
                 productName.text = data.product_name
                 if (data.offer_name == "Shocking Sale") {

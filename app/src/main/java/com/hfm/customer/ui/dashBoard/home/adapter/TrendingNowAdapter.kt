@@ -11,6 +11,7 @@ import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemTrendingNowBinding
 import com.hfm.customer.ui.dashBoard.home.model.Events
+import com.hfm.customer.utils.loadImage
 import javax.inject.Inject
 
 
@@ -25,10 +26,7 @@ class TrendingNowAdapter @Inject constructor() :
                 val imageOriginal = data.image
                 val imageReplaced =
                     imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                productImage.load(imageReplaced) {
-                    placeholder(R.drawable.logo)
-
-                }
+                productImage.loadImage(imageReplaced)
 
                 root.setOnClickListener {
                     onCategoryClick?.invoke(data.category, data.sub_category)

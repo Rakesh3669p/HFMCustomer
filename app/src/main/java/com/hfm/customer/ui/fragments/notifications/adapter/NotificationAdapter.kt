@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemNotificationBinding
 import com.hfm.customer.ui.fragments.notifications.model.Notification
+import com.hfm.customer.utils.toCustomTimeAgo
 import com.hfm.customer.utils.toTimeAgo
 import com.hfm.customer.utils.toUnixTimestamp
 import java.text.SimpleDateFormat
@@ -27,7 +28,7 @@ class NotificationAdapter @Inject constructor() : RecyclerView.Adapter<Notificat
             with(binding) {
                 notificationTitle.text = "${data.title}: ${data.description}"
                 val timestamp = data.created_at.toUnixTimestamp()
-                val timeAgo = timestamp.toTimeAgo()
+                val timeAgo = timestamp.toCustomTimeAgo()
                 time.text = timeAgo.toString()
 
                 if(data.viewed==1){

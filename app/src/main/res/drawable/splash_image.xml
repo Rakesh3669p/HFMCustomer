@@ -6,10 +6,10 @@
     </item>
 
     <item
-        android:height="@dimen/_95sdp"
-        android:width="@dimen/_150sdp"
+        android:width="@dimen/_130sdp"
+        android:height="@dimen/_80sdp"
         android:gravity="center">
-        <bitmap android:src="@drawable/logo_new_2"/>
+        <bitmap android:src="@drawable/logo_new_1"/>
     </item>
 
 

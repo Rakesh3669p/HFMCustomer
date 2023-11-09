@@ -150,10 +150,10 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
         lifecycleScope.launch {
             delay(3000)
             if(appCompatDialog.isShowing){
+                appCompatDialog.dismiss()
                 findNavController().navigate(R.id.action_paymentMethodFragment_to_myOrdersFragment)
             }
         }
-
     }
 
 

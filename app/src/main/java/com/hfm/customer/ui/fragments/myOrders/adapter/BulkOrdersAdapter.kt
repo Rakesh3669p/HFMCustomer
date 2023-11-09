@@ -1,23 +1,20 @@
 package com.hfm.customer.ui.fragments.myOrders.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
-import com.hfm.customer.databinding.ItemAdsBinding
 import com.hfm.customer.databinding.ItemBulkOrderBinding
-import com.hfm.customer.ui.dashBoard.home.AdsImage
-import com.hfm.customer.ui.dashBoard.home.model.Brand
 import com.hfm.customer.ui.fragments.myOrders.model.BulkrequestOrderDetail
+import com.hfm.customer.utils.loadImage
+import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
 
@@ -27,23 +24,19 @@ class BulkOrdersAdapter @Inject constructor() :
 
     inner class ViewHolder(private val bind: ItemBulkOrderBinding) :
         RecyclerView.ViewHolder(bind.root) {
+        @SuppressLint("SetTextI18n")
         fun bind(data: BulkrequestOrderDetail) {
             with(bind) {
                 if(data.product_image.isNotEmpty()) {
-                    val imageOriginal = data.product_image[0].image
-                    val imageReplaced =
-                        imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    productImage.load(imageReplaced){
-                        placeholder(R.drawable.logo)
-                        error(R.drawable.logo)
-                        
-                    }
+                    productImage.loadImage(replaceBaseUrl(data.product_image[0].image))
                 }
 
-                requestId.text = "Request #:${data.bulkrequest_id}"
-                orderId.text = "Order #:${data.bulkrequest_order_id}"
+                requestId.text = "Request #:${data.bulkrequest_order_id}"
+                orderId.isVisible = data.order_id.isNotEmpty()
+                orderId.text = "Order #:${data.order_id}"
+                orderAmount.isVisible = false
 
-
+                requestStatusLbl.isVisible =true
                 requestStatus.text = if(data.request_status==0) "Pending" else "Accepted"
                 val orangeColor = ContextCompat.getColor(context,R.color.orange)
                 val greenColor = ContextCompat.getColor(context,R.color.green)

@@ -10,17 +10,18 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.google.android.material.tabs.TabLayout
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentStoreBinding
-import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.ui.fragments.store.adapter.StorePagerAdapter
 import com.hfm.customer.ui.fragments.store.model.StoreData
+import com.hfm.customer.ui.fragments.store.model.StoreProductData
 import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
@@ -28,6 +29,7 @@ import com.hfm.customer.utils.PromotionBanner
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
@@ -38,6 +40,12 @@ import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class StoreFragment : Fragment(), View.OnClickListener {
+
+    companion object {
+        var searchValue = ""
+        var categoryIdStore = ""
+        var subCatId = ""
+    }
 
     private lateinit var viewPagerAdapter: StorePagerAdapter
 
@@ -55,7 +63,6 @@ class StoreFragment : Fragment(), View.OnClickListener {
     lateinit var sessionManager: SessionManager
     private var storeDetailsAlreadySetted = false
 
-    val storeProducts :MutableList<Product> = ArrayList()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -81,30 +88,26 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
     private fun setSearchView() {
 
-     /*   binding.search.setOnEditorActionListener { _, actionId, _ ->
+        binding.search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val searchValue = binding.search.text.toString().lowercase()
-                if(searchValue.isNotEmpty()) {
-                    val storeDataProducts = storeData.product.filter { it.product_name.lowercase().contains() }
-                    storeData.product = storeDataProducts
-                    if (this::viewPagerAdapter.isInitialized) {
-                        viewPagerAdapter.storeData = storeData
-                        viewPagerAdapter.notifyItemChanged(1)
-                        binding.storeVp.currentItem = 1
-                    }
-                }else{
-                    val storeDataProducts = storeData.product
-                    storeData.product = storeDataProducts
-                    if (this::viewPagerAdapter.isInitialized) {
-                        viewPagerAdapter.storeData = storeData
-                        viewPagerAdapter.notifyItemChanged(1)
-                        binding.storeVp.currentItem = 1
-                    }
+                searchValue = binding.search.text.toString().lowercase()
+                if (this::viewPagerAdapter.isInitialized) {
+
+                    mainViewModel.getStoreProducts(
+                        storeId.toDouble().roundToInt(),
+                        searchValue,
+                        categoryIdStore,
+                        ""
+                    )
                 }
+
                 return@setOnEditorActionListener true
             }
             false
-        }*/
+        }
+        binding.search.doOnTextChanged { text, _, _, _ ->
+            binding.clearSearch.isVisible = !text.isNullOrEmpty()
+        }
 
     }
 
@@ -121,7 +124,10 @@ class StoreFragment : Fragment(), View.OnClickListener {
         binding.tabLayout.addTab(
             binding.tabLayout.newTab().setText("All Products(${data.total_products})")
         )
-        binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Reviews Ratings(0)"))
+        binding.tabLayout.addTab(
+            binding.tabLayout.newTab()
+                .setText("Reviews Ratings(${data.shop_detail[0].store_rating})")
+        )
         binding.tabLayout.addTab(binding.tabLayout.newTab().setText("About"))
 
 
@@ -171,8 +177,30 @@ class StoreFragment : Fragment(), View.OnClickListener {
                     }
                 }
 
-                is Resource.Loading -> if(!storeDetailsAlreadySetted)
+                is Resource.Loading -> if (!storeDetailsAlreadySetted)
                     appLoader.show()
+
+                is Resource.Error -> apiError(response.message)
+            }
+        }
+
+        mainViewModel.storeProducts.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (response.data?.httpcode == 200) {
+                        storeData.product = response.data.data.product
+                        val productListFragment =
+                            viewPagerAdapter.getFragment(1) as? StoreProductListFragment
+                        productListFragment?.updateData(storeData)
+                        binding.storeVp.currentItem = 1
+//                        setProducts(response.data.data)
+                    } else {
+                        showToast(response.data?.status.toString())
+                    }
+                }
+
+                is Resource.Loading -> appLoader.show()
                 is Resource.Error -> apiError(response.message)
             }
         }
@@ -227,6 +255,10 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
     }
 
+    private fun setProducts(productData: StoreProductData) {
+
+    }
+
 
     private fun setStoreDetails() {
         storeDetailsAlreadySetted = true
@@ -236,25 +268,43 @@ class StoreFragment : Fragment(), View.OnClickListener {
                     promotionBanner = PromotionBanner(
                         requireContext(),
                         replaceBaseUrl(shopDetail.promotion_image)
-                    ) {}
-                    if (!shopDetail.promotion_image.isNullOrEmpty()) {
+                    ) {
+                        promotionBanner.dismiss()
+                        if (shopDetail.promotion_product_id > 0) {
+                            val bundle = Bundle().apply {
+                                putString(
+                                    "productId",
+                                    shopDetail.promotion_product_id.toString()
+                                )
+                            }
+                            findNavController().navigate(R.id.productDetailsFragment, bundle)
+                        } else {
+
+                            mainViewModel.getStoreProducts(
+                                storeId.toDouble().roundToInt(),
+                                shopDetail.promotion_category,
+                                shopDetail.promotion_sub_category,
+                                searchValue
+                            )
+                        }
+
+                    }
+
+                    if (!shopDetail.promotion_image.isNullOrEmpty() && shopDetail.promo_visibility == 1) {
                         promotionBanner.show()
+                        mainViewModel.sellerBannerActivity(sellerId = shopDetail.seller_id)
                     }
 
                     storeName.text = shopDetail.store_name
-                    storeImage.load(replaceBaseUrl(shopDetail.logo)) {
-                        placeholder(R.drawable.logo)
-
-                    }
-                    storeBanner.load(replaceBaseUrl(shopDetail.banner)) {
-                        placeholder(R.drawable.logo)
-
-                    }
-                    storeFollowers.text = "${
+                    storeImage.loadImage(replaceBaseUrl(shopDetail.logo))
+                    storeBanner.loadImage(replaceBaseUrl(shopDetail.banner))
+                    val followersAndChat = "${
                         formatToTwoDecimalPlaces(
                             shopDetail.postive_review.toString().toDouble()
-                        ).toDouble().roundToInt()
-                    } % Positive ${shopDetail.followers} followers"
+                        )
+                    } % Positive | ${shopDetail.followers} followers"
+
+                    storeFollowers.text = followersAndChat
                     follow.text = if (shopDetail.is_following == 0) "Follow" else "Following"
 
                     val white = ContextCompat.getColor(requireContext(), R.color.white)
@@ -275,11 +325,11 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
                     }
                 }
-                setTabLayoutAndViewPager(storeData)
 
             }
         }
         binding.storeDataGroup.isVisible = true
+        setTabLayoutAndViewPager(storeData)
     }
 
     private fun apiError(message: String?) {
@@ -312,6 +362,7 @@ class StoreFragment : Fragment(), View.OnClickListener {
             follow.setOnClickListener(this@StoreFragment)
             chat.setOnClickListener(this@StoreFragment)
             back.setOnClickListener(this@StoreFragment)
+            clearSearch.setOnClickListener(this@StoreFragment)
         }
     }
 
@@ -319,6 +370,15 @@ class StoreFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
+            binding.clearSearch.id -> {
+                binding.search.setText("")
+                mainViewModel.getStoreProducts(
+                    storeId.toDouble().roundToInt(),
+                    "",
+                    categoryIdStore,
+                    ""
+                )
+            }
             binding.follow.id -> followStore()
             binding.chat.id -> {
 

@@ -11,6 +11,7 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentStoreProductListBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.ui.fragments.products.productList.adapter.ProductListAdapter
+import com.hfm.customer.ui.fragments.store.StoreFragment.Companion.categoryIdStore
 import com.hfm.customer.ui.fragments.store.adapter.StoreProductCategoryListAdapter
 import com.hfm.customer.ui.fragments.store.model.Category
 import com.hfm.customer.ui.fragments.store.model.StoreData
@@ -62,6 +63,9 @@ class StoreProductListFragment(private val storeData: StoreData) : Fragment() {
         setObserver()
     }
 
+    fun updateData(newStoreData: StoreData) {
+       setProducts(newStoreData)
+    }
     private fun init() {
         with(binding) {
             appLoader = Loader(requireContext())
@@ -131,6 +135,7 @@ class StoreProductListFragment(private val storeData: StoreData) : Fragment() {
         productCategoryListAdapter.setOnSubCategoryClickListener { catId ->
             if (storeData.shop_detail.isNotEmpty()) {
                 val categoryId= if(catId==0) "" else catId.toString()
+                categoryIdStore = categoryId
                 storeData.shop_detail[0].let {
                     mainViewModel.getStoreDetails(
                         it.seller_id.toString(),

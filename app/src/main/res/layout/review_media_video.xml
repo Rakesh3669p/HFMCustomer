@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/edt_box_smaa_radius"
+    android:layout_gravity="center"
+    >
+
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/reviewVideo"
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="@dimen/_250sdp"
+        app:controller_layout_id="@layout/product_video_playerview"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:resize_mode="fit" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/close"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:background="@color/white"
+        android:src="@drawable/ic_close"
+        android:tint="@color/textGreyDark"
+        android:layout_margin="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundPercent="1" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

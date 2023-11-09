@@ -218,7 +218,7 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
         val pinCode = binding.postCode.text.toString()
 
         if (password.length <= 8) {
-            showToast("password length must be more than 8 characters.")
+            showToast("Password length must be more than 8 characters.")
             return
         }
 

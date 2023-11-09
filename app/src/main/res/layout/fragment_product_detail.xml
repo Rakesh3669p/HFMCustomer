@@ -45,6 +45,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/topBarCartCount"
         style="@style/textSmallSemiBold"
         android:layout_width="@dimen/_12sdp"
@@ -559,6 +560,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:text=""
+                        android:visibility="gone"
                         android:textColor="@color/red"
                         app:layout_constraintBottom_toBottomOf="@id/storeImage"
                         app:layout_constraintEnd_toStartOf="@id/visitStore"

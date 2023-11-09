@@ -1,6 +1,7 @@
 package com.hfm.customer.ui.dashBoard.home.adapter
 
 import android.content.Context
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -13,6 +14,9 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductsSingleBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.loadImage
+import com.hfm.customer.utils.makeGone
+import com.hfm.customer.utils.makeVisible
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
@@ -26,10 +30,7 @@ class FeatureProductsAdapter @Inject constructor() :
         fun bind(data: Product) {
             with(bind) {
                 if(data.image?.isNotEmpty() == true){
-                    productImage.load(replaceBaseUrl(data.image[0].image)){
-                        placeholder(R.drawable.logo)
-                        
-                    }
+                    productImage.loadImage(replaceBaseUrl(data.image[0].image))
                 }
                 productName.text = data.product_name
 
@@ -43,12 +44,18 @@ class FeatureProductsAdapter @Inject constructor() :
                 }
 
                 if(data.frozen==1){
-                    frozenLbl.isVisible = true
-                    frozenLbl.text = "fresh/frozen"
+                    frozenLbl.makeVisible()
+                    frozenLbl.text = "Fresh/Frozen"
                 }else if(data.chilled==1){
-                    frozenLbl.isVisible = true
-                    frozenLbl.text = "chilled"
+                    frozenLbl.makeVisible()
+                    val filters = arrayOfNulls<InputFilter>(10)
+                    filters[0] = InputFilter.LengthFilter(android.R.attr.maxLength)
+                    frozenLbl.filters = filters
+                    frozenLbl.text = "Chilled"
+                }else{
+                    frozenLbl.makeGone()
                 }
+
                 wholeSaleLbl.isVisible =data.wholesale!=null &&data.wholesale.toString().toDouble() > 0
 
                 if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){

@@ -11,6 +11,7 @@ import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.MainBanner
 import com.hfm.customer.databinding.ItemBannerBinding
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
@@ -24,11 +25,10 @@ class HomeMainBannerAdapter @Inject constructor() :
         fun bind(data: MainBanner) {
             with(bind) {
                 bannerImage.roundPercent = 0.2F
-                bannerImage.load(replaceBaseUrl(data.media)){
-                    placeholder(R.drawable.logo)
-                    
+                bannerImage.loadImage(replaceBaseUrl(data.media))
+                root.setOnClickListener {
+                    onItemClick?.invoke(data.category,data.sub_category,data.product_id,data.link_type)
                 }
-
             }
         }
     }
@@ -66,10 +66,10 @@ class HomeMainBannerAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onCategoryClick: ((id: Int) -> Unit)? = null
+    private var onItemClick: ((category: String,subCategory: String,productId:String,linkType:String) -> Unit)? = null
 
-    fun setOnCategoryClickListener(listener: (id: Int) -> Unit) {
-        onCategoryClick = listener
+    fun setOnItemClickListener(listener: (category: String,subCategory: String,productId:String,linkType:String) -> Unit) {
+        onItemClick = listener
     }
 
 }

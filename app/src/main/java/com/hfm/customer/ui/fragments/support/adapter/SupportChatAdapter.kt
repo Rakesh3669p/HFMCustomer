@@ -11,6 +11,7 @@ import coil.load
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemChatBinding
 import com.hfm.customer.ui.fragments.support.model.Message
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.toFormattedDateTimeChat
 import com.hfm.customer.utils.toUnixTimestamp
@@ -50,7 +51,7 @@ class SupportChatAdapter @Inject constructor() :
                     rightChat.text = data.message
                     if (data.image.isNotEmpty()) {
                         rightChatImage.isVisible = true
-                        rightChatImage.load(replaceBaseUrl(data.image)) { placeholder(R.drawable.logo) }
+                        rightChatImage.loadImage(replaceBaseUrl(data.image))
                     } else {
                         rightChatImage.isVisible = false
                     }
@@ -62,7 +63,7 @@ class SupportChatAdapter @Inject constructor() :
                     leftChat.text = data.message
                     if (data.image.isNotEmpty()) {
                         leftChatImage.isVisible = true
-                        leftChatImage.load(replaceBaseUrl(data.image)) { placeholder(R.drawable.logo) }
+                        leftChatImage.loadImage(replaceBaseUrl(data.image))
                     } else {
                         leftChatImage.isVisible = false
                     }

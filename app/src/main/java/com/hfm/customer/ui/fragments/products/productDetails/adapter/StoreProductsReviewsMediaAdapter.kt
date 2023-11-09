@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemReviewMediaBinding
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
@@ -21,9 +22,7 @@ class StoreProductsReviewsMediaAdapter @Inject constructor() :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: String) {
             with(bind) {
-                reviewThumbnail.load(replaceBaseUrl(data)){
-                    placeholder(R.drawable.logo)
-                }
+                reviewThumbnail.loadImage(replaceBaseUrl(data))
                 root.setOnClickListener {
                     onItemClick?.invoke(data)
                 }

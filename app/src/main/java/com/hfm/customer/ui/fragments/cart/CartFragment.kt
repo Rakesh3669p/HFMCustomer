@@ -111,13 +111,14 @@ class CartFragment : Fragment(), View.OnClickListener {
             init()
         }
 
-        mainViewModel.getCart()
-        mainViewModel.getPlatFormVouchers(1)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setObserver()
+        mainViewModel.getCart()
+        mainViewModel.getPlatFormVouchers(1)
     }
 
 
@@ -130,9 +131,11 @@ class CartFragment : Fragment(), View.OnClickListener {
                         200 -> {
                             mainViewModel.getCart()
                         }
+
                         401 -> {
                             requireActivity().moveToLogin(sessionManager)
                         }
+
                         else -> {
 //                            showToast(response.data?.message.toString())
                         }
@@ -152,9 +155,11 @@ class CartFragment : Fragment(), View.OnClickListener {
                         200 -> {
                             mainViewModel.getCart()
                         }
+
                         401 -> {
                             requireActivity().moveToLogin(sessionManager)
                         }
+
                         else -> {
 //                            showToast(response.data?.message.toString())
                         }
@@ -289,12 +294,14 @@ class CartFragment : Fragment(), View.OnClickListener {
                             mainViewModel.getCart()
                             showToast("Coupon Applied")
                         }
+
                         401 -> {}
                         else -> {
                             showToast(response.data?.message.toString())
                         }
                     }
                 }
+
                 is Resource.Loading -> appLoader.show()
                 is Resource.Error ->
                     apiError(response.message)
@@ -398,7 +405,7 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
 
             if (productCount > 0) {
-                subtotalLbl.text = "Subtotal(${productCount}) Items"
+                subtotalLbl.text = "Subtotal(${productCount} Items)"
             } else {
                 subtotalLbl.text = "Subtotal"
             }
@@ -435,10 +442,11 @@ class CartFragment : Fragment(), View.OnClickListener {
                 wallet.text = "RM 0.00"
             }
 
-            useWalletPoints.isChecked = cartData.is_wallet_applied==1
-            if(useWalletPoints.isChecked){
-                wallet.text = "RM -${formatToTwoDecimalPlaces(cartData.wallet_applied_cash.toDouble())}"
-            }else{
+            useWalletPoints.isChecked = cartData.is_wallet_applied == 1
+            if (useWalletPoints.isChecked) {
+                wallet.text =
+                    "RM -${formatToTwoDecimalPlaces(cartData.wallet_applied_cash.toDouble())}"
+            } else {
                 wallet.text = "RM 0.00"
             }
 
@@ -446,7 +454,8 @@ class CartFragment : Fragment(), View.OnClickListener {
             selectAll.isChecked = allCartSelectedIsOne
 
             voucherName.text = cartData.platform_coupon_data.title
-            voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
+            voucherDescription.text =
+                "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
 
             binding.scrollView.invalidate()
             binding.cartDataRv.invalidate()
@@ -476,7 +485,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         binding.useWalletPoints.setOnCheckedChangeListener { _, checked ->
             if (checked) {
                 mainViewModel.applyWallet(cartData.wallet_balance)
-            }else{
+            } else {
                 mainViewModel.removeWallet()
             }
         }
@@ -532,11 +541,11 @@ class CartFragment : Fragment(), View.OnClickListener {
             if (storeData?.seller?.products?.any {
                     it.cart_selected.toString().toDouble() > 0
                 } == false) {
-                showToast("please select any product to apply the voucher")
+                showToast("Please select any product to apply the voucher")
                 return@setOnShopVoucherClickListener
             }
             selectingVoucherSellerId = sellerId
-            mainViewModel.getSellerVouchers(sellerId,1)
+            mainViewModel.getSellerVouchers(sellerId, 1)
         }
     }
 
@@ -567,13 +576,21 @@ class CartFragment : Fragment(), View.OnClickListener {
     private fun showVoucherBottomSheet() {
         val platformVoucherBinding = BottomSheetVoucherBinding.inflate(layoutInflater)
 
-        platformVoucherDialog = BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
+        platformVoucherDialog =
+            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         platformVoucherDialog.setContentView(platformVoucherBinding.root)
 
-        val bottomSheet: FrameLayout? = platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
-        if (bottomSheet != null) { BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED }
+        val bottomSheet: FrameLayout? =
+            platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        if (bottomSheet != null) {
+            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+        }
 
-        initRecyclerView(requireContext(), platformVoucherBinding.vouchersRv, platformVoucherAdapter)
+        initRecyclerView(
+            requireContext(),
+            platformVoucherBinding.vouchersRv,
+            platformVoucherAdapter
+        )
 
         platformVoucherAdapter.setOnItemClickListener { position ->
             platFormSelectedVoucher = platformVouchers[position]
@@ -608,7 +625,8 @@ class CartFragment : Fragment(), View.OnClickListener {
                     showToast("Please enter a coupon code or select to apply")
                     return@setOnClickListener
                 }
-                mainViewModel.applyPlatFormVouchers(platFormSelectedVoucher?.couponCode ?: "", cartData.total_offer_cost.toString()
+                mainViewModel.applyPlatFormVouchers(
+                    platFormSelectedVoucher?.couponCode ?: "", cartData.total_offer_cost.toString()
                 )
             }
 
@@ -623,11 +641,15 @@ class CartFragment : Fragment(), View.OnClickListener {
     private fun showSellerVoucherBottomSheet() {
 
         val sellerVoucherBinding = BottomSheetVoucherBinding.inflate(layoutInflater)
-        platformVoucherDialog = BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
+        platformVoucherDialog =
+            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         platformVoucherDialog.setContentView(sellerVoucherBinding.root)
 
-        val bottomSheet: FrameLayout? = platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
-        if (bottomSheet != null) { BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED }
+        val bottomSheet: FrameLayout? =
+            platformVoucherDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        if (bottomSheet != null) {
+            BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
+        }
 
         initRecyclerView(requireContext(), sellerVoucherBinding.vouchersRv, sellerVoucherAdapter)
 
@@ -646,7 +668,8 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
 
             applyVoucher.setOnClickListener {
-                val sellerData = cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+                val sellerData =
+                    cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
                 val couponCode = voucherCode.text.toString()
                 if (couponCode.isEmpty()) {
                     showToast("Please enter a coupon code or select to apply")
@@ -663,7 +686,8 @@ class CartFragment : Fragment(), View.OnClickListener {
 
 
             apply.setOnClickListener {
-                val sellerData = cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
+                val sellerData =
+                    cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
                 val couponCode = sellerSelectedVoucher?.couponCode.toString()
 
                 if (couponCode.isEmpty()) {
@@ -694,7 +718,9 @@ class CartFragment : Fragment(), View.OnClickListener {
         val notDeliverableProduct = cartAdapter.differ.currentList
             .flatMap { seller ->
                 seller.seller.products.filter { product ->
-                    product.cart_selected.toString().toDouble() > 0 && product.check_shipping_availability.toString().toDouble() < 1
+                    product.cart_selected.toString()
+                        .toDouble() > 0 && product.check_shipping_availability.toString()
+                        .toDouble() < 1
                 }
             }
             .firstOrNull { it.check_shipping_availability.toString().toDouble() == 0.0 }
@@ -716,16 +742,17 @@ class CartFragment : Fragment(), View.OnClickListener {
         } else if (!selectedAnyProduct) {
             showToast("Please select any product to checkout.")
         } else {
-            findNavController().popBackStack()
             findNavController().navigate(R.id.checkOutFragment)
         }
     }
+
     private fun deleteCart() {
         val cartIds = cartData.seller_product.flatMap { it.seller.products }
             .map { it.cart_id.toString().toDouble().roundToInt() }
             .joinToString(",")
         mainViewModel.deleterCartProduct(cartIds)
     }
+
     private fun selectCart() {
         val cartIds = cartData.seller_product
             .flatMap { it.seller.products }

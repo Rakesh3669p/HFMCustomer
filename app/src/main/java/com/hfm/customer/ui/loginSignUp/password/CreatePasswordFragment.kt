@@ -139,9 +139,9 @@ class CreatePasswordFragment : Fragment(), View.OnClickListener {
         password = binding.password.text.toString().trim()
         confirmPassword = binding.confirmPassword.text.toString().trim()
         if (password.length <= 8) {
-            showToast("password length must be more than 8")
+            showToast("Password length must be more than 8")
         } else if (password != confirmPassword) {
-            showToast("password and confirm password does not match!")
+            showToast("Password and confirm password does not match!")
         } else {
             if (from == "profile") {
                 updatePassword()

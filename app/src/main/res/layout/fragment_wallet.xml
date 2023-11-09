@@ -36,7 +36,7 @@
         style="@style/textSmallSemiBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/current_balance_lbl"
+
         android:layout_marginStart="@dimen/_20sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back" />
@@ -46,7 +46,7 @@
         style="@style/textLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="250 Points (RM 25)"
+        android:text=""
         android:textSize="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_4sdp"
         android:layout_marginStart="@dimen/_20sdp"

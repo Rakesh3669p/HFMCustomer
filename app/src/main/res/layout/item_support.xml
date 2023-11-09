@@ -43,7 +43,7 @@
 
         <TextView
             android:id="@+id/dateLbl"
-            style="@style/textMediumSemiBold"
+            style="@style/textMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="05/07/2023"

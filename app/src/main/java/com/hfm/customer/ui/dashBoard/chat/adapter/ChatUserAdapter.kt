@@ -11,6 +11,7 @@ import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemChatUsersBinding
 import com.hfm.customer.ui.dashBoard.chat.model.ChatList
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
@@ -22,10 +23,7 @@ class ChatUserAdapter @Inject constructor() : RecyclerView.Adapter<ChatUserAdapt
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: ChatList) {
             with(bind) {
-                userImage.load(replaceBaseUrl(data.logo)){
-                    placeholder(R.drawable.logo)
-                    error(R.drawable.logo)
-                }
+                userImage.loadImage(replaceBaseUrl(data.logo))
                 userName.text = data.store_name
                 lastMessage.text = data.last_message
                 date.text = data.last_chat_date

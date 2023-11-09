@@ -3,6 +3,7 @@ package com.hfm.customer.ui.fragments.products.productDetails.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductsSingleBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.OtherProduct
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.loadImage
 import javax.inject.Inject
 
 
@@ -26,16 +28,16 @@ class RelativeProductListAdapter @Inject constructor() :
                 if(data.image.isNotEmpty()) {
                     val imageOriginal = data.image[0].image
                     val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    productImage.load(imageReplaced){
-                        placeholder(R.drawable.logo)
-                        
-                    }
+                    productImage.loadImage(imageReplaced)
                 }
 
 
                 productName.text = data.product_name
                 productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble()) }"
 
+                saveLbl.isVisible = false
+                frozenLbl.isVisible = false
+                wholeSaleLbl.isVisible = false
 //                saveLbl.isVisible = data.offer.isNotEmpty() && data.offer!="false"
 //                saveLbl.text = data.offer
 //                frozenLbl.isVisible = data.frozen==1

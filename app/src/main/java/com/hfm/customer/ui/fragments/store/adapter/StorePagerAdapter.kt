@@ -9,12 +9,17 @@ import com.hfm.customer.ui.fragments.store.StoreHomeFragment
 import com.hfm.customer.ui.fragments.store.StoreProductListFragment
 import com.hfm.customer.ui.fragments.store.StoreRatingFragment
 import com.hfm.customer.ui.fragments.store.model.StoreData
+import com.hfm.customer.ui.fragments.store.model.StoreProductData
 
-class StorePagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle, var storeData: StoreData) :
+class StorePagerAdapter(
+    fragmentManager: FragmentManager,
+    lifecycle: Lifecycle,
+    var storeData: StoreData
+) :
     FragmentStateAdapter(fragmentManager, lifecycle) {
-
+    private val fragments: MutableMap<Int, Fragment> = mutableMapOf()
     override fun createFragment(position: Int): Fragment {
-        return when (position) {
+        val fragment = when (position) {
             0 -> StoreHomeFragment(storeData)
             1 -> StoreProductListFragment(storeData)
             2 -> StoreRatingFragment(storeData)
@@ -23,7 +28,13 @@ class StorePagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle, 
                 StoreHomeFragment(storeData)
             }
         }
+        fragments[position] = fragment
+        return fragment
     }
 
     override fun getItemCount(): Int = 4
+
+    fun getFragment(position: Int): Fragment? {
+        return fragments[position]
+    }
 }

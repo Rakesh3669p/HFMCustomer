@@ -3,6 +3,7 @@ package com.hfm.customer.ui.fragments.products.productDetails
 import android.app.ActionBar
 import android.app.DatePickerDialog
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +20,8 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.BottomSheetBulkOrderBinding
 import com.hfm.customer.ui.dashBoard.profile.model.Profile
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
+import com.hfm.customer.utils.loadImage
+import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import kotlinx.coroutines.flow.callbackFlow
@@ -79,13 +82,8 @@ class BulkOrderBottomSheet(
             scrollView.layoutParams = layoutParams
 
             productName.text = productData.product_name
-            val imageOriginal = productData.image?.get(0)?.image
-            val imageReplaced =
-                imageOriginal?.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-            productImage.load(imageReplaced) {
-                placeholder(R.drawable.logo)
-
-            }
+            val imageOriginal = if (productData.image?.isNotEmpty() == true) productData.image[0].image else ""
+            productImage.loadImage(replaceBaseUrl(imageOriginal))
             name.text = "${profileData.first_name} ${profileData.last_name}"
             email.text = profileData.email
             address.setText(profileData.address1)
@@ -108,7 +106,6 @@ class BulkOrderBottomSheet(
             val adapter: ArrayAdapter<String> =
                 ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, items)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
             unitsSpinner.adapter = adapter
             unitsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
@@ -183,14 +180,16 @@ class BulkOrderBottomSheet(
                     return@setOnClickListener
                 }
 
-                callback( productData.product_id.toString(),
+                callback(
+                    productData.product_id.toString(),
                     name,
                     email,
                     qty,
                     phone,
                     dateNeeded,
                     deliveryAddress,
-                    remarks)
+                    remarks
+                )
             }
             cancel.setOnClickListener {
                 findNavController().popBackStack()

@@ -12,8 +12,8 @@ data class WalletData(
 )
 
 data class Wallet(
-    val amount: Int,
-    val points: Int,
+    val amount: Double,
+    val points: Double,
     val points_val: Int,
     val user_id: Int
 )

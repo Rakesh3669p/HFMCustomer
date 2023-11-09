@@ -34,6 +34,8 @@ import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.containsSensitiveWords
 import com.hfm.customer.utils.createFileFromContentUri
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.hasEmailAddress
+import com.hfm.customer.utils.hasNumberGreaterThan10Digits
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
@@ -48,6 +50,8 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -281,18 +285,26 @@ class ChatFragment : Fragment(), View.OnClickListener {
             showToast("Please type a message to send..")
             return
         }
-        if (containsSensitiveWords(message)) {
-            val currentTime = LocalTime.now()
+
+        if (containsSensitiveWords(message)|| hasNumberGreaterThan10Digits(message)|| hasEmailAddress(message)) {
+            val currentDateTime = LocalDateTime.now()
+
             val timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss")
-            val formattedTime = currentTime.format(timeFormat)
+            val dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+
+            val formattedTime = currentDateTime.format(timeFormat)
+            val createdAt = currentDateTime.format(dateTimeFormat)
+            val chatDate = currentDateTime.format(dateFormat)
 
             binding.edtMessage.setText("")
             messagesList.map { it.warning = false }
             val warningMessage = Message(
                 align = "right",
-                chat_date = "",
+                chat_date = chatDate,
                 chat_time = formattedTime,
-                created_at = formattedTime,
+                created_at = createdAt,
                 from = "You",
                 image = "",
                 me = 1,

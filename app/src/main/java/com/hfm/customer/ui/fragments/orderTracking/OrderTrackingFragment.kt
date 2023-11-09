@@ -20,6 +20,7 @@ import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
@@ -114,10 +115,7 @@ class OrderTrackingFragment : Fragment(), View.OnClickListener {
             val bindingDialog = DeliveryProofBinding.inflate(layoutInflater)
             appCompatDialog.setContentView(bindingDialog.root)
             appCompatDialog.setCancelable(true)
-            bindingDialog.productImage.load(deliveryProof){
-                placeholder(R.drawable.logo)
-                error(R.drawable.nodeliveryproof)
-            }
+            bindingDialog.productImage.loadImage(deliveryProof)
             bindingDialog.close.setOnClickListener { appCompatDialog.dismiss() }
             appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             appCompatDialog.show()

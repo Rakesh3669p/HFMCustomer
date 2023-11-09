@@ -15,6 +15,7 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemBlogsBinding
 import com.hfm.customer.databinding.ItemChatUsersBinding
 import com.hfm.customer.ui.fragments.blogs.model.Blogs
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 import kotlin.concurrent.timerTask
@@ -27,10 +28,7 @@ class BlogsAdapter @Inject constructor() : RecyclerView.Adapter<BlogsAdapter.Vie
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data:Blogs) {
             with(bind) {
-                blogImage.load(replaceBaseUrl(data.image)){
-                    placeholder(R.drawable.logo)
-                    
-                }
+                blogImage.loadImage(replaceBaseUrl(data.image))
                 blogAuthor.text = data.author
                 blogTitle.text = data.blog_title
 

@@ -12,6 +12,7 @@ import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.CatSubcat
 import com.hfm.customer.databinding.ItemCategoryMainBinding
+import com.hfm.customer.utils.loadImage
 import javax.inject.Inject
 
 
@@ -25,10 +26,7 @@ class CategoryMainAdapter @Inject constructor() :
         fun bind(data: CatSubcat) {
             with(bind) {
                 categoryName.text = data.category_name
-                categoryImage.load(data.image){
-                    placeholder(R.drawable.logo)
-                    
-                }
+                categoryImage.loadImage(data.image)
 
                 itemCv.cardElevation = 0F
                 categoryName.setTextColor(ContextCompat.getColor(context, R.color.black))

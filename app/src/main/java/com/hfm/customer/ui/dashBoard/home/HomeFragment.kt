@@ -14,15 +14,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import coil.load
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hfm.customer.R
+import com.hfm.customer.commonModel.BannerData
 import com.hfm.customer.commonModel.MainBanner
 import com.hfm.customer.commonModel.PromotionPopup
 import com.hfm.customer.databinding.FragmentHomeBinding
@@ -34,6 +34,7 @@ import com.hfm.customer.ui.dashBoard.home.adapter.FlashDealAdapter
 import com.hfm.customer.ui.dashBoard.home.adapter.HomeMainBannerAdapter
 import com.hfm.customer.ui.dashBoard.home.adapter.HomeMainCatAdapter
 import com.hfm.customer.ui.dashBoard.home.adapter.TrendingNowAdapter
+import com.hfm.customer.ui.dashBoard.home.model.AdsImage
 import com.hfm.customer.ui.dashBoard.home.model.FlashSale
 import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
@@ -42,7 +43,9 @@ import com.hfm.customer.utils.PromotionBanner
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.cartCount
+import com.hfm.customer.utils.hideKeyboard
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
@@ -54,19 +57,16 @@ import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-data class AdsImage(
-    val image: Drawable?,
-    val name: String
-)
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), View.OnClickListener {
-    private var saleTime: String = ""
-    private lateinit var binding: FragmentHomeBinding
-    private var currentView: View? = null
 
-    private val mainViewModel: MainViewModel by activityViewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
+    @Inject
+    lateinit var sessionManager: SessionManager
+
+    // Adapters
     @Inject
     lateinit var homeMainCatAdapter: HomeMainCatAdapter
 
@@ -91,71 +91,51 @@ class HomeFragment : Fragment(), View.OnClickListener {
     @Inject
     lateinit var trendingNowAdapter: TrendingNowAdapter
 
+    // UI components and other variables
+    private lateinit var binding: FragmentHomeBinding
     private lateinit var appLoader: Loader
-    private lateinit var promotionBanner: PromotionBanner
+    private var promotionBanner: PromotionBanner? = null
     private lateinit var noInternetDialog: NoInternetDialog
 
-    @Inject
-    lateinit var sessionManager: SessionManager
-    var handler: Handler = Handler(Looper.getMainLooper())
-    var runnable: Runnable? = null
-    var delay = 2000
+    private var currentView: View? = null
+    private var saleTime: String = ""
+
+    private var handler: Handler = Handler(Looper.getMainLooper())
+    private var runnable: Runnable? = null
+    private val delay = 2000
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         if (currentView == null) {
             currentView = inflater.inflate(R.layout.fragment_home, container, false)
             binding = FragmentHomeBinding.bind(currentView!!)
             noInternetDialog = NoInternetDialog(requireContext())
             init()
-            setObserver()
+            setAdsRv()
             setOnClickListener()
         }
         return currentView!!
     }
 
-    private fun init() {
-        appLoader = Loader(requireContext())
-        binding.loader.isVisible = true
-        if (noInternetDialog.isShowing) {
-            noInternetDialog.dismiss()
-        }
-        noInternetDialog.setOnDismissListener { init() }
-        setMainBanner()
-        if (this::promotionBanner.isInitialized) {
-            if (promotionBanner.isShowing) promotionBanner.dismiss()
-        }
-
-        setAdsRv()
-        mainViewModel.apply {
-            getHomePageData()
-            getNotifications(0)
-            getCart()
-        }
-        appLoader.show()
-        val imm = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObserver()
     }
 
-    private fun setMainBanner() {
-        binding.apply {
-            initRecyclerView(requireContext(), adsRv, brandsAdapter, true)
-            homeMainBanner.apply {
-                clipChildren = false
-                clipToPadding = false
-                offscreenPageLimit = 3
-                homeMainBanner.setPageTransformer(customPageTransformer())
-                adapter = homeMainBannerAdapter
-                currentItem = 1
-            }
-            val tabLayoutMediator =
-                TabLayoutMediator(binding.indicator, binding.homeMainBanner, true) { _, _ -> }
-            tabLayoutMediator.attach()
-
-
-        }
+    private fun init() {
+        appLoader = Loader(requireContext())
+        noInternetDialog = NoInternetDialog(requireContext())
+        noInternetDialog.setOnDismissListener { init() }
+        noInternetDialog.takeIf { it.isShowing }?.dismiss()
+        promotionBanner?.takeIf { it.isShowing }?.dismiss()
+        mainViewModel.getHomePageData()
+        mainViewModel.getNotifications(0)
+        mainViewModel.getCart()
+        binding.loader.isVisible = true
+//        appLoader.show()
+        requireActivity().hideKeyboard(binding.root)
     }
 
     private fun setPromotionalPopup(promotionData: PromotionPopup) {
@@ -165,14 +145,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 bundle.putString("catId", promotionData.category)
                 bundle.putString("subCatId", promotionData.sub_category)
                 findNavController().navigate(R.id.productListFragment, bundle)
-                promotionBanner.dismiss()
+                promotionBanner?.dismiss()
             }
 
-        promotionBanner.show()
+        promotionBanner?.show()
     }
 
     private fun setAdsRv() {
-        val adsImages: MutableList<AdsImage> = ArrayList()
         val imageResources = listOf(
             R.drawable.international_shipping,
             R.drawable.vouchers,
@@ -187,15 +166,15 @@ class HomeFragment : Fragment(), View.OnClickListener {
             "Vouchers",
             "Bulk\nPurchase",
             "Partner\nOffers",
-            "News\nEvents",
+            "News &\nEvents",
             "HFM\nContest"
         )
 
-        for (i in imageResources.indices) {
-            val drawable = ContextCompat.getDrawable(requireContext(), imageResources[i])
-            val title = imageTitles[i]
-            adsImages.add(AdsImage(drawable, title))
+        val adsImages = imageResources.zip(imageTitles) { resourceId, title ->
+            val drawable = ContextCompat.getDrawable(requireContext(), resourceId)
+            AdsImage(drawable, title)
         }
+
         brandsAdapter.differ.submitList(adsImages)
     }
 
@@ -210,12 +189,17 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setObserver() {
-
+        mainViewModel.showHomeLoader.observe(viewLifecycleOwner) { showLoader ->
+            if (showLoader) {
+                appLoader.show()
+            } else {
+                appLoader.dismiss()
+            }
+        }
         mainViewModel.categories.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-                    appLoader.dismiss()
                     initRecyclerView(
                         requireContext(),
                         binding.homeMainCategoriesRv,
@@ -238,46 +222,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-//                    appLoader.dismiss()
                     response.data?.data?.let {
-                        homeMainBannerAdapter.differ.submitList(it.app_top_banner)
-                        binding.homeMainBanner.currentItem = 1
-                        with(binding) {
-                            if (it.app_bottom_banner.isNotEmpty()) {
-                                it.app_bottom_banner.forEachIndexed { index, bottomBanner ->
-                                    if (index == 0) {
-                                        referBanner.isVisible = true
-                                        referBanner.load(replaceBaseUrl(bottomBanner.media)) {
-                                            placeholder(
-                                                R.drawable.logo
-                                            )
-                                        }
-                                    } else if (index == 1) {
-                                        adBanner.isVisible = true
-                                        adBanner.load(replaceBaseUrl(bottomBanner.media)) {
-                                            placeholder(
-                                                R.drawable.logo
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-
-                        startCarousel(it.app_top_banner)
-
-
-                        if (!sessionManager.popUpShown && it.promotion_popup != null && !it.promotion_popup.promotion_image.isNullOrEmpty()) {
-                            sessionManager.popUpShown = true
-                            setPromotionalPopup(response.data.data.promotion_popup)
-                        }
-                        sessionManager.searchPlaceHolder = it.search_placeholder_text
-                        if (sessionManager.searchPlaceHolder.isNullOrEmpty()) {
-                            binding.searchBar.text = "Search here.."
-                        } else {
-                            binding.searchBar.text = it.search_placeholder_text
-                        }
+                        setBanners(it)
                     }
                 }
 
@@ -294,7 +240,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-//                    appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
                         saleTime = response.data.data.flash_sale.end_time
                         setTimer(response.data.data.flash_sale)
@@ -322,17 +267,40 @@ class HomeFragment : Fragment(), View.OnClickListener {
         mainViewModel.homeMiddleBanner.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-//                    appLoader.dismiss()
                     binding.loader.isVisible = false
-                    binding.secondaryBanner.load(
-                        replaceBaseUrl(
-                            response.data?.data?.center_left_banner?.get(
-                                0
-                            )?.media.toString()
-                        )
-                    ) {
-                        placeholder(R.drawable.logo)
-
+                    if (response.data?.httpcode == 200) {
+                        if (response.data.data.center_left_banner.isNotEmpty()) {
+                            val imageUrl =
+                                replaceBaseUrl(response.data.data.center_left_banner[0].media)
+                            binding.secondaryBanner.loadImage(imageUrl)
+                            binding.secondaryBanner.setOnClickListener {
+                                if (response.data.data.center_left_banner[0].link_type == "product_list") {
+                                    val bundle = Bundle()
+                                    bundle.putString(
+                                        "catId",
+                                        response.data.data.center_left_banner[0].category
+                                    )
+                                    bundle.putString(
+                                        "subCatId",
+                                        response.data.data.center_left_banner[0].subcategory_id
+                                    )
+                                    findNavController().navigate(R.id.productListFragment, bundle)
+                                } else {
+                                    val bundle = Bundle().apply {
+                                        putString(
+                                            "productId",
+                                            response.data.data.center_left_banner[0].product_id
+                                        )
+                                    }
+                                    findNavController().navigate(
+                                        R.id.productDetailsFragment,
+                                        bundle
+                                    )
+                                }
+                            }
+                        } else {
+                            binding.secondaryBanner.isVisible = false
+                        }
                     }
                 }
 
@@ -345,7 +313,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-//                    appLoader.dismiss()
                     initRecyclerView(requireContext(), binding.factoryDealsRv, factoryAdapter, true)
                     factoryAdapter.differ.submitList(response.data?.data?.flash_sale?.products)
                 }
@@ -355,25 +322,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        mainViewModel.homeBottomBanner.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is Resource.Success -> {
-                    binding.loader.isVisible = false
-//                    appLoader.dismiss()
-                    with(binding) {
-
-                    }
-                }
-
-                is Resource.Loading -> Unit
-                is Resource.Error -> apiError(response.message)
-            }
-        }
         mainViewModel.homeBrands.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-//                    appLoader.dismiss()
                     initRecyclerView(requireContext(), binding.brandsRv, brandStoreAdapter, true)
                     brandStoreAdapter.differ.submitList(response.data?.data?.brands)
                 }
@@ -386,7 +338,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     binding.loader.isVisible = false
-//                    appLoader.dismiss()
                     initRecyclerView(
                         requireContext(),
                         binding.trendingNowRv,
@@ -403,7 +354,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
         mainViewModel.homeFeatureProducts.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-//                    appLoader.dismiss()
                     binding.loader.isVisible = false
                     response.data?.let {
                         if (it.httpcode.toString().toDouble().roundToInt() == 200) {
@@ -420,7 +370,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
                             }
                         }
                     }
-
                 }
 
                 is Resource.Loading -> Unit
@@ -430,15 +379,14 @@ class HomeFragment : Fragment(), View.OnClickListener {
         mainViewModel.notifications.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-//                    appLoader.dismiss()
                     if (response.data?.httpcode == "200") {
-                        binding.notificationCountBg.isVisible = response.data.data.notification_count > 0
-                        binding.notificationCount.isVisible = response.data.data.notification_count > 0
-                        binding.notificationCount.text = response.data.data.notification_count.toString()
-                    }else{
-                        binding.notificationCountBg.isVisible =false
+                        val notificationCount = response.data.data.unread_count
+                        binding.notificationCountBg.isVisible = notificationCount > 0
+                        binding.notificationCount.isVisible = notificationCount > 0
+                        binding.notificationCount.text = notificationCount.toString()
+                    } else {
+                        binding.notificationCountBg.isVisible = false
                         binding.notificationCount.isVisible = false
-
                     }
                 }
 
@@ -449,8 +397,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
         mainViewModel.cart.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-//                    appLoader.dismiss()
-                    cartCount.postValue(response.data?.data?.cart_count)
+                    if (response.data?.httpcode == 200)
+                        cartCount.postValue(response.data.data.cart_count)
                 }
 
                 is Resource.Loading -> Unit
@@ -466,21 +414,102 @@ class HomeFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun setBanners(bannerData: BannerData) {
+        with(binding) {
+            initRecyclerView(requireContext(), adsRv, brandsAdapter, true)
+            homeMainBanner.apply {
+                clipChildren = false
+                clipToPadding = false
+                offscreenPageLimit = 3
+                homeMainBanner.setPageTransformer(customPageTransformer())
+                adapter = homeMainBannerAdapter
+                currentItem = 1
+            }
+            homeMainBannerAdapter.differ.submitList(bannerData.app_top_banner)
+            val tabLayoutMediator = TabLayoutMediator(indicator, homeMainBanner, true) { _, _ -> }
+            tabLayoutMediator.attach()
+            homeMainBanner.currentItem = 1
+            homeMainBannerAdapter.setOnItemClickListener { catId, subCatId, productId, linkType ->
+                if (linkType == "product_list") {
+                    val bundle = Bundle()
+                    bundle.putString("catId", catId)
+                    bundle.putString("subCatId", subCatId)
+                    findNavController().navigate(R.id.productListFragment, bundle)
+                } else {
+                    val bundle = Bundle().apply { putString("productId", productId) }
+                    findNavController().navigate(R.id.productDetailsFragment, bundle)
+                }
+            }
+            startCarousel(bannerData.app_top_banner)
+
+            bannerData.app_bottom_banner.forEachIndexed { index, bottomBanner ->
+                when (index) {
+                    0 -> {
+                        referBanner.isVisible = true
+                        referBanner.loadImage(replaceBaseUrl(bottomBanner.media))
+                        referBanner.setOnClickListener {
+                            if (bottomBanner.link_type == "product_list") {
+                                val bundle = Bundle()
+                                bundle.putString("catId", bottomBanner.category)
+                                bundle.putString("subCatId", bottomBanner.sub_category)
+                                findNavController().navigate(R.id.productListFragment, bundle)
+                            } else {
+                                val bundle = Bundle().apply {
+                                    putString(
+                                        "productId",
+                                        bottomBanner.product_id
+                                    )
+                                }
+                                findNavController().navigate(R.id.productDetailsFragment, bundle)
+                            }
+                        }
+                    }
+
+                    1 -> {
+                        adBanner.isVisible = true
+                        adBanner.loadImage(replaceBaseUrl(bottomBanner.media))
+                        adBanner.setOnClickListener {
+                            if (bottomBanner.link_type == "product_list") {
+                                val bundle = Bundle()
+                                bundle.putString("catId", bottomBanner.category)
+                                bundle.putString("subCatId", bottomBanner.sub_category)
+                                findNavController().navigate(R.id.productListFragment, bundle)
+                            } else {
+                                val bundle = Bundle().apply {
+                                    putString(
+                                        "productId",
+                                        bottomBanner.product_id
+                                    )
+                                }
+                                findNavController().navigate(R.id.productDetailsFragment, bundle)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!sessionManager.popUpShown && bannerData.promotion_popup != null && !bannerData.promotion_popup.promotion_image.isNullOrEmpty()) {
+            sessionManager.popUpShown = true
+            setPromotionalPopup(bannerData.promotion_popup)
+        }
+
+        sessionManager.searchPlaceHolder = bannerData.search_placeholder_text
+        binding.searchBar.text =
+            if (sessionManager.searchPlaceHolder.isNullOrEmpty()) "Search here.." else bannerData.search_placeholder_text
+    }
+
 
     private fun startCarousel(appTopBanner: List<MainBanner>) {
         runnable = Runnable {
             val currentItem = binding.homeMainBanner.currentItem
             val itemCount = appTopBanner.size
 
-            if (currentItem == itemCount - 1) {
-                binding.homeMainBanner.setCurrentItem(0, true)
-            } else {
-                binding.homeMainBanner.setCurrentItem(currentItem + 1, true)
-            }
+            val nextItem = if (currentItem == itemCount - 1) 0 else currentItem + 1
+            binding.homeMainBanner.setCurrentItem(nextItem, true)
 
             handler.postDelayed(runnable!!, delay.toLong())
         }
-
         handler.postDelayed(runnable!!, 2000)
     }
 
@@ -526,6 +555,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             flashDealsViewAll.setOnClickListener(this@HomeFragment)
             featuresProductViewAll.setOnClickListener(this@HomeFragment)
             searchFilter.setOnClickListener(this@HomeFragment)
+            secondaryBanner.setOnClickListener(this@HomeFragment)
         }
 
         homeMainCatAdapter.setOnCategoryClickListener { data ->
@@ -586,18 +616,23 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
                 3 -> {
                     val bundle = Bundle()
-                    bundle.putInt("pageId", 16)
-                    findNavController().navigate(R.id.commonPageFragment, bundle)
+                    bundle.putString("title", "Partner Offers")
+                    bundle.putInt("pageId", 7)
+                    findNavController().navigate(R.id.blogsFragment, bundle)
                 }
 
                 4 -> {
-                    findNavController().navigate(R.id.blogsFragment)
+                    val bundle = Bundle()
+                    bundle.putString("title", "News & Events")
+                    bundle.putInt("pageId", 5)
+                    findNavController().navigate(R.id.blogsFragment, bundle)
                 }
 
                 5 -> {
                     val bundle = Bundle()
-                    bundle.putInt("pageId", 8)
-                    findNavController().navigate(R.id.commonPageFragment, bundle)
+                    bundle.putString("title", "HFM Contest")
+                    bundle.putInt("pageId", 6)
+                    findNavController().navigate(R.id.blogsFragment, bundle)
                 }
             }
         }
@@ -613,6 +648,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
+
             binding.notification.id -> {
                 if (sessionManager.isLogin) {
                     findNavController().navigate(R.id.notificationFragment)
@@ -623,6 +659,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
             }
 
             binding.officialBrandsViewAll.id -> findNavController().navigate(R.id.brandsFragment)
+
+
             binding.cart.id -> {
                 if (sessionManager.isLogin) {
                     findNavController().navigate(R.id.cartFragment)

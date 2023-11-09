@@ -12,6 +12,7 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemBrandsBinding
 import com.hfm.customer.ui.dashBoard.home.model.Brand
 import com.hfm.customer.ui.dashBoard.home.model.Image
+import com.hfm.customer.utils.loadImage
 import javax.inject.Inject
 
 
@@ -25,10 +26,7 @@ class BrandStoreAdapter @Inject constructor() :
             with(bind) {
                 val imageOriginal = data.brand_image
                 val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                adsImage.load(imageReplaced){
-                    placeholder(R.drawable.logo)
-                    
-                }
+                adsImage.loadImage(imageReplaced)
                 root.setOnClickListener {
                     onBrandClick?.let {
                         it(data.brand_id)

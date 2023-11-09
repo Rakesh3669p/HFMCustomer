@@ -40,6 +40,7 @@ data class CouponApplied(
     @SerializedName("ofr_type") val ofr_type:String,
     @SerializedName("ofr_amount") val ofr_amount:Int,
     @SerializedName("discount_type") val discount_type:String,
+    @SerializedName("platform_discount_type") val platform_discount_type:String,
     @SerializedName("voucher_type") val voucher_type:String,
     @SerializedName("is_free_shipping") val is_free_shipping:Int,
     @SerializedName("seller_subtotal") val seller_subtotal:Double,

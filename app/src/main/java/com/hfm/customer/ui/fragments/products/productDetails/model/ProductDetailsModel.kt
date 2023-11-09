@@ -37,7 +37,7 @@ data class Variants(
     val offer: Any,
     var isSelected: Boolean = false,
     val actual_price: Any,
-    val offer_price: Any
+    val offer_price: String
 )
 
 data class CategoryBreadcrumbs(

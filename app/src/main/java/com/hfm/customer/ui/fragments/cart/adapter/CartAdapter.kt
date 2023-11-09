@@ -67,10 +67,10 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
                 spannableString.setSpan(
                     ForegroundColorSpan(Color.BLACK),
                     0,
-                    16,
+                    17,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                val startIndex = 16
+                val startIndex = 17
                 val endIndex = formattedShipping.length
                 spannableString.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(context, R.color.red)),

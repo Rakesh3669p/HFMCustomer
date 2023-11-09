@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.hfm.customer.databinding.ItemMediaBinding
+import com.hfm.customer.utils.loadImage
+import java.io.File
 import javax.inject.Inject
 
 
@@ -17,9 +20,9 @@ class ReviewsMediaAdapter @Inject constructor() :
 
     inner class ViewHolder(private val bind: ItemMediaBinding) :
         RecyclerView.ViewHolder(bind.root) {
-        fun bind(data: Uri) {
+        fun bind(data: File) {
             with(bind) {
-                media.setImageURI(data)
+                media.load(data)
                 removeMedia.setOnClickListener {
                  onItemClick?.invoke(absoluteAdapterPosition)
                 }
@@ -27,12 +30,12 @@ class ReviewsMediaAdapter @Inject constructor() :
         }
     }
 
-    private val diffUtil = object : DiffUtil.ItemCallback<Uri>() {
-        override fun areItemsTheSame(oldItem: Uri, newItem: Uri): Boolean {
+    private val diffUtil = object : DiffUtil.ItemCallback<File>() {
+        override fun areItemsTheSame(oldItem: File, newItem: File): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Uri, newItem: Uri): Boolean {
+        override fun areContentsTheSame(oldItem: File, newItem: File): Boolean {
             return oldItem == newItem
         }
 

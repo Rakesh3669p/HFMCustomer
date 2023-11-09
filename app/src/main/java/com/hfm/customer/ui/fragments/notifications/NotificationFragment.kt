@@ -104,11 +104,12 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 binding.notificationRv,
                 notificationAdapter
             )
-            notificationsList.addAll(data.notifications)
+            binding.notificationRv.addOnScrollListener(scrollListener)
+            notificationsList.addAll(notificationsList)
             notificationAdapter.differ.submitList(data.notifications)
         } else {
             notificationsList.addAll(data.notifications)
-            notificationAdapter.differ.submitList(data.notifications)
+            notificationAdapter.differ.submitList(notificationsList)
             notificationAdapter.notifyDataSetChanged()
         }
     }

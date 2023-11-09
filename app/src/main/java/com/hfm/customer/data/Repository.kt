@@ -65,6 +65,7 @@ class Repository @Inject constructor(private val service: HFMCustomerAPI) {
     suspend fun updateProfileBusiness(requestBody: MutableMap<String, RequestBody?>) = service.updateProfileBusiness(requestBody)
     suspend fun updateCartQty(jsonObject: JsonObject) = service.updateCartQty(jsonObject)
     suspend fun getStoreDetails(jsonObject: JsonObject) = service.getStoreDetails(jsonObject)
+    suspend fun getStoreProducts(jsonObject: JsonObject) = service.getStoreProducts(jsonObject)
     suspend fun getStoreReviews(jsonObject: JsonObject) = service.getStoreReviews(jsonObject)
     suspend fun myOrders(jsonObject: JsonObject) = service.getMyOrders(jsonObject)
     suspend fun getBrands(jsonObject: JsonObject) = service.getBrands(jsonObject)
@@ -97,4 +98,5 @@ class Repository @Inject constructor(private val service: HFMCustomerAPI) {
     suspend fun applyWallet(jsonObject: JsonObject) = service.applyWallet(jsonObject)
     suspend fun removeWallet(jsonObject: JsonObject) = service.removeWallet(jsonObject)
     suspend fun updateShipping(jsonObject: JsonObject) = service.updateShipping(jsonObject)
+    suspend fun sellerBannerActivity(jsonObject: JsonObject) = service.sellerBannerActivity(jsonObject)
 }

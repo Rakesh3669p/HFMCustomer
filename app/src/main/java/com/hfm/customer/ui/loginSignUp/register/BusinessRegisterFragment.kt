@@ -258,32 +258,32 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
         email = binding.email.text.toString()
 
         if (companyName.isEmpty()) {
-            showToast("please enter a valid company name")
+            showToast("Please enter a valid company name")
             return
         }
 
         if (companyRegisterNo.isEmpty() || companyRegisterNo.length < 5) {
-            showToast("please enter a valid company registered no")
+            showToast("Please enter a valid company registered no")
             return
         }
 
         if (natureOfBusinessId <= 0) {
-            showToast("please select your nature of business")
+            showToast("Please select your nature of business")
             return
         }
 
         if (companyContactNo.isEmpty() || companyContactNo.length < 5) {
-            showToast("please enter a valid company contact no")
+            showToast("Please enter a valid company contact no")
             return
         }
 
         if (!email.isValidEmail()) {
-            showToast("please enter a valid email")
+            showToast("Please enter a valid email")
             return
         }
 
         if (!binding.termsAndConditionsCheckBox.isChecked) {
-            showToast("please check the Terms and Conditions..")
+            showToast("Please check the Terms and Conditions..")
             return
         }
 

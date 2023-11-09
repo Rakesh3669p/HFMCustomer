@@ -130,6 +130,7 @@ class IPay88 : Fragment() {
         lifecycleScope.launch {
             delay(3000)
             if(appCompatDialog.isShowing){
+                appCompatDialog.dismiss()
                 findNavController().navigate(R.id.action_online_paymentFragment_to_myOrdersFragment)
             }
         }

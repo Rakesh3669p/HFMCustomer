@@ -12,6 +12,7 @@ import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductImageBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Image
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
@@ -28,9 +29,7 @@ class ProductImagesAdapter @Inject constructor() :
                 val imageOriginal = data.image
                 val imageReplaced =
                     imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                productImage.load(imageReplaced) {
-                    placeholder(R.drawable.logo)
-                }
+                productImage.loadImage(imageReplaced)
                 if (selectedPosition == absoluteAdapterPosition) {
                     mainLayout.background = ContextCompat.getDrawable(context, R.drawable.outline_line_box_red)
 

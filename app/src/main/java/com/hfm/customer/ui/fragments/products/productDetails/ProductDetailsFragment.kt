@@ -46,6 +46,8 @@ import com.hfm.customer.commonModel.RatingReviewsData
 import com.hfm.customer.databinding.BottomSheetBulkOrderBinding
 import com.hfm.customer.databinding.DeliveryProofBinding
 import com.hfm.customer.databinding.FragmentProductDetailBinding
+import com.hfm.customer.databinding.ReviewMediaImagesBinding
+import com.hfm.customer.databinding.ReviewMediaVideoBinding
 import com.hfm.customer.ui.dashBoard.profile.model.Profile
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.ProductImagesAdapter
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.ProductVariantsAdapter
@@ -64,10 +66,12 @@ import com.hfm.customer.utils.cartCount
 import com.hfm.customer.utils.extractYouTubeVideoId
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.makeGone
 import com.hfm.customer.utils.makeInvisible
 import com.hfm.customer.utils.makeVisible
 import com.hfm.customer.utils.netWorkFailure
+import com.hfm.customer.utils.normal
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
@@ -134,6 +138,14 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
 
     private val videoPlayer: ExoPlayer by lazy {
+        ExoPlayer.Builder(requireContext()).build().apply {
+            setAudioAttributes(audioAttributes, true)
+            pauseAtEndOfMediaItems = true
+            setHandleAudioBecomingNoisy(true)
+        }
+    }
+
+    private val reviewPlayer: ExoPlayer by lazy {
         ExoPlayer.Builder(requireContext()).build().apply {
             setAudioAttributes(audioAttributes, true)
             pauseAtEndOfMediaItems = true
@@ -223,7 +235,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     if (response.data?.httpcode == 200) {
                         setReviewData(response.data.data)
                     } else {
-                        showToast(response.data?.message.toString())
+//                        showToast(response.data?.message.toString())
                     }
                 }
 
@@ -247,7 +259,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                         vouchersAdapter.differ.submitList(response.data.data.coupon_list)
                         binding.voucherListCv.isVisible =
                             response.data.data.coupon_list.isNotEmpty()
+                        binding.vouchers.isVisible = true
+                        binding.vouchers.text =
+                            "${response.data.data.coupon_list.size} Vouchers Available"
                     } else {
+                        binding.vouchers.isVisible = false
                         binding.voucherListCv.isVisible = false
                     }
                 }
@@ -277,7 +293,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                         bulkOrderBottomSheetFragment.dismiss()
                     }
                     if (response.data?.httpcode == 200) {
-                        val message = "Your bulk Order request has successfully submitted"
+                        val message = "Your bulk order request has successfully submitted"
                         showToast(message)
                         val bundle = Bundle()
                         bundle.putString("from", "bulkOrders")
@@ -406,6 +422,12 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                                         R.color.red
                                     )
                                 )
+                                binding.estimateDeliveryDate.setTextColor(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.red
+                                    )
+                                )
                             } else {
 
 
@@ -516,31 +538,34 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         }
 
         cartCount.observe(requireActivity()) { count ->
+            binding.topBarCartCount.isVisible = count > 0
             binding.topBarCartCount.text = count.toString()
         }
     }
 
     private fun setReviewData(data: RatingReviewsData) {
-        initRecyclerView(requireContext(), binding.reviewsRv, reviewsAdapter)
-        reviewsAdapter.differ.submitList(data.review)
-        with(binding) {
-            fiveStarCount.text = data.rate_range.FiveStars.toString()
-            fourStarCount.text = data.rate_range.FourStars.toString()
-            threeStarCount.text = data.rate_range.ThreeStars.toString()
-            twoStarCount.text = data.rate_range.TwoStars.toString()
-            oneStarCount.text = data.rate_range.OneStar.toString()
+        if (data.review.isNotEmpty()) {
+            initRecyclerView(requireContext(), binding.reviewsRv, reviewsAdapter)
+            reviewsAdapter.differ.submitList(data.review)
+            with(binding) {
+                fiveStarCount.text = data.rate_range.FiveStars.toString()
+                fourStarCount.text = data.rate_range.FourStars.toString()
+                threeStarCount.text = data.rate_range.ThreeStars.toString()
+                twoStarCount.text = data.rate_range.TwoStars.toString()
+                oneStarCount.text = data.rate_range.OneStar.toString()
 
-            oneStarSlider.value = ((data.rate_range.OneStar / data.rate_range.All) * 100).toFloat()
-            twoStarSlider.value = ((data.rate_range.TwoStars / data.rate_range.All) * 100).toFloat()
-            threeStarSlider.value =
-                ((data.rate_range.ThreeStars / data.rate_range.All) * 100).toFloat()
-            fourStarSlider.value =
-                ((data.rate_range.FourStars / data.rate_range.All) * 100).toFloat()
-            fiveStarSlider.value =
-                ((data.rate_range.FiveStars / data.rate_range.All) * 100).toFloat()
-
+                oneStarSlider.value =
+                    ((data.rate_range.OneStar.toDouble() / data.rate_range.All.toDouble()) * 100).toFloat()
+                twoStarSlider.value =
+                    ((data.rate_range.TwoStars.toDouble() / data.rate_range.All.toDouble()) * 100).toFloat()
+                threeStarSlider.value =
+                    ((data.rate_range.ThreeStars.toDouble() / data.rate_range.All.toDouble()) * 100).toFloat()
+                fourStarSlider.value =
+                    ((data.rate_range.FourStars.toDouble() / data.rate_range.All.toDouble()) * 100).toFloat()
+                fiveStarSlider.value =
+                    ((data.rate_range.FiveStars.toDouble() / data.rate_range.All.toDouble()) * 100).toFloat()
+            }
         }
-
     }
 
 
@@ -580,10 +605,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
         with(binding) {
             if (productData.product.image?.isNotEmpty() == true) {
-                productImage.load(replaceBaseUrl(productData.product.image[0].image)) {
-                    placeholder(R.drawable.logo)
-
-                }
+                productImage.loadImage(replaceBaseUrl(productData.product.image[0].image))
             }
             productName.text = productData.product.product_name
             ratingBar.rating = productData.product.rating.toString().toFloat()
@@ -613,6 +635,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                         productData.product.offer_price.toString().toDouble()
                     )
                 }"
+            } else {
+                productPrice.text = "RM ${
+                    formatToTwoDecimalPlaces(
+                        productData.product.actual_price.toString().toDouble()
+                    )
+                }"
+                productListingPrice.isVisible = false
             }
 
 
@@ -628,16 +657,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     val imageOriginal = it.logo
                     val imageReplaced =
                         imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    storeImage.load(imageReplaced) {
-                        placeholder(R.drawable.logo)
-
-                    }
+                    storeImage.loadImage(imageReplaced)
                     storeName.text = it.store_name
-                    /*chatResponse.text = "${
-                        formatToTwoDecimalPlaces(
-                            it.postive_review.toDouble()
-                        ).toDouble().roundToInt()
-                    } % Positive ${it.followers} followers"*/
+                    chatResponse.text =
+                        "${formatToTwoDecimalPlaces(it.postive_review.toDouble()).toDouble()} % Positive ${it.followers} followers"
+
                 }
             }
 
@@ -705,17 +729,48 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     val imageOriginal = productData.product.image[0].image
                     val imageReplaced =
                         imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    productImage.load(imageReplaced) {
-                        placeholder(R.drawable.logo)
-
-                    }
+                    productImage.loadImage(imageReplaced)
                 }
                 productName.text = productData.product.product_name
-                productPrice.text = "RM ${
-                    formatToTwoDecimalPlaces(
-                        productData.product.actual_price.toString().toDouble()
-                    )
-                }"
+                if (productData.product.offer_price != null && productData.product.offer_price.toString() != "false") {
+                    productPrice.text = "RM ${
+                        formatToTwoDecimalPlaces(
+                            productData.product.offer_price.toString().toDouble()
+                        )
+                    }"
+                } else {
+                    productPrice.text = "RM ${
+                        formatToTwoDecimalPlaces(
+                            productData.product.actual_price.toString().toDouble()
+                        )
+                    }"
+                    productListingPrice.isVisible = false
+                }
+
+                if (productData.product.frozen == 1) {
+                    frozenLbl.makeVisible()
+                    frozenLbl.text = "Fresh/Frozen"
+                } else if (productData.product.chilled == 1) {
+                    frozenLbl.makeVisible()
+                    frozenLbl.text = "Chilled"
+                } else {
+                    frozenLbl.makeGone()
+                }
+                if (productData.product.wholesale != null) {
+                    wholeSaleLbl.isVisible = productData.product.wholesale.toString().toDouble() > 0
+                } else {
+                    wholeSaleLbl.isVisible = false
+                }
+
+                saveLbl.isVisible = false
+
+                /*if(productData.product.offer_price!=null&&productData.product.offer_price.toString() !="false"&&productData.product.offer_price.toString().toDouble()>0){
+                    val difference = productData.product.actual_price.toString().toDouble() - productData.product.offer_price.toString().toDouble()
+                    saveLbl.isVisible = difference>0
+                    saveLbl.text = "Save RM ${formatToTwoDecimalPlaces(difference)}"
+                }else{
+                    saveLbl.isVisible = false
+                }*/
             }
 
             if (productData.cross_selling_products.isEmpty()) {
@@ -730,19 +785,47 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                                 "https://uat.hfm.synuos.com",
                                 "http://4.194.191.242"
                             )
-                            productImage.load(imageReplaced) {
-                                placeholder(R.drawable.logo)
-
-                            }
+                            productImage.loadImage(imageReplaced)
                         }
+
+                        if (productData.product.frozen == 1) {
+                            frozenLbl.makeVisible()
+                            frozenLbl.text = "Fresh/Frozen"
+                        } else if (productData.product.chilled == 1) {
+                            frozenLbl.makeVisible()
+                            frozenLbl.text = "Chilled"
+                        } else {
+                            frozenLbl.makeGone()
+                        }
+                        saveLbl.isVisible = false
+                        if (productData.product.wholesale != null) {
+                            wholeSaleLbl.isVisible =
+                                productData.product.wholesale.toString().toDouble() > 0
+                        } else {
+                            wholeSaleLbl.isVisible = false
+                        }
+                        /*if(productData.product.offer_price!=null&&productData.product.offer_price.toString() !="false"&&productData.product.offer_price.toString().toDouble()>0){
+                            val difference = productData.product.actual_price.toString().toDouble() - productData.product.offer_price.toString().toDouble()
+                            saveLbl.isVisible = difference>0
+                            saveLbl.text = "Save RM ${formatToTwoDecimalPlaces(difference)}"
+                        }else{
+                            saveLbl.isVisible = false
+                        }*/
                         productName.text = it.product_name
-                        if (it.actual_price != null)
-                            productPrice.text =
-                                "RM ${
-                                    formatToTwoDecimalPlaces(
-                                        it.actual_price.toString().toDouble()
-                                    )
-                                }"
+                        if (productData.product.offer_price != null && productData.product.offer_price.toString() != "false") {
+                            productPrice.text = "RM ${
+                                formatToTwoDecimalPlaces(
+                                    productData.product.offer_price.toString().toDouble()
+                                )
+                            }"
+                        } else {
+                            productPrice.text = "RM ${
+                                formatToTwoDecimalPlaces(
+                                    productData.product.actual_price.toString().toDouble()
+                                )
+                            }"
+                            productListingPrice.isVisible = false
+                        }
 
                         total.text = "RM ${
                             formatToTwoDecimalPlaces(
@@ -945,8 +1028,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        reviewsAdapter.setOnImageClickListener {
-            showImageDialog(it)
+        reviewsAdapter.setOnImageClickListener { images, index ->
+            showImageDialog(images, index)
+        }
+        reviewsAdapter.setOnVideoClickListener { video ->
+            showVideoDialog(video)
         }
         productsImagesAdapter.setOnImageClickListener { data ->
             if (data == videoIcon) {
@@ -956,10 +1042,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
                 videoPlayer.pause()
                 binding.productVideo.isVisible = false
-                binding.productImage.load(data) {
-                    placeholder(R.drawable.logo)
-
-                }
+                binding.productImage.loadImage(data)
             }
         }
 
@@ -977,8 +1060,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
             selectedVariant = productData.varaiants_list[position].pro_id.toString()
             binding.soldOut.isVisible = productData.varaiants_list[position].is_out_of_stock == 1
-            if (productData.varaiants_list[position].offer_price.toString()
-                    .isNotEmpty() && productData.varaiants_list[position].offer_price.toString() != "false"
+            if (!productData.varaiants_list[position].offer_price.isNullOrEmpty() && productData.varaiants_list[position].offer_price != "false"
             ) {
                 binding.productListingPrice.isVisible = true
                 binding.productPrice.text = "RM ${
@@ -1008,20 +1090,110 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun showImageDialog(it: String) {
+    private fun showImageDialog(images: List<String>, index: Int) {
+        var currentIndex = index
         val appCompatDialog = Dialog(requireContext())
-        val bindingDialog = DeliveryProofBinding.inflate(layoutInflater)
+        val bindingDialog = ReviewMediaImagesBinding.inflate(layoutInflater)
         appCompatDialog.setContentView(bindingDialog.root)
         appCompatDialog.setCancelable(true)
-        bindingDialog.productImage.load(replaceBaseUrl(it)){
-            placeholder(R.drawable.logo)
-            error(R.drawable.logo)
+
+        bindingDialog.productImage.loadImage(replaceBaseUrl(images[currentIndex]))
+        bindingDialog.right.setOnClickListener {
+
+            if (currentIndex < images.size - 1) {
+                currentIndex++
+                bindingDialog.productImage.loadImage(replaceBaseUrl(images[currentIndex]))
+            }
         }
+
+        bindingDialog.left.setOnClickListener {
+            if (currentIndex > 0) {
+                currentIndex--
+                bindingDialog.productImage.loadImage(replaceBaseUrl(images[currentIndex]))
+            }
+        }
+
         bindingDialog.close.setOnClickListener { appCompatDialog.dismiss() }
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         appCompatDialog.show()
     }
 
+    private fun showVideoDialog(video: String) {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = ReviewMediaVideoBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.setCancelable(true)
+
+        bindingDialog.reviewVideo.clipToOutline = true
+        bindingDialog.reviewVideo.player = reviewPlayer
+        val exoPlay: ImageView =
+            bindingDialog.reviewVideo.findViewById(androidx.media3.ui.R.id.exo_play)
+        val exoPause: ImageView =
+            bindingDialog.reviewVideo.findViewById(androidx.media3.ui.R.id.exo_pause)
+        val exoBuffer: ProgressBar =
+            bindingDialog.reviewVideo.findViewById(androidx.media3.ui.R.id.exo_buffering)
+        exoPlay.setOnClickListener {
+            playReviewVideo(video)
+        }
+
+        exoPause.setOnClickListener {
+            reviewPlayer.pause()
+        }
+
+        playReviewVideo(video)
+
+        reviewPlayer.addListener(object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+                if (isPlaying) {
+                    exoBuffer.isVisible = false
+                    exoPlay.isVisible = false
+                    exoPause.isVisible = true
+                } else {
+                    exoBuffer.isVisible = true
+                    exoPlay.isVisible = true
+                    exoPause.isVisible = false
+                }
+            }
+        })
+
+
+        bindingDialog.close.setOnClickListener { appCompatDialog.dismiss() }
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.show()
+    }
+
+    private fun playReviewVideo(video: String) {
+        val mediaItem: MediaItem = MediaItem.fromUri(video)
+
+        val mediaSource =
+            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+        val currentMediaItem: MediaItem? = reviewPlayer.currentMediaItem
+        if (currentMediaItem == null || currentMediaItem != mediaSource.mediaItem) {
+            try {
+                reviewPlayer.stop()
+                reviewPlayer.setMediaSource(mediaSource)
+                reviewPlayer.prepare()
+//                reviewPlayer.addListener(playerListener)
+                reviewPlayer.playWhenReady = true
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        } else {
+            toggleReviewPlayPause()
+        }
+    }
+
+    private fun toggleReviewPlayPause() {
+        if (reviewPlayer.isPlaying) {
+            reviewPlayer.pause()
+        } else {
+            if (reviewPlayer.currentPosition >= reviewPlayer.duration) {
+                reviewPlayer.seekTo(0)
+            }
+            reviewPlayer.play()
+        }
+    }
 
     override fun onClick(v: View?) {
         when (v?.id) {
@@ -1118,8 +1290,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                                                                              dateNeeded,
                                                                              deliveryAddress,
                                                                              remarks ->
+
+                        val proId = selectedVariant.ifEmpty { productData.product.product_id.toString() }
                         mainViewModel.sendBulkOrderRequest(
-                            productData.product.product_id.toString(),
+                            proId,
                             name,
                             email,
                             qty,
@@ -1150,7 +1324,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 binding.pinCode.clearFocus()
                 val pinCode = binding.pinCode.text.toString()
                 if (pinCode.isEmpty()) {
-                    showToast("Please Enter a valid postCode.")
+                    showToast("Please enter a valid postcode.")
                     return
                 }
                 mainViewModel.checkAvailability(productData.product.product_id.toString(), pinCode)
@@ -1195,10 +1369,12 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         super.onPause()
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         videoPlayer.pause()
+        reviewPlayer.pause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         videoPlayer.release()
+        reviewPlayer.release()
     }
 }

@@ -142,17 +142,17 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
         val message = binding.messageEdt.text.toString()
 
         if(title.isEmpty()){
-            showToast("please enter the title")
+            showToast("Please enter the title")
             return
         }
 
         if(message.isEmpty()){
-            showToast("please enter the message")
+            showToast("Please enter the message")
             return
         }
 
         if(binding.ticketSpinner.selectedItemPosition==1&&saleId.isEmpty()){
-            showToast("please select the order")
+            showToast("Please select the order")
             return
         }
 

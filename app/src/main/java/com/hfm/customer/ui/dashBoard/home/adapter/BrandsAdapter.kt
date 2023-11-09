@@ -7,32 +7,22 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemAdsBinding
-import com.hfm.customer.ui.dashBoard.home.AdsImage
-import com.hfm.customer.ui.dashBoard.home.model.Brand
+import com.hfm.customer.ui.dashBoard.home.model.AdsImage
+import com.hfm.customer.utils.loadImage
+
 import javax.inject.Inject
 
-
-class BrandsAdapter @Inject constructor() :
+class BrandsAdapter @Inject constructor(private val context: Context) :
     RecyclerView.Adapter<BrandsAdapter.ViewHolder>() {
-    private lateinit var context: Context
-
     inner class ViewHolder(private val bind: ItemAdsBinding) :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: AdsImage) {
             with(bind) {
-                adsImage.load(data.image){
-                    placeholder(R.drawable.logo)
-                    
-                }
                 title.text = data.name
-                root.setOnClickListener {
-                    onItemClick?.let {
-                        it(adapterPosition)
-                    }
-                }
+                adsImage.load(data.image)
+                root.setOnClickListener { onItemClick?.invoke(absoluteAdapterPosition) }
             }
         }
     }
@@ -42,26 +32,19 @@ class BrandsAdapter @Inject constructor() :
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: AdsImage   , newItem: AdsImage): Boolean {
+        override fun areContentsTheSame(oldItem: AdsImage, newItem: AdsImage): Boolean {
             return oldItem == newItem
         }
-
     }
 
-    val differ = AsyncListDiffer(this, diffUtil)
+    val differ:AsyncListDiffer<AdsImage> = AsyncListDiffer(this, diffUtil)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): BrandsAdapter.ViewHolder {
-        context = parent.context
-        return ViewHolder(
-            ItemAdsBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+        val inflater = LayoutInflater.from(context)
+        return ViewHolder(ItemAdsBinding.inflate(inflater, parent, false))
     }
 
     override fun onBindViewHolder(holder: BrandsAdapter.ViewHolder, position: Int) {
@@ -75,5 +58,4 @@ class BrandsAdapter @Inject constructor() :
     fun setOnItemClickListener(listener: (id: Int) -> Unit) {
         onItemClick = listener
     }
-
 }

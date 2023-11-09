@@ -12,6 +12,7 @@ import com.hfm.customer.R
 import com.hfm.customer.commonModel.Subcategory
 import com.hfm.customer.databinding.ItemCategoryItemsBinding
 import com.hfm.customer.databinding.ItemCategoryMainBinding
+import com.hfm.customer.utils.loadImage
 import javax.inject.Inject
 
 
@@ -24,10 +25,7 @@ class CategoriesAdapter @Inject constructor() :
         fun bind(data: Subcategory) {
             with(bind) {
                 categoryName.text = data.subcategory_name
-                categoryImage.load(data.subcategory_image){
-                    placeholder(R.drawable.logo)
-                    
-                }
+                categoryImage.loadImage(data.subcategory_image)
                 root.setOnClickListener {
                    onCategoryClick?.let { it(data.id) }
                 }

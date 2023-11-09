@@ -32,7 +32,11 @@ data class CenterLeftBanner(
     val identifier: String,
     val media: String,
     val media_type: String,
-    val title: String
+    val title: String,
+    val category: String,
+    val link_type: String,
+    val product_id: String,
+    val subcategory_id: String
 )
 
 data class CenterRightBanner(

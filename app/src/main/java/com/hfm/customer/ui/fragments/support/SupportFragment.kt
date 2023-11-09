@@ -77,10 +77,8 @@ class SupportFragment : Fragment(), View.OnClickListener {
                     }else{
                         binding.noSupportTickets.isVisible = true
                         binding.createNewTicket2.isVisible = supportTickets.isNotEmpty()
-                        showToast(response.data?.message.toString())
+//                        showToast(response.data?.message.toString())
                     }
-
-
                 }
                 is Resource.Loading->appLoader.show()
                 is Resource.Error->apiError(response.message)

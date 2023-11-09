@@ -13,6 +13,7 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemMyProductBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -28,19 +29,15 @@ class MyAllOrdersProductsAdapter @Inject constructor() : RecyclerView.Adapter<My
         fun bind(data: Product) {
             with(bind) {
                 if(data.product_image?.isNotEmpty() == true){
-                    productImage.load(replaceBaseUrl(data.product_image[0].image)){
-                        placeholder(R.drawable.logo)
-                        error(R.drawable.logo)
-                    }
+                    productImage.loadImage(replaceBaseUrl(data.product_image[0].image))
                 }
                 productName.text = data.product_name
                 productQty.text = "Quantity: ${data.quantity.toString().toDouble().roundToInt()}"
                 amount.isVisible = from == "orderDetails"
                 if(data.sale_price!=null){
-
-                    amount.text = "RM ${formatToTwoDecimalPlaces(data.sale_price.toString().toDouble())}"
+                    amount.text = "RM ${formatToTwoDecimalPlaces(data.sale_price.toString().toDouble() * data.quantity.toString().toDouble().roundToInt())}"
                 }else{
-                    amount.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
+                    amount.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble()* data.quantity.toString().toDouble().roundToInt())}"
                 }
 
                 rateProduct.isVisible = data.review_submitted == 0

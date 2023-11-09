@@ -21,7 +21,7 @@ data class CartData(
     val grand_total: Any,
     val points: String,
     val is_wallet_applied: Int,
-    val wallet_applied: Int,
+    val wallet_applied: Double,
     val wallet_applied_cash: String,
     val reward: List<Any>,
     val selected_products_count: Int,
@@ -38,21 +38,25 @@ data class CartData(
     val platform_voucher_amt: Double,
     val seller_voucher_amt: Double,
 )
+
 data class SellerProduct(
     val seller: Seller,
-    val shipping: Any,
+    val shipping: Double,
     val shipping_availability: Int,
     val shipping_availability_text: String,
     val shipping_cal: Any,
     val shipping_markup: Any,
     val shipping_method: String,
     val seller_subtotal: Double,
-    var selfPickUp: Boolean =false,
+    var selfPickUp: Boolean = false,
     var standardPickUp: Boolean = true,
     val is_seller_coupon_applied: Int,
     val is_platform_coupon_applied: Int,
-    val  seller_coupon_data: CouponApplied,
+    val seller_coupon_data: CouponApplied,
     val platform_coupon_data: CouponApplied,
+    val seller_shipping_option: Int,
+
+
 
     )
 
@@ -62,6 +66,6 @@ data class Seller(
     val seller: String,
     var coupon: Coupon,
     val seller_id: Int,
-    var message: String?="",
+    var message: String? = "",
     val service_status: Int
 )

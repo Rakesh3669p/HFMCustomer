@@ -134,19 +134,16 @@ class ProductListFragment : Fragment(), View.OnClickListener {
 
         makeProductListApiCall()
         mainViewModel.getBrandsList()
-        binding.result.makeInvisible()
-        binding.category.makeInvisible()
+        if(showProductsRandomly) {
+            binding.result.makeInvisible()
+            binding.category.makeInvisible()
+        }
         with(binding) {
             productListRv.apply {
                 setHasFixedSize(true)
                 layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
                 adapter = productListAdapter
             }.addOnScrollListener(scrollListener)
-        }
-
-        if (flashSale == 1 && endTime.isNotEmpty()) {
-//            binding.flashDealsGroup.isVisible = true
-//            setTimer(endTime)
         }
     }
 
@@ -160,7 +157,6 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             override fun onTick(millisUntilFinished: Long) {
                 updateCountdownText(millisUntilFinished)
             }
-
             override fun onFinish() {
                 updateCountdownText(0)
             }

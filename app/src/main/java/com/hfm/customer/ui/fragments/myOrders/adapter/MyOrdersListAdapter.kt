@@ -1,9 +1,7 @@
 package com.hfm.customer.ui.fragments.myOrders.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -12,16 +10,12 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
-import com.hfm.customer.databinding.ItemAdsBinding
 import com.hfm.customer.databinding.ItemBulkOrderBinding
-import com.hfm.customer.ui.dashBoard.home.AdsImage
-import com.hfm.customer.ui.dashBoard.home.model.Brand
-import com.hfm.customer.ui.fragments.myOrders.model.BulkrequestOrderDetail
 import com.hfm.customer.ui.fragments.myOrders.model.Purchase
+import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.makeGone
-import com.hfm.customer.utils.makeInvisible
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
@@ -35,6 +29,7 @@ class MyOrdersListAdapter @Inject constructor() :
 
     inner class ViewHolder(private val bind: ItemBulkOrderBinding) :
         RecyclerView.ViewHolder(bind.root) {
+        @SuppressLint("SetTextI18n")
         fun bind(data: Purchase) {
             val redColor = ContextCompat.getColor(context, R.color.red)
             val greenColor = ContextCompat.getColor(context, R.color.green)
@@ -45,44 +40,41 @@ class MyOrdersListAdapter @Inject constructor() :
                 if(data.products.isNotEmpty()) {
                     data.products[0].let {
                         if (!it.product_image.isNullOrEmpty()) {
-                            productImage.load(replaceBaseUrl(it.product_image[0].image)){
-                                placeholder(R.drawable.logo)
-                                error(R.drawable.logo)
-
-                            }
+                            productImage.loadImage(replaceBaseUrl(it.product_image[0].image))
                         }
                     }
                 }
                 requestId.isVisible = false
                 orderId.text = "Order #: ${data.order_id}"
+
                 requestedDate.text = "${data.order_date} | ${data.order_time}"
+                orderAmount.text = "RM ${formatToTwoDecimalPlaces(data.grand_total)} (${data.products.size} Items)"
 
                 when(paymentStatus){
                     "to_pay"->{
-                        requestStatus.text = "Payment Pending"
+                        requestStatus.text = data.frontend_order_status
                         requestStatus.setTextColor(orangeColor)
                     }
                     "to_ship"->{
-                        requestStatus.text = "In Process"
+                        requestStatus.text = data.frontend_order_status
                         requestStatus.setTextColor(orangeColor)
                     }
 
                     "to_receive"->{
-                        requestStatus.text = "Estimated delivery on "
+                        requestStatus.text = data.frontend_order_status
                         requestStatus.setTextColor(greenColor)
                     }
 
                     "completed"->{
-                        requestStatus.text = "Delivered"
+                        requestStatus.text = data.frontend_order_status
                         requestStatus.setTextColor(greenColor)
                     }
 
                     "cancelled"->{
-                        requestStatus.text = "Cancelled"
+                        requestStatus.text = data.frontend_order_status
                         requestStatus.setTextColor(redColor)
                     }
                 }
-
 
                 root.setOnClickListener {
                     onOrderClick?.invoke(data)
@@ -95,19 +87,15 @@ class MyOrdersListAdapter @Inject constructor() :
         override fun areItemsTheSame(
             oldItem: Purchase,
             newItem: Purchase
-        ): Boolean {
-            return oldItem == newItem
-        }
+        ): Boolean =  oldItem == newItem
 
         override fun areContentsTheSame(
             oldItem: Purchase,
             newItem: Purchase
-        ): Boolean {
-            return oldItem == newItem
-        }
+        ): Boolean =oldItem == newItem
     }
 
-    val differ = AsyncListDiffer(this, diffUtil)
+    val differ:AsyncListDiffer<Purchase> = AsyncListDiffer(this, diffUtil)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

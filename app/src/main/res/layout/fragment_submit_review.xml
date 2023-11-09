@@ -67,6 +67,8 @@
                 android:rating="0"
                 android:scaleX="0.7"
                 android:scaleY="0.7"
+                android:stepSize="1"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rateThisProductLbl" />
@@ -98,20 +100,71 @@
                 app:layout_constraintStart_toStartOf="@id/titleLbl"
                 app:layout_constraintTop_toBottomOf="@id/titleLbl" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/mediaRv"
-                android:layout_width="0dp"
+            <HorizontalScrollView
+                android:id="@+id/mediaScroll"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:itemCount="0"
-                android:layout_marginVertical="@dimen/_9sdp"
-                tools:listitem="@layout/item_media"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="@id/titleLbl"
                 app:layout_constraintStart_toStartOf="@id/titleLbl"
-                app:layout_constraintTop_toBottomOf="@id/titleEdt"
-                app:layout_constraintBottom_toTopOf="@id/uploadImageLbl"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/titleEdt">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/mediaLayout"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/_9sdp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/mediaRv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:nestedScrollingEnabled="false"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toTopOf="@id/uploadImageLbl"
+                        app:layout_constraintEnd_toEndOf="@id/titleLbl"
+                        tools:itemCount="2"
+                        tools:listitem="@layout/item_media" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:visibility="gone"
+                        android:id="@+id/videoImageLayout"
+                        android:layout_width="@dimen/_65sdp"
+                        android:layout_height="@dimen/_65sdp"
+                        android:layout_gravity="center"
+                        >
+
+                        <androidx.constraintlayout.utils.widget.ImageFilterView
+                            android:id="@+id/media"
+                            android:layout_width="@dimen/_60sdp"
+                            android:layout_height="@dimen/_60sdp"
+                            android:scaleType="fitXY"
+                            app:roundPercent="0.2"
+                            android:elevation="@dimen/_1sdp"
+                            android:src="@drawable/ic_videocam"
+                            android:padding="@dimen/_14sdp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <androidx.constraintlayout.utils.widget.ImageFilterView
+                            android:id="@+id/removeMedia"
+                            android:layout_width="@dimen/_14sdp"
+                            android:layout_height="@dimen/_14sdp"
+                            android:scaleType="fitXY"
+                            app:roundPercent="1"
+                            android:padding="@dimen/_1sdp"
+                            android:background="@color/red"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:elevation="@dimen/_1sdp"
+                            android:src="@drawable/ic_close"/>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </HorizontalScrollView>
 
             <TextView
                 android:id="@+id/uploadImageLbl"
@@ -119,11 +172,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_10sdp"
-
                 android:text="Upload Images &amp; Videos"
                 android:textColor="@color/textGreyDark"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/mediaRv" />
+                app:layout_constraintTop_toBottomOf="@id/mediaScroll" />
 
             <View
                 android:id="@+id/uploadImageBg"

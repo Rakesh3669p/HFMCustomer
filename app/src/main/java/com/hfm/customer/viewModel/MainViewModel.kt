@@ -48,6 +48,7 @@ import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetailsModel
 import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
 import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
+import com.hfm.customer.ui.fragments.store.model.StoreProductsModel
 import com.hfm.customer.ui.fragments.store.model.StoreReviewsModel
 import com.hfm.customer.ui.fragments.support.model.SupportMessagesModel
 import com.hfm.customer.ui.fragments.support.model.SupportTicketsModel
@@ -73,6 +74,7 @@ class MainViewModel @Inject constructor(
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
+    val showHomeLoader = SingleLiveEvent<Boolean>()
     val checkLogin = SingleLiveEvent<Resource<SuccessModel>>()
     val checkAppUpdate = SingleLiveEvent<Resource<AppUpdateModel>>()
     val productDetails = SingleLiveEvent<Resource<ProductDetailsModel>>()
@@ -139,6 +141,7 @@ class MainViewModel @Inject constructor(
     val updateProfileBusiness = SingleLiveEvent<Resource<SuccessModel>>()
     val updateCartCount = SingleLiveEvent<Resource<SuccessModel>>()
     val storeDetails = SingleLiveEvent<Resource<StoreDetailsModel>>()
+    val storeProducts = SingleLiveEvent<Resource<StoreProductsModel>>()
     val storeReview = SingleLiveEvent<Resource<StoreReviewsModel>>()
     val myOrders = SingleLiveEvent<Resource<MyOrdersModel>>()
     val placeOrder = SingleLiveEvent<Resource<PlaceOrderModel>>()
@@ -152,6 +155,7 @@ class MainViewModel @Inject constructor(
     val applyWallet = SingleLiveEvent<Resource<ApplyWalletModel>>()
     val removeWallet = SingleLiveEvent<Resource<SuccessModel>>()
     val updateshipingOption = SingleLiveEvent<Resource<SuccessModel>>()
+    val bannerActivity = SingleLiveEvent<Resource<SuccessModel>>()
 
 
     fun getAppUpdate() = viewModelScope.launch {
@@ -270,7 +274,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun getHomePageData() = viewModelScope.launch {
-
+        showHomeLoader.postValue(true)
         val jsonObject1 = JsonObject()
         jsonObject1.addProperty("access_token", "")
         jsonObject1.addProperty("lang_id", "1")
@@ -331,12 +335,24 @@ class MainViewModel @Inject constructor(
         val homeMainCategoriesResponse = async { safeGetMainHomeCategories(mainCatJson) }
         val homeMainBannerResponse = async { safeGetHomeMainBannerCall(jsonObject1) }
         val homeMiddleBannerResponse = async { safeGetHomeMiddleBannerCall(middleBannerJson) }
-        val homeBottomBannerResponse = async { safeGetHomeBottomBannerCall(bottomBannerJson) }
         val homeBrandsResponse = async { safeGetHomeBrandsCall(brandsJson) }
         val homeTrendingResponse = async { safeGetTrendingCall(trendingJson) }
         val homeFlashSaleProductsResponse = async { safeGetHomeFlashSaleProducts(mainCatJson, "1") }
         val homeWholeSaleProductsResponse = async { safeGetHomeWholeSaleProducts(mainCatJson, "1") }
         val homeFeaturesProductsResponse = async { safeGetHomeFeatureProducts(featureProductsJson) }
+//        val homeBottomBannerResponse = async { safeGetHomeBottomBannerCall(bottomBannerJson) }
+
+        val responses = listOf(
+            homeMainCategoriesResponse.await(),
+            homeMainBannerResponse.await(),
+            homeMiddleBannerResponse.await(),
+            homeBrandsResponse.await(),
+            homeTrendingResponse.await(),
+            homeFlashSaleProductsResponse.await(),
+            homeWholeSaleProductsResponse.await(),
+            homeFeaturesProductsResponse.await()
+        )
+        showHomeLoader.postValue(false)
 
         when (val homeMainBannerData = homeMainBannerResponse.await()) {
             is Resource.Success -> homeMainBanner.postValue(Resource.Success(homeMainBannerData.data as HomeMainCategoriesModel?))
@@ -350,11 +366,11 @@ class MainViewModel @Inject constructor(
             is Resource.Error -> homeMiddleBanner.postValue(Resource.Error(homeMiddleBannerData.message))
         }
 
-        when (val homeBottomBannerData = homeBottomBannerResponse.await()) {
+        /*when (val homeBottomBannerData = homeBottomBannerResponse.await()) {
             is Resource.Success -> homeBottomBanner.postValue(Resource.Success(homeBottomBannerData.data as HomeBottomBannerModel?))
             is Resource.Loading -> Unit
             is Resource.Error -> homeBottomBanner.postValue(Resource.Error(homeBottomBannerData.message))
-        }
+        }*/
 
         when (val homeBrandsData = homeBrandsResponse.await()) {
             is Resource.Success -> homeBrands.postValue(Resource.Success(homeBrandsData.data as HomeBrandsModel?))
@@ -1477,6 +1493,41 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun getStoreProducts(sellerId: Int, search: String,categoryId: String = "",subCategoryId: String = "") = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("seller_id", sellerId)
+        jsonObject.addProperty("category_id", categoryId)
+        jsonObject.addProperty("limit", 150)
+        jsonObject.addProperty("offset", 0)
+        jsonObject.addProperty("frozen", "")
+        jsonObject.addProperty("wholesale", "")
+        jsonObject.addProperty("chilled", "")
+        jsonObject.addProperty("low_to_high", "")
+        jsonObject.addProperty("high_to_low", "")
+        jsonObject.addProperty("latest", "")
+        jsonObject.addProperty("popular", "")
+        jsonObject.addProperty("lang_id", "1")
+        jsonObject.addProperty("keyword", search)
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("device_id", sessionManager.deviceId)
+        jsonObject.addProperty("page_url", "http://shopproducts/us/img")
+        jsonObject.addProperty("os_type", "app")
+        safeGetStoreProductsCall(jsonObject)
+    }
+
+    private suspend fun safeGetStoreProductsCall(jsonObject: JsonObject) {
+        storeProducts.postValue(Resource.Loading())
+        try {
+            val response = repository.getStoreProducts(jsonObject)
+            if (response.isSuccessful)
+                storeProducts.postValue(Resource.Success(checkResponseBody(response.body()) as StoreProductsModel))
+            else
+                storeProducts.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            storeDetails.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
     fun getStoreReviews(sellerId: Int, rating: String, pageNo: Int) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_toke", sessionManager.token)
@@ -1576,11 +1627,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getBlogs() = viewModelScope.launch {
+    fun getBlogs(catId:Int,pageNo: Int) = viewModelScope.launch {
         val jsonObject = JsonObject()
-        jsonObject.addProperty("category_id", "")
-        jsonObject.addProperty("limit", "")
-        jsonObject.addProperty("offse", "")
+        jsonObject.addProperty("category_id", catId)
+        jsonObject.addProperty("limit", "20")
+        jsonObject.addProperty("offset", pageNo)
         safeGetBlogsCall(jsonObject)
     }
 
@@ -2041,6 +2092,26 @@ class MainViewModel @Inject constructor(
                 updateshipingOption.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             updateshipingOption.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+    fun sellerBannerActivity(sellerId: Int) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("seller_id", sellerId)
+        jsonObject.addProperty("banner_type", "seller")
+        safeSellerBannerActivityCall(jsonObject)
+    }
+
+    private suspend fun safeSellerBannerActivityCall(jsonObject: JsonObject) {
+        bannerActivity.postValue(Resource.Loading())
+        try {
+            val response = repository.sellerBannerActivity(jsonObject)
+            if (response.isSuccessful)
+                bannerActivity.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                bannerActivity.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            bannerActivity.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 }

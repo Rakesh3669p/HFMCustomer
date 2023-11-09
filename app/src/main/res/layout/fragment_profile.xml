@@ -126,7 +126,7 @@
             <androidx.constraintlayout.utils.widget.ImageFilterView
                 android:id="@+id/orderDetailsBg"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_105sdp"
+                android:layout_height="@dimen/_95sdp"
                 android:layout_marginHorizontal="@dimen/_5sdp"
                 android:layout_marginVertical="@dimen/_10sdp"
                 android:contentDescription="@string/my_orders_lbl"

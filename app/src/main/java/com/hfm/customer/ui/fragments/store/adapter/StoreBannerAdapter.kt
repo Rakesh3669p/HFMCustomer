@@ -10,6 +10,7 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemBannerBinding
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
@@ -20,10 +21,7 @@ class StoreBannerAdapter @Inject constructor(): RecyclerView.Adapter<StoreBanner
         fun bind(data: String) {
 
             with(itemBannerBinding){
-                bannerImage.load(replaceBaseUrl(data) ){
-                    placeholder(R.drawable.logo)
-                    
-                }
+                bannerImage.loadImage(replaceBaseUrl(data) )
             }
         }
     }

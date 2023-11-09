@@ -48,6 +48,7 @@ import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetail
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
 import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
 import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
+import com.hfm.customer.ui.fragments.store.model.StoreProductsModel
 import com.hfm.customer.ui.fragments.store.model.StoreReviewsModel
 import com.hfm.customer.ui.fragments.support.model.SupportMessagesModel
 import com.hfm.customer.ui.fragments.support.model.SupportTicketsModel
@@ -307,6 +308,9 @@ interface HFMCustomerAPI {
     @POST("customer/shop-detail")
     suspend fun getStoreDetails(@Body jsonObject: JsonObject): Response<StoreDetailsModel>
 
+    @POST("customer/shop-detail-products")
+    suspend fun getStoreProducts(@Body jsonObject: JsonObject): Response<StoreProductsModel>
+
     @POST("customer/shop-reviews")
     suspend fun getStoreReviews(@Body jsonObject: JsonObject): Response<StoreReviewsModel>
 
@@ -426,6 +430,11 @@ interface HFMCustomerAPI {
 
     @POST("customer/shipping-option")
     suspend fun updateShipping(
+        @Body jsonObject: JsonObject
+    ): Response<SuccessModel>
+
+    @POST("customer/banner-activity")
+    suspend fun sellerBannerActivity(
         @Body jsonObject: JsonObject
     ): Response<SuccessModel>
 

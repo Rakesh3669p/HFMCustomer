@@ -13,6 +13,7 @@ import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductVariantsBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Variants
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
@@ -27,10 +28,7 @@ class ProductVariantsAdapter @Inject constructor() :
         fun bind(data: Variants) {
             with(bind) {
                 productImage.isVisible = data.image.isNotEmpty()
-                productImage.load(replaceBaseUrl(data.image)){
-                    placeholder(R.drawable.logo)
-                    
-                }
+                productImage.loadImage(replaceBaseUrl(data.image))
                 productVariant.text = data.combination
                 if(data.isSelected){
                     mainLayout.background = ContextCompat.getDrawable(context, R.drawable.outline_line_box_red)

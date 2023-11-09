@@ -147,9 +147,11 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                         200 -> {
                             mainViewModel.getCart()
                         }
+
                         401 -> {
                             requireActivity().moveToLogin(sessionManager)
                         }
+
                         else -> {
                             showToast(response.data?.message.toString())
                         }
@@ -187,9 +189,11 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                         200 -> {
                             mainViewModel.getCart()
                         }
+
                         401 -> {
                             requireActivity().moveToLogin(sessionManager)
                         }
+
                         else -> {
 //                            showToast(response.data?.message.toString())
                         }
@@ -209,9 +213,11 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                         200 -> {
                             mainViewModel.getCart()
                         }
+
                         401 -> {
                             requireActivity().moveToLogin(sessionManager)
                         }
+
                         else -> {
 //                            showToast(response.data?.message.toString())
                         }
@@ -396,8 +402,10 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 if (cartData.platform_voucher_amt > 0) "RM -${cartData.platform_voucher_amt}" else "RM 0.00"
 
             subtotalLbl.text = if (productCount > 0) "Subtotal($productCount Items)" else "Subtotal"
-            subtotal.text = "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
-            shippingAmount.text = "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
+            subtotal.text =
+                "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
+            shippingAmount.text =
+                "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
             grandTotal = cartData.grand_total.toString().toDouble()
             totalAmount.text = formatToTwoDecimalPlaces(grandTotal)
 
@@ -405,21 +413,25 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             addVoucher.isVisible = cartData.is_platform_coupon_applied == 0
 
             voucherName.text = cartData.platform_coupon_data.title
-            voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
+            voucherDescription.text =
+                "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
 
             val walletBalance = cartData.wallet_balance
             if (walletBalance != "false") {
                 val pointToRM = walletBalance.toDouble() / 100
-                points.text = "${walletBalance.toDouble().roundToInt()} (RM ${formatToTwoDecimalPlaces(pointToRM)})"
+                points.text = "${walletBalance.toDouble().roundToInt()} (RM ${
+                    formatToTwoDecimalPlaces(pointToRM)
+                })"
             } else {
                 points.text = "0 (RM 0.00)"
                 wallet.text = "RM 0.00"
             }
 
-            useWalletPoints.isChecked = cartData.is_wallet_applied==1
-            if(useWalletPoints.isChecked){
-                wallet.text = "RM -${formatToTwoDecimalPlaces(cartData.wallet_applied_cash.toDouble())}"
-            }else{
+            useWalletPoints.isChecked = cartData.is_wallet_applied == 1
+            if (useWalletPoints.isChecked) {
+                wallet.text =
+                    "RM -${formatToTwoDecimalPlaces(cartData.wallet_applied_cash.toDouble())}"
+            } else {
                 wallet.text = "RM 0.00"
             }
 
@@ -471,7 +483,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 )
             }
             apply.setOnClickListener {
-                if(platFormSelectedVoucher?.couponCode.isNullOrEmpty()){
+                if (platFormSelectedVoucher?.couponCode.isNullOrEmpty()) {
                     showToast("Please enter a coupon code or select to apply")
 
                 }
@@ -534,7 +546,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             apply.setOnClickListener {
                 val sellerData =
                     cartData.seller_product.find { it.seller.seller_id.toString() == selectingVoucherSellerId }
-                if(sellerSelectedVoucher?.couponCode.isNullOrEmpty()){
+                if (sellerSelectedVoucher?.couponCode.isNullOrEmpty()) {
                     showToast("Please enter a coupon code or select to apply")
                     return@setOnClickListener
                 }
@@ -585,14 +597,14 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             useWalletPoints.setOnCheckedChangeListener { _, checked ->
                 if (checked) {
                     mainViewModel.applyWallet(cartData.wallet_balance)
-                }else{
+                } else {
                     mainViewModel.removeWallet()
                 }
             }
         }
 
-        checkOutAdapter.setOnShippingOption { sellerId,shippingId->
-            mainViewModel.updateShipping(sellerId,shippingId)
+        checkOutAdapter.setOnShippingOption { sellerId, shippingId ->
+            mainViewModel.updateShipping(sellerId, shippingId)
         }
 
         checkOutAdapter.setOnMessageListener { message, position ->
@@ -611,11 +623,11 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             if (storeData?.seller?.products?.any {
                     it.cart_selected.toString().toDouble() > 0
                 } == false) {
-                showToast("please select any product to apply the voucher")
+                showToast("Please select any product to apply the voucher")
                 return@setOnShopVoucherClickListener
             }
             selectingVoucherSellerId = sellerId
-            mainViewModel.getSellerVouchers(sellerId,1)
+            mainViewModel.getSellerVouchers(sellerId, 1)
         }
 
         checkOutAdapter.setOnSellerRemoveCoupon { id ->
@@ -663,35 +675,43 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
 
                 val sellerObject = JsonObject()
 
-                val totalTax =
-                    sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }
-                        .sumOf { it.total_tax_value.toString().toDouble() }
-                val commission =
-                    sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }
-                        .sumOf { it.commission.toString().toDouble() }
-                val discountAmt =
-                    sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }
-                        .sumOf { it.total_discount_price.toString().toDouble() }
-                val totalCost =
-                    sellerData.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }
-                        .sumOf { it.total_actual_price.toString().toDouble() }
-
 
                 sellerObject.addProperty("shipping_method", sellerData.shipping_method)
                 sellerObject.addProperty("shipping_charge", sellerData.shipping.toString())
                 sellerObject.addProperty("seller_id", sellerData.seller.seller_id)
                 sellerObject.addProperty("shipping_markup", sellerData.shipping_markup.toString())
-                sellerObject.addProperty("total_tax", totalTax)
-                sellerObject.addProperty("commission", commission)
-                sellerObject.addProperty("discount_amt", discountAmt)
-                sellerObject.addProperty("total_cost", totalCost)
-                sellerObject.addProperty("is_coupon", 0)
-                sellerObject.addProperty("coupon_id", "")
-                sellerObject.addProperty("discount_type", "")
+                sellerObject.addProperty("total_tax", 0)
+                sellerObject.addProperty("commission", 0)
+                sellerObject.addProperty("discount_amt", 0)
+                sellerObject.addProperty("total_cost", sellerData.seller_subtotal)
+                sellerObject.addProperty("is_coupon", sellerData.is_seller_coupon_applied)
                 sellerObject.addProperty("packing_charge", 0)
                 sellerObject.addProperty("message", sellerData.seller.message ?: "")
-                sellerObject.addProperty("shipping_option", 1)
-                sellerObject.addProperty("coupon_discount_amt", "")
+                sellerObject.addProperty("shipping_option", sellerData.seller_shipping_option)
+                if (sellerData.seller_coupon_data.coupon_id != null) {
+                    sellerObject.addProperty("coupon_id", sellerData.seller_coupon_data.coupon_id)
+                } else {
+                    sellerObject.addProperty("coupon_id", "")
+                }
+
+
+                if (sellerData.seller_coupon_data.discount_type != null) {
+                    sellerObject.addProperty(
+                        "discount_type",
+                        sellerData.seller_coupon_data.discount_type
+                    )
+                } else {
+                    sellerObject.addProperty("discount_type", "")
+                }
+
+                if (sellerData.seller_coupon_data.seller_coupon_discount_amt != null) {
+                    sellerObject.addProperty(
+                        "coupon_discount_amt",
+                        sellerData.seller_coupon_data.seller_coupon_discount_amt
+                    )
+                } else {
+                    sellerObject.addProperty("coupon_discount_amt", "")
+                }
                 sellerArray.add(sellerIndex.toString(), sellerObject)
                 sellerIndex++
             }
@@ -700,11 +720,26 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         jsonObject.add("seller_array", sellerArray)
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("lang_id", 1)
-        jsonObject.addProperty("is_platform_coupon", 0)
-        jsonObject.addProperty("platform_discount_amt", 0)
-        jsonObject.addProperty("platform_coupon_id", "")
-        jsonObject.addProperty("platform_discount_type", "")
-        jsonObject.addProperty("e_money_amt", false)
+        jsonObject.addProperty("is_platform_coupon", cartData.is_platform_coupon_applied)
+        jsonObject.addProperty("platform_discount_amt", cartData.platform_voucher_amt)
+        if (cartData.platform_coupon_data.coupon_id != null) {
+
+            jsonObject.addProperty("platform_coupon_id", cartData.platform_coupon_data.coupon_id)
+        } else {
+            jsonObject.addProperty("platform_coupon_id", "")
+        }
+
+        if (cartData.platform_coupon_data.discount_type != null) {
+
+            jsonObject.addProperty(
+                "platform_discount_type",
+                cartData.platform_coupon_data.platform_discount_type
+            )
+        } else {
+            jsonObject.addProperty("platform_discount_type", "")
+        }
+
+        jsonObject.addProperty("e_money_amt", cartData.wallet_applied_cash)
         jsonObject.addProperty("address_id", addressId)
         jsonObject.addProperty("reward_id", "")
         jsonObject.addProperty("commission", 0)
@@ -714,9 +749,9 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         jsonObject.addProperty("os_type", "app")
         jsonObject.addProperty("invite_coupon_id", "")
         jsonObject.addProperty("payment_type", 1)
-        jsonObject.addProperty("total_amt", binding.totalAmount.text.toString())
+        jsonObject.addProperty("total_amt", cartData.total_offer_cost.toString())
         jsonObject.addProperty("discount_amt", 0)
-        jsonObject.addProperty("grand_total", binding.totalAmount.text.toString())
+        jsonObject.addProperty("grand_total", cartData.grand_total.toString())
 
         val bundle = Bundle()
         bundle.putString("payLoad", jsonObject.toString())
@@ -747,13 +782,12 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         }
 
         bindingDialog.accept.setOnClickListener {
-            if(bindingDialog.agreeCheckBox.isChecked){
+            if (bindingDialog.agreeCheckBox.isChecked) {
                 placeOrder()
                 appCompatDialog.dismiss()
-            }else{
+            } else {
                 showToast("Please check terms and conditions to proceed.")
             }
-
         }
     }
 

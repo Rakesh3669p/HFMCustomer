@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.media.MediaMetadataRetriever
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -14,6 +15,8 @@ import android.provider.OpenableColumns
 import android.provider.Settings
 import android.text.format.DateUtils
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -21,8 +24,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.hfm.customer.R
 import com.hfm.customer.ui.loginSignUp.LoginActivity
 import java.io.File
 import java.io.FileOutputStream
@@ -30,9 +35,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 import java.util.Date
 import java.util.Locale
 import java.util.regex.Matcher
@@ -48,7 +50,10 @@ fun checkResponseBody(body: Any?): Any? = body?.let { it }
 fun checkThrowable(t: Throwable): String {
     return when (t) {
         is IOException -> netWorkFailure
-        else -> "Conversion Error ${t.message}"
+        else -> {
+            println("Conversion Error ${t.message}")
+            "Conversion Error ${t.message}"
+        }
     }
 }
 
@@ -238,15 +243,54 @@ fun bitmapFromVector(context: Context, vectorResId: Int): BitmapDescriptor {
 fun createFileFromContentUri(activity: Activity, fileUri: Uri): File {
     val fileName = getFileNameFromUri(activity, fileUri)
     val outputFile = File(activity.cacheDir, fileName)
-
     val iStream: InputStream = activity.contentResolver.openInputStream(fileUri) ?: throw NullPointerException("Failed to open input stream")
-
     copyStreamToFile(iStream, outputFile)
     iStream.close()
-
     return outputFile
 }
 
+fun createVideoFileFromContentUri(activity: Activity, fileUri: Uri): File {
+    val fileName = getFileNameFromUri(activity, fileUri)
+    val outputFile = File(activity.cacheDir, fileName)
+    val iStream: InputStream = activity.contentResolver.openInputStream(fileUri) ?: throw NullPointerException("Failed to open input stream")
+    copyStreamToFile(iStream, outputFile)
+    iStream.close()
+    if (outputFile.length() > 10 * 1024 * 1024) {
+        // File size exceeds 10 MB, you can handle this case as needed
+        throw IllegalStateException("video size should be less than 10 MB")
+    }
+
+    return outputFile
+}
+    fun getVideoThumbnail(videoFile: File): Bitmap? {
+    val retriever = MediaMetadataRetriever()
+    try {
+        retriever.setDataSource(videoFile.path)
+        return retriever.getFrameAtTime(5)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    } finally {
+        retriever.release()
+    }
+    return null
+}
+
+fun saveVideoThumbnailToFile(videoFile: File, thumbnailFile: File) {
+    val retriever = MediaMetadataRetriever()
+    try {
+        retriever.setDataSource(videoFile.path)
+        val bitmap = retriever.getFrameAtTime(1) // Get the thumbnail at 1 second into the video
+
+        // Save the thumbnail to the specified file
+        val outputStream = FileOutputStream(thumbnailFile)
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+        outputStream.close()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    } finally {
+        retriever.release()
+    }
+}
 fun getFileNameFromUri(activity: Activity, fileUri: Uri): String {
     activity.contentResolver.query(fileUri, null, null, null, null)?.use { cursor ->
         val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
@@ -326,6 +370,28 @@ fun Long.toTimeAgo(): CharSequence {
     )
 }
 
+fun Long.toCustomTimeAgo(): CharSequence {
+    val currentTimeMillis = System.currentTimeMillis()
+    val timeDifferenceMillis = currentTimeMillis - this
+    val timeDifferenceSeconds = timeDifferenceMillis / 1000
+    val timeDifferenceMinutes = timeDifferenceSeconds / 60
+    val timeDifferenceHours = timeDifferenceMinutes / 60
+    val timeDifferenceDays = timeDifferenceHours / 24
+    val timeDifferenceMonths = timeDifferenceDays / 30 // Approximation for months
+    val timeDifferenceYears = timeDifferenceMonths / 12 // Approximation for years
+
+    return when {
+        timeDifferenceYears > 0 -> "$timeDifferenceYears years ago"
+        timeDifferenceMonths > 0 -> "$timeDifferenceMonths months ago"
+        timeDifferenceDays > 0 -> "$timeDifferenceDays days ago"
+        timeDifferenceHours > 0 -> "$timeDifferenceHours hours ago"
+        timeDifferenceMinutes > 0 -> "$timeDifferenceMinutes minutes ago"
+        else -> "Just now"
+    }
+}
+
+
+
 fun String.toUnixTimestamp(): Long {
     val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
     val date = dateFormat.parse(this)
@@ -342,4 +408,27 @@ fun Activity.moveToLogin(sessionManager: SessionManager){
     sessionManager.isLogin = false
     startActivity(Intent(this, LoginActivity::class.java))
     this.finish()
+}
+
+fun ImageView.loadImage(url: String) {
+    this.load(url) {
+        placeholder(R.drawable.logo)
+        error(R.drawable.logo)
+    }
+}
+
+fun Activity.hideKeyboard(view:View){
+    val inputMethodManager = this.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun hasEmailAddress(text: String): Boolean {
+    val regex = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}")
+    val matchResult = regex.find(text)
+    return matchResult != null
+}
+fun hasNumberGreaterThan10Digits(text: String): Boolean {
+    val regex = Regex("\\d{10,}") // This regex matches numbers with 10 or more digits
+    val matchResult = regex.find(text)
+    return matchResult != null
 }

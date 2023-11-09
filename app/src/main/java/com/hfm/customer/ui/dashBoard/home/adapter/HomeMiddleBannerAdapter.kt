@@ -11,6 +11,7 @@ import coil.transform.CircleCropTransformation
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemBannerBinding
 import com.hfm.customer.ui.dashBoard.home.model.Image
+import com.hfm.customer.utils.loadImage
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -24,10 +25,7 @@ class HomeMiddleBannerAdapter @Inject constructor() :
         fun bind(data: Image) {
             with(bind) {
                 bannerImage.roundPercent = 0.3F
-                bannerImage.load(data.image){
-                    placeholder(R.drawable.logo)
-                    
-                }
+                bannerImage.loadImage(data.image)
             }
         }
     }

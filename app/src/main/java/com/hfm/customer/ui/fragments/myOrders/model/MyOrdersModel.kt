@@ -17,7 +17,7 @@ data class MyOrdersData(
 data class Purchase(
     val auction_status: String,
     val bid_charge: Any,
-    val cancel_order_detail: Any,
+    val cancel_order_detail: CancelledOrders,
     val cust_message: String,
     val delivery_charges: Double,
     val delivery_partner: String,
@@ -29,6 +29,8 @@ data class Purchase(
     val order_date: String,
     val order_id: String,
     val order_status: String,
+    val invoice: String,
+    val frontend_order_status: String,
     val order_time: String,
     val order_type: String,
     val payment_mode: String,
@@ -39,7 +41,7 @@ data class Purchase(
     val platform_voucher_amount: Any,
     val products: List<Product>,
     val sale_id: Any,
-    val chat_id:String,
+    val chat_id: String,
     val seller_id: Any,
     val seller_voucher_amount: Double,
     val shipping_address: ShippingAddress,
@@ -64,4 +66,11 @@ data class ShippingAddress(
     val phone: String,
     val state: String,
     val zip_code: String
+)
+
+data class CancelledOrders(
+    val cancel_id: Int,
+    val cancel_title: String,
+    val cancel_notes: String,
+    val canceled_date: String
 )

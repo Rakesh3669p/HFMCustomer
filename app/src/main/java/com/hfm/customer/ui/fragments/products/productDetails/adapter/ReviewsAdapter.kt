@@ -3,6 +3,7 @@ package com.hfm.customer.ui.fragments.products.productDetails.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +13,10 @@ import com.hfm.customer.commonModel.Review
 import com.hfm.customer.databinding.ItemReviewCommentsBinding
 import com.hfm.customer.databinding.ItemVoucherBinding
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -25,20 +29,23 @@ class ReviewsAdapter @Inject constructor() :
         fun bind(data:Review) {
             with(bind) {
 
-                userImage.load(replaceBaseUrl(data.customer_image)){
-                    placeholder(R.drawable.logo)
-                    error(R.drawable.logo)
-                }
+                userImage.loadImage(replaceBaseUrl(data.customer_image))
                 val mediaAdapter = StoreProductsReviewsMediaAdapter()
                 userName.text= data.customer_name
-                date.text = data.review_date
+                date.text = convertDateFormat(data.date)
                 ratingBar.rating= data.rating.toFloat()
                 reviewText.text = data.comment
                 initRecyclerView(context,reviewMedia,mediaAdapter,true)
                 mediaAdapter.differ.submitList(data.image)
+                reviewVideo.isVisible = !data.video_link.isNullOrEmpty()
+
+                reviewVideo.setOnClickListener {
+                    onVideoClick?.invoke(data.video_link)
+                }
+
                 mediaAdapter.setOnItemClickListener {
 
-                    onImageClick?.invoke(it)
+                    onImageClick?.invoke(data.image,absoluteAdapterPosition)
                 }
             }
         }
@@ -55,7 +62,13 @@ class ReviewsAdapter @Inject constructor() :
 
       }
       val differ = AsyncListDiffer(this,diffUtil)
+    fun convertDateFormat(inputDate: String): String {
+        val inputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
+        val date = inputFormat.parse(inputDate)
+        return outputFormat.format(date!!)
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -77,10 +90,16 @@ class ReviewsAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onImageClick: ((imageLink: String) -> Unit)? = null
+    private var onImageClick: ((imageLink: List<String>,index:Int) -> Unit)? = null
 
-    fun setOnImageClickListener(listener: (imageLink: String) -> Unit) {
+    fun setOnImageClickListener(listener: (imageLink: List<String>,index:Int) -> Unit) {
         onImageClick = listener
+    }
+
+    private var onVideoClick: ((videoLink: String) -> Unit)? = null
+
+    fun setOnVideoClickListener(listener: (videoLink: String) -> Unit) {
+        onVideoClick = listener
     }
 
 }

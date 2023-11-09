@@ -18,12 +18,12 @@ import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class BlogsDetailsFragment : Fragment() ,View.OnClickListener{
@@ -56,8 +56,9 @@ class BlogsDetailsFragment : Fragment() ,View.OnClickListener{
         noInternetDialog= NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         val id = arguments?.getInt("id")?:0
+        val title = arguments?.getString("title")
+        binding.toolBarTitle.text = title
         mainViewModel.getBlogsDetails(id)
-
     }
 
     private fun setObserver() {
@@ -79,10 +80,7 @@ class BlogsDetailsFragment : Fragment() ,View.OnClickListener{
 
     private fun setBlogData(data: BlogDetailsData) {
         with(binding){
-            blogImage.load(replaceBaseUrl(data.post.image)){
-                placeholder(R.drawable.logo)
-                
-            }
+            blogImage.loadImage(replaceBaseUrl(data.post.image))
             blogAuthor.text = data.post.author
             blogTitle.text = data.post.blog_title
             blogDesc.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -100,9 +98,6 @@ class BlogsDetailsFragment : Fragment() ,View.OnClickListener{
             noInternetDialog.show()
         }
     }
-
-
-
     private fun setOnClickListener() {
         with(binding) {
             back.setOnClickListener(this@BlogsDetailsFragment)
