@@ -259,13 +259,13 @@ interface HFMCustomerAPI {
     suspend fun addToCart(@Body jsonObject: JsonObject): Response<AddToCartModel>
 
     @POST("customer/add-cart-multiple")
-    suspend fun addToCartMultiple(@Body jsonObject: JsonObject): Response<SuccessModel>
+    suspend fun addToCartMultiple(@Body jsonObject: JsonObject): Response<AddToCartModel>
 
     @POST("customer/app-cart")
     suspend fun getCart(@Body jsonObject: JsonObject): Response<CartModel>
 
     @POST("customer/delete-cart")
-    suspend fun deleterCartProduct(@Body jsonObject: JsonObject): Response<SuccessModel>
+    suspend fun deleterCartProduct(@Body jsonObject: JsonObject): Response<AddToCartModel>
 
     @POST("customer/home/related-search-terms")
     suspend fun relatedSearchTerms(@Body jsonObject: JsonObject): Response<RelatedSearchTermsModel>

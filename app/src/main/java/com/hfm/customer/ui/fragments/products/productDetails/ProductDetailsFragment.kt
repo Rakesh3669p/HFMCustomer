@@ -18,6 +18,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -381,7 +382,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                             binding.qty.text = "1"
                             qty = 1
                             cartId = response.data.data.cart_id.toString()
-                            cartCount.postValue(cartCount.value?.plus(1) ?: 1)
+
+                            cartCount.postValue(response.data.data.cart_count)
                         }
 
                         401 -> {
@@ -473,8 +475,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     if (response.data?.httpcode == 200) {
                         binding.addToCartMain.makeInvisible()
                         binding.cartCount.makeVisible()
-                        binding.qty.text = "1"
-                        cartCount.postValue(cartCount.value?.plus(1) ?: 1)
+                        binding.qty.text    = "1"
+                        cartCount.postValue(response.data.data.cart_count)
                     } else if (response.data?.httpcode == 401) {
                         sessionManager.isLogin = false
                         startActivity(Intent(requireActivity(), LoginActivity::class.java))
@@ -582,12 +584,35 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         this.productData = productData
 
         if (productData.customer_addr != null) {
-            if (!productData.customer_addr.pincode.isNullOrEmpty()) {
-                binding.pinCode.setText(productData.customer_addr.pincode)
-                mainViewModel.checkAvailability(
-                    productData.product.product_id.toString(),
-                    productData.customer_addr.pincode
+            binding.pinCode.setText(productData.customer_addr.pincode)
+            if(productData.customer_addr.country_id!="132"){
+                binding.internationalLbl.isVisible = true
+
+                val spannableString = SpannableString("To inquire about shipping availability for international orders, Kindly reach out to our support.")
+
+                val redColorSpan = ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.red))
+                spannableString.setSpan(redColorSpan, spannableString.indexOf("support."), spannableString.indexOf("support.") + "support.".length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableString.setSpan(UnderlineSpan(), spannableString.indexOf("support."), spannableString.indexOf("support.") + "support.".length-1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                val boldSpan = StyleSpan(Typeface.BOLD)
+                spannableString.setSpan(
+                    boldSpan,
+                    spannableString.indexOf("support."),
+                    spannableString.indexOf("support.") + "support.".length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
+
+                binding.internationalLbl.text = spannableString
+
+
+            }else{
+                binding.internationalLbl.isVisible = false
+                if (!productData.customer_addr.pincode.isNullOrEmpty()) {
+                    mainViewModel.checkAvailability(
+                        productData.product.product_id.toString(),
+                        productData.customer_addr.pincode
+                    )
+                }
             }
         }
         initRecyclerView(requireContext(), binding.productsImagesRv, productsImagesAdapter, true)
@@ -1017,7 +1042,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             cart.setOnClickListener(this@ProductDetailsFragment)
             addToWishlist.setOnClickListener(this@ProductDetailsFragment)
             chat.setOnClickListener(this@ProductDetailsFragment)
-            pinCode.setOnClickListener(this@ProductDetailsFragment)
+            chat.setOnClickListener(this@ProductDetailsFragment)
+            internationalLbl.setOnClickListener(this@ProductDetailsFragment)
 
             exoPlay.setOnClickListener {
                 videoPlayer.play()
@@ -1361,6 +1387,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     startActivity(Intent(requireActivity(), LoginActivity::class.java))
                     requireActivity().finish()
                 }
+            }
+
+            R.id.internationalLbl->{
+                findNavController().navigate(R.id.supportFragment)
             }
         }
     }

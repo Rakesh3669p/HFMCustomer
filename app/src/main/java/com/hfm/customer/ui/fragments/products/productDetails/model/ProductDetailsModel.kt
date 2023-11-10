@@ -1,5 +1,7 @@
 package com.hfm.customer.ui.fragments.products.productDetails.model
 
+import java.util.Locale.IsoCountryCode
+
 data class ProductDetailsModel(
     val data: ProductData,
     val httpcode: Int,
@@ -20,7 +22,9 @@ data class ProductData(
 )
 
 data class CustomerAddress(
-    val pincode:String
+    val country_code: String,
+    val country_id: String,
+    val pincode:String,
 )
 
 data class Variants(
@@ -99,7 +103,7 @@ data class OtherProduct(
 )
 
 data class Product(
-    val actual_price: String? ="",
+    val actual_price: Double,
     val attrs_list: List<Any>,
     val brand_id: Any,
     val brand_name: String,

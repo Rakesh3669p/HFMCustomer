@@ -29,7 +29,7 @@ data class CartData(
     val shipping_charges: Any,
     val shipping_customer_type: String,
     val total_cost: Any,
-    val total_offer_cost: Any,
+    val total_offer_cost: Double,
     val total_tax: Any,
     val voucher_remaining: Any,
     val wallet_balance: String,

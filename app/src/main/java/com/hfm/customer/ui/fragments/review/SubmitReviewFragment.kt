@@ -43,7 +43,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SubmitReviewFragment : Fragment(), View.OnClickListener {
 
-    private lateinit var videoFile: File
+    private  var videoFile: File?=null
     private lateinit var binding: FragmentSubmitReviewBinding
     private var currentView: View? = null
     private val mainViewModel: MainViewModel by viewModels()
@@ -133,11 +133,15 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
             appCompatDialog.dismiss()
         }
         bindingDialog.gallery.setOnClickListener {
-            pickVideo.launch(
-                PickVisualMediaRequest(
-                    ActivityResultContracts.PickVisualMedia.VideoOnly
+            if(videoFile!=null) {
+                showToast("Only one video can be added for review")
+            }else{
+                pickVideo.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.VideoOnly
+                    )
                 )
-            )
+            }
             appCompatDialog.dismiss()
         }
 
@@ -176,9 +180,9 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        if (this::videoFile.isInitialized) {
+        if (videoFile!=null) {
             val key = "video_link\"; filename=\"review_$productId _video"
-            requestBodyMap[key] = videoFile.asRequestBody("video/mp4".toMediaTypeOrNull())
+            requestBodyMap[key] = videoFile?.asRequestBody("video/mp4".toMediaTypeOrNull())
         }
 
         requestBodyMap["access_token"] = sessionManager.token.toRequestBody(MultipartBody.FORM)
@@ -197,6 +201,7 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
             uploadImage.setOnClickListener(this@SubmitReviewFragment)
             removeMedia.setOnClickListener(this@SubmitReviewFragment)
             uploadImageVideosLbl.setOnClickListener(this@SubmitReviewFragment)
+            uploadImageBg.setOnClickListener(this@SubmitReviewFragment)
         }
         reviewsMediaAdapter.setOnItemClickListener {
             imageFiles.removeAt(it)
@@ -213,7 +218,11 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
             binding.submitReview.id -> validateAndSubmit()
             binding.uploadImage.id -> showImagePickupDialog()
             binding.uploadImageVideosLbl.id -> showImagePickupDialog()
-            binding.removeMedia.id-> binding.videoImageLayout.isVisible = false
+            binding.uploadImageBg.id -> showImagePickupDialog()
+            binding.removeMedia.id-> {
+                videoFile = null
+                binding.videoImageLayout.isVisible = false
+            }
         }
     }
 
@@ -236,14 +245,12 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
             if (uri != null) {
                 try {
                     if(videoFile!=null){
-
                     }else {
                         videoFile = createVideoFileFromContentUri(requireActivity(), uri)
                         binding.videoImageLayout.isVisible = true
                     }
 
                 } catch (e: Exception) {
-                    imageUris.add(uri)
                     showToast(e.message.toString())
                 }
             }

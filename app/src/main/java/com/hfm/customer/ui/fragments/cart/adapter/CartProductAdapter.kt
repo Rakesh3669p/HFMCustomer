@@ -47,10 +47,10 @@ class CartProductAdapter @Inject constructor() :
 //                    setTimer(data.end_time,sale)
                 }
 
-                if (data.total_discount_price.toString().toDouble() > 0) {
+                if (data.total_offer_price.toString().toDouble() > 0) {
                     productPrice.text = "RM ${
                         formatToTwoDecimalPlaces(
-                            data.total_discount_price.toString().toDouble()
+                            data.total_offer_price.toString().toDouble()
                         )
                     }"
                 } else {

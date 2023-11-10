@@ -264,6 +264,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
+                        cartCount.postValue(response.data.data.cart_count)
                         cartProductDeleted = true
                         if (changingVariant) {
                             mainViewModel.addToCart(variantId, "1")
@@ -376,7 +377,6 @@ class CartFragment : Fragment(), View.OnClickListener {
     private fun setCartData(data: CartData) {
         binding.toolBarTitle.setOnClickListener {
             binding.root.postInvalidate()
-            showToast("yeah")
         }
         with(binding) {
             cartData = data
@@ -429,9 +429,6 @@ class CartFragment : Fragment(), View.OnClickListener {
                 platformVoucher.text = "RM 0.00"
             }
 
-
-
-
             if (cartData.wallet_balance != "false") {
                 val pointToRM = cartData.wallet_balance.toDouble() / 100
                 points.text = "${
@@ -482,9 +479,15 @@ class CartFragment : Fragment(), View.OnClickListener {
             selectAll.setOnClickListener(this@CartFragment)
         }
 
-        binding.useWalletPoints.setOnCheckedChangeListener { _, checked ->
-            if (checked) {
-                mainViewModel.applyWallet(cartData.wallet_balance)
+        binding.useWalletPoints.setOnClickListener {
+            if (binding.useWalletPoints.isChecked) {
+                val walletBalance = cartData.wallet_balance.toDouble() / 100
+                if (walletBalance > cartData.total_offer_cost) {
+                    mainViewModel.applyWallet((cartData.total_offer_cost*100).toString())
+                } else {
+                    mainViewModel.applyWallet(cartData.wallet_balance)
+                }
+
             } else {
                 mainViewModel.removeWallet()
             }

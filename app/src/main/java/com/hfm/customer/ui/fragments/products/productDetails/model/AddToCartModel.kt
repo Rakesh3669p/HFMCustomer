@@ -9,5 +9,6 @@ data class AddToCartModel (
     val error:List<String>)
 
 data class AddToCardData(
-    val cart_id:Int
+    val cart_id:Int,
+    val cart_count:Int
 )

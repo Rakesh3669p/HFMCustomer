@@ -446,7 +446,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp"
                         android:singleLine="false"
-                        android:text="1 block adjaisjd a asd\n asjdias"
+                        android:text=""
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

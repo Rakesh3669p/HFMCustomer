@@ -365,9 +365,6 @@ class ProfileSettingsBusiness : Fragment(), View.OnClickListener {
                     showToast(ImagePicker.getError(data))
                 }
 
-                else -> {
-                    showToast("Task Cancelled")
-                }
             }
         }
 }

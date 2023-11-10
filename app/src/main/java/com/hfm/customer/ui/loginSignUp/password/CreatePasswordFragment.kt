@@ -116,7 +116,7 @@ class CreatePasswordFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
-                        showToast("password updated successfully")
+                        showToast("Password updated successfully")
                         findNavController().popBackStack()
                     }
                 }
@@ -138,8 +138,8 @@ class CreatePasswordFragment : Fragment(), View.OnClickListener {
 
         password = binding.password.text.toString().trim()
         confirmPassword = binding.confirmPassword.text.toString().trim()
-        if (password.length <= 8) {
-            showToast("Password length must be more than 8")
+        if (password.length <= 7) {
+            showToast("Min 8 characters required.")
         } else if (password != confirmPassword) {
             showToast("Password and confirm password does not match!")
         } else {

@@ -594,9 +594,14 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             manageAddress.setOnClickListener(this@CheckOutFragment)
             placeOrder.setOnClickListener(this@CheckOutFragment)
 
-            useWalletPoints.setOnCheckedChangeListener { _, checked ->
-                if (checked) {
-                    mainViewModel.applyWallet(cartData.wallet_balance)
+            useWalletPoints.setOnClickListener {
+                if (useWalletPoints.isChecked) {
+                    val walletBalance = cartData.wallet_balance.toDouble() / 100
+                    if (walletBalance > cartData.total_offer_cost) {
+                        mainViewModel.applyWallet((cartData.total_offer_cost*100).toString())
+                    } else {
+                        mainViewModel.applyWallet(cartData.wallet_balance)
+                    }
                 } else {
                     mainViewModel.removeWallet()
                 }

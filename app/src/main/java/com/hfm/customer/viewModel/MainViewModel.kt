@@ -125,9 +125,9 @@ class MainViewModel @Inject constructor(
     val defaultAddress = SingleLiveEvent<Resource<SuccessModel>>()
     val updateAddress = SingleLiveEvent<Resource<SuccessModel>>()
     val addToCart = SingleLiveEvent<Resource<AddToCartModel>>()
-    val addToCartMultiple = SingleLiveEvent<Resource<SuccessModel>>()
+    val addToCartMultiple = SingleLiveEvent<Resource<AddToCartModel>>()
     val cart = SingleLiveEvent<Resource<CartModel>>()
-    val deleterCartProduct = SingleLiveEvent<Resource<SuccessModel>>()
+    val deleterCartProduct = SingleLiveEvent<Resource<AddToCartModel>>()
     val deleteCartProductForVariant = SingleLiveEvent<Resource<SuccessModel>>()
     val checkAvailability = SingleLiveEvent<Resource<SuccessModel>>()
     val updateProfileCustomer = SingleLiveEvent<Resource<SuccessModel>>()
@@ -299,7 +299,7 @@ class MainViewModel @Inject constructor(
 
         val brandsJson = JsonObject()
         brandsJson.addProperty("sort_by_name", "")
-        brandsJson.addProperty("limit", "5")
+        brandsJson.addProperty("limit", "")
 
         val trendingJson = JsonObject()
         trendingJson.addProperty("page_url", "")
@@ -1111,7 +1111,7 @@ class MainViewModel @Inject constructor(
         try {
             val response = repository.addToCartMultiple(jsonObject)
             if (response.isSuccessful)
-                addToCartMultiple.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+                addToCartMultiple.postValue(Resource.Success(checkResponseBody(response.body()) as AddToCartModel))
             else
                 addToCartMultiple.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
@@ -1155,7 +1155,7 @@ class MainViewModel @Inject constructor(
         try {
             val response = repository.deleterCartProduct(jsonObject)
             if (response.isSuccessful)
-                deleterCartProduct.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+                deleterCartProduct.postValue(Resource.Success(checkResponseBody(response.body()) as AddToCartModel))
             else
                 deleterCartProduct.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
@@ -1279,7 +1279,7 @@ class MainViewModel @Inject constructor(
     fun viewedNotification(notificationId: Int) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
-        jsonObject.addProperty("notification_id", 50)
+        jsonObject.addProperty("notification_id", notificationId)
         safeNotificationViewedCall(jsonObject)
     }
 

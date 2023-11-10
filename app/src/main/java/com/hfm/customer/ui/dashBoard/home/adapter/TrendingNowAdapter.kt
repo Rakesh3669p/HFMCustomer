@@ -29,7 +29,7 @@ class TrendingNowAdapter @Inject constructor() :
                 productImage.loadImage(imageReplaced)
 
                 root.setOnClickListener {
-                    onCategoryClick?.invoke(data.category, data.sub_category)
+                    onCategoryClick?.invoke(data.category, data.sub_category,data.product_id,data.link_type)
                 }
             }
         }
@@ -68,9 +68,9 @@ class TrendingNowAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onCategoryClick: ((cat: String, subCat: String) -> Unit)? = null
+    private var onCategoryClick: ((cat: String, subCat: String,productId: String, linkType: String) -> Unit)? = null
 
-    fun setOnCategoryClickListener(listener: (cat: String, subCat: String) -> Unit) {
+    fun setOnCategoryClickListener(listener: (cat: String, subCat: String,productId: String, linkType: String) -> Unit) {
         onCategoryClick = listener
     }
 

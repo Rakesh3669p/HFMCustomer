@@ -17,6 +17,7 @@ import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.makeGone
 import com.hfm.customer.utils.makeVisible
+import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 
 
@@ -30,16 +31,14 @@ class FlashDealAdapter @Inject constructor() :
             with(bind) {
 
                 if(data.image?.isNotEmpty() == true) {
-                    val imageOriginal = data.image[0].image
-                    val imageReplaced = imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    productImage.loadImage(imageReplaced)
+                    productImage.loadImage(replaceBaseUrl(data.image[0].image))
                 }
                 productName.text = data.product_name
 
                 if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.offer_price.toString().toDouble())}"
                 }else{
-                    productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
+                    productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price?:0.0)}"
                 }
 
                 soldOut.isVisible = data.is_out_of_stock==1
@@ -47,11 +46,13 @@ class FlashDealAdapter @Inject constructor() :
 
                 if(data.frozen==1){
                     frozenLbl.makeVisible()
+                    val filters = arrayOfNulls<InputFilter>(1)
+                    filters[0] = InputFilter.LengthFilter(5)
                     frozenLbl.text = "Fresh/Frozen"
                 }else if(data.chilled==1){
                     frozenLbl.makeVisible()
-                    val filters = arrayOfNulls<InputFilter>(10)
-                    filters[0] = InputFilter.LengthFilter(android.R.attr.maxLength)
+                    val filters = arrayOfNulls<InputFilter>(1)
+                    filters[0] = InputFilter.LengthFilter(10)
                     frozenLbl.filters = filters
                     frozenLbl.text = "Chilled"
                 }else{

@@ -51,10 +51,10 @@ class CheckOutProductAdapter @Inject constructor() :
                     available.setTextColor(ContextCompat.getColor(context,R.color.red))
                 }
 
-                if (data.total_discount_price.toString().toDouble() > 0) {
+                if (data.total_offer_price.toString().toDouble() > 0) {
                     productPrice.text = "RM ${
                         formatToTwoDecimalPlaces(
-                            data.total_discount_price.toString().toDouble()
+                            data.total_offer_price.toString().toDouble()
                         )
                     }"
                 } else {
@@ -73,7 +73,6 @@ class CheckOutProductAdapter @Inject constructor() :
                 if (flashDeal.isVisible) {
                     setTimer(data.end_time, bind)
                 }
-
             }
         }
     }

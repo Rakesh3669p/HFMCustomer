@@ -583,11 +583,22 @@ class HomeFragment : Fragment(), View.OnClickListener {
             findNavController().navigate(R.id.productListFragment, bundle)
         }
 
-        trendingNowAdapter.setOnCategoryClickListener { catId, subCatId ->
-            val bundle = Bundle()
-            bundle.putString("catId", catId)
-            bundle.putString("subCatId", subCatId)
-            findNavController().navigate(R.id.productListFragment, bundle)
+        trendingNowAdapter.setOnCategoryClickListener { catId, subCatId ,productId,linkType->
+            if(linkType=="product_list"){
+                val bundle = Bundle()
+                bundle.putString("catId", catId)
+                bundle.putString("subCatId", subCatId)
+                findNavController().navigate(R.id.productListFragment, bundle)
+            }else{
+                val bundle = Bundle().apply {
+                    putString(
+                        "productId",
+                        productId
+                    )
+                }
+                findNavController().navigate(R.id.productDetailsFragment, bundle)
+            }
+
         }
 
         brandsAdapter.setOnItemClickListener { position ->

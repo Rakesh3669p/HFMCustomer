@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.myOrders
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.app.DownloadManager
@@ -205,6 +206,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setOrderData(data: MyOrdersData) {
         with(binding) {
             data.purchase[0].let {
@@ -264,6 +266,8 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                     paymentMethodDivider1.isVisible = true
                     if(!it.cancel_order_detail.cancel_notes.isNullOrEmpty()) {
                         cancelledReason.text = it.cancel_order_detail.cancel_notes
+                    }else{
+                        cancelledReason.text = "Order has been cancelled"
                     }
                 } else {
                     paymentStatus.isVisible = true
@@ -300,9 +304,9 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 subtotal.text = "RM ${formatToTwoDecimalPlaces(it.sub_total)}"
                 shippingAmount.text = "RM ${formatToTwoDecimalPlaces(it.delivery_charges)}"
                 wallet.text =
-                    "RM - ${formatToTwoDecimalPlaces(it.wallet_amount.toString().toDouble())}"
-                storeVoucher.text = "RM - ${formatToTwoDecimalPlaces(it.seller_voucher_amount)}"
-                platformVoucher.text = "RM - ${
+                    "RM -${formatToTwoDecimalPlaces(it.wallet_amount.toString().toDouble())}"
+                storeVoucher.text = "RM -${formatToTwoDecimalPlaces(it.seller_voucher_amount)}"
+                platformVoucher.text = "RM -${
                     formatToTwoDecimalPlaces(
                         it.platform_voucher_amount.toString().toDouble()
                     )

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -110,12 +111,7 @@ class StoreProductListFragment(private val storeData: StoreData) : Fragment() {
     }
 
     private fun setProducts(data: StoreData) {
-        initRecyclerView(
-            requireContext(),
-            binding.categoriesListRv,
-            productCategoryListAdapter,
-            true
-        )
+        initRecyclerView(requireContext(), binding.categoriesListRv, productCategoryListAdapter, true)
         initRecyclerViewGrid(requireContext(), binding.productListRv, productListAdapter, 2)
         val categories: MutableList<Category> = ArrayList()
         val category = Category(id = 0, "ALL")
@@ -124,6 +120,7 @@ class StoreProductListFragment(private val storeData: StoreData) : Fragment() {
         storeProducts = data.product
         productListAdapter.differ.submitList(storeProducts)
         productCategoryListAdapter.differ.submitList(categories)
+        binding.noData.isVisible = storeProducts.isEmpty()
     }
 
     private fun setOnClickListener() {

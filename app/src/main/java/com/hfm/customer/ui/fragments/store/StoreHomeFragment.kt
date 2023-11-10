@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Html
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -145,6 +147,14 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
 
         }.also { runnable = it }, delay.toLong())
 
+        /*val htmlContent = storeData.shop_detail[0].about
+        binding.storeMore.apply {
+            loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
+            settings.javaScriptEnabled = true
+            val webSettings = settings
+            webSettings.loadsImagesAutomatically = true
+            webSettings.domStorageEnabled = true
+        }*/
     }
 
 

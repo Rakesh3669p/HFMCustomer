@@ -21,6 +21,7 @@ import com.hfm.customer.ui.fragments.payment.adapter.PaymentMethodsAdapter
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
+import com.hfm.customer.utils.cartCount
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
@@ -97,7 +98,7 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
-
+                        cartCount.postValue(response.data.data.cart_count)
                         if (isOnline) {
                             val bundle = Bundle()
                             bundle.putString("orderId",response.data.data.order_id)
@@ -106,7 +107,6 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
                             findNavController().navigate(R.id.IPay88Fragment,bundle)
                         } else {
                             showSuccessDialog(response.data.data.order_id)
-
                         }
 
                     } else {

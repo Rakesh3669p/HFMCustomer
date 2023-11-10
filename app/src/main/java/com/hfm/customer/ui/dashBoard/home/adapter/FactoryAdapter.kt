@@ -45,11 +45,13 @@ class FactoryAdapter @Inject constructor() :
 
                 if(data.frozen==1){
                     frozenLbl.makeVisible()
+                    val filters = arrayOfNulls<InputFilter>(1)
+                    filters[0] = InputFilter.LengthFilter(5)
                     frozenLbl.text = "Fresh/Frozen"
                 }else if(data.chilled==1){
                     frozenLbl.makeVisible()
-                    val filters = arrayOfNulls<InputFilter>(10)
-                    filters[0] = LengthFilter(maxLength)
+                    val filters = arrayOfNulls<InputFilter>(1)
+                    filters[0] = InputFilter.LengthFilter(10)
                     frozenLbl.filters = filters
                     frozenLbl.text = "Chilled"
                 }else{

@@ -377,6 +377,40 @@
 
 
                     <TextView
+                        android:id="@+id/internationalLbl"
+                        style="@style/textMedium"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:elevation="@dimen/_2sdp"
+                        android:maxLines="3"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:text="To enquire about shipping availability for international orders, Kindly reach out to our support."
+                        android:drawableStart="@drawable/ic_info"
+                        android:singleLine="false"
+                        android:textColor="@color/textGreyDark"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/pinCode"
+                        app:layout_constraintTop_toBottomOf="@id/pinCode" />
+
+                     <TextView
+                        android:id="@+id/support"
+                        style="@style/textMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_6sdp"
+                        android:elevation="@dimen/_2sdp"
+                        android:text="Support"
+                        android:singleLine="false"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:textColor="@color/red"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/internationalLbl"
+                        app:layout_constraintTop_toBottomOf="@id/pinCode" />
+
+                    <TextView
                         android:id="@+id/estimateDeliveryDate"
                         style="@style/textMedium"
                         android:layout_width="0dp"

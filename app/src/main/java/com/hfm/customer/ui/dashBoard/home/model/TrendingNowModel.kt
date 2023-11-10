@@ -14,6 +14,8 @@ data class TrendingNowData(
 data class Events(
     val image: String,
     val link: String,
+    val link_type: String,
+    val product_id: String,
     val category: String,
     val sub_category: String
 )

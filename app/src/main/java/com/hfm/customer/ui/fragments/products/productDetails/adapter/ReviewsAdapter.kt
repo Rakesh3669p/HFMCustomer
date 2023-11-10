@@ -32,7 +32,7 @@ class ReviewsAdapter @Inject constructor() :
                 userImage.loadImage(replaceBaseUrl(data.customer_image))
                 val mediaAdapter = StoreProductsReviewsMediaAdapter()
                 userName.text= data.customer_name
-                date.text = convertDateFormat(data.date)
+                date.text = if(data.date!=null) convertDateFormat(data.date) else convertReviewDateFormat(data.review_date)
                 ratingBar.rating= data.rating.toFloat()
                 reviewText.text = data.comment
                 initRecyclerView(context,reviewMedia,mediaAdapter,true)
@@ -64,6 +64,14 @@ class ReviewsAdapter @Inject constructor() :
       val differ = AsyncListDiffer(this,diffUtil)
     fun convertDateFormat(inputDate: String): String {
         val inputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+        val date = inputFormat.parse(inputDate)
+        return outputFormat.format(date!!)
+    }
+
+    fun convertReviewDateFormat(inputDate: String): String {
+        val inputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
         val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
         val date = inputFormat.parse(inputDate)

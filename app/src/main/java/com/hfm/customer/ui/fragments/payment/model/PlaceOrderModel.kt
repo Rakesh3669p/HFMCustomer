@@ -11,5 +11,6 @@ data class PlaceOrderData(
     val order_id: String,
     val amount: String,
     val payment_url: String,
+    val cart_count: Int,
     val link: String,
 )
