@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.products.productList.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
 import android.text.InputFilter
@@ -9,9 +10,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.transform.CircleCropTransformation
-import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemProductsBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
@@ -31,52 +29,31 @@ class ProductListAdapter @Inject constructor() :
 
     inner class ViewHolder(private val bind: ItemProductsBinding) :
         RecyclerView.ViewHolder(bind.root) {
+        @SuppressLint("SetTextI18n")
         fun bind(data: Product) {
             with(bind) {
-                if (data.image?.isNotEmpty() == true) {
-                    productImage.loadImage(replaceBaseUrl(data.image[0].image))
-                }
+                    if (data.image?.isNotEmpty() == true) {
+                        productImage.loadImage(replaceBaseUrl(data.image[0].image))
+                    }
 
                 productName.text = data.product_name
-                if (data.offer_price != null) {
-                    if (data.offer_price.toString().isNotEmpty()) {
-                        if (data.offer_price.toString() != "false") {
-                            if (data.offer_price.toString().toDouble() > 0) {
-                                productPrice.text = "RM ${
-                                    formatToTwoDecimalPlaces(
-                                        data.offer_price.toString().toDouble()
-                                    )
-                                }"
-                            } else {
-                                productPrice.text = "RM ${
-                                    formatToTwoDecimalPlaces(
-                                        data.actual_price.toString().toDouble()
-                                    )
-                                }"
-                            }
-                        } else {
-                            productPrice.text = "RM ${
-                                formatToTwoDecimalPlaces(
-                                    (data.actual_price ?: "0").toString().toDouble()
-                                )
-                            }"
-                        }
-                    }
 
-
+                if (data.variants_list?.isNotEmpty() == true) {
+                    val offerPrice = data.variants_list[0].offer_price?.toDoubleOrNull()
+                    val actualPrice = data.variants_list[0].actual_price ?: 0.0
+                    productPrice.text = "RM ${formatToTwoDecimalPlaces(if (offerPrice != null && offerPrice != 0.0) offerPrice else actualPrice)}"
+                } else if (data.offer_price != null && data.offer_price.toString().isNotEmpty()) {
+                    val offerPrice = data.offer_price.toString().toDouble()
+                    val actualPrice = data.actual_price?.toDouble() ?: 0.0
+                    productPrice.text = "RM ${formatToTwoDecimalPlaces(if (offerPrice > 0) offerPrice else actualPrice)}"
+                } else if (data.actual_price != null) {
+                    productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
                 } else {
-                    if (data.actual_price != null) {
-                        productPrice.text = "RM ${
-                            formatToTwoDecimalPlaces(
-                                data.actual_price.toString().toDouble()
-                            )
-                        }"
-                    } else {
-                        productPrice.isVisible = false
-                    }
+                    productPrice.isVisible = false
                 }
 
-                soldOut.isVisible = data.is_out_of_stock==1
+
+                soldOut.isVisible = data.is_out_of_stock == 1
                 saleTime.isVisible = data.offer_name == "Flash Sale"
 
                 if (saleTime.isVisible) {
@@ -86,29 +63,27 @@ class ProductListAdapter @Inject constructor() :
                 if (data.offer_price != null && data.offer_price.toString() != "false" && data.offer_price.toString()
                         .toDouble() > 0
                 ) {
-                    val difference =
-                        data.actual_price.toString().toDouble() - data.offer_price.toString()
-                            .toDouble()
+                    val difference = data.actual_price.toString().toDouble() - data.offer_price.toString().toDouble()
                     saveLbl.isVisible = difference > 0
                     saveLbl.text = "Save RM ${formatToTwoDecimalPlaces(difference)}"
                 } else {
                     saveLbl.isVisible = false
                 }
 
-                if(data.frozen==1){
+                if (data.frozen == 1) {
 
                     frozenLbl.makeVisible()
                     val filters = arrayOfNulls<InputFilter>(1)
                     filters[0] = InputFilter.LengthFilter(5)
                     frozenLbl.filters = filters
                     frozenLbl.text = "Fresh/Frozen"
-                }else if(data.chilled==1){
+                } else if (data.chilled == 1) {
                     frozenLbl.makeVisible()
                     val filters = arrayOfNulls<InputFilter>(1)
                     filters[0] = InputFilter.LengthFilter(10)
                     frozenLbl.filters = filters
                     frozenLbl.text = "Chilled"
-                }else{
+                } else {
                     frozenLbl.makeGone()
                 }
 
@@ -194,6 +169,7 @@ class ProductListAdapter @Inject constructor() :
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+    override fun getItemViewType(position: Int): Int = position
 
     private var onProductClick: ((id: String) -> Unit)? = null
 

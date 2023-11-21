@@ -1,6 +1,5 @@
 package com.hfm.customer.ui.fragments.products.productList
 
-import android.R.attr
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -38,8 +37,6 @@ import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
-import java.util.Collections
-import java.util.Collections.shuffle
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -460,5 +457,10 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             binding.filter.id -> showFilterBottomSheet()
             binding.search.id -> findNavController().navigate(R.id.searchFragment)
         }
+    }
+
+    override fun onDestroy() {
+        selectedBrandFilters.clear()
+        super.onDestroy()
     }
 }

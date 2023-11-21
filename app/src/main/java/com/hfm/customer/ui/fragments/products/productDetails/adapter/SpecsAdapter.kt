@@ -56,6 +56,7 @@ class SpecsAdapter @Inject constructor() :
     }
 
     override fun getItemCount(): Int = 5
+    override fun getItemViewType(position: Int): Int = position
 
     private var onBrandFilterClick: ((id: Int) -> Unit)? = null
 

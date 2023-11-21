@@ -86,6 +86,7 @@ class RelativeProductListAdapter @Inject constructor() :
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+    override fun getItemViewType(position: Int): Int = position
 
     private var onProductClick: ((id: String) -> Unit)? = null
 

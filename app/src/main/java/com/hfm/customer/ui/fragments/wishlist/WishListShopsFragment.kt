@@ -23,15 +23,16 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class WishListShopsFragment : Fragment(){
+class WishListShopsFragment : Fragment() {
 
     private lateinit var binding: FragmentWishlistShopsBinding
     private var currentView: View? = null
 
-    @Inject lateinit var wishlistShopAdapter: WishlistShopAdapter
+    @Inject
+    lateinit var wishlistShopAdapter: WishlistShopAdapter
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
-    private val mainViewModel:MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +52,7 @@ class WishListShopsFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         setObserver()
     }
+
     private fun init() {
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
@@ -60,36 +62,37 @@ class WishListShopsFragment : Fragment(){
     }
 
     private fun setObserver() {
-        mainViewModel.followedShops.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.followedShops.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode == "200"){
+                    if (response.data?.httpcode == "200") {
                         setFavStores(response.data.data)
-                    }else{
+                    } else {
                         showToast(response.data?.message.toString())
                     }
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
         }
 
-        mainViewModel.unFollowShop.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.unFollowShop.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
                     mainViewModel.followedShops()
-
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
         }
     }
 
     private fun setFavStores(data: StoreFavouriteData) {
-        initRecyclerView(requireContext(),binding.productListRv,wishlistShopAdapter)
+        initRecyclerView(requireContext(), binding.productListRv, wishlistShopAdapter)
         wishlistShopAdapter.differ.submitList(data.favourite_list)
     }
 
@@ -107,13 +110,19 @@ class WishListShopsFragment : Fragment(){
             mainViewModel.unFollowShop(it.toString())
         }
 
-        wishlistShopAdapter.setOnChatClickListener {
-            showToast("Under Construction")
-        }
-        wishlistShopAdapter.setOnItemClickListener {sellerId->
+        wishlistShopAdapter.setOnChatClickListener { data ->
             val bundle = Bundle()
-            bundle.putString("storeId",sellerId.toString())
-            findNavController().navigate(R.id.storeFragment,bundle)
+            bundle.putString("from", "chatList")
+            bundle.putString("storeName", data.store_name)
+            bundle.putString("sellerId", data.seller_id.toString())
+            bundle.putString("saleId", "")
+            bundle.putInt("chatId", data.chat_id ?: 0)
+            findNavController().navigate(R.id.chatFragment, bundle)
+        }
+        wishlistShopAdapter.setOnItemClickListener { sellerId ->
+            val bundle = Bundle()
+            bundle.putString("storeId", sellerId.toString())
+            findNavController().navigate(R.id.storeFragment, bundle)
         }
     }
 }

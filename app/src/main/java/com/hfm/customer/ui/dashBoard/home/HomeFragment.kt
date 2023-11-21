@@ -139,6 +139,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setPromotionalPopup(promotionData: PromotionPopup) {
+        mainViewModel.bannerActivity(0,"homepage")
         promotionBanner =
             PromotionBanner(requireContext(), replaceBaseUrl(promotionData.promotion_image)) {
                 val bundle = Bundle()
@@ -489,8 +490,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        if (!sessionManager.popUpShown && bannerData.promotion_popup != null && !bannerData.promotion_popup.promotion_image.isNullOrEmpty()) {
-            sessionManager.popUpShown = true
+        if (bannerData.promotion_popup != null && !bannerData.promotion_popup.promotion_image.isNullOrEmpty() && bannerData.promotion_popup.promo_visibility==1) {
             setPromotionalPopup(bannerData.promotion_popup)
         }
 

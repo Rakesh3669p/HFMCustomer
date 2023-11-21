@@ -84,7 +84,11 @@ class BlogsFragment : Fragment() ,View.OnClickListener{
                 is Resource.Success->{
                     appLoader.dismiss()
                     if(response.data?.httpcode == 200){
-                        setBlogsList(response.data.data.list)
+                        if(response.data.data.list.isEmpty()){
+                            isLoading = true
+                        }else{
+                            setBlogsList(response.data.data.list)
+                        }
                     }else{
                         showToast(response.data?.message.toString())
                     }
@@ -97,13 +101,10 @@ class BlogsFragment : Fragment() ,View.OnClickListener{
 
     private fun setBlogsList(list: List<Blogs>) {
         with(binding){
-            isLoading = list.isEmpty()
             val bundle = Bundle()
-
             if(pageNo==0){
                 initRecyclerView(requireContext(),blogsRv,blogsAdapter)
                 blogsList.clear()
-                blogsList.addAll(list)
                 if(list.isNotEmpty()) {
                     list[0].let {
                         blogImage.loadImage(replaceBaseUrl(it.image) )
@@ -112,10 +113,12 @@ class BlogsFragment : Fragment() ,View.OnClickListener{
                         bundle.putInt("id",it.blog_id)
                     }
                 }
+                blogsList.addAll(list)
                 blogsList.removeAt(0)
 
+            }else{
+                blogsList.addAll(list)
             }
-            blogsList.addAll(list)
             blogsRv.addOnScrollListener(scrollListener)
             blogsAdapter.differ.submitList(blogsList)
             blogsAdapter.notifyDataSetChanged()

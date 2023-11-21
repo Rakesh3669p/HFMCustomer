@@ -34,6 +34,7 @@ import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.business
+import com.hfm.customer.utils.cartCount
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
@@ -98,6 +99,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                         }
                         "401" -> {
                             sessionManager.isLogin = false
+                            sessionManager.token = ""
                             startActivity(Intent(requireActivity(), LoginActivity::class.java))
                             requireActivity().finish()
                         }
@@ -109,6 +111,25 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
+            }
+        }
+
+        mainViewModel.logOut.observe(viewLifecycleOwner){response->
+            when(response){
+                is Resource.Success->{
+                    appLoader.dismiss()
+                    if(response.data?.httpcode==200){
+                        sessionManager.token = ""
+                        cartCount.postValue(0)
+                        sessionManager.isLogin = false
+                        startActivity(Intent(requireContext(), LoginActivity::class.java))
+                        requireActivity().finish()
+                    }else{
+                        showToast(response.data?.message.toString())
+                    }
+                }
+                is Resource.Loading->appLoader.show()
+                is Resource.Error->apiError(response.message)
             }
         }
     }
@@ -205,9 +226,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                     }
 
                 }
-                sessionManager.isLogin = false
-                startActivity(Intent(requireContext(), LoginActivity::class.java))
-                requireActivity().finish()
+                mainViewModel.logout()
             }
 
             binding.basicDetailsBg.id -> {

@@ -59,7 +59,7 @@ class CartProductAdapter @Inject constructor() :
                 }
 
                 qty.text = data.quantity.toString().toDouble().roundToInt().toString()
-                variant.isVisible = data.variants_list.isNotEmpty()
+                variant.isVisible = data.variants_list?.isNotEmpty() == true
 
                 available.isVisible = data.check_shipping_availability.toString().toDouble() < 1 && data.cart_selected.toString().toDouble() > 0
                 available.text = data.check_shipping_availability_text
@@ -111,12 +111,12 @@ class CartProductAdapter @Inject constructor() :
                 }
 
                 variant.setOnClickListener {
-                    data.variants_list.forEach {
+                    data.variants_list?.forEach {
                         if (data.attr_name1.contains(it.combination)) {
                             it.isSelected = true
                         }
                     }
-                    onVariantClick?.invoke(data.variants_list, data.cart_id.toString())
+                    data.variants_list?.let { onVariantClick?.invoke(it, data.cart_id.toString()) }
                 }
 
 

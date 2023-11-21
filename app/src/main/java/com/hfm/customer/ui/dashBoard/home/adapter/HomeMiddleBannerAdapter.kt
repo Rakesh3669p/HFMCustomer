@@ -62,6 +62,7 @@ class HomeMiddleBannerAdapter @Inject constructor() :
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+    override fun getItemViewType(position: Int): Int = position
 
     private var onCategoryClick: ((id: Int) -> Unit)? = null
 

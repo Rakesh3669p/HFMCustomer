@@ -21,6 +21,7 @@ data class Favourite(
     val no_of_products: Int,
     val postive_review: Double,
     val seller_id: Int,
+    val chat_id: Int?=0,
     val state: String,
     val store_id: Int,
     val store_name: String,

@@ -108,6 +108,7 @@ class FactoryAdapter @Inject constructor() :
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+    override fun getItemViewType(position: Int): Int = position
 
     private var onProductClick: ((id: Int) -> Unit)? = null
 

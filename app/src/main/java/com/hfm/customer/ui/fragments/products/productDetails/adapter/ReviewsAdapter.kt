@@ -97,6 +97,7 @@ class ReviewsAdapter @Inject constructor() :
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+    override fun getItemViewType(position: Int): Int = position
 
     private var onImageClick: ((imageLink: List<String>,index:Int) -> Unit)? = null
 

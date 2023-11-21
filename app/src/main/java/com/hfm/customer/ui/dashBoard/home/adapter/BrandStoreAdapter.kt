@@ -68,6 +68,7 @@ class BrandStoreAdapter @Inject constructor() :
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+    override fun getItemViewType(position: Int): Int = position
 
     private var onBrandClick: ((id: Int) -> Unit)? = null
 

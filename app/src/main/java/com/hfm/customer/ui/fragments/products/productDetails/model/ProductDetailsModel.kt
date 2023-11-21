@@ -16,7 +16,7 @@ data class ProductData(
     val product: Product,
     val relative_products: List<Any>,
     val seller_info: List<SellerInfo>,
-    val customer_addr: CustomerAddress,
+    val customer_addr: CustomerAddress?,
     val sidebar_section: List<String>,
     val varaiants_list: List<Variants>
 )
@@ -24,7 +24,7 @@ data class ProductData(
 data class CustomerAddress(
     val country_code: String,
     val country_id: String,
-    val pincode:String,
+    val pincode:String?,
 )
 
 data class Variants(
@@ -40,8 +40,8 @@ data class Variants(
     val discount_type: Any,
     val offer: Any,
     var isSelected: Boolean = false,
-    val actual_price: Any,
-    val offer_price: String
+    val actual_price: Double,
+    val offer_price: String?
 )
 
 data class CategoryBreadcrumbs(
@@ -65,7 +65,7 @@ data class Subcategory(
 )
 
 data class CrossSellingProduct(
-    val actual_price: Any,
+    val actual_price: Double,
     val brand_id: Any,
     val brand_name: String,
     val category_id: Any,
@@ -77,7 +77,7 @@ data class CrossSellingProduct(
     val long_description: String,
     val offer: Any,
     val offer_name: Any,
-    val offer_price: Any,
+    val offer_price: Double,
     val product_id: Any,
     val product_name: String,
     val product_type: String,
@@ -123,10 +123,10 @@ data class Product(
     val offer: String?="",
     val frozen: Int,
     val chilled: Int,
-    val wholesale: Any,
+    val wholesale: Double,
     val offer_name: Any,
     val end_time: String,
-    val offer_price: Any,
+    val offer_price: Any?,
     val out_of_stock_selling: Any,
     val product_id: Any,
     val product_name: String,
@@ -161,7 +161,7 @@ data class Product(
     val total_tax_value: Any,
     val unit_actual_price: Any,
     val unit_discount_price: Double,
-    val variants_list: List<Variants>,
+    val variants_list: List<Variants>?,
     val weight: String
 )
 

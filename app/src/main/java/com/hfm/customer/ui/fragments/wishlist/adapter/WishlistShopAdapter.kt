@@ -40,7 +40,7 @@ class WishlistShopAdapter @Inject constructor(): RecyclerView.Adapter<WishlistSh
                 }
                 chat.setOnClickListener {
                     onChatClick?.let {
-                        it(data.seller_id)
+                        it(data)
                     }
                 }
 
@@ -83,9 +83,9 @@ class WishlistShopAdapter @Inject constructor(): RecyclerView.Adapter<WishlistSh
         onUnFollowClick = listener
     }
 
-    private var onChatClick: ((id: Int) -> Unit)? = null
+    private var onChatClick: ((id: Favourite) -> Unit)? = null
 
-    fun setOnChatClickListener(listener: (id: Int) -> Unit) {
+    fun setOnChatClickListener(listener: (id: Favourite) -> Unit) {
         onChatClick = listener
     }
 

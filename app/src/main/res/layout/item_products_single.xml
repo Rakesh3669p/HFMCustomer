@@ -27,7 +27,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:background="@color/white"
-            android:src="@drawable/logo"
+            android:src="@drawable/logo_new"
             app:roundPercent="0.05" />
 
         <TextView
@@ -99,7 +99,7 @@
         <TextView
             android:id="@+id/frozenLbl"
             style="@style/textSmall"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/_33sdp"
             android:layout_height="wrap_content"
             android:background="@drawable/rectangle_box"
             android:backgroundTint="@color/orange"
@@ -107,9 +107,8 @@
             android:layout_marginEnd="@dimen/_2sdp"
             android:layout_gravity="start"
             android:text="Frozen"
-            android:maxLength="5"
             android:textSize="@dimen/_8ssp"
-            android:paddingHorizontal="@dimen/_4sdp"
+            android:paddingHorizontal="@dimen/_2sdp"
             android:paddingVertical="@dimen/_2sdp"
             android:textColor="@color/white"
             />

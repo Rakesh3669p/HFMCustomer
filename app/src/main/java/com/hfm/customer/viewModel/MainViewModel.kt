@@ -156,6 +156,7 @@ class MainViewModel @Inject constructor(
     val removeWallet = SingleLiveEvent<Resource<SuccessModel>>()
     val updateshipingOption = SingleLiveEvent<Resource<SuccessModel>>()
     val bannerActivity = SingleLiveEvent<Resource<SuccessModel>>()
+    val logOut = SingleLiveEvent<Resource<SuccessModel>>()
 
 
     fun getAppUpdate() = viewModelScope.launch {
@@ -276,7 +277,7 @@ class MainViewModel @Inject constructor(
     fun getHomePageData() = viewModelScope.launch {
         showHomeLoader.postValue(true)
         val jsonObject1 = JsonObject()
-        jsonObject1.addProperty("access_token", "")
+        jsonObject1.addProperty("access_token", sessionManager.token)
         jsonObject1.addProperty("lang_id", "1")
         jsonObject1.addProperty("page_url", "https://www.dummy.com/blog/")
         jsonObject1.addProperty("device_id", sessionManager.deviceId)
@@ -1258,7 +1259,7 @@ class MainViewModel @Inject constructor(
     fun getNotifications(pageNo: Int) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
-        jsonObject.addProperty("limit", 50)
+        jsonObject.addProperty("limit", 20)
         jsonObject.addProperty("offset", pageNo)
         safeNotificationsCall(jsonObject)
     }
@@ -2094,11 +2095,13 @@ class MainViewModel @Inject constructor(
             updateshipingOption.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
-    fun sellerBannerActivity(sellerId: Int) = viewModelScope.launch {
+    fun bannerActivity(sellerId: Int,bannerType:String) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("access_token", sessionManager.token)
-        jsonObject.addProperty("seller_id", sellerId)
-        jsonObject.addProperty("banner_type", "seller")
+        if(bannerType=="seller") {
+            jsonObject.addProperty("seller_id", sellerId)
+        }
+        jsonObject.addProperty("banner_type", bannerType)
         safeSellerBannerActivityCall(jsonObject)
     }
 
@@ -2112,6 +2115,24 @@ class MainViewModel @Inject constructor(
                 bannerActivity.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             bannerActivity.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+    fun logout() = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        safeLogoutCall(jsonObject)
+    }
+
+    private suspend fun safeLogoutCall(jsonObject: JsonObject) {
+        logOut.postValue(Resource.Loading())
+        try {
+            val response = repository.logout(jsonObject)
+            if (response.isSuccessful)
+                logOut.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                logOut.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            logOut.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 }

@@ -14,6 +14,7 @@
     <string name="signUp">Sign Up</string>
 
     <string name="oldToHfm"><font color='#000000'>Already have an HFM account?</font> <font color='#e21419'><b>Sign In</b></font></string>
+    <string name="shippingEnquiry">To inquire about shipping availability for international orders, Kindly reach out to our support.</string>
     <string name="receiveOtp">Dont receive OTP?</string>
     <string name="resendOtp">Resend Again</string>
     <string name="send_otp_lbl">Send OTP</string>

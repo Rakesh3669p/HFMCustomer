@@ -255,10 +255,6 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
     }
 
-    private fun setProducts(productData: StoreProductData) {
-
-    }
-
 
     private fun setStoreDetails() {
         storeDetailsAlreadySetted = true
@@ -292,7 +288,7 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
                     if (!shopDetail.promotion_image.isNullOrEmpty() && shopDetail.promo_visibility == 1) {
                         promotionBanner.show()
-                        mainViewModel.sellerBannerActivity(sellerId = shopDetail.seller_id)
+                        mainViewModel.bannerActivity(sellerId = shopDetail.seller_id,"seller")
                     }
 
                     storeName.text = shopDetail.store_name

@@ -30,7 +30,7 @@
                 android:id="@+id/productImage"
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
-                android:src="@drawable/logo"
+                android:src="@drawable/logo_new"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -176,6 +176,10 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/cancel"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_12ssp"
+                android:textAllCaps="false"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginEnd="@dimen/_5sdp"

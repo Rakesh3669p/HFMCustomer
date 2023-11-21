@@ -412,8 +412,8 @@ fun Activity.moveToLogin(sessionManager: SessionManager){
 
 fun ImageView.loadImage(url: String) {
     this.load(url) {
-        placeholder(R.drawable.logo)
-        error(R.drawable.logo)
+        placeholder(R.drawable.logo_new)
+        error(R.drawable.logo_new)
     }
 }
 

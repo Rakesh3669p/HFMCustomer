@@ -75,6 +75,7 @@ class FilterProductListBrandsAdapter @Inject constructor() :
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+    override fun getItemViewType(position: Int): Int = position
 
     private var onBrandFilterClick: ((id: Int,adapterPosition:Int) -> Unit)? = null
 

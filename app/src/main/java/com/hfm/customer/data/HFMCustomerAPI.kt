@@ -438,5 +438,16 @@ interface HFMCustomerAPI {
         @Body jsonObject: JsonObject
     ): Response<SuccessModel>
 
+    @POST("customer/forgot/password")
+    suspend fun forgotPassword(
+        @Body jsonObject: JsonObject
+    ): Response<SuccessModel>
+
+
+    @POST("customer/logout")
+    suspend fun logout(
+        @Body jsonObject: JsonObject
+    ): Response<SuccessModel>
+
 
 }

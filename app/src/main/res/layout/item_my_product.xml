@@ -14,7 +14,7 @@
         android:background="@drawable/edt_box_smaa_radius"
         android:elevation="@dimen/_1sdp"
         android:scaleType="fitXY"
-        android:src="@drawable/logo"
+        android:src="@drawable/logo_new"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

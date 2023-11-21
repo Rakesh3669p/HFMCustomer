@@ -24,6 +24,7 @@ import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.createFileFromContentUri
+import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
@@ -88,9 +89,8 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
         if(saleId.isNotEmpty()){
             binding.ticketSpinner.setSelection(1)
             binding.orderDetailsGroup.isVisible = true
-            binding.orderEdt.text = "OrderId #:${orderId}\n$orderDateTime\n RM $orderAmount (${itemsCount})"
+            binding.orderEdt.text = "OrderId #:${orderId}\n$orderDateTime\n RM ${formatToTwoDecimalPlaces(orderAmount.toDouble())} (${itemsCount})"
         }
-
     }
 
     private fun setOnClickListener() {

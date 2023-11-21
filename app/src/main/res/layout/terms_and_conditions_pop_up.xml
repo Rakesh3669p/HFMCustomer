@@ -81,7 +81,10 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/decline"
-        style="@style/textMediumSemiBold"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="@dimen/_12ssp"
+        android:textAllCaps="false"
         android:layout_width="0dp"
         android:layout_height="@dimen/_30sdp"
         android:layout_marginStart="@dimen/_10sdp"

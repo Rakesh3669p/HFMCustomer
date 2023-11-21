@@ -108,6 +108,8 @@ class FlashDealAdapter @Inject constructor() :
         holder.bind(differ.currentList[position])
     }
 
+    override fun getItemViewType(position: Int): Int = position
+
     override fun getItemCount(): Int = differ.currentList.size
 
     private var onProductClick: ((id: Int) -> Unit)? = null

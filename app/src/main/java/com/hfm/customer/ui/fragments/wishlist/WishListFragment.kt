@@ -41,8 +41,6 @@ class WishListFragment : Fragment() , View.OnClickListener {
     }
 
     private fun init() {
-        with(binding) {
-        }
     }
 
     private fun setTabLayoutAndViewPager() {

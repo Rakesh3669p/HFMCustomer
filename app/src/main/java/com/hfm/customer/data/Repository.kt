@@ -99,4 +99,6 @@ class Repository @Inject constructor(private val service: HFMCustomerAPI) {
     suspend fun removeWallet(jsonObject: JsonObject) = service.removeWallet(jsonObject)
     suspend fun updateShipping(jsonObject: JsonObject) = service.updateShipping(jsonObject)
     suspend fun sellerBannerActivity(jsonObject: JsonObject) = service.sellerBannerActivity(jsonObject)
+        suspend fun forgotPassword(jsonObject: JsonObject) = service.forgotPassword(jsonObject)
+        suspend fun logout(jsonObject: JsonObject) = service.logout(jsonObject)
 }

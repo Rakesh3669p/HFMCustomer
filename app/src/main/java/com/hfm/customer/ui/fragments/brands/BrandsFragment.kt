@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.FlexDirection
@@ -85,6 +86,10 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
                     if(response.data?.httpcode == 200){
                         initRecyclerViewGrid(requireContext(),binding.brandsRv,brandsAdapter,2)
                         brandsAdapter.differ.submitList(response.data.data.brands)
+                        binding.noData.isVisible = response.data.data.brands.isEmpty()
+                    }else if(response.data?.httpcode == 404){
+                        binding.noData.isVisible = true
+                        brandsAdapter.differ.submitList(emptyList())
                     }
                 }
                 is Resource.Loading->appLoader.show()

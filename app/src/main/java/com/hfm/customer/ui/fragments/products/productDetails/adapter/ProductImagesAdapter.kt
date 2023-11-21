@@ -80,6 +80,7 @@ class ProductImagesAdapter @Inject constructor() :
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+    override fun getItemViewType(position: Int): Int = position
 
     private var onImageClick: ((image: String) -> Unit)? = null
 

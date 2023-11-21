@@ -36,7 +36,8 @@ class LoginSignUpViewModel @Inject constructor(private val repository: Repositor
     val states = SingleLiveEvent<Resource<StateListModel>>()
     val cities = SingleLiveEvent<Resource<CityListModel>>()
     val businessCategories = SingleLiveEvent<Resource<BusinessCategoryModel>>()
-    val termsConditions:MutableLiveData<Resource<TermsConditionsModel>> = MutableLiveData()
+    val termsConditions: MutableLiveData<Resource<TermsConditionsModel>> = MutableLiveData()
+    val forgotPassword = SingleLiveEvent<Resource<SuccessModel>>()
 
     fun registerUser(
         firstName: String = "",
@@ -113,7 +114,14 @@ class LoginSignUpViewModel @Inject constructor(private val repository: Repositor
         }
     }
 
-    fun socialLogin(email: String, name: String,avatar:String,loginId:String,type:String, deviceId: String) = viewModelScope.launch {
+    fun socialLogin(
+        email: String,
+        name: String,
+        avatar: String,
+        loginId: String,
+        type: String,
+        deviceId: String
+    ) = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("social_media", type)
         jsonObject.addProperty("login_id", loginId)
@@ -273,6 +281,25 @@ class LoginSignUpViewModel @Inject constructor(private val repository: Repositor
                 termsConditions.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             termsConditions.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun forgotPassword(email: String) = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("email", email)
+        safeForgotPasswordCall(jsonObject)
+    }
+
+    private suspend fun safeForgotPasswordCall(jsonObject: JsonObject) {
+        forgotPassword.postValue(Resource.Loading())
+        try {
+            val response = repository.forgotPassword(jsonObject)
+            if (response.isSuccessful)
+                forgotPassword.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                forgotPassword.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            forgotPassword.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/_70sdp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/_10sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp"
         android:gravity="center"
-        android:text="International Shipping"
+        android:text="International\nShipping"
         android:singleLine="false"
         app:layout_constraintEnd_toEndOf="@id/adsImage"
         app:layout_constraintStart_toStartOf="@id/adsImage"
