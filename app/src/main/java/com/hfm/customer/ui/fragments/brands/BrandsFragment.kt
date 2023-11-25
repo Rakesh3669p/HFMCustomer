@@ -111,6 +111,7 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
     private fun setOnClickListener() {
         with(binding) {
             back.setOnClickListener(this@BrandsFragment)
+            search.setOnClickListener(this@BrandsFragment)
         }
 
         alphabetsAdapter.setOnItemClickListener {selectedAlphabet->
@@ -127,6 +128,7 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
+            binding.search.id -> findNavController().navigate(R.id.searchFragment)
         }
     }
 }

@@ -23,6 +23,7 @@ class VouchersAdapter @Inject constructor() :
                 discountPercent.text = data.title
                 discountDescription.text = data.desc
                 voucherExpiry.text = "Expires on: ${data.validUpto}"
+
                 userNow.setOnClickListener {
                     onItemClick?.invoke(absoluteAdapterPosition)
                 }

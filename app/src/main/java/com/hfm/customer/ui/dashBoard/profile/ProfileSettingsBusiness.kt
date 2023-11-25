@@ -196,7 +196,7 @@ class ProfileSettingsBusiness : Fragment(), View.OnClickListener {
         }
 
         val defaultSelection = 131
-        val selectedPhoneCodeIndex = phoneCode.takeIf { it.isNotEmpty() }?.let { phoneCodes.indexOf(it) } ?: defaultSelection
+        val selectedPhoneCodeIndex = if(!phoneCode.isNullOrEmpty()) phoneCodes.indexOf(phoneCode) else defaultSelection
         phoneCode = phoneCodes[selectedPhoneCodeIndex]
 
         binding.countryCodeSpinner.adapter = adapter

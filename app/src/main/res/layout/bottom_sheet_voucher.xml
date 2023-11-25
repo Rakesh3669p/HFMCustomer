@@ -114,7 +114,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cancel"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        style="@style/textMediumSemiBold"
+        app:backgroundTint="@color/white"
         android:fontFamily="@font/roboto_medium"
         android:textSize="@dimen/_12ssp"
         android:textAllCaps="false"
@@ -129,7 +130,6 @@
         android:layout_marginStart="@dimen/_10sdp"
         android:text="@string/cancelLbl"
         android:textColor="@color/red"
-        app:backgroundTint="@android:color/transparent"
         app:cornerRadius="@dimen/_6sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

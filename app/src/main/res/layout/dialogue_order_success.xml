@@ -15,6 +15,7 @@
         android:text="Thank you for placing order."
         android:textColor="@color/red"
         android:singleLine="false"
+        android:paddingHorizontal="@dimen/_15sdp"
         android:gravity="center_horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

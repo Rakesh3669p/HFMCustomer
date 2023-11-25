@@ -5,6 +5,7 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -31,7 +32,6 @@ class CartProductAdapter @Inject constructor() :
     RecyclerView.Adapter<CartProductAdapter.ViewHolder>() {
     private var selectAll: Boolean = false
     private lateinit var context: Context
-
     inner class ViewHolder(private val bind: ItemCartProductBinding) :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: Product) {
@@ -55,30 +55,42 @@ class CartProductAdapter @Inject constructor() :
                     }"
                 } else {
                     productPrice.text =
-                        "RM ${formatToTwoDecimalPlaces(data.total_actual_price.toString().toDouble())}"
+                        "RM ${
+                            formatToTwoDecimalPlaces(
+                                data.total_actual_price.toString().toDouble()
+                            )
+                        }"
                 }
 
                 qty.text = data.quantity.toString().toDouble().roundToInt().toString()
                 variant.isVisible = data.variants_list?.isNotEmpty() == true
 
-                available.isVisible = data.check_shipping_availability.toString().toDouble() < 1 && data.cart_selected.toString().toDouble() > 0
+                available.isVisible = data.check_shipping_availability.toString()
+                    .toDouble() < 1 && data.cart_selected.toString().toDouble() > 0
                 available.text = data.check_shipping_availability_text
 
-                if(data.check_shipping_availability.toString().toDouble()>0){
-                    available.setTextColor(ContextCompat.getColor(context,R.color.black))
-                }else{
-                    available.setTextColor(ContextCompat.getColor(context,R.color.red))
+                if (data.check_shipping_availability.toString().toDouble() > 0) {
+                    available.setTextColor(ContextCompat.getColor(context, R.color.black))
+                } else {
+                    available.setTextColor(ContextCompat.getColor(context, R.color.red))
                 }
 
-                if (data.variants_list != null && data.variants_list.isNotEmpty()) {
+
+                sale.isVisible =
+                    (data.offer_name == "Flash Sale" || data.offer_name == "Shocking Sale")
+                if (sale.isVisible) {
+                        setTimer(data.end_time, sale)
+                 }
+
+                if (!data.variants_list.isNullOrEmpty()) {
                     variant.text = data.attr_name1
                 }
 
-                soldOut.isVisible = data.is_out_of_stock==1
-                if(data.is_out_of_stock==1){
+                soldOut.isVisible = data.is_out_of_stock == 1
+                if (data.is_out_of_stock == 1) {
                     checkBox.makeInvisible()
                     checkBox.isEnabled = false
-                }else{
+                } else {
                     checkBox.isEnabled = true
                     checkBox.makeVisible()
                 }
@@ -105,8 +117,13 @@ class CartProductAdapter @Inject constructor() :
                 }
 
                 delete.setOnClickListener {
-                    onDeleteClick?.let {
-                        it(data.cart_id.toString())
+                    if (data.cart_selected.toString().toDouble() > 0 || data.is_out_of_stock > 0) {
+                        onDeleteClick?.let {
+                            it(data.cart_id.toString())
+                        }
+                    } else {
+                        Toast.makeText(context, "Please select the product", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
 
@@ -132,11 +149,11 @@ class CartProductAdapter @Inject constructor() :
         val timeDifference = endTime.time - currentTime.time
         val countdownTimer = object : CountDownTimer(timeDifference, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                updateCountdownText(millisUntilFinished,sale)
+                updateCountdownText(millisUntilFinished, sale)
             }
 
             override fun onFinish() {
-                updateCountdownText(0,sale)
+                updateCountdownText(0, sale)
             }
         }
 
@@ -148,7 +165,7 @@ class CartProductAdapter @Inject constructor() :
         val hours = (millisUntilFinished % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
         val minutes = (millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)
         val seconds = (millisUntilFinished % (1000 * 60)) / 1000
-        sale.text = "Flash Deals Ends In: ${
+        val newCountdownText = "Flash Deals Ends In: ${
             String.format(
                 Locale.getDefault(),
                 "%02d:%02d:%02d:%02d",
@@ -158,6 +175,7 @@ class CartProductAdapter @Inject constructor() :
                 seconds
             )
         }"
+        sale.text = newCountdownText
     }
 
     private val diffUtil = object : DiffUtil.ItemCallback<Product>() {
@@ -193,6 +211,8 @@ class CartProductAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
+    override fun getItemViewType(position: Int): Int = position
+
     private var onDeleteClick: ((id: String) -> Unit)? = null
 
     fun setOnDeleteClickListener(listener: (id: String) -> Unit) {
@@ -221,5 +241,4 @@ class CartProductAdapter @Inject constructor() :
         selectAll = status
         notifyDataSetChanged()
     }
-
 }

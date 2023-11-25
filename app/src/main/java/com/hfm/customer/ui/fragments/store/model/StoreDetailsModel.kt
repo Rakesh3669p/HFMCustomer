@@ -41,7 +41,7 @@ data class ShopDetail(
     val promotion_category: String,
     val promotion_sub_category: String,
     val promotion_product_id: Int,
-    val seller_id: Int,
+    val seller_id: Int?,
     val service_status: Int,
     val state: String,
     val store_details: String,
@@ -50,7 +50,7 @@ data class ShopDetail(
     val store_prd_rating: Int,
     val store_rating: Int,
     val total_orders: Int,
-    val video: String
+    val video: String?
 )
 
 /*data class SubcategoryData(

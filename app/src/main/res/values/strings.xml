@@ -218,4 +218,6 @@
     <string name="write_a_review_lbl">Write a Review</string>
     <string name="continue_shopping">Continue Shopping</string>
     <string name="cancelled_lbl">Cancelled</string>
+    <string name="claimedLbl">Claimed</string>
+    <string name="delete_my_account_lbl">Delete My Account</string>
 </resources>

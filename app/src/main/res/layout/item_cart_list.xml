@@ -146,6 +146,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/voucherDetailsLayout" />
 
+
             <TextView
                 android:id="@+id/delivery"
                 style="@style/textMediumSemiBold"

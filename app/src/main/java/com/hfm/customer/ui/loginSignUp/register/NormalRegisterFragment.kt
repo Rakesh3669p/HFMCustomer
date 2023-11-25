@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.loginSignUp.register
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -9,6 +10,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialog
@@ -122,6 +126,11 @@ class NormalRegisterFragment : Fragment(), View.OnClickListener {
     private fun sendOTP() {
 
         val email = binding.email.text.toString()
+        val name = binding.name.text.toString()
+        if (!name.isValidEmail()) {
+            showToast("Please enter a valid name")
+            return
+        }
         if (!email.isValidEmail()) {
             showToast("Please enter a valid email")
             return
@@ -142,11 +151,21 @@ class NormalRegisterFragment : Fragment(), View.OnClickListener {
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         appCompatDialog.window!!.attributes.width = LinearLayout.LayoutParams.MATCH_PARENT
         appCompatDialog.setCancelable(false)
-        bindingDialog.description.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(termsAndCondition, Html.FROM_HTML_MODE_COMPACT)
-        } else {
-            Html.fromHtml(termsAndCondition)
+
+        bindingDialog.description.settings.javaScriptEnabled = true
+        bindingDialog.description.loadDataWithBaseURL(null, termsAndCondition, "text/html", "UTF-8", null)
+        bindingDialog.description.webViewClient = WebViewClient()
+        bindingDialog.description.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                view!!.context.startActivity(Intent(Intent.ACTION_VIEW, request?.url))
+                return true
+            }
         }
+
+
         bindingDialog.decline.isVisible = false
         bindingDialog.accept.isVisible = false
         bindingDialog.agreeCheckBox.isVisible = false

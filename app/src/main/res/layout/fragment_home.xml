@@ -171,6 +171,8 @@
                     android:layout_marginTop="@dimen/_115sdp"
                     app:ci_drawable="@drawable/selected_dot_home_banner"
                     app:ci_drawable_unselected="@drawable/un_selected_dot_home"
+                    app:tabPaddingStart="@dimen/_5sdp"
+                    app:tabPaddingEnd="@dimen/_5sdp"
                      />
 
             </RelativeLayout>
@@ -182,6 +184,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:text="@string/flash_deals_lbl"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bannerLayout" />
 
@@ -212,11 +215,11 @@
                 style="@style/textSmallSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/ic_keyboard_arrow"
+                android:drawableEnd="@drawable/ic_keyboard_arrow_right"
                 android:drawableTint="@color/red"
                 android:gravity="center"
                 android:text="@string/view_all_lbl"
-                android:translationX="@dimen/_6sdp"
+                android:translationX="@dimen/_4sdp"
                 android:textColor="@color/red"
                 app:layout_constraintBottom_toBottomOf="@id/flashDealsTimer"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -274,7 +277,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@string/official_brands_store_lbl"
-                android:textColor="@color/textGreyDark"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/secondaryBanner" />
 
@@ -284,12 +287,12 @@
                 style="@style/textSmallSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/ic_keyboard_arrow"
+                android:drawableEnd="@drawable/ic_keyboard_arrow_right"
                 android:drawableTint="@color/red"
                 android:gravity="center"
                 android:text="@string/view_all_lbl"
                 android:textColor="@color/red"
-                android:translationX="@dimen/_6sdp"
+                android:translationX="@dimen/_4sdp"
                 app:layout_constraintBottom_toBottomOf="@id/officialBrandsLbl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/officialBrandsLbl" />
@@ -314,7 +317,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="Factory Direct Wholesale"
-                android:textColor="@color/textGreyDark"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/brandsRv" />
 
@@ -324,11 +327,11 @@
                 style="@style/textSmallSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/ic_keyboard_arrow"
+                android:drawableEnd="@drawable/ic_keyboard_arrow_right"
                 android:drawableTint="@color/red"
                 android:gravity="center"
                 android:text="@string/view_all_lbl"
-                android:translationX="@dimen/_6sdp"
+                android:translationX="@dimen/_4sdp"
                 android:textColor="@color/red"
                 app:layout_constraintBottom_toBottomOf="@id/factoryDealsLbl"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -353,7 +356,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:text="Trending Now"
-                android:textColor="@color/textGreyDark"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/factoryDealsRv" />
 
@@ -369,7 +372,7 @@
                 android:gravity="center"
                 android:text="@string/view_all_lbl"
                 android:textColor="@color/red"
-                android:translationX="@dimen/_6sdp"
+                android:translationX="@dimen/_4sdp"
                 app:layout_constraintBottom_toBottomOf="@id/trendingNowLbl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/trendingNowLbl" />
@@ -423,8 +426,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:text="Features Products"
-                android:textColor="@color/textGreyDark"
+                android:text="Featured Products"
+                android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/referBanner" />
 
@@ -434,12 +437,12 @@
                 style="@style/textSmallSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableEnd="@drawable/ic_keyboard_arrow"
+                android:drawableEnd="@drawable/ic_keyboard_arrow_right"
                 android:drawableTint="@color/red"
                 android:gravity="center"
                 android:text="@string/view_all_lbl"
                 android:textColor="@color/red"
-                android:translationX="@dimen/_6sdp"
+                android:translationX="@dimen/_4sdp"
                 app:layout_constraintBottom_toBottomOf="@id/featuresProductLbl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/featuresProductLbl" />

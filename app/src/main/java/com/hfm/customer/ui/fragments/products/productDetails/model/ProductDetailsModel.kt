@@ -103,6 +103,7 @@ data class OtherProduct(
 )
 
 data class Product(
+    val isPurchased: Int,
     val actual_price: Double,
     val attrs_list: List<Any>,
     val brand_id: Any,
@@ -126,7 +127,9 @@ data class Product(
     val wholesale: Double,
     val offer_name: Any,
     val end_time: String,
+
     val offer_price: Any?,
+    val shock_sale_price: Any?,
     val out_of_stock_selling: Any,
     val product_id: Any,
     val product_name: String,
@@ -148,7 +151,7 @@ data class Product(
     var cart_selected: Any,
     val check_shipping_availability: Any,
     val check_shipping_availability_text: String,
-    val combo_products: List<Any>,
+    val combo_products: List<ComboProducts>,
     val commission: Any,
     val count_of_combo_products: Any,
     val currency: String,
@@ -156,7 +159,7 @@ data class Product(
     val quantity: Any,
     val total_actual_price: Any,
     val total_discount_price: Double,
-    val sale_price: Any,
+    val sale_price: Any?,
     val total_offer_price: Double,
     val total_tax_value: Any,
     val unit_actual_price: Any,
@@ -165,6 +168,19 @@ data class Product(
     val weight: String
 )
 
+data class ComboProducts(
+    val product_id:Int,
+    val product_name:String,
+    val product_type:String,
+    val actual_price:Double,
+    val offer_price:Any,
+    val is_out_of_stock:Int,
+    val individual_discount:String,
+    val individual_price:Double,
+    val individual_qty:String,
+    val actual_price_total:Double,
+    val individual_price_total:Double,
+)
 data class Image(
     val image: String,
     val thumbnail: String

@@ -4,18 +4,15 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Html
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -28,11 +25,10 @@ import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentStoreHomeBinding
-import com.hfm.customer.ui.fragments.cart.adapter.PlatformVoucherAdapter
 import com.hfm.customer.ui.fragments.cart.model.Coupon
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.VouchersAdapter
-import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
 import com.hfm.customer.ui.fragments.store.adapter.StoreBannerAdapter
+import com.hfm.customer.ui.fragments.store.adapter.StoreVouchersAdapter
 import com.hfm.customer.ui.fragments.store.model.StoreData
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
@@ -45,21 +41,18 @@ import com.hfm.customer.viewModel.MainViewModel
 import com.maxrave.kotlinyoutubeextractor.State
 import com.maxrave.kotlinyoutubeextractor.YTExtractor
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.util.Timer
-import java.util.TimerTask
 import javax.inject.Inject
 
 
 @SuppressLint("UnsafeOptInUsageError")
 @AndroidEntryPoint
-class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickListener {
+class StoreHomeFragment(private val storeData: StoreData) : Fragment(), View.OnClickListener {
 
 
     @Inject
-    lateinit var vouchersAdapter: VouchersAdapter
+    lateinit var vouchersAdapter: StoreVouchersAdapter
 
     private var sellerVouchers: List<Coupon> = ArrayList()
 
@@ -72,13 +65,13 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
 
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
-    var handler: Handler = Handler(Looper.getMainLooper())
-    var runnable: Runnable? = null
+    private var handler: Handler = Handler(Looper.getMainLooper())
+    private var runnable: Runnable? = null
     var delay = 5000
 
     private lateinit var exoPause: ImageView
     private lateinit var exoPlay: ImageView
-    private lateinit var exoBuffer:ProgressBar
+    private lateinit var exoBuffer: ProgressBar
 
     private val videoPlayer: ExoPlayer by lazy {
         ExoPlayer.Builder(requireContext()).build().apply {
@@ -99,7 +92,6 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
             currentView = inflater.inflate(R.layout.fragment_store_home, container, false)
             binding = FragmentStoreHomeBinding.bind(currentView!!)
             init()
-
             setBanner()
             setOnClickListener()
         }
@@ -115,7 +107,7 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
-        mainViewModel.getSellerVouchers(storeData.shop_detail[0].seller_id.toString(),0)
+        mainViewModel.getSellerVouchers(storeData.shop_detail[0].seller_id.toString(), 0)
         dataSourceFactory = DefaultDataSource.Factory(requireContext())
         binding.storeVideoLayout.isVisible = !storeData.shop_detail[0].video.isNullOrEmpty()
         binding.storeVideo.clipToOutline = true
@@ -123,18 +115,15 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
         exoPlay = binding.storeVideo.findViewById(androidx.media3.ui.R.id.exo_play)
         exoPause = binding.storeVideo.findViewById(androidx.media3.ui.R.id.exo_pause)
         exoBuffer = binding.storeVideo.findViewById(androidx.media3.ui.R.id.exo_buffering)
-
-
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun setBanner() {
         bannerAdapter.differ.submitList(storeData.shop_detail[0].banners)
         binding.banner.adapter = bannerAdapter
         val tabLayoutMediator =
             TabLayoutMediator(binding.bannerDots, binding.banner, true) { _, _ -> }
         tabLayoutMediator.attach()
-
-
 
         handler.postDelayed(Runnable {
             handler.postDelayed(runnable!!, delay.toLong())
@@ -147,26 +136,45 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
 
         }.also { runnable = it }, delay.toLong())
 
-        /*val htmlContent = storeData.shop_detail[0].about
+        val htmlContent = storeData.shop_detail[0].store_details
         binding.storeMore.apply {
             loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
             settings.javaScriptEnabled = true
             val webSettings = settings
             webSettings.loadsImagesAutomatically = true
             webSettings.domStorageEnabled = true
-        }*/
+        }
     }
-
 
     private fun setObserver() {
 
+        mainViewModel.claimStoreVoucher.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (response.data?.httpcode == 200) {
+                        mainViewModel.getSellerVouchers(
+                            storeData.shop_detail[0].seller_id.toString(),
+                            0
+                        )
+                    } else {
+                        binding.storeVouchers.isVisible = true
+                    }
+                }
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error ->
+                    apiError(response.message)
+            }
+        }
 
         mainViewModel.sellerVouchers.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode==200){
-                        binding.storeVouchers.isVisible = response.data.data.coupon_list.isNotEmpty()
+                    if (response.data?.httpcode == 200) {
+                        binding.storeVouchers.isVisible =
+                            response.data.data.coupon_list.isNotEmpty()
 
                         sellerVouchers = response.data.data.coupon_list
                         initRecyclerView(
@@ -175,16 +183,9 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
                             vouchersAdapter, true
                         )
                         vouchersAdapter.differ.submitList(response.data.data.coupon_list)
-                        vouchersAdapter.setOnItemClickListener { position ->
-                            val couponCode = sellerVouchers[position].couponCode
-                            val clipboardManager =
-                                requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clipData = ClipData.newPlainText("text", couponCode)
-                            clipboardManager.setPrimaryClip(clipData)
-                            showToast("Coupon code copied")
-                        }
 
-                    }else{
+
+                    } else {
                         binding.storeVouchers.isVisible = true
                     }
 
@@ -210,23 +211,27 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
         exoBuffer.isVisible = true
         exoPlay.isVisible = false
         exoPause.isVisible = false
-        val yt = YTExtractor(con = requireActivity(), CACHING = false, LOGGING = true, retryCount = 3)
+        val yt =
+            YTExtractor(con = requireActivity(), CACHING = false, LOGGING = true, retryCount = 3)
         lifecycleScope.launch {
-            yt.extract(extractYouTubeVideoId(storeData.shop_detail[0].video).toString())
+            yt.extract(extractYouTubeVideoId(storeData.shop_detail[0].video.toString()).toString())
             if (yt.state == State.SUCCESS) {
                 yt.getYTFiles().let {
                     val videoMedia = it?.get(135)?.url.toString()
                     val audioMedia = it?.get(251)?.url.toString()
-                    startVideo(videoMedia,audioMedia)
+                    startVideo(videoMedia, audioMedia)
                 }
             }
         }
     }
-    private fun startVideo(videoMedia:String,audioMedia:String){
+
+    private fun startVideo(videoMedia: String, audioMedia: String) {
         val videoMediaItem: MediaItem = MediaItem.fromUri(videoMedia)
         val audioMediaItem: MediaItem = MediaItem.fromUri(audioMedia)
-        val videoMediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(videoMediaItem)
-        val audioMediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(audioMediaItem)
+        val videoMediaSource =
+            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(videoMediaItem)
+        val audioMediaSource =
+            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(audioMediaItem)
         val mergedSource = MergingMediaSource(videoMediaSource, audioMediaSource)
 
         val currentMediaItem: MediaItem? = videoPlayer.currentMediaItem
@@ -247,15 +252,15 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
     }
 
 
-    private val playerListener= object : Player.Listener {
+    private val playerListener = object : Player.Listener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
-            if(isPlaying){
+            if (isPlaying) {
                 binding.playBtn.isVisible = false
                 exoBuffer.isVisible = false
                 exoPlay.isVisible = false
                 exoPause.isVisible = true
-            }else{
+            } else {
                 exoBuffer.isVisible = true
                 exoPlay.isVisible = true
                 exoPause.isVisible = false
@@ -276,9 +281,17 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
 
     private fun setOnClickListener() {
         with(binding) {
-            playBtn.setOnClickListener (this@StoreHomeFragment)
+            playBtn.setOnClickListener(this@StoreHomeFragment)
+        }
 
-
+        vouchersAdapter.setOnItemClickListener { position ->
+            val couponCode = sellerVouchers[position].couponCode
+            if (storeData.shop_detail[0].seller_id != null) {
+                mainViewModel.claimStoreVoucher(
+                    couponCode,
+                    sellerId = storeData.shop_detail[0].seller_id.toString()
+                )
+            }
         }
 
         exoPlay.setOnClickListener {
@@ -305,9 +318,37 @@ class StoreHomeFragment(val storeData: StoreData) : Fragment(), View.OnClickList
         super.onPause()
         videoPlayer.pause()
     }
+
     override fun onDestroy() {
         super.onDestroy()
         videoPlayer.pause()
         videoPlayer.release()
+
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class VouchersFragment : Fragment(), View.OnClickListener {
+class VouchersFragment : Fragment(){
 
 
     private var platformVouchers: List<Coupon> = ArrayList()
@@ -106,10 +106,6 @@ class VouchersFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setOnClickListener() {
-        with(binding) {
-            back.setOnClickListener(this@VouchersFragment)
-        }
-
         vouchersAdapter.setOnItemClickListener { position ->
             val couponCode = platformVouchers[position].couponCode
             val clipboardManager =
@@ -121,9 +117,5 @@ class VouchersFragment : Fragment(), View.OnClickListener {
     }
 
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            binding.back.id -> findNavController().popBackStack()
-        }
-    }
+
 }

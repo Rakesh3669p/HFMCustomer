@@ -44,7 +44,11 @@ class ProductListAdapter @Inject constructor() :
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(if (offerPrice != null && offerPrice != 0.0) offerPrice else actualPrice)}"
                 } else if (data.offer_price != null && data.offer_price.toString().isNotEmpty()) {
                     val offerPrice = data.offer_price.toString().toDouble()
-                    val actualPrice = data.actual_price?.toDouble() ?: 0.0
+                    val actualPrice = data.actual_price ?: 0.0
+                    productPrice.text = "RM ${formatToTwoDecimalPlaces(if (offerPrice > 0) offerPrice else actualPrice)}"
+                } else if (data.shock_sale_price != null && data.shock_sale_price.toString().isNotEmpty()) {
+                    val offerPrice = data.shock_sale_price.toString().toDouble()
+                    val actualPrice = data.actual_price ?: 0.0
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(if (offerPrice > 0) offerPrice else actualPrice)}"
                 } else if (data.actual_price != null) {
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
@@ -137,7 +141,7 @@ class ProductListAdapter @Inject constructor() :
         }
     }
 
-    private val diffUtil = object : DiffUtil.ItemCallback<Product>() {
+      private val diffUtil = object : DiffUtil.ItemCallback<Product>() {
         override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
             return oldItem == newItem
         }

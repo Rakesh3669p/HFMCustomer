@@ -42,6 +42,7 @@ import com.hfm.customer.databinding.FragmentProductDetailBinding
 import com.hfm.customer.databinding.ReviewMediaImagesBinding
 import com.hfm.customer.databinding.ReviewMediaVideoBinding
 import com.hfm.customer.ui.dashBoard.profile.model.Profile
+import com.hfm.customer.ui.fragments.products.productDetails.adapter.ComboProductsAdapter
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.ProductImagesAdapter
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.ProductVariantsAdapter
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.RelativeProductListAdapter
@@ -79,7 +80,7 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @Suppress("DEPRECATION")
-@SuppressLint("UnsafeOptInUsageError", "SetTextI18n")
+@SuppressLint("UnsafeOptInUsageError", "SetTextI18n,SetJavaScriptEnabled")
 @AndroidEntryPoint
 class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
@@ -112,6 +113,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
     @Inject
     lateinit var reviewsAdapter: ReviewsAdapter
+    @Inject
+    lateinit var comboAdapter: ComboProductsAdapter
 
     @Inject
     lateinit var specsAdapter: SpecsAdapter
@@ -462,7 +465,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                         binding.addToCartMain.makeInvisible()
                         binding.cartCount.makeVisible()
                         binding.qty.text = "1"
-                        cartCount.postValue(response.data.data.cart_count)
+                        cartCount.postValue(response.data.cart_count)
                     } else if (response.data?.httpcode == 401) {
                         sessionManager.isLogin = false
                         startActivity(Intent(requireActivity(), LoginActivity::class.java))
@@ -480,14 +483,18 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    if (response.data?.httpcode == 200) {
-                        binding.addToCartMain.makeInvisible()
-                        binding.cartCount.makeVisible()
-                        binding.qty.text = qty.toString()
-                    } else if (response.data?.httpcode == 401) {
-                        sessionManager.isLogin = false
-                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
-                        requireActivity().finish()
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            binding.addToCartMain.makeInvisible()
+                            binding.cartCount.makeVisible()
+                            binding.qty.text = qty.toString()
+                        }
+                        400 -> showToast(response.data.message)
+                        401 -> {
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
                     }
                 }
 
@@ -568,6 +575,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     @SuppressLint("SetJavaScriptEnabled", "SetTextI18n", "ObsoleteSdkInt")
     private fun setProductDetails() {
         mainViewModel.getSellerVouchers(sellerId = productData.product.seller_id.toString(), 0)
+        setComboProducts()
         setProductAvailability()
 
         with(binding) {
@@ -597,48 +605,83 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 productData.product.total_reviews.toString().toDoubleOrNull()?.roundToInt() ?: 0
             ratingDetails.text = "($rating ratings & $totalReviews reviews)"
 
-            reviewCv.isVisible = productData.product.rating.toString().toDouble() > 0
+//            reviewCv.isVisible = productData.product.rating.toString().toDouble() > 0
+            rateProduct.isVisible= productData.product.rating.toString().toDouble() <= 0 && productData.product.isPurchased == 1 && productData.product.review_submitted==0
+            viewAllReviews.isVisible= !rateProduct.isVisible
+
             reviewRatingBar.rating = productData.product.rating.toString().toFloat()
             reviewRatingCount.text = productData.product.rating.toString().toDouble().toString()
             reviewLbl.text = "Customer Reviews ($totalReviews)"
             reviewRatingDetails.text = "$totalReviews Reviews"
 
 
-            val priceToShow = productData.product.offer_price.toString().toDoubleOrNull()
-                ?: productData.product.actual_price.toString().toDoubleOrNull() ?: 0.0
+            val priceToShow = productData.product.offer_price.toString().toDoubleOrNull() ?: productData.product.actual_price.toString().toDoubleOrNull() ?: 0.0
             productPrice.text = "RM ${formatToTwoDecimalPlaces(priceToShow)}"
 
             // Set visibility of productListingPrice
-            productListingPrice.isVisible =
-                productData.product.offer_price != null && productData.product.offer_price.toString() != "false"
+            productListingPrice.isVisible = productData.product.offer_price != null && productData.product.offer_price.toString() != "false"
 
             val actualPrice = productData.product.actual_price.toString().toDouble()
             productListingPrice.text = "NP: RM ${formatToTwoDecimalPlaces(actualPrice)}"
 
             addToWishlist.setImageResource(if (productData.product.in_wishlist == 1) R.drawable.like_active else R.drawable.ic_fav)
+
             if (productData.seller_info.isNotEmpty()) {
                 productData.seller_info[0].let {
-                    val imageOriginal = it.logo
-                    val imageReplaced =
-                        imageOriginal.replace("https://uat.hfm.synuos.com", "http://4.194.191.242")
-                    storeImage.loadImage(imageReplaced)
+                    storeImage.loadImage(replaceBaseUrl(it.logo))
                     storeName.text = it.store_name
-                    chatResponse.text =
-                        "${formatToTwoDecimalPlaces(it.postive_review.toDouble()).toDouble()} % Positive ${it.followers} followers"
-
+                    chatResponse.text = "${formatToTwoDecimalPlaces(it.postive_review.toDouble()).toDouble()}% Positive ${it.followers} followers"
                 }
             }
 
+            setDescriptionAndSpecification()
 
 
-            binding.descriptionWebView.settings.javaScriptEnabled = true
+
+            if (productData.varaiants_list.isNotEmpty()) {
+                val selectedVariantData = productData.varaiants_list[0]
+                selectedVariant = selectedVariantData.pro_id.toString()
+                soldOut.isVisible = selectedVariantData.is_out_of_stock.toString().toDouble() > 0
+                val offerPrice = selectedVariantData.offer_price?.toDoubleOrNull()
+                val variantActualPrice = selectedVariantData.actual_price
+
+                productListingPrice.isVisible = offerPrice != null && offerPrice > 0.0
+                productPrice.text =
+                    "RM ${formatToTwoDecimalPlaces(offerPrice ?: variantActualPrice)}"
+                productListingPrice.text = "NP: RM ${formatToTwoDecimalPlaces(variantActualPrice)}"
+                selectedVariantData.isSelected = true
+                productsVariantsAdapter.differ.submitList(productData.varaiants_list)
+            }
+
+            if (productData.product.offer_name == "Flash Sale") {
+                flashDealOrOutOfStock.isVisible = true
+                setTimer(productData.product.end_time)
+            }
+
+            relativeProductListAdapter.differ.submitList(productData.other_products)
+            pinCode.clearFocus()
+            binding.loader.isVisible = false
+        }
+
+        setFrequentlyBoughtProducts()
+
+    }
+
+
+    private fun setDescriptionAndSpecification() {
+        with(binding) {
+            descriptionWebView.settings.javaScriptEnabled = true
             val htmlContent = productData.product.long_description
+
             val descriptionContent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_COMPACT)
             } else {
                 Html.fromHtml(htmlContent)
             }
-            descriptionCv.isVisible = descriptionContent.isNotEmpty()
+
+            descriptionCv.isVisible =
+                !(htmlContent == "false" || htmlContent.isEmpty() || descriptionContent.isEmpty())
+
             descriptionWebView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
             descriptionWebView.webViewClient = WebViewClient()
             val webViewLayoutParams = binding.descriptionWebView.layoutParams
@@ -693,35 +736,27 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 )
                 specificationsWebView.webViewClient = WebViewClient()
             }
-
-            if (productData.varaiants_list.isNotEmpty()) {
-                val selectedVariantData = productData.varaiants_list[0]
-                selectedVariant = selectedVariantData.pro_id.toString()
-                soldOut.isVisible = selectedVariantData.is_out_of_stock == 1
-
-                val offerPrice = selectedVariantData.offer_price?.toDoubleOrNull()
-                val variantActualPrice = selectedVariantData.actual_price
-
-                productListingPrice.isVisible = offerPrice != null && offerPrice > 0.0
-                productPrice.text =
-                    "RM ${formatToTwoDecimalPlaces(offerPrice ?: variantActualPrice)}"
-                productListingPrice.text = "NP: RM ${formatToTwoDecimalPlaces(variantActualPrice)}"
-                selectedVariantData.isSelected = true
-                productsVariantsAdapter.differ.submitList(productData.varaiants_list)
-            }
-
-            if (productData.product.offer_name == "Flash Sale") {
-                flashDealOrOutOfStock.isVisible = true
-                setTimer(productData.product.end_time)
-            }
-
-            relativeProductListAdapter.differ.submitList(productData.other_products)
-            pinCode.clearFocus()
-            binding.loader.isVisible = false
         }
 
-        setFrequentlyBoughtProducts()
+    }
 
+    private fun setComboProducts() {
+        with(binding) {
+            itemsInComboLbl.isVisible = productData.product.combo_products.isNullOrEmpty() != true
+            itemsInComboCount.isVisible = productData.product.combo_products.isNullOrEmpty() != true
+            comboRv.isVisible = productData.product.combo_products.isNullOrEmpty() != true
+            initRecyclerView(requireContext(), comboRv, comboAdapter)
+
+            if (!productData.product.combo_products.isNullOrEmpty()) {
+                itemsInComboCount.text = productData.product.combo_products.size.toString()
+                comboAdapter.differ.submitList(productData.product.combo_products)
+            }
+
+            comboAdapter.setOnItemClickListener { id ->
+                val bundle = Bundle().apply { putString("productId", id.toString()) }
+                findNavController().navigate(R.id.productDetailsFragment, bundle)
+            }
+        }
     }
 
     private fun setFrequentlyBoughtProducts() {
@@ -961,6 +996,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             chat.setOnClickListener(this@ProductDetailsFragment)
             chat.setOnClickListener(this@ProductDetailsFragment)
             internationalLbl.setOnClickListener(this@ProductDetailsFragment)
+            rateProduct.setOnClickListener(this@ProductDetailsFragment)
 
             exoPlay.setOnClickListener {
                 videoPlayer.play()
@@ -998,9 +1034,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             binding.cartCount.isVisible = false
 
             selectedVariant = productData.varaiants_list[position].pro_id.toString()
-            binding.soldOut.isVisible = productData.varaiants_list[position].is_out_of_stock == 1
-            if (!productData.varaiants_list[position].offer_price.isNullOrEmpty() && productData.varaiants_list[position].offer_price != "false"
-            ) {
+            binding.soldOut.isVisible = productData.varaiants_list[position].is_out_of_stock.toString().toDouble() > 0
+            if (!productData.varaiants_list[position].offer_price.isNullOrEmpty() && productData.varaiants_list[position].offer_price != "false") {
                 binding.productListingPrice.isVisible = true
                 binding.productPrice.text = "RM ${
                     formatToTwoDecimalPlaces(
@@ -1226,6 +1261,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     private fun viewAllReviews() {
         val bundle = Bundle()
         bundle.putString("productId", productData.product.product_id.toString())
+        bundle.putInt("purchased", productData.product.review_submitted)
+        bundle.putInt("reviewed", productData.product.isPurchased)
         findNavController().navigate(R.id.customerRatingFragment, bundle)
     }
 
@@ -1296,6 +1333,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             binding.cart.id -> findNavController().navigate(R.id.cartFragment)
             binding.addToWishlist.id -> addToWishList()
             R.id.internationalLbl -> findNavController().navigate(R.id.supportFragment)
+            R.id.rateProduct -> {
+                val bundle = Bundle()
+                bundle.putString("productId", productData.product.product_id.toString())
+                findNavController().navigate(R.id.submitReviewFragment, bundle)
+            }
         }
     }
 

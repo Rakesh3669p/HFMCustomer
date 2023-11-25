@@ -13,7 +13,7 @@
         android:scaleType="fitXY"
         app:roundPercent="0.2"
         android:elevation="@dimen/_1sdp"
-        android:src="@drawable/logo_new_2"
+        android:src="@drawable/logo_new"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/edt_box"
+    android:layout_gravity="center_horizontal"
+    android:padding="@dimen/_10sdp"
+    >
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/textLargeSemiBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Are you sure want to delete your account?"
+        android:textColor="@color/red"
+        android:singleLine="false"
+        android:paddingHorizontal="@dimen/_5sdp"
+        android:gravity="center_horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
+    <TextView
+        android:id="@+id/desc"
+        style="@style/textMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/_4sdp"
+        android:paddingBottom="@dimen/_4sdp"
+        android:text="This action can't be reverted."
+        android:singleLine="false"
+        android:gravity="center"
+        android:textColor="@color/textGreyDark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancel"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_40sdp"
+        android:backgroundTint="@color/red"
+        android:textColor="@color/white"
+        android:text="@string/cancelLbl"
+        app:cornerRadius="@dimen/_5sdp"
+        app:layout_constraintTop_toBottomOf="@id/desc"
+        app:layout_constraintStart_toStartOf="@id/desc"
+        app:layout_constraintEnd_toEndOf="@id/desc"
+        app:layout_constraintBottom_toTopOf="@id/yes"
+        />
+
+
+    <TextView
+        android:id="@+id/yes"
+        style="@style/textMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/_7sdp"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:text="yes, delete my account"
+        android:singleLine="false"
+        android:gravity="center"
+        android:textColor="@color/textGreyDark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

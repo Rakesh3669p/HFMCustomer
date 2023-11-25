@@ -155,6 +155,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                     if (response.data?.httpcode == 200) {
                         imgFile?.delete()
                         binding.submit.isVisible = false
+                        binding.removeUploadedImage.isVisible = false
                     } else {
                         showToast(response.data?.message.toString())
                     }
@@ -173,31 +174,26 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
             data.order.forEach {
                 when (it.identifier) {
                     "created" -> {
-                        binding.downLoadInvoice.isVisible = false
                         orderedDate.text = it.date.toOrderDetailsFormattedDate()
                         ordered.alpha = if (it.available == 1) 1f else 0.7f
                     }
 
                     "processing" -> {
-                        binding.downLoadInvoice.isVisible = false
                         inProcessDate.text = it.date.toOrderDetailsFormattedDate()
                         inProcess.alpha = if (it.available == 1) 1f else 0.7f
                     }
 
                     "pickup" -> {
-                        binding.downLoadInvoice.isVisible = false
                         readyToShipDate.text = it.date.toOrderDetailsFormattedDate()
                         readyToShip.alpha = if (it.available == 1) 1f else 0.7f
                     }
 
                     "delivery_inprogress" -> {
-                        binding.downLoadInvoice.isVisible = false
                         deliveryInProgressDate.text = it.date.toOrderDetailsFormattedDate()
                         deliveryInProgress.alpha = if (it.available == 1) 1f else 0.7f
                     }
 
                     "delivered" -> {
-                        binding.downLoadInvoice.isVisible = true
                         deliveredDate.text = it.date.toOrderDetailsFormattedDate()
                         delivered.alpha = if (it.available == 1) 1f else 0.7f
                     }
@@ -217,7 +213,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                     chat.text = "Chat"
                 }
                 orderId.text = "Order #:${it.order_id}"
-                orderedDate.text = "${it.order_date} | ${it.order_time}"
+//                orderedDate.text = "${it.order_date} | ${it.order_time}"
                 ordered.alpha = 1f
                 val orangeColor = ContextCompat.getColor(requireContext(), R.color.orange)
                 val greenColor = ContextCompat.getColor(requireContext(), R.color.green)
@@ -264,11 +260,13 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                     cancelledLbl.isVisible = true
                     cancelledReason.isVisible = true
                     paymentMethodDivider1.isVisible = true
+
                     if(!it.cancel_order_detail.cancel_notes.isNullOrEmpty()) {
                         cancelledReason.text = it.cancel_order_detail.cancel_notes
                     }else{
                         cancelledReason.text = "Order has been cancelled"
                     }
+
                 } else {
                     paymentStatus.isVisible = true
                     paymentStatusLbl.isVisible = true
@@ -328,6 +326,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 } else {
                     uploadPaymentMethodLbl.text = "Uploaded Payment Receipt"
                     uploadedImage.isVisible = true
+
                     uploadedImage.loadImage(replaceBaseUrl(it.payment_uploaded_image))
                     uploadImage.isVisible = false
                     uploadPaymentMethod.isVisible = false
@@ -403,6 +402,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
             uploadImage.setOnClickListener(this@OrderDetailsFragment)
             submit.setOnClickListener(this@OrderDetailsFragment)
             chat.setOnClickListener(this@OrderDetailsFragment)
+            removeUploadedImage.setOnClickListener(this@OrderDetailsFragment)
         }
 
         productAdapter.setOnRateProductClickListener { productId ->
@@ -456,6 +456,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 findNavController().navigate(R.id.orderTrackingFragment, bundle)
             }
 
+            binding.removeUploadedImage.id -> removeUploadedImage()
             binding.downLoadInvoice.id -> downloadInvoice()
             binding.uploadImage.id -> showImagePickupDialog()
             binding.submit.id -> uploadPaymentSlip()
@@ -486,7 +487,14 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
         }
     }
 
-
+    private fun removeUploadedImage() {
+        imgFile?.delete()
+        imgFile = null
+        binding.uploadedImage.isVisible = false
+        binding.removeUploadedImage.isVisible = false
+        binding.uploadImage.isVisible = true
+        binding.uploadPaymentMethod.isVisible = true
+    }
 
 
     private val startForProfileImageResult =
@@ -498,6 +506,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                     val fileUri = data?.data!!
                     imgFile = createFileFromContentUri(requireActivity(), fileUri)
                     binding.uploadedImage.isVisible = true
+                    binding.removeUploadedImage.isVisible = true
                     binding.uploadedImage.setImageURI(fileUri)
                     binding.uploadImage.isVisible = false
                     binding.uploadPaymentMethod.isVisible = false

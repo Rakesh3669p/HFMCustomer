@@ -1,48 +1,30 @@
 package com.hfm.customer.ui.fragments.products.productDetails.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.transform.CircleCropTransformation
-import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemComboBinding
-import com.hfm.customer.databinding.ItemProductVariantsBinding
-import com.hfm.customer.ui.fragments.products.productDetails.model.Variants
-import com.hfm.customer.utils.loadImage
-import com.hfm.customer.utils.replaceBaseUrl
+import com.hfm.customer.ui.fragments.products.productDetails.model.ComboProducts
 import javax.inject.Inject
 
 
 class ComboProductsAdapter @Inject constructor() :
     RecyclerView.Adapter<ComboProductsAdapter.ViewHolder>() {
     private lateinit var context: Context
-    private var selectedPosition = 0
-
     inner class ViewHolder(private val bind: ItemComboBinding) :
         RecyclerView.ViewHolder(bind.root) {
-        fun bind(data: Variants) {
+        @SuppressLint("SetTextI18n")
+        fun bind(data: ComboProducts) {
             with(bind) {
-                productImage.isVisible = data.image.isNotEmpty()
-                productImage.loadImage(replaceBaseUrl(data.image))
-                productVariant.text = data.combination
-                if(data.isSelected){
-                    mainLayout.background = ContextCompat.getDrawable(context, R.drawable.outline_line_box_red)
-                    productVariant.setTextColor(ContextCompat.getColor(context, R.color.red))
-                }else{
-                    mainLayout.background = ContextCompat.getDrawable(context, R.drawable.outline_line_box_white)
-                    productVariant.setTextColor(ContextCompat.getColor(context, R.color.black))
-                }
+                comboName.text = data.product_name
+                comboQty.text = "Quantity: ${data.individual_qty}"
 
                 root.setOnClickListener {
-                    differ.currentList.forEach { it.isSelected = false }
-                    data.isSelected =true
-                    onVariantsClick?.invoke(absoluteAdapterPosition)
+                    onItemClick?.invoke(data.product_id)
                     notifyDataSetChanged()
                 }
 
@@ -50,12 +32,12 @@ class ComboProductsAdapter @Inject constructor() :
         }
     }
 
-      private val diffUtil = object : DiffUtil.ItemCallback<Variants>(){
-          override fun areItemsTheSame(oldItem: Variants, newItem: Variants): Boolean {
+      private val diffUtil = object : DiffUtil.ItemCallback<ComboProducts>(){
+          override fun areItemsTheSame(oldItem: ComboProducts, newItem: ComboProducts): Boolean {
               return oldItem == newItem
           }
 
-          override fun areContentsTheSame(oldItem: Variants, newItem: Variants): Boolean {
+          override fun areContentsTheSame(oldItem: ComboProducts, newItem: ComboProducts): Boolean {
               return oldItem == newItem
           }
 
@@ -84,10 +66,9 @@ class ComboProductsAdapter @Inject constructor() :
     override fun getItemCount(): Int = differ.currentList.size
     override fun getItemViewType(position: Int): Int = position
 
-    private var onVariantsClick: ((id: Int) -> Unit)? = null
+    private var onItemClick: ((id: Int) -> Unit)? = null
 
-    fun setOnVariantsClickListener(listener: (id: Int) -> Unit) {
-        onVariantsClick = listener
+    fun setOnItemClickListener(listener: (id: Int) -> Unit) {
+        onItemClick = listener
     }
-
 }

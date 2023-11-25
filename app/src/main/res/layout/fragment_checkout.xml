@@ -118,7 +118,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/manageAddress"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/textMediumSemiBold"
                     android:fontFamily="@font/roboto_medium"
                     android:textSize="@dimen/_12ssp"
                     android:textAllCaps="false"
@@ -132,7 +132,7 @@
                     android:paddingVertical="0dp"
                     android:text="@string/manage_address_lbl"
                     android:textColor="@color/red"
-                    app:backgroundTint="@android:color/transparent"
+                    app:backgroundTint="@color/white"
                     app:cornerRadius="@dimen/_6sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -287,6 +287,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addVoucher"
                 style="@style/textMediumSemiBold"
+                app:backgroundTint="@color/white"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_35sdp"
                 android:layout_marginTop="@dimen/_5sdp"
@@ -297,7 +298,6 @@
                 android:paddingHorizontal="@dimen/_18sdp"
                 android:text="Apply your exclusive vouchers"
                 android:textColor="@color/red"
-                app:backgroundTint="@android:color/transparent"
                 app:cornerRadius="@dimen/_6sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

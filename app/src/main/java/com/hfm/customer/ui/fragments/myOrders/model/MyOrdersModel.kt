@@ -71,6 +71,6 @@ data class ShippingAddress(
 data class CancelledOrders(
     val cancel_id: Int,
     val cancel_title: String,
-    val cancel_notes: String,
+    val cancel_notes: String?,
     val canceled_date: String
 )

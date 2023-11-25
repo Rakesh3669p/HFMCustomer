@@ -3,15 +3,19 @@ package com.hfm.customer.ui.dashBoard.profile
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.LinearLayout
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -21,9 +25,11 @@ import coil.request.ImageRequest
 import coil.util.DebugLogger
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
+import com.hfm.customer.databinding.DialogueDeleteAccountBinding
 import com.hfm.customer.databinding.DialogueMediaPickupBinding
 import com.hfm.customer.databinding.FragmentProfileSettingsBinding
 import com.hfm.customer.ui.dashBoard.profile.model.ProfileData
+import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
@@ -45,6 +51,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.time.LocalDate
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class ProfileSettings : Fragment(), View.OnClickListener {
@@ -109,6 +116,27 @@ class ProfileSettings : Fragment(), View.OnClickListener {
     }
 
     private fun setObserver() {
+
+
+
+        mainViewModel.deleteAccount.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (response.data?.httpcode == 200) {
+                        sessionManager.isLogin = false
+                        sessionManager.token = ""
+                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                        requireActivity().finish()
+                    } else {
+                        showToast(response.data?.message.toString())
+                    }
+                }
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
+            }
+        }
 
         mainViewModel.profile.observe(viewLifecycleOwner) { response ->
             when (response) {
@@ -229,6 +257,7 @@ class ProfileSettings : Fragment(), View.OnClickListener {
             save.setOnClickListener(this@ProfileSettings)
             changePasswordEdt.setOnClickListener(this@ProfileSettings)
             back.setOnClickListener(this@ProfileSettings)
+            deleteAccount.setOnClickListener(this@ProfileSettings)
         }
     }
 
@@ -286,6 +315,22 @@ class ProfileSettings : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun deleteAccount() {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DialogueDeleteAccountBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.setCancelable(false)
+        bindingDialog.cancel.setOnClickListener {
+            appCompatDialog.dismiss()
+        }
+        bindingDialog.yes.setOnClickListener {
+            mainViewModel.deleteAccount()
+            appCompatDialog.dismiss()
+        }
+        appCompatDialog.show()
+    }
+
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.dobEdt.id -> pickDate()
@@ -300,8 +345,11 @@ class ProfileSettings : Fragment(), View.OnClickListener {
             }
 
             binding.back.id -> findNavController().popBackStack()
+            binding.deleteAccount.id -> deleteAccount()
         }
     }
+
+
 
 
     private val startForImageResult =

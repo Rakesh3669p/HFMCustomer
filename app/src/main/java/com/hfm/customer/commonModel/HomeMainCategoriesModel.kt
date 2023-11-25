@@ -19,7 +19,7 @@ data class BannerData(
 )
 
 data class PromotionPopup(
-    val promotion_image: String,
+    val promotion_image: String?,
     val promotion_link: String,
     val promo_visibility: Int,
     val category: String,

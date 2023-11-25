@@ -19,6 +19,7 @@ import com.hfm.customer.ui.fragments.store.model.StoreData
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
+import com.hfm.customer.utils.clearSearch
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.initRecyclerViewGrid
 import com.hfm.customer.utils.netWorkFailure
@@ -75,7 +76,7 @@ class StoreProductListFragment(private val storeData: StoreData) : Fragment() {
             initRecyclerView(requireContext(), categoriesListRv, productCategoryListAdapter, true)
             initRecyclerViewGrid(requireContext(), productListRv, productListAdapter, 2)
             val categories: MutableList<Category> = ArrayList()
-            val category = Category(id = 0, "ALL")
+            val category = Category(id = 0, "All")
             categories.add(category)
             storeData.shop_detail[0].categories.let { categories.addAll(it) }
             storeProducts = storeData.product
@@ -111,10 +112,9 @@ class StoreProductListFragment(private val storeData: StoreData) : Fragment() {
     }
 
     private fun setProducts(data: StoreData) {
-        initRecyclerView(requireContext(), binding.categoriesListRv, productCategoryListAdapter, true)
-        initRecyclerViewGrid(requireContext(), binding.productListRv, productListAdapter, 2)
+
         val categories: MutableList<Category> = ArrayList()
-        val category = Category(id = 0, "ALL")
+        val category = Category(id = 0, "All")
         categories.add(category)
         data.shop_detail[0].categories.let { categories.addAll(it) }
         storeProducts = data.product
@@ -130,6 +130,7 @@ class StoreProductListFragment(private val storeData: StoreData) : Fragment() {
         }
 
         productCategoryListAdapter.setOnSubCategoryClickListener { catId ->
+            clearSearch.postValue(true)
             if (storeData.shop_detail.isNotEmpty()) {
                 val categoryId= if(catId==0) "" else catId.toString()
                 categoryIdStore = categoryId

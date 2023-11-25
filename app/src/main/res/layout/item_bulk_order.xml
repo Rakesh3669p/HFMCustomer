@@ -13,7 +13,7 @@
         android:id="@+id/productImage"
         android:layout_width="@dimen/_60sdp"
         android:layout_height="@dimen/_60sdp"
-        android:src="@drawable/logo"
+        android:src="@drawable/logo_new"
         android:background="@color/white"
         app:roundPercent="0.1"
         android:elevation="@dimen/_1sdp"

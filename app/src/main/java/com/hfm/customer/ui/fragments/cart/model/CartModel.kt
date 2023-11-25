@@ -41,7 +41,7 @@ data class CartData(
 
 data class SellerProduct(
     val seller: Seller,
-    val shipping: Double,
+    val shipping: Double?,
     val shipping_availability: Int,
     val shipping_availability_text: String,
     val shipping_cal: Any,
@@ -52,6 +52,7 @@ data class SellerProduct(
     var standardPickUp: Boolean = true,
     val is_seller_coupon_applied: Int,
     val is_platform_coupon_applied: Int,
+    val seller_coupon_remaining: Double?,
     val seller_coupon_data: CouponApplied,
     val platform_coupon_data: CouponApplied,
     val seller_shipping_option: Int,

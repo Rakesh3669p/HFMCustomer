@@ -44,6 +44,8 @@ const val netWorkFailure = "Network Failure"
 const val business = "BUSINESS"
 const val normal = "NORMAL"
 val cartCount = MutableLiveData<Int>()
+val notificationCount = MutableLiveData<Int>()
+val clearSearch = SingleLiveEvent<Boolean>()
 
 fun checkResponseBody(body: Any?): Any? = body?.let { it }
 
@@ -243,7 +245,8 @@ fun bitmapFromVector(context: Context, vectorResId: Int): BitmapDescriptor {
 fun createFileFromContentUri(activity: Activity, fileUri: Uri): File {
     val fileName = getFileNameFromUri(activity, fileUri)
     val outputFile = File(activity.cacheDir, fileName)
-    val iStream: InputStream = activity.contentResolver.openInputStream(fileUri) ?: throw NullPointerException("Failed to open input stream")
+    val iStream: InputStream = activity.contentResolver.openInputStream(fileUri)
+        ?: throw NullPointerException("Failed to open input stream")
     copyStreamToFile(iStream, outputFile)
     iStream.close()
     return outputFile
@@ -252,7 +255,8 @@ fun createFileFromContentUri(activity: Activity, fileUri: Uri): File {
 fun createVideoFileFromContentUri(activity: Activity, fileUri: Uri): File {
     val fileName = getFileNameFromUri(activity, fileUri)
     val outputFile = File(activity.cacheDir, fileName)
-    val iStream: InputStream = activity.contentResolver.openInputStream(fileUri) ?: throw NullPointerException("Failed to open input stream")
+    val iStream: InputStream = activity.contentResolver.openInputStream(fileUri)
+        ?: throw NullPointerException("Failed to open input stream")
     copyStreamToFile(iStream, outputFile)
     iStream.close()
     if (outputFile.length() > 10 * 1024 * 1024) {
@@ -262,7 +266,8 @@ fun createVideoFileFromContentUri(activity: Activity, fileUri: Uri): File {
 
     return outputFile
 }
-    fun getVideoThumbnail(videoFile: File): Bitmap? {
+
+fun getVideoThumbnail(videoFile: File): Bitmap? {
     val retriever = MediaMetadataRetriever()
     try {
         retriever.setDataSource(videoFile.path)
@@ -291,6 +296,7 @@ fun saveVideoThumbnailToFile(videoFile: File, thumbnailFile: File) {
         retriever.release()
     }
 }
+
 fun getFileNameFromUri(activity: Activity, fileUri: Uri): String {
     activity.contentResolver.query(fileUri, null, null, null, null)?.use { cursor ->
         val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
@@ -315,7 +321,7 @@ fun copyStreamToFile(inputStream: InputStream, outputFile: File) {
 
 
 fun RecyclerView.setupLoadMoreListener(
-    isLoading:Boolean,
+    isLoading: Boolean,
     layoutManager: LinearLayoutManager,
     loadMoreCallback: () -> Unit
 ) {
@@ -347,6 +353,7 @@ fun String.toOrderDetailsFormattedDate(): String {
         this // Return the original string if there's an error
     }
 }
+
 fun String.toOrderChatFormattedDate(): String {
     val inputDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
     val outputDateFormat = SimpleDateFormat("E, d' 'MMM yyyy | hh:mm a", Locale.US)
@@ -391,7 +398,6 @@ fun Long.toCustomTimeAgo(): CharSequence {
 }
 
 
-
 fun String.toUnixTimestamp(): Long {
     val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
     val date = dateFormat.parse(this)
@@ -404,7 +410,7 @@ fun Long.toFormattedDateTimeChat(): String {
     return format.format(date)
 }
 
-fun Activity.moveToLogin(sessionManager: SessionManager){
+fun Activity.moveToLogin(sessionManager: SessionManager) {
     sessionManager.isLogin = false
     startActivity(Intent(this, LoginActivity::class.java))
     this.finish()
@@ -417,8 +423,9 @@ fun ImageView.loadImage(url: String) {
     }
 }
 
-fun Activity.hideKeyboard(view:View){
-    val inputMethodManager = this.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+fun Activity.hideKeyboard(view: View) {
+    val inputMethodManager =
+        this.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
@@ -427,6 +434,7 @@ fun hasEmailAddress(text: String): Boolean {
     val matchResult = regex.find(text)
     return matchResult != null
 }
+
 fun hasNumberGreaterThan10Digits(text: String): Boolean {
     val regex = Regex("\\d{10,}") // This regex matches numbers with 10 or more digits
     val matchResult = regex.find(text)

@@ -4,11 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/combo_item_box"
-    android:padding="@dimen/_5sdp">
+    android:padding="@dimen/_7sdp"
+    android:layout_margin="@dimen/_4sdp">
 
     <TextView
         android:id="@+id/comboName"
-        style="@style/textSmallSemiBold"
+        style="@style/textMediumSemiBold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:elevation="@dimen/_2sdp"
@@ -23,7 +24,7 @@
         style="@style/textSmallSemiBold"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_4sdp"
+        android:layout_marginTop="@dimen/_2sdp"
         android:elevation="@dimen/_2sdp"
         android:singleLine="false"
         android:text="Quantity: 2"

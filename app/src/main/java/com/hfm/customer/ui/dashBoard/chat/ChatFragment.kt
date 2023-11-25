@@ -7,12 +7,13 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -39,8 +40,6 @@ import com.hfm.customer.utils.hasNumberGreaterThan10Digits
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
-import com.hfm.customer.utils.toOrderChatFormattedDate
-import com.hfm.customer.utils.toOrderDetailsFormattedDate
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -50,9 +49,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
@@ -123,6 +120,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
         chatId = arguments?.getInt("chatId").toString()
         saleId = arguments?.getString("saleId").toString()
         binding.noticeMessage.root.isVisible = from == "chatList"
+//        startAutoScrollLoop()
         binding.toolBarTitle.text = storeName
         mainViewModel.getChatMessage(sellerId, chatId)
 
@@ -157,10 +155,25 @@ class ChatFragment : Fragment(), View.OnClickListener {
                 keyBoardOpened = false
             }
         }
-
     }
 
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    private val scrollSpeed = 1
 
+
+    private fun startAutoScrollLoop() {
+      /*  handler.postDelayed(object : Runnable {
+            override fun run() {
+                binding.titleScroll.scrollBy(0, scrollSpeed)
+
+                if (binding.titleScroll.scrollY >= binding.toolBarTitle.height - binding.titleScroll.height) {
+                    binding.titleScroll.scrollTo(0, 0)
+                }
+
+                handler.postDelayed(this, 10) // Adjust the delay as needed
+            }
+        }, 10)*/
+    }
 
     private fun setObserver() {
         mainViewModel.chatMessages.observe(viewLifecycleOwner) { response ->
@@ -193,6 +206,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
+                    binding.sendMessage.isClickable =true
                     if (response.data?.httpcode == 200) {
                         imgFile = null
                         binding.edtMessage.setText("")
@@ -262,6 +276,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
         }
     }
     private fun apiError(message: String?) {
+        binding.sendMessage.isClickable =true
         appLoader.dismiss()
         showToast(message.toString())
         if (message == netWorkFailure) {
@@ -333,6 +348,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
             requestBodyMap["seller_id"] = sellerId.toRequestBody(MultipartBody.FORM)
             requestBodyMap["prd_id"] = productId.toRequestBody(MultipartBody.FORM)
             requestBodyMap["sale_id"] = saleId.toRequestBody(MultipartBody.FORM)
+            binding.sendMessage.isClickable =false
             mainViewModel.sendMessage(requestBodyMap)
         }
     }

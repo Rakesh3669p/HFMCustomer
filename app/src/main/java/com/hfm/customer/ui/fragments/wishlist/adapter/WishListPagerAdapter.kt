@@ -24,5 +24,5 @@ class WishListPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycl
         }
     }
 
-    override fun getItemCount(): Int = 4
+    override fun getItemCount(): Int = 2
 }

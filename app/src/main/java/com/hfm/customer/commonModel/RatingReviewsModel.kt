@@ -18,7 +18,7 @@ data class Review(
     val comment: String,
     val customer_image: String,
     val customer_name: String,
-    val date: String,
+    val date: String?,
     val image: List<String>,
     val product_variation: String,
     val rating: Int,
@@ -26,7 +26,7 @@ data class Review(
     val review_date: String,
     val review_time: String,
     val title: String,
-    val video_link: String,
+    val video_link: String?,
 
 
 )

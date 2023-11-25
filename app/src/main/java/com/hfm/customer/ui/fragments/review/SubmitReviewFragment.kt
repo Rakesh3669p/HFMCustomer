@@ -43,7 +43,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SubmitReviewFragment : Fragment(), View.OnClickListener {
 
-    private  var videoFile: File?=null
+    private var videoFile: File? = null
     private lateinit var binding: FragmentSubmitReviewBinding
     private var currentView: View? = null
     private val mainViewModel: MainViewModel by viewModels()
@@ -89,10 +89,12 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    showToast(response.data?.message.toString())
                     imageFiles.forEach { it?.delete() }
                     if (response.data?.httpcode == 200) {
+                        showToast("Your review has been submitted and is pending for approval")
                         findNavController().popBackStack()
+                    }else{
+                        showToast(response.data?.message.toString())
                     }
                 }
 
@@ -125,17 +127,21 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
 
         appCompatDialog.show()
         bindingDialog.camera.setOnClickListener {
-            pickMedia.launch(
-                PickVisualMediaRequest(
-                    ActivityResultContracts.PickVisualMedia.ImageOnly
+            if (imageFiles.size >= 3) {
+                showToast("Only three images can be added for review")
+            } else {
+                pickMedia.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                    )
                 )
-            )
+            }
             appCompatDialog.dismiss()
         }
         bindingDialog.gallery.setOnClickListener {
-            if(videoFile!=null) {
+            if (videoFile != null) {
                 showToast("Only one video can be added for review")
-            }else{
+            } else {
                 pickVideo.launch(
                     PickVisualMediaRequest(
                         ActivityResultContracts.PickVisualMedia.VideoOnly
@@ -149,11 +155,11 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
 
 
     private fun validateAndSubmit() {
-        val title = binding.titleEdt.text.toString()
-        val review = binding.writeReviewEdt.text.toString()
+        val title = binding.titleEdt.text.toString().trim()
+        val review = binding.writeReviewEdt.text.toString().trim()
         val rating = binding.reviewRatingBar.rating
 
-        if (rating < 0) {
+        if (rating <= 0) {
             showToast("Please add a rating to submit")
             return
         }
@@ -180,7 +186,7 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        if (videoFile!=null) {
+        if (videoFile != null) {
             val key = "video_link\"; filename=\"review_$productId _video"
             requestBodyMap[key] = videoFile?.asRequestBody("video/mp4".toMediaTypeOrNull())
         }
@@ -204,8 +210,8 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
             uploadImageBg.setOnClickListener(this@SubmitReviewFragment)
         }
         reviewsMediaAdapter.setOnItemClickListener {
-            imageFiles.removeAt(it)
             imageFiles[it]?.delete()
+            imageFiles.removeAt(it)
             reviewsMediaAdapter.differ.submitList(imageFiles)
             reviewsMediaAdapter.notifyItemRemoved(it)
         }
@@ -219,7 +225,7 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
             binding.uploadImage.id -> showImagePickupDialog()
             binding.uploadImageVideosLbl.id -> showImagePickupDialog()
             binding.uploadImageBg.id -> showImagePickupDialog()
-            binding.removeMedia.id-> {
+            binding.removeMedia.id -> {
                 videoFile = null
                 binding.videoImageLayout.isVisible = false
             }
@@ -227,7 +233,9 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
     }
 
     private val pickMedia: ActivityResultLauncher<PickVisualMediaRequest> =
-        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(4)) { uri ->
+        registerForActivityResult(
+            ActivityResultContracts.PickMultipleVisualMedia(3)
+        ) { uri ->
             if (uri != null) {
                 uri.forEach {
                     imgFile = createFileFromContentUri(requireActivity(), it)
@@ -244,8 +252,8 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 try {
-                    if(videoFile!=null){
-                    }else {
+                    if (videoFile != null) {
+                    } else {
                         videoFile = createVideoFileFromContentUri(requireActivity(), uri)
                         binding.videoImageLayout.isVisible = true
                     }

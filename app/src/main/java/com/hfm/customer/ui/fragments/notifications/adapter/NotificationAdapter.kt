@@ -40,6 +40,8 @@ class NotificationAdapter @Inject constructor() : RecyclerView.Adapter<Notificat
                 }
 
                 root.setOnClickListener {
+                    data.viewed=1
+                    notifyItemChanged(absoluteAdapterPosition)
                     onItemClick?.invoke(absoluteAdapterPosition)
                 }
             }

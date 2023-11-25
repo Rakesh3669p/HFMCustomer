@@ -38,11 +38,12 @@
 
     <TextView
         android:id="@+id/productQty"
-        style="@style/textMediumSemiBold"
+        style="@style/textMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
         android:text="Quantity: 1"
+        android:textColor="@color/textGreyDark"
         app:layout_constraintBottom_toTopOf="@id/rateProduct"
         app:layout_constraintStart_toEndOf="@id/productImage"
         app:layout_constraintTop_toBottomOf="@id/productName" />

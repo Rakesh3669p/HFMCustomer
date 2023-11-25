@@ -169,7 +169,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addVoucher"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/textMediumSemiBold"
                 android:fontFamily="@font/roboto_medium"
                 android:textSize="@dimen/_12ssp"
                 android:textAllCaps="false"
@@ -183,7 +183,7 @@
                 android:paddingHorizontal="@dimen/_18sdp"
                 android:text="Apply your exclusive vouchers"
                 android:textColor="@color/red"
-                app:backgroundTint="@android:color/transparent"
+                app:backgroundTint="@color/white"
                 app:cornerRadius="@dimen/_6sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

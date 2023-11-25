@@ -29,7 +29,7 @@
         android:layout_width="@dimen/_35sdp"
         android:layout_height="@dimen/_35sdp"
         android:layout_gravity="center"
-        android:src="@drawable/logo"
+        android:src="@drawable/logo_new"
         android:scaleType="fitXY"
         android:layout_marginBottom="@dimen/_5sdp"
         app:layout_constraintBottom_toBottomOf="parent"

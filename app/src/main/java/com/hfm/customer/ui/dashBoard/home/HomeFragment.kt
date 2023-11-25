@@ -1,9 +1,7 @@
 package com.hfm.customer.ui.dashBoard.home
 
-import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -12,14 +10,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
-import coil.load
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.BannerData
@@ -47,6 +43,7 @@ import com.hfm.customer.utils.hideKeyboard
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.netWorkFailure
+import com.hfm.customer.utils.notificationCount
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
@@ -134,19 +131,22 @@ class HomeFragment : Fragment(), View.OnClickListener {
         mainViewModel.getNotifications(0)
         mainViewModel.getCart()
         binding.loader.isVisible = true
-//        appLoader.show()
         requireActivity().hideKeyboard(binding.root)
     }
 
     private fun setPromotionalPopup(promotionData: PromotionPopup) {
         mainViewModel.bannerActivity(0,"homepage")
         promotionBanner =
-            PromotionBanner(requireContext(), replaceBaseUrl(promotionData.promotion_image)) {
-                val bundle = Bundle()
-                bundle.putString("catId", promotionData.category)
-                bundle.putString("subCatId", promotionData.sub_category)
-                findNavController().navigate(R.id.productListFragment, bundle)
-                promotionBanner?.dismiss()
+            promotionData.promotion_image?.let { replaceBaseUrl(it) }?.let {
+                PromotionBanner(requireContext(),
+                    it
+                ) {
+                    val bundle = Bundle()
+                    bundle.putString("catId", promotionData.category)
+                    bundle.putString("subCatId", promotionData.sub_category)
+                    findNavController().navigate(R.id.productListFragment, bundle)
+                    promotionBanner?.dismiss()
+                }
             }
 
         promotionBanner?.show()
@@ -381,10 +381,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     if (response.data?.httpcode == "200") {
-                        val notificationCount = response.data.data.unread_count
-                        binding.notificationCountBg.isVisible = notificationCount > 0
-                        binding.notificationCount.isVisible = notificationCount > 0
-                        binding.notificationCount.text = notificationCount.toString()
+                        val unreadCount = response.data.data.unread_count
+                        notificationCount.postValue(unreadCount)
+                        /*binding.notificationCountBg.isVisible = unreadCount > 0
+                        binding.notificationCount.isVisible = unreadCount > 0
+                        binding.notificationCount.text = unreadCount.toString()*/
                     } else {
                         binding.notificationCountBg.isVisible = false
                         binding.notificationCount.isVisible = false
@@ -395,6 +396,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 is Resource.Error -> apiError(response.message)
             }
         }
+
         mainViewModel.cart.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -411,6 +413,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
             binding.cartCountBg.isVisible = count > 0
             binding.cartCount.isVisible = count > 0
             binding.cartCount.text = count.toString()
+
+        }
+
+        notificationCount.observe(requireActivity()) { count ->
+            binding.notificationCountBg.isVisible = count > 0
+            binding.notificationCount.isVisible = count > 0
+            binding.notificationCount.text = count.toString()
 
         }
     }
@@ -490,13 +499,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        if (bannerData.promotion_popup != null && !bannerData.promotion_popup.promotion_image.isNullOrEmpty() && bannerData.promotion_popup.promo_visibility==1) {
+        if (!bannerData.promotion_popup.promotion_image.isNullOrEmpty() && bannerData.promotion_popup.promo_visibility==1) {
             setPromotionalPopup(bannerData.promotion_popup)
         }
 
         sessionManager.searchPlaceHolder = bannerData.search_placeholder_text
         binding.searchBar.text =
-            if (sessionManager.searchPlaceHolder.isNullOrEmpty()) "Search here.." else bannerData.search_placeholder_text
+            if (sessionManager.searchPlaceHolder.isEmpty()) "Search here.." else bannerData.search_placeholder_text
     }
 
 
@@ -657,29 +666,20 @@ class HomeFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun navigateToFragments(id:Int){
+        if (sessionManager.isLogin) {
+            findNavController().navigate(id)
+        } else {
+            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+            requireActivity().finish()
+        }
+    }
     override fun onClick(v: View?) {
         when (v?.id) {
-
-            binding.notification.id -> {
-                if (sessionManager.isLogin) {
-                    findNavController().navigate(R.id.notificationFragment)
-                } else {
-                    startActivity(Intent(requireActivity(), LoginActivity::class.java))
-                    requireActivity().finish()
-                }
-            }
-
+            binding.notification.id -> navigateToFragments(R.id.notificationFragment)
             binding.officialBrandsViewAll.id -> findNavController().navigate(R.id.brandsFragment)
-
-
-            binding.cart.id -> {
-                if (sessionManager.isLogin) {
-                    findNavController().navigate(R.id.cartFragment)
-                } else {
-                    startActivity(Intent(requireActivity(), LoginActivity::class.java))
-                    requireActivity().finish()
-                }
-            }
+            binding.cart.id -> navigateToFragments(R.id.cartFragment)
+            binding.searchFilter.id -> findNavController().navigate(R.id.categoriesFragmentHome)
 
             binding.searchBar.id -> {
                 val bundle = Bundle()
@@ -687,7 +687,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 findNavController().navigate(R.id.searchFragment, bundle)
             }
 
-            binding.searchFilter.id -> findNavController().navigate(R.id.categoriesFragmentHome)
             binding.factoryDealsViewAll.id -> {
                 val bundle = Bundle()
                 bundle.putInt("wholeSale", 1)

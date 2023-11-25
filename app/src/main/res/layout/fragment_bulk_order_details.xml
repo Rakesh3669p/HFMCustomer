@@ -140,6 +140,7 @@
                     android:layout_margin="@dimen/_10sdp"
                     android:background="@drawable/edt_box_smaa_radius"
                     android:elevation="@dimen/_1sdp"
+                    android:src="@drawable/logo_new"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -497,7 +498,7 @@
             </androidx.cardview.widget.CardView>
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/reject"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/textMediumSemiBold"
                 android:fontFamily="@font/roboto_medium"
                 android:textSize="@dimen/_12ssp"
                 android:textAllCaps="false"
@@ -506,7 +507,7 @@
                 android:text="@string/rejectLbl"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:textColor="@color/red"
-                app:backgroundTint="@android:color/transparent"
+                app:backgroundTint="@color/white"
                 app:cornerRadius="@dimen/_6sdp"
                 app:strokeColor="@color/red"
                 app:strokeWidth="1dp"

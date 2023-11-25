@@ -17,6 +17,7 @@ data class Coupon(
     @SerializedName("coupon_id") val couponId: Int,
     @SerializedName("status") val status: String,
     @SerializedName("desc") val desc: String,
+    @SerializedName("is_claimed") val isClaimed: Int,
     @SerializedName("minimum_purchase") val minimumPurchase: Any,
     @SerializedName("offer") val offer: String,
     @SerializedName("offer_type") val offerType: String,

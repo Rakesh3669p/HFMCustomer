@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".ui.fragments.productDetails.CustomerRatingFragment">
+    tools:context=".ui.fragments.products.productDetails.CustomerRatingFragment">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/back"
@@ -20,7 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <TextView
         android:id="@+id/toolBarTitle"
         style="@style/textLargeSemiBold"
@@ -31,7 +30,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/back" />
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/reviewCv"
@@ -457,20 +455,28 @@
                 android:text="1 stars (1.5k)"
                 app:layout_constraintStart_toEndOf="@id/twoStarSelection"
                 app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/mediaSelection"
+                style="@style/textMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:background="@drawable/edt_line_red_box"
+                android:backgroundTint="@color/grey_lite"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:paddingVertical="@dimen/_5sdp"
+                android:text="Media"
+                app:layout_constraintStart_toEndOf="@id/oneStarSelection"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </HorizontalScrollView>
 
 
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/noReviews"
-        style="@style/textSmallSemiBold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="No Reviews Available"
-        app:layout_constraintTop_toBottomOf="@+id/ratingSelection"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reviewsRv"
@@ -484,6 +490,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:itemCount="5"
         tools:listitem="@layout/item_review_comments" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/noReviews"
+        style="@style/textSmallSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="No Reviews Available"
+        app:layout_constraintTop_toBottomOf="@+id/ratingSelection"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <include
         android:visibility="gone"
@@ -507,7 +524,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

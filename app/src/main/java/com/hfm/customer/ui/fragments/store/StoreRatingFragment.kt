@@ -62,9 +62,9 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setObserver()
-        sellerId = storeData.shop_detail[0].seller_id
+        sellerId = storeData.shop_detail[0].seller_id?:0
         mainViewModel.getStoreReviews(
-            sellerId = storeData.shop_detail[0].seller_id,
+            sellerId = storeData.shop_detail[0].seller_id?:0,
             ratings,
             pageNo
         )
@@ -229,6 +229,7 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
                 pageNo = 0
                 mainViewModel.getStoreReviews(sellerId = sellerId, ratings, pageNo)
             }
+
         }
     }
 

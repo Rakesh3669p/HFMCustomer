@@ -78,6 +78,23 @@
             app:layout_constraintTop_toBottomOf="@id/userImage" />
 
         <TextView
+            android:id="@+id/reviewTitle"
+            style="@style/textMediumSemiBold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:ellipsize="none"
+            android:singleLine="false"
+            android:maxLines="4"
+            android:lineSpacingExtra="@dimen/_4sdp"
+            android:text="Nice Product"
+            android:paddingVertical="@dimen/_4sdp"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider" />
+
+        <TextView
             android:id="@+id/reviewText"
             style="@style/textMediumSemiBold"
             android:layout_width="0dp"
@@ -87,23 +104,24 @@
             android:singleLine="false"
             android:maxLines="4"
             android:lineSpacingExtra="@dimen/_4sdp"
-            android:paddingBottom="@dimen/_10sdp"
-            android:text="@string/largeText"
+            android:text=""
             android:textColor="@color/textGreyDark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider" />
+            app:layout_constraintTop_toBottomOf="@id/reviewTitle" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/reviewText">
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
+                >
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/reviewMedia"
@@ -111,7 +129,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     tools:itemCount="3"
-                    android:paddingBottom="@dimen/_10sdp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_review_media"
                     app:layout_constraintStart_toStartOf="parent"

@@ -7,6 +7,7 @@ import com.hfm.customer.commonModel.ApplyWalletModel
 import com.hfm.customer.commonModel.CityListModel
 import com.hfm.customer.commonModel.CountryListModel
 import com.hfm.customer.commonModel.HomeMainCategoriesModel
+import com.hfm.customer.commonModel.NotificationViewedModel
 import com.hfm.customer.commonModel.RatingReviewsModel
 import com.hfm.customer.commonModel.StateListModel
 import com.hfm.customer.commonModel.SuccessModel
@@ -182,6 +183,18 @@ interface HFMCustomerAPI {
         @Body jsonObject: JsonObject
     ): Response<VoucherListModel>
 
+
+
+    @POST("customer/seller-claimed-coupon-list")
+    suspend fun getClaimedVouchers(
+        @Body jsonObject: JsonObject
+    ): Response<VoucherListModel>
+
+    @POST("customer/claim-coupon")
+    suspend fun claimStoreVoucher(
+        @Body jsonObject: JsonObject
+    ): Response<SuccessModel>
+
     @POST("customer/coupon/platform")
     suspend fun applyPlatFormVouchers(
         @Body jsonObject: JsonObject
@@ -246,6 +259,9 @@ interface HFMCustomerAPI {
     @POST("customer/remove/address")
     suspend fun deleteAddress(@Body jsonObject: JsonObject): Response<SuccessModel>
 
+    @POST("customer/delete")
+    suspend fun deleteAccount(@Body jsonObject: JsonObject): Response<SuccessModel>
+
     @POST("customer/default/address")
     suspend fun defaultAddress(@Body jsonObject: JsonObject): Response<SuccessModel>
 
@@ -274,7 +290,7 @@ interface HFMCustomerAPI {
     suspend fun getNotifications(@Body jsonObject: JsonObject): Response<NotificationModel>
 
     @POST("customer/notification/update")
-    suspend fun notificationViewed(@Body jsonObject: JsonObject): Response<SuccessModel>
+    suspend fun notificationViewed(@Body jsonObject: JsonObject): Response<NotificationViewedModel>
 
     @POST("customer/shipping-availability")
     suspend fun checkAvailability(@Body jsonObject: JsonObject): Response<SuccessModel>

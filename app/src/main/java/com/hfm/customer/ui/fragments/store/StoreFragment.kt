@@ -7,27 +7,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
-import coil.load
 import com.google.android.material.tabs.TabLayout
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentStoreBinding
 import com.hfm.customer.ui.fragments.store.adapter.StorePagerAdapter
 import com.hfm.customer.ui.fragments.store.model.StoreData
-import com.hfm.customer.ui.fragments.store.model.StoreProductData
 import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.PromotionBanner
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
+import com.hfm.customer.utils.clearSearch
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.netWorkFailure
@@ -47,6 +46,7 @@ class StoreFragment : Fragment(), View.OnClickListener {
         var subCatId = ""
     }
 
+    private var typeSearched: Boolean = false
     private lateinit var viewPagerAdapter: StorePagerAdapter
 
     private lateinit var storeData: StoreData
@@ -77,6 +77,12 @@ class StoreFragment : Fragment(), View.OnClickListener {
         return currentView!!
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE and WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setObserver()
@@ -88,16 +94,15 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
     private fun setSearchView() {
 
+
         binding.search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchValue = binding.search.text.toString().lowercase()
                 if (this::viewPagerAdapter.isInitialized) {
-
                     mainViewModel.getStoreProducts(
                         storeId.toDouble().roundToInt(),
                         searchValue,
-                        categoryIdStore,
-                        ""
+                        categoryIdStore
                     )
                 }
 
@@ -107,9 +112,27 @@ class StoreFragment : Fragment(), View.OnClickListener {
         }
         binding.search.doOnTextChanged { text, _, _, _ ->
             binding.clearSearch.isVisible = !text.isNullOrEmpty()
+            searchValue = binding.search.text.toString().lowercase()
+            if (text.toString().length > 2) {
+                mainViewModel.getStoreProducts(
+                    storeId.toDouble().roundToInt(),
+                    searchValue,
+                    categoryIdStore
+                )
+                typeSearched = true
+            } else if (text.isNullOrEmpty()) {
+
+                mainViewModel.getStoreProducts(
+                    storeId.toDouble().roundToInt(),
+                    searchValue,
+                    categoryIdStore
+                )
+            }
+
         }
 
     }
+
 
     private fun init() {
         binding.storeDataGroup.isVisible = false
@@ -118,6 +141,11 @@ class StoreFragment : Fragment(), View.OnClickListener {
         mainViewModel.getProfile()
     }
 
+
+    private fun clearSearchValue() {
+        searchValue = ""
+        binding.search.setText("")
+    }
 
     private fun setTabLayoutAndViewPager(data: StoreData) {
         binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Home"))
@@ -163,6 +191,11 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
 
     private fun setObserver() {
+
+        clearSearch.observe(viewLifecycleOwner) {
+            if (it) clearSearchValue()
+        }
+
         mainViewModel.storeDetails.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -187,20 +220,20 @@ class StoreFragment : Fragment(), View.OnClickListener {
         mainViewModel.storeProducts.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
+//                    appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
                         storeData.product = response.data.data.product
-                        val productListFragment =
-                            viewPagerAdapter.getFragment(1) as? StoreProductListFragment
+                        val productListFragment = viewPagerAdapter.getFragment(1) as? StoreProductListFragment
                         productListFragment?.updateData(storeData)
                         binding.storeVp.currentItem = 1
-//                        setProducts(response.data.data)
+
+
                     } else {
                         showToast(response.data?.status.toString())
                     }
                 }
 
-                is Resource.Loading -> appLoader.show()
+                is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
         }
@@ -279,8 +312,7 @@ class StoreFragment : Fragment(), View.OnClickListener {
                             mainViewModel.getStoreProducts(
                                 storeId.toDouble().roundToInt(),
                                 shopDetail.promotion_category,
-                                shopDetail.promotion_sub_category,
-                                searchValue
+                                shopDetail.promotion_sub_category
                             )
                         }
 
@@ -288,7 +320,7 @@ class StoreFragment : Fragment(), View.OnClickListener {
 
                     if (!shopDetail.promotion_image.isNullOrEmpty() && shopDetail.promo_visibility == 1) {
                         promotionBanner.show()
-                        mainViewModel.bannerActivity(sellerId = shopDetail.seller_id,"seller")
+                        mainViewModel.bannerActivity(sellerId = shopDetail.seller_id?:0, "seller")
                     }
 
                     storeName.text = shopDetail.store_name
@@ -298,7 +330,7 @@ class StoreFragment : Fragment(), View.OnClickListener {
                         formatToTwoDecimalPlaces(
                             shopDetail.postive_review.toString().toDouble()
                         )
-                    } % Positive | ${shopDetail.followers} followers"
+                    }% Positive | ${shopDetail.followers} followers"
 
                     storeFollowers.text = followersAndChat
                     follow.text = if (shopDetail.is_following == 0) "Follow" else "Following"
@@ -371,10 +403,10 @@ class StoreFragment : Fragment(), View.OnClickListener {
                 mainViewModel.getStoreProducts(
                     storeId.toDouble().roundToInt(),
                     "",
-                    categoryIdStore,
-                    ""
+                    categoryIdStore
                 )
             }
+
             binding.follow.id -> followStore()
             binding.chat.id -> {
 

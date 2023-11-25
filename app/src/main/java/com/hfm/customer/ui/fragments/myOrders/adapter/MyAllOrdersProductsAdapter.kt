@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.myOrders.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,9 +8,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.transform.CircleCropTransformation
-import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemMyProductBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
@@ -18,7 +16,7 @@ import com.hfm.customer.utils.replaceBaseUrl
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-
+@SuppressLint("SetTextI18n")
 class MyAllOrdersProductsAdapter @Inject constructor() : RecyclerView.Adapter<MyAllOrdersProductsAdapter.ViewHolder>() {
 
     private lateinit var context: Context
@@ -26,13 +24,19 @@ class MyAllOrdersProductsAdapter @Inject constructor() : RecyclerView.Adapter<My
     private var isDeliveredOrder = false
     inner class ViewHolder(private val bind: ItemMyProductBinding) :
         RecyclerView.ViewHolder(bind.root) {
+
         fun bind(data: Product) {
             with(bind) {
                 if(data.product_image?.isNotEmpty() == true){
                     productImage.loadImage(replaceBaseUrl(data.product_image[0].image))
                 }
                 productName.text = data.product_name
-                productQty.text = "Quantity: ${data.quantity.toString().toDouble().roundToInt()}"
+                if(data.variants_list.isNullOrEmpty()){
+                    productQty.text = "Qty: ${data.quantity.toString().toDouble().roundToInt()}"
+                }else{
+                    productQty.text = "Qty: ${data.quantity.toString().toDouble().roundToInt()}"
+                }
+
                 amount.isVisible = from == "orderDetails"
                 if(data.sale_price!=null){
                     amount.text = "RM ${formatToTwoDecimalPlaces(data.sale_price.toString().toDouble() * data.quantity.toString().toDouble().roundToInt())}"
@@ -40,8 +44,7 @@ class MyAllOrdersProductsAdapter @Inject constructor() : RecyclerView.Adapter<My
                     amount.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble()* data.quantity.toString().toDouble().roundToInt())}"
                 }
 
-                rateProduct.isVisible = data.review_submitted == 0
-                rateProduct.isVisible = isDeliveredOrder
+                rateProduct.isVisible = data.review_submitted == 0 && isDeliveredOrder
                 rateProduct.setOnClickListener {
                     onRateProductClick?.invoke(data.product_id.toString())
                 }

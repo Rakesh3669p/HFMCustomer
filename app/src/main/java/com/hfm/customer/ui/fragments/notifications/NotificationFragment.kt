@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentNotificationsBinding
+import com.hfm.customer.ui.dashBoard.DashBoardActivity
 import com.hfm.customer.ui.fragments.notifications.adapter.NotificationAdapter
 import com.hfm.customer.ui.fragments.notifications.model.Notification
 import com.hfm.customer.ui.fragments.notifications.model.NotificationData
@@ -19,6 +20,7 @@ import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.netWorkFailure
+import com.hfm.customer.utils.notificationCount
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,10 +51,14 @@ class NotificationFragment : Fragment(), View.OnClickListener {
             currentView = inflater.inflate(R.layout.fragment_notifications, container, false)
             binding = FragmentNotificationsBinding.bind(currentView!!)
             init()
-            setObserver()
             setOnClickListener()
         }
         return currentView!!
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObserver()
     }
 
 
@@ -81,6 +87,20 @@ class NotificationFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setObserver() {
+        mainViewModel.notificationViewed.observe(viewLifecycleOwner){response->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (response.data?.httpcode == 200) {
+                        notificationCount.postValue(notificationCount.value?.minus(1) ?: 0)
+                    }
+                }
+
+                is Resource.Loading -> if (pageNo == 0) appLoader.show()
+                is Resource.Error -> apiError(response.message)
+            }
+
+        }
         mainViewModel.notifications.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -180,12 +200,9 @@ class NotificationFragment : Fragment(), View.OnClickListener {
 
 
                 "support" -> {
-                    /* val bundle = Bundle()
-                     bundle.putString("from", "bulkOrder")
-                     bundle.putString("orderId", notification.ref_id.toString())
- //                  bundle.putString("saleId", bulkOrders[position].sale_id ?: "")
-                     findNavController().popBackStack()
-                     findNavController().navigate(R.id.bulkOrderDetailsFragment, bundle)*/
+                    val bundle = Bundle()
+                    bundle.putInt("supportId",notification.ref_id)
+                    findNavController().navigate(R.id.supportChatFragment,bundle)
                     mainViewModel.viewedNotification(notificationId = notification.id)
 
                 }

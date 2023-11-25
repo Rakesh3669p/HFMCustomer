@@ -425,7 +425,7 @@
                         android:layout_height="@dimen/_1sdp"
                         android:layout_marginTop="@dimen/_8sdp"
                         android:background="@color/grey_lite"
-                        app:layout_constraintTop_toBottomOf="@id/paymentMethod" />
+                        app:layout_constraintTop_toBottomOf="@id/paymentStatus" />
 
                     <TextView
                         android:id="@+id/cancelledLbl"
@@ -447,6 +447,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:singleLine="false"
                         android:text=""
+
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -538,7 +539,7 @@
 
                 android:id="@+id/paymentReceiptCv"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_150sdp"
+                android:layout_height="@dimen/_160sdp"
                 android:layout_marginHorizontal="@dimen/_8sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 app:cardBackgroundColor="@color/white"
@@ -592,14 +593,32 @@
 
                     <androidx.constraintlayout.utils.widget.ImageFilterView
                         android:id="@+id/uploadedImage"
-                        android:layout_width="@dimen/_150sdp"
+                        android:layout_width="@dimen/_160sdp"
                         android:layout_height="0dp"
                         android:layout_marginTop="@dimen/_3sdp"
                         android:visibility="gone"
+                        android:padding="@dimen/_4sdp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@id/uploadPaymentMethodLbl"
                         app:layout_constraintStart_toStartOf="@id/uploadPaymentMethodLbl"
                         app:layout_constraintTop_toBottomOf="@id/uploadPaymentMethodLbl" />
+
+                    <androidx.constraintlayout.utils.widget.ImageFilterView
+                        android:id="@+id/removeUploadedImage"
+                        android:layout_width="@dimen/_18sdp"
+                        android:layout_height="@dimen/_18sdp"
+                        android:layout_marginBottom="@dimen/_15sdp"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_close"
+                        android:background="@color/red"
+                        app:roundPercent="1"
+                        app:layout_constraintBottom_toBottomOf="@id/uploadedImage"
+                        app:layout_constraintTop_toTopOf="@+id/uploadedImage"
+                        app:layout_constraintVertical_bias="0"
+
+                        app:layout_constraintEnd_toEndOf="@id/uploadedImage"
+
+                         />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

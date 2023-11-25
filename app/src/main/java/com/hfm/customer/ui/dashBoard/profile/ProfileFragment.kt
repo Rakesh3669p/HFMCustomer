@@ -71,10 +71,15 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             currentView = inflater.inflate(R.layout.fragment_profile, container, false)
             binding = FragmentProfileBinding.bind(currentView!!)
             init()
-            setObserver()
+
             setOnClickListener()
         }
         return currentView!!
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObserver()
     }
 
 
@@ -118,6 +123,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             when(response){
                 is Resource.Success->{
                     appLoader.dismiss()
+
                     if(response.data?.httpcode==200){
                         sessionManager.token = ""
                         cartCount.postValue(0)
@@ -125,6 +131,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                         startActivity(Intent(requireContext(), LoginActivity::class.java))
                         requireActivity().finish()
                     }else{
+
                         showToast(response.data?.message.toString())
                     }
                 }

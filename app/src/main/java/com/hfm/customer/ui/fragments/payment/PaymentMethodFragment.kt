@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.payment
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -31,7 +32,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+@SuppressLint("SetTextI18n")
 @AndroidEntryPoint
 class PaymentMethodFragment : Fragment(), View.OnClickListener {
 
@@ -47,7 +48,8 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
 
-    @Inject lateinit var paymentMethodsAdapter: PaymentMethodsAdapter
+    @Inject
+    lateinit var paymentMethodsAdapter: PaymentMethodsAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -74,22 +76,22 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
         mainViewModel.getCheckoutInfo()
         val jsonStr = arguments?.getString("payLoad")
         receivedJsonObject = JsonParser().parse(jsonStr).asJsonObject
-
     }
 
 
     private fun setObserver() {
 
-        mainViewModel.checkOutInfo.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.checkOutInfo.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode == 200){
+                    if (response.data?.httpcode == 200) {
                         setPaymentMethods(response.data.data.payment_methods)
                     }
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message.toString())
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message.toString())
             }
         }
 
@@ -101,10 +103,10 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
                         cartCount.postValue(response.data.data.cart_count)
                         if (isOnline) {
                             val bundle = Bundle()
-                            bundle.putString("orderId",response.data.data.order_id)
-                            bundle.putString("amount",response.data.data.amount)
-                            bundle.putString("paymentUrl",response.data.data.payment_url)
-                            findNavController().navigate(R.id.IPay88Fragment,bundle)
+                            bundle.putString("orderId", response.data.data.order_id)
+                            bundle.putString("amount", response.data.data.amount)
+                            bundle.putString("paymentUrl", response.data.data.payment_url)
+                            findNavController().navigate(R.id.action_paymentMethodFragment_to_IPay88, bundle)
                         } else {
                             showSuccessDialog(response.data.data.order_id)
                         }
@@ -121,8 +123,8 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
         }
     }
 
-        private fun setPaymentMethods(paymentMethods: List<PaymentMethod>) {
-        initRecyclerView(requireContext(),binding.paymentMethodsRv,paymentMethodsAdapter)
+    private fun setPaymentMethods(paymentMethods: List<PaymentMethod>) {
+        initRecyclerView(requireContext(), binding.paymentMethodsRv, paymentMethodsAdapter)
         paymentMethodsAdapter.differ.submitList(paymentMethods)
     }
 
@@ -133,6 +135,7 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
             noInternetDialog.show()
         }
     }
+
 
     private fun showSuccessDialog(orderId: String) {
         val appCompatDialog = Dialog(requireContext())
@@ -149,7 +152,7 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
         appCompatDialog.show()
         lifecycleScope.launch {
             delay(3000)
-            if(appCompatDialog.isShowing){
+            if (appCompatDialog.isShowing) {
                 appCompatDialog.dismiss()
                 findNavController().navigate(R.id.action_paymentMethodFragment_to_myOrdersFragment)
             }
@@ -158,12 +161,8 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
 
 
     private fun checkPaymentMethods() {
-        if(paymentMethodId<=0||paymentMethodId==null){
-            showToast("Please select any payment method to proceed.")
-        }else{
-
-            mainViewModel.placeOrder(receivedJsonObject!!)
-        }
+        if (paymentMethodId <= 0) showToast("Please select any payment method to proceed.")
+        else mainViewModel.placeOrder(receivedJsonObject!!)
     }
 
     private fun setOnClickListener() {
@@ -172,7 +171,7 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
             howToPayLbl.setOnClickListener(this@PaymentMethodFragment)
             back.setOnClickListener(this@PaymentMethodFragment)
         }
-        paymentMethodsAdapter.setOnPaymentMethodSelectedListener {it,isOnline->
+        paymentMethodsAdapter.setOnPaymentMethodSelectedListener { it, isOnline ->
             paymentMethodId = it
             receivedJsonObject!!.addProperty("payment_type", it)
             this.isOnline = isOnline
@@ -182,10 +181,7 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            binding.continueLbl.id -> {
-                checkPaymentMethods()
-            }
-
+            binding.continueLbl.id -> checkPaymentMethods()
             binding.howToPayLbl.id -> findNavController().navigate(R.id.paymentFAQFragment)
             binding.back.id -> findNavController().popBackStack()
 

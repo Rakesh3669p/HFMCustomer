@@ -290,12 +290,26 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:elevation="@dimen/_2sdp"
+                android:layout_marginTop="@dimen/_4sdp"
                 android:singleLine="false"
-                android:text="Items in Combo"
+                android:text="Items in Combo: "
                 android:textColor="@color/textGreyDark"
-                android:visibility=""
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@id/productName"
                 app:layout_constraintTop_toBottomOf="@+id/productListingPrice" />
+            <TextView
+                android:id="@+id/itemsInComboCount"
+                style="@style/textSmallSemiBold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/_2sdp"
+                android:singleLine="false"
+                android:text="2"
+                android:textColor="@color/red"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@id/itemsInComboLbl"
+                app:layout_constraintTop_toTopOf="@+id/itemsInComboLbl"
+                app:layout_constraintBottom_toBottomOf="@+id/itemsInComboLbl"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/comboRv"
@@ -306,13 +320,13 @@
                 android:elevation="@dimen/_2sdp"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/_12sdp"
-                android:visibility=""
+                android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
                 app:layout_constraintTop_toBottomOf="@+id/itemsInComboLbl"
                 tools:itemCount="2"
-                tools:listitem="@layout/item_product_variants" />
+                tools:listitem="@layout/item_combo" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/productsVariantsRv"
@@ -850,9 +864,28 @@
                         android:background="@color/red"
                         app:layout_constraintStart_toStartOf="@+id/reviewLbl"
                         app:layout_constraintTop_toBottomOf="@+id/reviewLbl" />
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/rateProduct"
+                        style="@style/textMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edt_line_red_box"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:gravity="center"
+                        android:paddingHorizontal="@dimen/_10sdp"
+                        android:paddingVertical="@dimen/_2sdp"
+                        android:text="@string/rate_product_lbl"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/reviewLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/reviewLbl" />
 
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/viewAllReviews"
                         style="@style/textSmall"
                         android:layout_width="0dp"
@@ -1221,7 +1254,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bulkOrder"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/textMediumSemiBold"
             android:layout_width="0dp"
             android:layout_height="@dimen/_40sdp"
             android:layout_marginStart="@dimen/_15sdp"
@@ -1231,7 +1264,7 @@
             android:textAllCaps="false"
             android:text="@string/bulk_order_lbl"
             android:textColor="@color/red"
-            app:backgroundTint="@android:color/transparent"
+            app:backgroundTint="@color/white"
             app:cornerRadius="@dimen/_6sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/addToCartMain"

@@ -32,35 +32,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/back" />
 
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatUsersRv"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        tools:itemCount="0"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_chat_users"
-        app:layout_constraintBottom_toTopOf="@+id/createNewChat"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/back"/>
-
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/createNewChat"
         style="@style/textMediumSemiBold"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
         android:layout_marginHorizontal="@dimen/_12sdp"
-        android:layout_marginBottom="@dimen/_50sdp"
+        android:layout_marginTop="@dimen/_5sdp"
         android:backgroundTint="@color/red"
-        android:textColor="@color/white"
         android:text="@string/start_a_new_chat_lbl"
+        android:textColor="@color/white"
         app:cornerRadius="@dimen/_5sdp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolBarTitle" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatUsersRv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/createNewChat"
+        tools:itemCount="0"
+        tools:listitem="@layout/item_chat_users" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

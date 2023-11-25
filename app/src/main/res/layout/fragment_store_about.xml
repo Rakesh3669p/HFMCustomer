@@ -100,7 +100,7 @@
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Malaysia"
+                android:text="United Arab Emirates"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/storeState"

@@ -23,6 +23,6 @@ data class Notification(
     val bulk_order_sale_id: Int,
     val description: String,
     val ref_link: String,
-    val viewed: Int,
+    var viewed: Int,
     val created_at: String
 )

@@ -103,9 +103,9 @@
 
     <fragment
         android:id="@+id/vouchersFragment"
-        android:name="com.hfm.customer.ui.fragments.vouchers.VouchersFragment"
+        android:name="com.hfm.customer.ui.fragments.vouchers.VouchersPagerFragment"
         android:label="WalletFragment"
-        tools:layout="@layout/fragment_vouchers" />
+        tools:layout="@layout/fragment_voucher_pager" />
     <fragment
         android:id="@+id/supportFragment"
         android:name="com.hfm.customer.ui.fragments.support.SupportFragment"
@@ -141,6 +141,11 @@
             android:id="@+id/action_paymentMethodFragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/cartFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_paymentMethodFragment_to_IPay88"
+            app:destination="@id/IPay88Fragment"
+            app:popUpTo="@id/checkOutFragment"
             app:popUpToInclusive="true" />
     </fragment>
 

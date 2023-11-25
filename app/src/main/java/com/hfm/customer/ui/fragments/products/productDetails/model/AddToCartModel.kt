@@ -5,6 +5,7 @@ data class AddToCartModel (
     val success: String,
     val message: String,
     val status:String,
+    val cart_count:Int,
     val data:AddToCardData,
     val error:List<String>)
 

@@ -1,20 +1,20 @@
 package com.hfm.customer.ui.fragments.checkOut
 
-import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
+import android.net.Uri
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatDialog
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,20 +27,16 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.JsonObject
 import com.hfm.customer.R
-import com.hfm.customer.databinding.BottomSheetStoreVoucherBinding
 import com.hfm.customer.databinding.BottomSheetVoucherBinding
 import com.hfm.customer.databinding.FragmentCheckoutBinding
-import com.hfm.customer.databinding.TermsAndConditionsPopUpBinding
+import com.hfm.customer.databinding.InternationalTermsAndConditionsPopUpBinding
 import com.hfm.customer.ui.fragments.address.model.Address
 import com.hfm.customer.ui.fragments.cart.adapter.PlatformVoucherAdapter
 import com.hfm.customer.ui.fragments.cart.model.CartData
 import com.hfm.customer.ui.fragments.cart.model.Coupon
 import com.hfm.customer.ui.fragments.checkOut.adapter.CheckOutStoreAdapter
-import com.hfm.customer.ui.fragments.checkOut.model.CheckOutData
 import com.hfm.customer.ui.fragments.checkOut.model.ShippingOption
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.ReviewsAdapter
-import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
-import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModelItem
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
@@ -765,15 +761,26 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
 
     private fun showTermsAndConditions() {
         val appCompatDialog = AppCompatDialog(requireContext())
-        val bindingDialog = TermsAndConditionsPopUpBinding.inflate(layoutInflater)
+        val bindingDialog = InternationalTermsAndConditionsPopUpBinding.inflate(layoutInflater)
         appCompatDialog.setContentView(bindingDialog.root)
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         appCompatDialog.window!!.attributes.width = LinearLayout.LayoutParams.MATCH_PARENT
         appCompatDialog.setCancelable(false)
-        bindingDialog.description.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(goodsTermsAndConditions, Html.FROM_HTML_MODE_COMPACT)
-        } else {
-            Html.fromHtml(goodsTermsAndConditions)
+
+
+        bindingDialog.description.settings.javaScriptEnabled = true
+
+
+        bindingDialog.description.loadDataWithBaseURL(null, goodsTermsAndConditions, "text/html", "UTF-8", null)
+        bindingDialog.description.webViewClient = WebViewClient()
+        bindingDialog.description.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                view!!.context.startActivity(Intent(Intent.ACTION_VIEW, request?.url))
+                return true
+            }
         }
         bindingDialog.decline.isVisible = true
         bindingDialog.accept.isVisible = true
@@ -782,6 +789,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         bindingDialog.close.setOnClickListener {
             appCompatDialog.dismiss()
         }
+
         bindingDialog.decline.setOnClickListener {
             appCompatDialog.dismiss()
         }

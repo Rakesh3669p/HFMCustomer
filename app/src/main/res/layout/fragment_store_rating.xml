@@ -185,6 +185,7 @@
                 android:text="1 stars (1.5k)"
                 app:layout_constraintStart_toEndOf="@id/twoStarSelection"
                 app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </HorizontalScrollView>
 

@@ -7,11 +7,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import com.hfm.customer.R
 import com.hfm.customer.commonModel.Review
 import com.hfm.customer.databinding.ItemReviewCommentsBinding
-import com.hfm.customer.databinding.ItemVoucherBinding
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
@@ -34,13 +31,16 @@ class ReviewsAdapter @Inject constructor() :
                 userName.text= data.customer_name
                 date.text = if(data.date!=null) convertDateFormat(data.date) else convertReviewDateFormat(data.review_date)
                 ratingBar.rating= data.rating.toFloat()
+                reviewTitle.text = data.title
                 reviewText.text = data.comment
+
                 initRecyclerView(context,reviewMedia,mediaAdapter,true)
                 mediaAdapter.differ.submitList(data.image)
+
                 reviewVideo.isVisible = !data.video_link.isNullOrEmpty()
 
                 reviewVideo.setOnClickListener {
-                    onVideoClick?.invoke(data.video_link)
+                    onVideoClick?.invoke(data.video_link.toString())
                 }
 
                 mediaAdapter.setOnItemClickListener {

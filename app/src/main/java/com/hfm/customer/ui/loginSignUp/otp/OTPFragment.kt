@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.loginSignUp.otp
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -47,6 +49,11 @@ class OTPFragment : Fragment(), View.OnClickListener {
 
     private var countdownTimer: CountDownTimer? = null
 
+    override fun onStart() {
+        super.onStart()
+        val imm = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(binding.root, 0)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,6 +81,7 @@ class OTPFragment : Fragment(), View.OnClickListener {
         from = arguments?.getString("from").toString()
         firstName = arguments?.getString("name").toString()
         email = arguments?.getString("email").toString()
+        binding.otpField1.requestFocus()
 
         if (from == business) {
             arguments?.let {

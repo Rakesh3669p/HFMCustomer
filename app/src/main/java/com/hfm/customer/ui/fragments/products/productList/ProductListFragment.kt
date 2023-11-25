@@ -239,7 +239,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             if (data.subcategory_data != null) {
                 if (!data.subcategory_data.subcategory.isNullOrEmpty()) {
                     val subCategories: MutableList<Subcategory> = ArrayList()
-                    val subcategory = Subcategory(id = 0, subcategory_name = "ALL")
+                    val subcategory = Subcategory(id = 0, subcategory_name = "All")
                     subCategories.add(subcategory)
                     subCategories.addAll(data.subcategory_data.subcategory)
                     initRecyclerView(

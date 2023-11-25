@@ -33,7 +33,6 @@ import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.cartCount
-import com.hfm.customer.utils.deductFromWallet
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.moveToLogin
@@ -355,11 +354,11 @@ class CartFragment : Fragment(), View.OnClickListener {
         mainViewModel.updateCartCount.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
+                    appLoader.dismiss()
                     when (response.data?.httpcode) {
                         200 -> {
                             mainViewModel.getCart()
                         }
-
                         401 -> {}
                         else -> {
                             showToast(response.data?.message.toString())
@@ -372,6 +371,7 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
 
 
     private fun setCartData(data: CartData) {
@@ -534,9 +534,6 @@ class CartFragment : Fragment(), View.OnClickListener {
                 mainViewModel.updateCartQty(cartId, qty = qty.toInt())
             }
         }
-
-
-
 
         cartAdapter.setOnShopVoucherClickListener { sellerId ->
             val storeData =
@@ -750,10 +747,14 @@ class CartFragment : Fragment(), View.OnClickListener {
     }
 
     private fun deleteCart() {
-        val cartIds = cartData.seller_product.flatMap { it.seller.products }
+        val cartIds = cartData.seller_product.flatMap { it.seller.products }.filter { it.cart_selected.toString().toDouble()>0 || it.is_out_of_stock>0}
             .map { it.cart_id.toString().toDouble().roundToInt() }
             .joinToString(",")
-        mainViewModel.deleterCartProduct(cartIds)
+        if(cartIds.isEmpty()){
+            showToast("Please select the product")
+        }else {
+            mainViewModel.deleterCartProduct(cartIds)
+        }
     }
 
     private fun selectCart() {

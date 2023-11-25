@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.products.productDetails
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -9,7 +10,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -38,6 +38,7 @@ import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.makeGone
+import com.hfm.customer.utils.makeVisible
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
@@ -46,6 +47,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 import javax.inject.Inject
 
+@SuppressLint("SetTextI18n")
 @UnstableApi
 @AndroidEntryPoint
 class CustomerRatingFragment : Fragment(), View.OnClickListener {
@@ -65,7 +67,8 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
     private var productId = ""
     private var isLoading = false
     private lateinit var dataSourceFactory: DefaultDataSource.Factory
-
+    private var isPurchased = 0
+    private var reviewSubmitted = 0
     private val reviewPlayer: ExoPlayer by lazy {
         ExoPlayer.Builder(requireContext()).build().apply {
             setAudioAttributes(audioAttributes, true)
@@ -82,29 +85,30 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
             currentView = inflater.inflate(R.layout.fragment_customer_rating, container, false)
             binding = FragmentCustomerRatingBinding.bind(currentView!!)
             init()
-            setRecyclerViews()
-            setObserver()
+
             setOnClickListener()
         }
         return currentView!!
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObserver()
+    }
+
     private fun init() {
         appLoader = Loader(requireContext())
+        binding.loader.makeVisible()
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         dataSourceFactory = DefaultDataSource.Factory(requireContext())
         productId = arguments?.getString("productId").toString()
+        isPurchased = arguments?.getInt("purchased")?:0
+        reviewSubmitted = arguments?.getInt("reviewed")?:0
         mainViewModel.getProductReview(productId, 20, pageNo, ratings, media)
-    }
 
-    private fun setRecyclerViews() {
-        with(binding) {
-            initRecyclerView(requireContext(), reviewsRv, reviewsAdapter)
-            reviewsRv.addOnScrollListener(scrollListener)
-        }
+        binding.rateProduct.isVisible = isPurchased==1 && reviewSubmitted ==0
     }
-
 
     private fun setObserver() {
         mainViewModel.productReview.observe(viewLifecycleOwner) { response ->
@@ -112,9 +116,17 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     binding.loader.makeGone()
+
                     if (response.data?.httpcode == 200) {
+                        binding.reviewsRv.isVisible = true
                         binding.noDataFound.root.isVisible = false
+
                         setReviews(response.data.data)
+                    }else if(response.data?.httpcode == 400){
+                        if(pageNo==0) {
+                            binding.reviewsRv.isVisible = false
+                            binding.noReviews.isVisible = true
+                        }
                     } else {
                         if(reviews.isEmpty()) {
                             binding.noDataFound.root.isVisible = true
@@ -124,18 +136,24 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
                     }
                 }
 
-                is Resource.Loading -> appLoader.show()
+                is Resource.Loading -> if(pageNo==0) appLoader.show()
                 is Resource.Error -> apiError(response.message)
             }
         }
     }
 
     private fun setReviews(data: RatingReviewsData) {
+        isLoading = data.review.isEmpty()
         if (pageNo == 0) {
+            binding.reviewsRv.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                adapter = reviewsAdapter
+            }
+            binding.reviewsRv.addOnScrollListener(scrollListener)
             binding.noReviews.isVisible = data.review.isEmpty()
             reviews.clear()
         }
-        isLoading = data.review.isEmpty()
+
         reviews.addAll(data.review)
         reviewsAdapter.differ.submitList(reviews)
 
@@ -149,6 +167,7 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
             threeStarSelection.text = "3 Stars (${data.rate_range.ThreeStars})"
             twoStarSelection.text = "2 Stars (${data.rate_range.TwoStars})"
             oneStarSelection.text = "1 Stars (${data.rate_range.OneStar})"
+            mediaSelection.text = "Media (${data.rate_range.Media})"
 
 
             fiveStarCount.text = "${data.rate_range.FiveStars}"
@@ -165,10 +184,7 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
                 ((data.rate_range.ThreeStars.toDouble() / data.rate_range.All.toDouble()) * 100).toFloat()
             fourStarSlider.value =
                 ((data.rate_range.FourStars.toDouble() / data.rate_range.All.toDouble()) * 100).toFloat()
-            fiveStarSlider.value =
-                ((data.rate_range.FiveStars.toDouble() / data.rate_range.All.toDouble()) * 100).toFloat()
-
-
+            fiveStarSlider.value = ((data.rate_range.FiveStars.toDouble() / data.rate_range.All.toDouble()) * 100).toFloat()
         }
     }
 
@@ -204,6 +220,7 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
             twoStarSelection.setOnClickListener(this@CustomerRatingFragment)
             oneStarSelection.setOnClickListener(this@CustomerRatingFragment)
             all.setOnClickListener(this@CustomerRatingFragment)
+            mediaSelection.setOnClickListener(this@CustomerRatingFragment)
             rateProduct.setOnClickListener(this@CustomerRatingFragment)
             back.setOnClickListener(this@CustomerRatingFragment)
         }
@@ -323,8 +340,7 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setSelection(selectedView: TextView) {
-        val grey =
-            ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.grey_lite))
+        val grey = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.grey_lite))
         val red = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.red))
         val white = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white))
         val black = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.black))
@@ -336,6 +352,7 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
             twoStarSelection.backgroundTintList = grey
             oneStarSelection.backgroundTintList = grey
             all.backgroundTintList = grey
+            mediaSelection.backgroundTintList = grey
 
             fiveStarSelection.setTextColor(black)
             fourStarSelection.setTextColor(black)
@@ -343,64 +360,43 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
             twoStarSelection.setTextColor(black)
             oneStarSelection.setTextColor(black)
             all.setTextColor(black)
+            mediaSelection.setTextColor(black)
+
         }
         selectedView.backgroundTintList = red
         selectedView.setTextColor(white)
     }
 
+    private fun handleRatingSelection(selectedRating: String,view:TextView) {
+        setSelection(view)
+        ratings = selectedRating
+        pageNo = 0
+        mainViewModel.getProductReview(productId, 20, pageNo, ratings, media)
+    }
+
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
-            binding.fiveStarSelection.id -> {
-                setSelection(binding.fiveStarSelection)
-                ratings = "5"
-                pageNo = 0
-                mainViewModel.getProductReview(productId, 20, pageNo, ratings, media)
-
-            }
-
-            binding.fourStarSelection.id -> {
-                setSelection(binding.fourStarSelection)
-
-                ratings = "4"
-                pageNo = 0
-                mainViewModel.getProductReview(productId, 20, pageNo, ratings, media)
-
-            }
-
-            binding.threeStarSelection.id -> {
-                setSelection(binding.threeStarSelection)
-
-                ratings = "3"
-                pageNo = 0
-                mainViewModel.getProductReview(productId, 20, pageNo, ratings, media)
-
-            }
-
-            binding.twoStarSelection.id -> {
-                setSelection(binding.twoStarSelection)
-
-                ratings = "2"
-                pageNo = 0
-                mainViewModel.getProductReview(productId, 20, pageNo, ratings, media)
-
-            }
-
-            binding.oneStarSelection.id -> {
-                setSelection(binding.oneStarSelection)
-                ratings = "1"
-                pageNo = 0
-                mainViewModel.getProductReview(productId, 20, pageNo, ratings, media)
-
-            }
+            binding.fiveStarSelection.id -> handleRatingSelection("5",binding.fiveStarSelection)
+            binding.fourStarSelection.id -> handleRatingSelection("4",binding.fourStarSelection)
+            binding.threeStarSelection.id -> handleRatingSelection("3",binding.threeStarSelection)
+            binding.twoStarSelection.id -> handleRatingSelection("2",binding.twoStarSelection)
+            binding.oneStarSelection.id -> handleRatingSelection("1",binding.oneStarSelection)
 
             binding.all.id -> {
                 setSelection(binding.all)
-
                 ratings = ""
                 pageNo = 0
                 mainViewModel.getProductReview(productId, 20, pageNo, ratings, media)
 
+            }
+            binding.mediaSelection.id -> {
+                setSelection(binding.mediaSelection)
+                media = "1"
+                ratings = ""
+                pageNo = 0
+                mainViewModel.getProductReview(productId, 20, pageNo, ratings, media)
+                media = ""
             }
 
             binding.rateProduct.id -> {
