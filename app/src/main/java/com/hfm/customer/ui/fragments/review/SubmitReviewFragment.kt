@@ -1,6 +1,7 @@
 package com.hfm.customer.ui.fragments.review
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -8,9 +9,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,7 +24,9 @@ import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
 import com.hfm.customer.databinding.DialogueMediaPickupBinding
+import com.hfm.customer.databinding.DialogueReviewSubmittedBinding
 import com.hfm.customer.databinding.FragmentSubmitReviewBinding
+import com.hfm.customer.databinding.InternationalTermsAndConditionsPopUpBinding
 import com.hfm.customer.ui.fragments.review.adapter.ReviewsMediaAdapter
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
@@ -61,6 +69,9 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
     lateinit var reviewsMediaAdapter: ReviewsMediaAdapter
 
     private var productId = ""
+    private var orderId = ""
+    private var saleIdId = ""
+    private var from = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -80,7 +91,10 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { noInternetDialog.dismiss() }
-        productId = arguments?.getString("productId").toString()
+        from = arguments?.getString("from").toString()
+        productId = arguments?.getString(   "productId").toString()
+        orderId = arguments?.getString("orderId").toString()
+        saleIdId = arguments?.getString("saleId").toString()
         initRecyclerView(requireContext(), binding.mediaRv, reviewsMediaAdapter, true)
     }
 
@@ -91,8 +105,8 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     imageFiles.forEach { it?.delete() }
                     if (response.data?.httpcode == 200) {
-                        showToast("Your review has been submitted and is pending for approval")
-                        findNavController().popBackStack()
+                        showSuccessDialog()
+//                        showToast("Your review has been submitted and is pending for approval")
                     }else{
                         showToast(response.data?.message.toString())
                     }
@@ -101,6 +115,43 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
                 is Resource.Loading -> appLoader.show()
                 is Resource.Error -> apiError(response.message)
             }
+        }
+    }
+
+    private fun showSuccessDialog() {
+        val appCompatDialog = AppCompatDialog(requireContext())
+        val bindingDialog = DialogueReviewSubmittedBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.window!!.attributes.width = 500
+        appCompatDialog.setCancelable(false)
+        appCompatDialog.show()
+        bindingDialog.ok.setOnClickListener {
+            val bundle = Bundle()
+            when(from){
+                "ratingDetails"->{
+                    bundle.putString("productId",productId)
+                    bundle.putInt("purchased",1)
+                    bundle.putInt("reviewed",1)
+                    findNavController().navigate(R.id.action_submitReview_to_review,bundle)
+                }
+                "productDetails"->{
+                    bundle.putString("productId",productId)
+                    bundle.putInt("purchased",1)
+                    bundle.putInt("reviewed",1)
+                    findNavController().navigate(R.id.action_submitReview_to_productDetails,bundle)
+                }
+                "orderDetails"->{
+                    bundle.putString("orderId",orderId)
+                    bundle.putString("saleId",saleIdId)
+                    findNavController().navigate(R.id.action_submitReview_to_orders,bundle)
+                }
+                else->{
+                    findNavController().popBackStack()
+                }
+            }
+            appCompatDialog.dismiss()
+
         }
     }
 
@@ -221,7 +272,10 @@ class SubmitReviewFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
-            binding.submitReview.id -> validateAndSubmit()
+
+            binding.submitReview.id ->validateAndSubmit()
+
+
             binding.uploadImage.id -> showImagePickupDialog()
             binding.uploadImageVideosLbl.id -> showImagePickupDialog()
             binding.uploadImageBg.id -> showImagePickupDialog()

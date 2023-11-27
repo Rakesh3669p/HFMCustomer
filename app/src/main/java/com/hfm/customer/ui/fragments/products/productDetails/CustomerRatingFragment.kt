@@ -158,6 +158,7 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
         reviewsAdapter.differ.submitList(reviews)
 
         with(binding) {
+            reviewLbl.text = "Customer Reviews (${data.total_review})"
             reviewRatingBar.rating = data.avg_rating.toFloat()
             reviewRatingCount.text = data.avg_rating.toString()
             reviewRatingDetails.text = "${data.total_review} Reviews"
@@ -401,6 +402,7 @@ class CustomerRatingFragment : Fragment(), View.OnClickListener {
 
             binding.rateProduct.id -> {
                 val bundle = Bundle()
+                bundle.putString("from", "ratingDetails")
                 bundle.putString("productId", productId)
                 findNavController().navigate(R.id.submitReviewFragment, bundle)
             }

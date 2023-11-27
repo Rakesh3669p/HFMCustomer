@@ -43,9 +43,9 @@ class ProductListAdapter @Inject constructor() :
                     val actualPrice = data.variants_list[0].actual_price ?: 0.0
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(if (offerPrice != null && offerPrice != 0.0) offerPrice else actualPrice)}"
                 } else if (data.offer_price != null && data.offer_price.toString().isNotEmpty()) {
-                    val offerPrice = data.offer_price.toString().toDouble()
+                    val offerPrice = data.offer_price.toString().toDoubleOrNull()
                     val actualPrice = data.actual_price ?: 0.0
-                    productPrice.text = "RM ${formatToTwoDecimalPlaces(if (offerPrice > 0) offerPrice else actualPrice)}"
+                    productPrice.text = "RM ${formatToTwoDecimalPlaces(if (offerPrice != null && offerPrice != 0.0) offerPrice else actualPrice)}"
                 } else if (data.shock_sale_price != null && data.shock_sale_price.toString().isNotEmpty()) {
                     val offerPrice = data.shock_sale_price.toString().toDouble()
                     val actualPrice = data.actual_price ?: 0.0

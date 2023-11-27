@@ -28,11 +28,11 @@ data class Review(
     val title: String
 )*/
 data class RatingFilter(
-    @SerializedName("1 Star") val oneStar: Int,
-    @SerializedName("2 Stars") val twoStar: Int,
-    @SerializedName("3 Stars") val threeStar: Int,
-    @SerializedName("4 Stars") val fourStar: Int,
-    @SerializedName("5 Stars") val fiveStar: Int,
+    val OneStar: Int,
+    val TwoStars: Int,
+    val ThreeStars: Int,
+    val FourStars: Int,
+    val FiveStars: Int,
     val All: Int,
     val Media: Int
 )

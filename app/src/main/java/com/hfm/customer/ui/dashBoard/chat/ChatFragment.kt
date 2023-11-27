@@ -135,8 +135,13 @@ class ChatFragment : Fragment(), View.OnClickListener {
             amount.isVisible = !orderAmount.isNullOrEmpty()
 
             orderId.text = "Order #: $orderIdData"
-            orderDate.text = orderDateTime.toChatFormattedDate()
-            amount.text = "RM $orderAmount ($qty Items)"
+
+            if(orderDate.isVisible) {
+                orderDate.text = orderDateTime.toChatFormattedDate()
+            }
+            if(amount.isVisible) {
+                amount.text = "RM ${formatToTwoDecimalPlaces(orderAmount.toDouble())} ($qty Items)"
+            }
 
         }
 

@@ -59,7 +59,7 @@ class WishlistShopAdapter @Inject constructor(): RecyclerView.Adapter<WishlistSh
         }
 
         override fun areContentsTheSame(oldItem: Favourite, newItem: Favourite): Boolean {
-            return oldItem.hashCode() == newItem.hashCode()
+            return oldItem == newItem
         }
 
     }

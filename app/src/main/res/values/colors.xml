@@ -19,6 +19,7 @@
     <color name="blackTrans300">#56000000</color>
     <color name="blackTrans200">#61000000</color>
     <color name="whiteTrans200">#8DFFFFFF</color>
+    <color name="whiteTrans400">#52FFFFFF</color>
     <color name="blackTrans400">#A8000000</color>
     <color name="trans">#00FFFFFF</color>
     <color name="ripple">#66000000</color>

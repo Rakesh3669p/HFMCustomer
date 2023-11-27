@@ -697,9 +697,8 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("rating", rating)
         jsonObject.addProperty("media_filter", media)
         jsonObject.addProperty("os_type", "app")
-        if (sessionManager.isLogin) {
-            safeGetProductReviewCall(jsonObject)
-        }
+        safeGetProductReviewCall(jsonObject)
+
     }
 
     private suspend fun safeGetProductReviewCall(jsonObject: JsonObject) {
@@ -1595,11 +1594,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getStoreReviews(sellerId: Int, rating: String, pageNo: Int) = viewModelScope.launch {
+    fun getStoreReviews(sellerId: Int, rating: String, pageNo: Int, media: String="") = viewModelScope.launch {
         val jsonObject = JsonObject()
-        jsonObject.addProperty("access_toke", sessionManager.token)
+        jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("seller_id", sellerId)
         jsonObject.addProperty("rating", rating)
+        jsonObject.addProperty("media", media)
         jsonObject.addProperty("limit", 50)
         jsonObject.addProperty("offset", pageNo)
         jsonObject.addProperty("lang_id", "")

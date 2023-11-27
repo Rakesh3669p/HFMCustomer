@@ -24,8 +24,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
 import com.hfm.customer.databinding.DialogueMediaPickupBinding
@@ -55,7 +53,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
@@ -222,7 +219,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                     orderDetails.delivery_partner.lowercase() == "dhl shipping" || orderDetails.delivery_partner.lowercase() == "citylink shipping"
 
                 paymentReceiptCv.isVisible = it.order_status != "delivered"
-                submit.isVisible = binding.paymentReceiptCv.isVisible
+                submit.isVisible = paymentReceiptCv.isVisible
 
                 downLoadInvoice.isVisible = it.order_status == "delivered"
 
@@ -407,7 +404,10 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
 
         productAdapter.setOnRateProductClickListener { productId ->
             val bundle = Bundle()
+            bundle.putString("from", "orderDetails")
             bundle.putString("productId", productId)
+            bundle.putString("orderId",orderDetails.order_id)
+            bundle.putString("saleId",orderDetails.sale_id.toString())
             findNavController().navigate(R.id.submitReviewFragment, bundle)
         }
     }

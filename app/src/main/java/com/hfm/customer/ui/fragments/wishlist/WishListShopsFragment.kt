@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -69,6 +70,7 @@ class WishListShopsFragment : Fragment() {
                     if (response.data?.httpcode == "200") {
                         setFavStores(response.data.data)
                     } else {
+                        binding.noDataLayout.root.isVisible = true
                         showToast(response.data?.message.toString())
                     }
                 }
@@ -92,6 +94,7 @@ class WishListShopsFragment : Fragment() {
     }
 
     private fun setFavStores(data: StoreFavouriteData) {
+        binding.noDataLayout.root.isVisible = data.favourite_list.isEmpty()
         initRecyclerView(requireContext(), binding.productListRv, wishlistShopAdapter)
         wishlistShopAdapter.differ.submitList(data.favourite_list)
     }

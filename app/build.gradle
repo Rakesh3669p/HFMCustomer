@@ -17,16 +17,16 @@ android {
         applicationId "com.hfm.customer"
         minSdk 26
         targetSdk 34
-        versionCode 7
-        versionName "1.0.2"
+        versionCode 8
+        versionName "1.0.3"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         debug {
-//          buildConfigField "String", "BASE_URL", "\"https://admin.halalfoodmaster.com/api/\""
-          buildConfigField "String", "BASE_URL", "\"http://4.194.191.242/QA/admin/api/\""
+          buildConfigField "String", "BASE_URL", "\"https://admin.halalfoodmaster.com/api/\""
+//          buildConfigField "String", "BASE_URL", "\"http://4.194.191.242/QA/admin/api/\""
 //            buildConfigField "String", "BASE_URL", "\"http://4.194.191.242/UAT/admin/api/\""
         }
         release {

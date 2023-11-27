@@ -129,7 +129,7 @@
             android:layout_height="match_parent"
             android:clipToPadding="true"
             android:layout_marginHorizontal="@dimen/_10sdp"
-            android:paddingBottom="@dimen/_70sdp">
+            android:paddingBottom="@dimen/_50sdp">
 
 
             <androidx.recyclerview.widget.RecyclerView

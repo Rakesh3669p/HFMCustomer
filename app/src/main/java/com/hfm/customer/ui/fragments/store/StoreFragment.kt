@@ -154,7 +154,7 @@ class StoreFragment : Fragment(), View.OnClickListener {
         )
         binding.tabLayout.addTab(
             binding.tabLayout.newTab()
-                .setText("Reviews Ratings(${data.shop_detail[0].store_rating})")
+                .setText("Reviews Ratings(${data.shop_detail[0].store_prd_rating})")
         )
         binding.tabLayout.addTab(binding.tabLayout.newTab().setText("About"))
 

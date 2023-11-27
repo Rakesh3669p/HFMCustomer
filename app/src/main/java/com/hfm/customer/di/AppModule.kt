@@ -49,8 +49,8 @@ class AppModule {
         val cache = Cache(context.cacheDir, cacheSize.toLong())
 
         return OkHttpClient.Builder()
-            .connectTimeout(1, TimeUnit.MINUTES)
-            .readTimeout(1, TimeUnit.MINUTES)
+            .connectTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES)
             .connectionPool(ConnectionPool())
             .addInterceptor(logging)
             .cache(cache) // Add cache to OkHttpClient

@@ -758,9 +758,7 @@ class CartFragment : Fragment(), View.OnClickListener {
     }
 
     private fun selectCart() {
-        val cartIds = cartData.seller_product
-            .flatMap { it.seller.products }
-            .joinToString(",") { it.cart_id.toString().toDouble().roundToInt().toString() }
+        val cartIds = cartData.seller_product.flatMap { it.seller.products }.joinToString(",") { it.cart_id.toString().toDouble().roundToInt().toString() }
         val selectAll = if (binding.selectAll.isChecked) 1 else 0
         mainViewModel.selectCart(cartIds, selectAll)
     }

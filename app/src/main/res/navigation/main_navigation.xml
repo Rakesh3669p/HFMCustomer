@@ -314,6 +314,24 @@
         android:id="@+id/submitReviewFragment"
         android:name="com.hfm.customer.ui.fragments.review.SubmitReviewFragment"
         android:label="SubmitReviewFragment"
-        tools:layout="@layout/fragment_submit_review"/>
+        tools:layout="@layout/fragment_submit_review">
+        <action
+            android:id="@+id/action_submitReview_to_orders"
+            app:destination="@id/orderDetailsFragment"
+            app:popUpTo="@id/orderDetailsFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_submitReview_to_productDetails"
+            app:destination="@id/productDetailsFragment"
+            app:popUpTo="@id/productDetailsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_submitReview_to_review"
+            app:destination="@id/customerRatingFragment"
+            app:popUpTo="@id/customerRatingFragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
 
 </navigation>

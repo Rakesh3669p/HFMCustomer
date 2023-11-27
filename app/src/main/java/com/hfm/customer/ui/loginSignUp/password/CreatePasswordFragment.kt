@@ -100,9 +100,11 @@ class CreatePasswordFragment : Fragment(), View.OnClickListener {
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
-                    showToast("Registered Successfully")
                     if (response.data?.httpcode == 200) {
+                        showToast("Registered Successfully")
                         findNavController().navigate(R.id.action_createPasswordFragment_to_loginFragment)
+                    }else{
+                        showToast(response.data?.message.toString())
                     }
                 }
 

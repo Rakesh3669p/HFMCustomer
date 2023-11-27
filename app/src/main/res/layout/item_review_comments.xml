@@ -85,7 +85,6 @@
             android:layout_marginHorizontal="@dimen/_5sdp"
             android:ellipsize="none"
             android:singleLine="false"
-            android:maxLines="4"
             android:lineSpacingExtra="@dimen/_4sdp"
             android:text="Nice Product"
             android:paddingVertical="@dimen/_4sdp"

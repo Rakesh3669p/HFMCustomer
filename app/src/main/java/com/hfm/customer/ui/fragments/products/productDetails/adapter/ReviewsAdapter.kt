@@ -32,6 +32,7 @@ class ReviewsAdapter @Inject constructor() :
                 date.text = if(data.date!=null) convertDateFormat(data.date) else convertReviewDateFormat(data.review_date)
                 ratingBar.rating= data.rating.toFloat()
                 reviewTitle.text = data.title
+                reviewTitle.isVisible = !data.title.isNullOrEmpty()
                 reviewText.text = data.comment
 
                 initRecyclerView(context,reviewMedia,mediaAdapter,true)
@@ -53,11 +54,11 @@ class ReviewsAdapter @Inject constructor() :
 
       private val diffUtil = object : DiffUtil.ItemCallback<Review>(){
           override fun areItemsTheSame(oldItem: Review, newItem: Review): Boolean {
-              return oldItem == newItem
+              return oldItem.review_id == newItem.review_id
           }
 
           override fun areContentsTheSame(oldItem: Review, newItem: Review): Boolean {
-              return oldItem == newItem
+              return oldItem.review_id == newItem.review_id
           }
 
       }

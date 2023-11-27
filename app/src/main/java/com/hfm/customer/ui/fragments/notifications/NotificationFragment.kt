@@ -92,7 +92,9 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
-                        notificationCount.postValue(notificationCount.value?.minus(1) ?: 0)
+                        if(response.data.data.unread_count!=null) {
+                            notificationCount.postValue(response.data.data.unread_count)
+                        }
                     }
                 }
 
@@ -203,6 +205,15 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                     val bundle = Bundle()
                     bundle.putInt("supportId",notification.ref_id)
                     findNavController().navigate(R.id.supportChatFragment,bundle)
+                    mainViewModel.viewedNotification(notificationId = notification.id)
+
+                }
+                "new_chat_message" -> {
+                    val bundle = Bundle().apply {
+                        putString("from", "chatList")
+                        putInt("chatId", notification.ref_id)
+                    }
+                    findNavController().navigate(R.id.chatFragment, bundle)
                     mainViewModel.viewedNotification(notificationId = notification.id)
 
                 }

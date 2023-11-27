@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/edt_box"
+    android:padding="@dimen/_10sdp"
+    >
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/textLargeSemiBold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thank You !"
+        android:textColor="@color/red"
+        android:singleLine="false"
+        android:paddingHorizontal="@dimen/_15sdp"
+        android:gravity="center_horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <View
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_lite"
+        android:layout_marginTop="@dimen/_4sdp"
+        app:layout_constraintTop_toBottomOf="@id/title"/>
+
+    <TextView
+        android:id="@+id/desc"
+        style="@style/textMediumSemiBold"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Your review has been submitted and is pending for approval"
+        android:singleLine="false"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/ok"
+        style="@style/textLargeSemiBold"
+        android:layout_width="@dimen/_75sdp"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_marginHorizontal="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:backgroundTint="@color/red"
+        android:textColor="@color/white"
+        android:text="Ok"
+        app:cornerRadius="@dimen/_5sdp"
+        app:layout_constraintTop_toBottomOf="@id/desc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -173,23 +173,13 @@ class StoreHomeFragment(private val storeData: StoreData) : Fragment(), View.OnC
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
-                        binding.storeVouchers.isVisible =
-                            response.data.data.coupon_list.isNotEmpty()
-
+                        binding.noVouchesAvailable.isVisible = response.data.data.coupon_list.isEmpty()
                         sellerVouchers = response.data.data.coupon_list
-                        initRecyclerView(
-                            requireContext(),
-                            binding.vouchersRv,
-                            vouchersAdapter, true
-                        )
+                        binding.noVouchesAvailable.isVisible = response.data.data.coupon_list.isEmpty()
+                        initRecyclerView(requireContext(), binding.vouchersRv, vouchersAdapter, true)
                         vouchersAdapter.differ.submitList(response.data.data.coupon_list)
 
-
-                    } else {
-                        binding.storeVouchers.isVisible = true
                     }
-
-
                 }
 
                 is Resource.Loading -> appLoader.show()

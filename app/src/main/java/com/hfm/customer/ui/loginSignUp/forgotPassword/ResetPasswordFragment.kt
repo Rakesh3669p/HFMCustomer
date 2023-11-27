@@ -39,11 +39,8 @@ class ResetPasswordFragment : Fragment() ,View.OnClickListener {
         return currentView!!
     }
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setObserver()
     }
 
@@ -58,8 +55,18 @@ class ResetPasswordFragment : Fragment() ,View.OnClickListener {
             when(response){
                 is Resource.Success->{
                     appLoader.dismiss()
-                    showToast("Reset password link sent to your register email address!")
-                    findNavController().popBackStack()
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            showToast("Reset password link sent to your register email address!")
+                            findNavController().popBackStack()
+                        }
+                        400 -> {
+                            showToast(response.data.data.message)
+                        }
+                        else -> {
+                            showToast(response.data?.message.toString())
+                        }
+                    }
                 }
 
                 is Resource.Loading->appLoader.show()

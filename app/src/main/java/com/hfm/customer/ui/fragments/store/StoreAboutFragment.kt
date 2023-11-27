@@ -47,10 +47,12 @@ class StoreAboutFragment(private val storeData: StoreData) : Fragment(), View.On
                 storeRating.text = it.store_rating.toString()
                 storeState.text = it.state
                 storeCountry.text = it.country
-                storeDescription.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Html.fromHtml(it.about, Html.FROM_HTML_MODE_COMPACT)
-                } else {
-                    Html.fromHtml(it.about)
+                if(!it.about.isNullOrEmpty()) {
+                    storeDescription.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        Html.fromHtml(it.about, Html.FROM_HTML_MODE_COMPACT)
+                    } else {
+                        Html.fromHtml(it.about)
+                    }
                 }
             }
 

@@ -28,6 +28,12 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="spread" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/storeVouchersLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_100sdp"
+            app:layout_constraintTop_toBottomOf="@id/storeVouchers">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/vouchersRv"
             android:layout_width="match_parent"
@@ -35,9 +41,24 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="horizontal"
             tools:itemCount="2"
-            app:layout_constraintTop_toBottomOf="@id/storeVouchers"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:listitem="@layout/item_voucher"/>
 
+        <TextView
+            android:visibility="gone"
+            style="@style/textMedium"
+            android:id="@+id/noVouchesAvailable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No store vouchers available"
+            android:textColor="@color/textGreyDark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/banner"
@@ -45,7 +66,7 @@
             android:layout_height="@dimen/_140sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/vouchersRv" />
+            app:layout_constraintTop_toBottomOf="@+id/storeVouchersLayout" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/bannerDots"

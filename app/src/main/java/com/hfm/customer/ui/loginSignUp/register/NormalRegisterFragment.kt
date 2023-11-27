@@ -127,7 +127,7 @@ class NormalRegisterFragment : Fragment(), View.OnClickListener {
 
         val email = binding.email.text.toString()
         val name = binding.name.text.toString()
-        if (!name.isValidEmail()) {
+        if (name.isEmpty()) {
             showToast("Please enter a valid name")
             return
         }
@@ -153,17 +153,18 @@ class NormalRegisterFragment : Fragment(), View.OnClickListener {
         appCompatDialog.setCancelable(false)
 
         bindingDialog.description.settings.javaScriptEnabled = true
-        bindingDialog.description.loadDataWithBaseURL(null, termsAndCondition, "text/html", "UTF-8", null)
-        bindingDialog.description.webViewClient = WebViewClient()
+        bindingDialog.description.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
+        bindingDialog.description.isHorizontalScrollBarEnabled = true
+        bindingDialog.description.isVerticalScrollBarEnabled = true
+
         bindingDialog.description.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 view!!.context.startActivity(Intent(Intent.ACTION_VIEW, request?.url))
                 return true
             }
         }
+
+        bindingDialog.description.loadDataWithBaseURL(null, termsAndCondition, "text/html", "UTF-8", null)
 
 
         bindingDialog.decline.isVisible = false

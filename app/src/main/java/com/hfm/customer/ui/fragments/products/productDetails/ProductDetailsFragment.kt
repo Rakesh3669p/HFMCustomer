@@ -607,7 +607,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
 //            reviewCv.isVisible = productData.product.rating.toString().toDouble() > 0
             rateProduct.isVisible= productData.product.rating.toString().toDouble() <= 0 && productData.product.isPurchased == 1 && productData.product.review_submitted==0
-            viewAllReviews.isVisible= !rateProduct.isVisible
+            viewAllReviews.isVisible= !rateProduct.isVisible && productData.product.rating.toString().toDouble() > 0
 
             reviewRatingBar.rating = productData.product.rating.toString().toFloat()
             reviewRatingCount.text = productData.product.rating.toString().toDouble().toString()
@@ -1236,6 +1236,16 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun bulkOrder() {
+        if(!sessionManager.isLogin){
+            showToast("Please login first")
+            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+            requireActivity().finish()
+            return
+        }
+
+        if(!this::profileData.isInitialized){
+            return
+        }
         bulkOrderBottomSheetFragment = BulkOrderBottomSheet(
             profileData,
             productData.product
@@ -1261,8 +1271,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     private fun viewAllReviews() {
         val bundle = Bundle()
         bundle.putString("productId", productData.product.product_id.toString())
-        bundle.putInt("purchased", productData.product.review_submitted)
-        bundle.putInt("reviewed", productData.product.isPurchased)
+        bundle.putInt("purchased", productData.product.isPurchased)
+        bundle.putInt("reviewed", productData.product.review_submitted  )
         findNavController().navigate(R.id.customerRatingFragment, bundle)
     }
 
@@ -1335,7 +1345,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             R.id.internationalLbl -> findNavController().navigate(R.id.supportFragment)
             R.id.rateProduct -> {
                 val bundle = Bundle()
+                bundle.putString("from", "productDetails")
                 bundle.putString("productId", productData.product.product_id.toString())
+
                 findNavController().navigate(R.id.submitReviewFragment, bundle)
             }
         }

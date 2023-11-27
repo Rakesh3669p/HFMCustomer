@@ -19,7 +19,7 @@ data class StoreData(
 
 
 data class ShopDetail(
-    val about: String,
+    val about: String?,
     val address_line1: String,
     val address_line2: Any,
     val banner: String,

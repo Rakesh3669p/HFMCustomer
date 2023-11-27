@@ -42,6 +42,7 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
     private val mainViewModel: MainViewModel by viewModels()
     private var sellerId: Int = 0
     private var ratings = ""
+    private var media = ""
     private var isLoading = false
 
     private var pageNo = 0
@@ -94,7 +95,7 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
                     }
                 }
 
-                is Resource.Loading -> appLoader.show()
+                is Resource.Loading -> if(pageNo==0)appLoader.show()
                 is Resource.Error -> apiError(response.message)
             }
         }
@@ -102,6 +103,7 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
 
     private fun setReviews(data: StoreReviewsData) {
         if (pageNo == 0) {
+            initRecyclerView(requireContext(), binding.reviewsRv, reviewsAdapter)
                 binding.noReviews.isVisible = data.Reviews.isEmpty()
                 reviews.clear()
             }
@@ -114,11 +116,12 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
                 reviewRatingCount.text = data.avg_reviews.toString()
                 reviewRatingDetails.text = "${data.total_reviews} Reviews"
                 all.text = "All"
-                fiveStarSelection.text = "5 Stars (${data.rating_filter.fiveStar})"
-                fourStarSelection.text = "4 Stars (${data.rating_filter.fourStar})"
-                threeStarSelection.text = "3 Stars (${data.rating_filter.threeStar})"
-                twoStarSelection.text = "2 Stars (${data.rating_filter.twoStar})"
-                oneStarSelection.text = "1 Stars (${data.rating_filter.oneStar})"
+                fiveStarSelection.text = "5 Stars (${data.rating_filter.FiveStars})"
+                fourStarSelection.text = "4 Stars (${data.rating_filter.FourStars})"
+                threeStarSelection.text = "3 Stars (${data.rating_filter.ThreeStars})"
+                twoStarSelection.text = "2 Stars (${data.rating_filter.TwoStars})"
+                oneStarSelection.text = "1 Stars (${data.rating_filter.OneStar})"
+                mediaSelection.text = "Media (${data.rating_filter.Media})"
             }
     }
 
@@ -153,6 +156,7 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
             twoStarSelection.setOnClickListener(this@StoreRatingFragment)
             oneStarSelection.setOnClickListener(this@StoreRatingFragment)
             all.setOnClickListener(this@StoreRatingFragment)
+            mediaSelection.setOnClickListener(this@StoreRatingFragment)
         }
     }
 
@@ -170,6 +174,7 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
             twoStarSelection.backgroundTintList = grey
             oneStarSelection.backgroundTintList = grey
             all.backgroundTintList = grey
+            mediaSelection.backgroundTintList = grey
 
             fiveStarSelection.setTextColor(black)
             fourStarSelection.setTextColor(black)
@@ -177,6 +182,7 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
             twoStarSelection.setTextColor(black)
             oneStarSelection.setTextColor(black)
             all.setTextColor(black)
+            mediaSelection.setTextColor(black)
         }
         selectedView.backgroundTintList = red
         selectedView.setTextColor(white)
@@ -228,6 +234,14 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
                 ratings = ""
                 pageNo = 0
                 mainViewModel.getStoreReviews(sellerId = sellerId, ratings, pageNo)
+            }
+
+            binding.mediaSelection.id -> {
+                setSelection(binding.mediaSelection)
+                ratings = ""
+                pageNo = 0
+                mainViewModel.getStoreReviews(sellerId = sellerId, ratings, pageNo,"1")
+
             }
 
         }

@@ -31,8 +31,8 @@ class MyAllOrdersProductsAdapter @Inject constructor() : RecyclerView.Adapter<My
                     productImage.loadImage(replaceBaseUrl(data.product_image[0].image))
                 }
                 productName.text = data.product_name
-                if(data.variants_list.isNullOrEmpty()){
-                    productQty.text = "Qty: ${data.quantity.toString().toDouble().roundToInt()}"
+                if(data.product_type.lowercase()=="config"){
+                    productQty.text = "${data.attr_name1} | Qty: ${data.quantity.toString().toDouble().roundToInt()}"
                 }else{
                     productQty.text = "Qty: ${data.quantity.toString().toDouble().roundToInt()}"
                 }
