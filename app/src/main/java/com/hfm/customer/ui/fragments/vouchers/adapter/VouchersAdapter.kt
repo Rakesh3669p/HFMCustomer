@@ -56,7 +56,7 @@ class VouchersAdapter @Inject constructor() : RecyclerView.Adapter<VouchersAdapt
                         discountPercent.setTextColor(grey)
                         discountDescription.setTextColor(grey)
                         voucherExpiry.setTextColor(grey)
-                        voucherExpiry.text = "Used on: ${data.validUpto}"
+                        voucherExpiry.text = "Used on: ${data.usedOn}"
                     }
 
                     "expired" -> {

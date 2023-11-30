@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.media3.common.text.TextAnnotation.Position
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -85,5 +86,10 @@ class CategoryMainAdapter @Inject constructor() :
 
     fun setOnMainCategoryClickListener(listener: (id: Int) -> Unit) {
         onMainCategoryClick = listener
+    }
+
+    fun setSelectionPosition(position: Int){
+        selectedPosition = position
+        notifyDataSetChanged()
     }
 }

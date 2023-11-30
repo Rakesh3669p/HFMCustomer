@@ -216,6 +216,7 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
         val confirmPassword = binding.password.text.toString()
         val address = binding.address.text.toString()
         val pinCode = binding.postCode.text.toString()
+        val refCode = binding.referral.text.toString()
 
         if (password.length <= 7) {
             showToast("Min 8 characters required.")
@@ -246,7 +247,7 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
             email,
             password,
             confirmPassword,
-            "",
+            refCode,
             natureOfBusiness,
             companyRegisterNo,
             phoneCode,
@@ -255,7 +256,8 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
             countryId,
             stateId,
             cityId,
-            pinCode
+            pinCode,
+
         )
     }
     private fun apiError(message: String?) {

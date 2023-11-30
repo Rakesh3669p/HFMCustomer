@@ -1,9 +1,6 @@
 package com.hfm.customer.ui.fragments.store
 
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -26,15 +23,16 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentStoreHomeBinding
 import com.hfm.customer.ui.fragments.cart.model.Coupon
-import com.hfm.customer.ui.fragments.products.productDetails.adapter.VouchersAdapter
 import com.hfm.customer.ui.fragments.store.adapter.StoreBannerAdapter
 import com.hfm.customer.ui.fragments.store.adapter.StoreVouchersAdapter
 import com.hfm.customer.ui.fragments.store.model.StoreData
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
+import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.extractYouTubeVideoId
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.moveToLogin
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
@@ -72,6 +70,7 @@ class StoreHomeFragment(private val storeData: StoreData) : Fragment(), View.OnC
     private lateinit var exoPause: ImageView
     private lateinit var exoPlay: ImageView
     private lateinit var exoBuffer: ProgressBar
+    @Inject lateinit var sessionManager: SessionManager
 
     private val videoPlayer: ExoPlayer by lazy {
         ExoPlayer.Builder(requireContext()).build().apply {
@@ -275,6 +274,11 @@ class StoreHomeFragment(private val storeData: StoreData) : Fragment(), View.OnC
         }
 
         vouchersAdapter.setOnItemClickListener { position ->
+            if(!sessionManager.isLogin){
+                showToast("Please login first")
+                requireActivity().moveToLogin(sessionManager)
+                return@setOnItemClickListener
+            }
             val couponCode = sellerVouchers[position].couponCode
             if (storeData.shop_detail[0].seller_id != null) {
                 mainViewModel.claimStoreVoucher(
@@ -316,29 +320,3 @@ class StoreHomeFragment(private val storeData: StoreData) : Fragment(), View.OnC
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

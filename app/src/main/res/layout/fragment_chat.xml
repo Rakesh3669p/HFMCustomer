@@ -60,6 +60,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/orderDate"
             style="@style/textSmall"
             android:layout_width="wrap_content"
@@ -71,6 +72,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/amount"
             style="@style/textMedium"
             android:layout_width="0dp"
@@ -88,12 +90,12 @@
             style="@style/textMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
             android:singleLine="false"
             android:text="@string/view_order_lbl"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/orderId" />
+            app:layout_constraintTop_toTopOf="@+id/orderId"
+            app:layout_constraintBottom_toBottomOf="@+id/orderId"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -80,6 +80,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     if (response.data?.httpcode == 200) {
                         sessionManager.isLogin = true
                         sessionManager.token = response.data.data.access_token
+                        showToast("Login successfully")
                         startActivity(Intent(requireActivity(), DashBoardActivity::class.java))
                         requireActivity().finish()
                     } else {

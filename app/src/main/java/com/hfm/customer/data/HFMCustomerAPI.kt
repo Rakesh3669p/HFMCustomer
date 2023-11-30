@@ -47,6 +47,7 @@ import com.hfm.customer.ui.fragments.products.productDetails.model.BulkOrderRequ
 import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetailsModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
+import com.hfm.customer.ui.fragments.referral.ReferralModel
 import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
 import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
 import com.hfm.customer.ui.fragments.store.model.StoreProductsModel
@@ -311,6 +312,11 @@ interface HFMCustomerAPI {
     suspend fun getReviews(
         @Body jsonObject: JsonObject,
     ): Response<RatingReviewsModel>
+
+    @POST("customer/product/referral")
+    suspend fun getReferral(
+        @Body jsonObject: JsonObject,
+    ): Response<ReferralModel>
 
     @Multipart
     @POST("customer/edit/business/profile")

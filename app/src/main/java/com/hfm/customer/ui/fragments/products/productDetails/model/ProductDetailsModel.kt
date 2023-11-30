@@ -104,7 +104,7 @@ data class OtherProduct(
 
 data class Product(
     val isPurchased: Int,
-    val actual_price: Double,
+    val actual_price: Double?,
     val attrs_list: List<Any>,
     val brand_id: Any,
     val brand_name: String,
@@ -118,7 +118,7 @@ data class Product(
     var in_wishlist: Int,
     val is_featured: Any,
     val is_out_of_stock: Int,
-    val attr_name1: String,
+    val attr_name1: String?,
     val long_description: String,
     val minimum_quantity: Any,
     val offer: String?="",
@@ -148,6 +148,7 @@ data class Product(
     val review_submitted: Int,
     val video: String?="",
     val cart_id: Any,
+    var currentEndTime: String,
     var cart_selected: Any,
     val check_shipping_availability: Any,
     val check_shipping_availability_text: String,

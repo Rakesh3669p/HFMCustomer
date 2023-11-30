@@ -220,4 +220,9 @@
     <string name="cancelled_lbl">Cancelled</string>
     <string name="claimedLbl">Claimed</string>
     <string name="delete_my_account_lbl">Delete My Account</string>
+    <string name="enter_quantity_lbl">Enter Quantity</string>
+    <string name="shipping_discount_lbl">Shipping Discount</string>
+    <string name="referral_code_optional_lbl">Referral Code (Optional)</string>
+    <string name="sellerLowDesc">This item can\'t currently be added to your cart due to a low seller performance rating. Kindly explore our other great food options or check back later! Thank you for your patience.</string>
+    <string name="sorryLbl">Sorry !</string>
 </resources>

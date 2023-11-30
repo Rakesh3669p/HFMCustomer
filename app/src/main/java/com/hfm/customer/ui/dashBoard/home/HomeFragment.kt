@@ -42,6 +42,7 @@ import com.hfm.customer.utils.cartCount
 import com.hfm.customer.utils.hideKeyboard
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.loadImage
+import com.hfm.customer.utils.moveToLogin
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.notificationCount
 import com.hfm.customer.utils.replaceBaseUrl
@@ -670,8 +671,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
         if (sessionManager.isLogin) {
             findNavController().navigate(id)
         } else {
-            startActivity(Intent(requireActivity(), LoginActivity::class.java))
-            requireActivity().finish()
+            showToast("Please login first")
+            requireActivity().moveToLogin(sessionManager)
         }
     }
     override fun onClick(v: View?) {

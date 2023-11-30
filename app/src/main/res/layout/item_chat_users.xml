@@ -90,11 +90,11 @@
             android:id="@+id/forwardArrow"
             android:layout_width="@dimen/_25sdp"
             android:layout_height="@dimen/_25sdp"
-            android:src="@drawable/ic_keyboard_arrow"
-            android:tint="@color/grey_lite"
+            android:src="@drawable/ic_arrow_forward_profile"
+            android:tint="@color/black"
+            android:padding="@dimen/_5sdp"
             app:layout_constraintTop_toTopOf="parent"
-            android:translationX="5dp"
-
+            android:translationX="9dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

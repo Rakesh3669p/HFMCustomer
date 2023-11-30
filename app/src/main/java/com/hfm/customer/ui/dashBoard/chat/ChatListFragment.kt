@@ -70,7 +70,12 @@ class ChatListFragment : Fragment(), View.OnClickListener {
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         mainViewModel.getChatList()
-
+        if(!sessionManager.isLogin){
+            showToast("Please login first")
+            sessionManager.isLogin = false
+            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+            requireActivity().finish()
+        }
     }
 
     private fun setObserver() {
@@ -85,6 +90,7 @@ class ChatListFragment : Fragment(), View.OnClickListener {
                             chatUserAdapter.differ.submitList(response.data.data.list)
                         }
                     }  else if (response.data?.httpcode == 401) {
+                        showToast("Please login first")
                         sessionManager.isLogin = false
                         startActivity(Intent(requireActivity(), LoginActivity::class.java))
                         requireActivity().finish()

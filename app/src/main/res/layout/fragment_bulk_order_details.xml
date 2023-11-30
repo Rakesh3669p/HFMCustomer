@@ -173,6 +173,19 @@
                     app:layout_constraintBottom_toBottomOf="@id/unitOfMeasures"
                     app:layout_constraintStart_toEndOf="@id/productImage"
                     app:layout_constraintTop_toBottomOf="@id/productName" />
+                <TextView
+                    android:id="@+id/unitPrice"
+                    style="@style/textMediumSemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Unit Price RM:5648"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:textColor="@color/textGreyDark"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintBottom_toBottomOf="@id/productVariant"
+                    app:layout_constraintStart_toEndOf="@id/productVariant"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/productVariant" />
 
                 <TextView
                     android:id="@+id/unitOfMeasures"

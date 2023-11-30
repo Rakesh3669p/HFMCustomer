@@ -160,8 +160,14 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
                     productImage.loadImage(replaceBaseUrl(it.product_image[0].image))
                 }
                 productName.text = it.product_name
-                productVariant.text = "Qty: ${it.quantity}"
+                if(it.product_type=="config"){
+                    productVariant.text = "Qty: ${it.quantity}"
+                }else{
+
+                    productVariant.text = "Qty: ${it.quantity}"
+                }
                 unitOfMeasures.text = "Unit Of Measure: ${it.unit_of_measure}"
+                unitPrice.text = "Unit Price: ${it.unit_price}"
 
 
                 dateNeeded.text = it.date_needed
@@ -195,8 +201,7 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
                 }
 
                 if (it.sale_price != null && it.shipping_charges != null) {
-                    val subTotal =
-                        it.sale_price.toString().toDouble() + it.hfm_margin.toString().toDouble()
+                    val subTotal = it.sale_price.toString().toDouble() + it.hfm_margin.toString().toDouble()
                     subtotal.text = "RM ${formatToTwoDecimalPlaces(subTotal)}"
                     deliveryCharges.text = "RM ${it.shipping_charges}"
                     val grandTotalFinal = it.shipping_charges.toString().toDouble() + subTotal

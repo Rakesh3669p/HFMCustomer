@@ -414,7 +414,7 @@
                 tools:ignore="UseCompatTextViewDrawableXml" />
 
             <TextView
-                android:visibility="gone"
+
                 android:id="@+id/referral"
                 style="@style/textMedium"
                 android:layout_width="0dp"

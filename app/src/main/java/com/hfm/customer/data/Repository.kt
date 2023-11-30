@@ -64,6 +64,7 @@ class Repository @Inject constructor(private val service: HFMCustomerAPI) {
     suspend fun checkAvailability(jsonObject: JsonObject) = service.checkAvailability(jsonObject)
     suspend fun updateProfileCustomer(requestBody: MutableMap<String, RequestBody?>) = service.updateProfileCustomer(requestBody)
     suspend fun getReviews(jsonObject: JsonObject) = service.getReviews(jsonObject)
+    suspend fun getReferral(jsonObject: JsonObject) = service.getReferral(jsonObject)
     suspend fun submitReview(requestBody: MutableMap<String, RequestBody?>) = service.submitReview(requestBody)
     suspend fun updateProfileBusiness(requestBody: MutableMap<String, RequestBody?>) = service.updateProfileBusiness(requestBody)
     suspend fun updateCartQty(jsonObject: JsonObject) = service.updateCartQty(jsonObject)

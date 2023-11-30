@@ -1,6 +1,7 @@
 package com.hfm.customer.ui.fragments.cart.adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -14,6 +15,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
@@ -29,7 +31,7 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
 
     private lateinit var context: Context
     private var selectAll = false
-
+    private lateinit var activity:Activity
     inner class ViewHolder(private val bind: ItemCartListBinding) :
         RecyclerView.ViewHolder(bind.root) {
 
@@ -51,6 +53,12 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
                 storeName.text = data.seller.seller
                 val productAdapter = CartProductAdapter()
                 initRecyclerView(context, productsRv, productAdapter)
+                val animator: RecyclerView.ItemAnimator? = productsRv.itemAnimator
+                if (animator is DefaultItemAnimator) {
+                    animator.supportsChangeAnimations = false
+                    productsRv.itemAnimator = null
+                }
+                productAdapter.setActivity(activity)
                 productAdapter.differ.submitList(data.seller.products)
 
                 productAdapter.setOnDeleteClickListener { cartId ->
@@ -203,5 +211,8 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
         onStoreClicked = listener
     }
 
+    fun setActivity(activity: Activity){
+        this.activity = activity
+    }
 
 }

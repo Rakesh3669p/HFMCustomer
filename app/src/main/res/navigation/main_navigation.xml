@@ -191,6 +191,12 @@
             app:popUpTo="@id/manageAddressFragment"
             app:popUpToInclusive="true" />
 
+        <action
+            android:id="@+id/action_addressFormToCart"
+            app:destination="@id/cartFragment"
+            app:popUpTo="@id/cartFragment"
+            app:popUpToInclusive="true" />
+
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -309,7 +315,7 @@
         android:id="@+id/supportChatFragment"
         android:name="com.hfm.customer.ui.fragments.support.SupportChatFragment"
         android:label="SupportChatFragment"
-        tools:layout="@layout/fragment_chat"/>
+        tools:layout="@layout/fragment_chat" />
     <fragment
         android:id="@+id/submitReviewFragment"
         android:name="com.hfm.customer.ui.fragments.review.SubmitReviewFragment"

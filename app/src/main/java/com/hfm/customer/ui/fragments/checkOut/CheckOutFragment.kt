@@ -402,6 +402,9 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 "RM ${formatToTwoDecimalPlaces(cartData.total_offer_cost.toString().toDouble())}"
             shippingAmount.text =
                 "RM ${formatToTwoDecimalPlaces(cartData.shipping_charges.toString().toDouble())}"
+            shippingDiscount.text =
+                if (cartData.shipping_discount > 0) "RM -${formatToTwoDecimalPlaces(cartData.shipping_discount)}"
+                else "RM 0.00"
             grandTotal = cartData.grand_total.toString().toDouble()
             totalAmount.text = formatToTwoDecimalPlaces(grandTotal)
 
@@ -594,7 +597,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 if (useWalletPoints.isChecked) {
                     val walletBalance = cartData.wallet_balance.toDouble() / 100
                     if (walletBalance > cartData.total_offer_cost) {
-                        mainViewModel.applyWallet((cartData.total_offer_cost*100).toString())
+                        mainViewModel.applyWallet((cartData.total_offer_cost * 100).toString())
                     } else {
                         mainViewModel.applyWallet(cartData.wallet_balance)
                     }
@@ -675,8 +678,6 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             if (anyProductSelected) {
 
                 val sellerObject = JsonObject()
-
-
                 sellerObject.addProperty("shipping_method", sellerData.shipping_method)
                 sellerObject.addProperty("shipping_charge", sellerData.shipping.toString())
                 sellerObject.addProperty("seller_id", sellerData.seller.seller_id)
@@ -771,7 +772,13 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         bindingDialog.description.settings.javaScriptEnabled = true
 
 
-        bindingDialog.description.loadDataWithBaseURL(null, goodsTermsAndConditions, "text/html", "UTF-8", null)
+        bindingDialog.description.loadDataWithBaseURL(
+            null,
+            goodsTermsAndConditions,
+            "text/html",
+            "UTF-8",
+            null
+        )
         bindingDialog.description.webViewClient = WebViewClient()
         bindingDialog.description.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(

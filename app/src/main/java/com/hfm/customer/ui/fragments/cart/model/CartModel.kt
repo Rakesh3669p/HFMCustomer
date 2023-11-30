@@ -27,6 +27,7 @@ data class CartData(
     val selected_products_count: Int,
     val seller_product: List<SellerProduct>,
     val shipping_charges: Any,
+    val shipping_discount: Double,
     val shipping_customer_type: String,
     val total_cost: Any,
     val total_offer_cost: Double,

@@ -251,7 +251,12 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
-                        findNavController().navigate(R.id.action_addressFormToAddressList)
+                        if(from == "cart"){
+                            findNavController().navigate(R.id.action_addressFormToCart)
+
+                        }else {
+                            findNavController().navigate(R.id.action_addressFormToAddressList)
+                        }
                     } else {
                         showToast(response.data?.message.toString())
                     }

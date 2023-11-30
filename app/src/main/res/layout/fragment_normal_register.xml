@@ -40,6 +40,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name" />
 
+  <EditText
+        android:id="@+id/referral"
+        style="@style/textMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:background="@drawable/edt_box"
+        android:gravity="start"
+        android:hint="@string/referral_code_optional_lbl"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/email" />
+
     <CheckBox
         android:id="@+id/termsAndConditionsCheckBox"
         android:layout_width="wrap_content"
@@ -48,7 +63,7 @@
         android:padding="0dp"
         android:textFontWeight="500"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email" />
+        app:layout_constraintTop_toBottomOf="@id/referral" />
 
 
     <TextView

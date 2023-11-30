@@ -30,6 +30,7 @@ data class Coupon(
     @SerializedName("shipping_voucher_type") val shippingVoucherType: String,
     @SerializedName("title") val title: String,
     @SerializedName("valid_upto") val validUpto: String,
+    @SerializedName("used_on") val usedOn: String,
     @SerializedName("voucher_type") val voucherType: String,
 
 )

@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.support
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.graphics.Color
@@ -73,6 +74,7 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
         setObserver()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun init() {
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
@@ -89,7 +91,11 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
         if(saleId.isNotEmpty()){
             binding.ticketSpinner.setSelection(1)
             binding.orderDetailsGroup.isVisible = true
-            binding.orderEdt.text = "OrderId #:${orderId}\n$orderDateTime\n RM ${formatToTwoDecimalPlaces(orderAmount.toDouble())} (${itemsCount})"
+            binding.ordersLayout.isVisible = true
+
+            binding.orderId.text = "OrderId #:${orderId}"
+            binding.orderDate.text = orderDateTime
+            binding.amount.text = "RM ${formatToTwoDecimalPlaces(orderAmount.toDouble())} (${itemsCount})"
         }
     }
 
@@ -111,6 +117,9 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
                     ) {
 
                         binding.orderDetailsGroup.isVisible = position == 1
+                        if(position==0){
+                            binding.ordersLayout.isVisible = false
+                        }
                     }
 
                     override fun onNothingSelected(parentView: AdapterView<*>?) {}
@@ -184,9 +193,6 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
         appCompatDialog.setContentView(bindingDialog.root)
         appCompatDialog.setCancelable(true)
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-
-        appCompatDialog.setCancelable(false)
         appCompatDialog.show()
         bindingDialog.camera.setOnClickListener {
             ImagePicker.with(this).cameraOnly()

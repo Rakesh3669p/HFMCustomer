@@ -82,6 +82,7 @@ class CreatePasswordFragment : Fragment(), View.OnClickListener {
         firstName = arguments?.getString("name").toString()
         email = arguments?.getString("email").toString()
         from = arguments?.getString("from").toString()
+        refCode = arguments?.getString("refCode").toString()
         binding.back.isVisible = from == "profile"
         if (from == "profile") {
             with(binding) {

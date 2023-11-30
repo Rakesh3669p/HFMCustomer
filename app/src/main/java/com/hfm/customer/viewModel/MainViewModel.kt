@@ -46,6 +46,7 @@ import com.hfm.customer.ui.fragments.products.productDetails.model.AddToCartMode
 import com.hfm.customer.ui.fragments.products.productDetails.model.BulkOrderRequestModel
 import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetailsModel
+import com.hfm.customer.ui.fragments.referral.ReferralModel
 import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
 import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
 import com.hfm.customer.ui.fragments.store.model.StoreProductsModel
@@ -137,6 +138,7 @@ class MainViewModel @Inject constructor(
     val updateProfileCustomer = SingleLiveEvent<Resource<SuccessModel>>()
     val submitReview = SingleLiveEvent<Resource<SuccessModel>>()
     val ratingReview = SingleLiveEvent<Resource<RatingReviewsModel>>()
+    val referrals = SingleLiveEvent<Resource<ReferralModel>>()
     val sendMessage = SingleLiveEvent<Resource<MessageSentModel>>()
     val sendSupportMessage = SingleLiveEvent<Resource<SuccessModel>>()
     val orderHistory = SingleLiveEvent<Resource<OrderHistoryModel>>()
@@ -1445,6 +1447,26 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun getReferral() =
+        viewModelScope.launch {
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("access_token", sessionManager.token)
+            safeGetReferralCall(jsonObject)
+        }
+
+    private suspend fun safeGetReferralCall(jsonObject: JsonObject) {
+        referrals.postValue(Resource.Loading())
+        try {
+            val response = repository.getReferral(jsonObject)
+            if (response.isSuccessful)
+                referrals.postValue(Resource.Success(checkResponseBody(response.body()) as ReferralModel))
+            else
+                referrals.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            referrals.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
     fun createSupportTicket(requestBody: MutableMap<String, RequestBody?>) = viewModelScope.launch {
         safeCreateSupportTicketCall(requestBody)
     }
@@ -1594,18 +1616,19 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getStoreReviews(sellerId: Int, rating: String, pageNo: Int, media: String="") = viewModelScope.launch {
-        val jsonObject = JsonObject()
-        jsonObject.addProperty("access_token", sessionManager.token)
-        jsonObject.addProperty("seller_id", sellerId)
-        jsonObject.addProperty("rating", rating)
-        jsonObject.addProperty("media", media)
-        jsonObject.addProperty("limit", 50)
-        jsonObject.addProperty("offset", pageNo)
-        jsonObject.addProperty("lang_id", "")
-        jsonObject.addProperty("os_type", "app")
-        safeGetStoreReviewsCall(jsonObject)
-    }
+    fun getStoreReviews(sellerId: Int, rating: String, pageNo: Int, media: String = "") =
+        viewModelScope.launch {
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("access_token", sessionManager.token)
+            jsonObject.addProperty("seller_id", sellerId)
+            jsonObject.addProperty("rating", rating)
+            jsonObject.addProperty("media", media)
+            jsonObject.addProperty("limit", 50)
+            jsonObject.addProperty("offset", pageNo)
+            jsonObject.addProperty("lang_id", "")
+            jsonObject.addProperty("os_type", "app")
+            safeGetStoreReviewsCall(jsonObject)
+        }
 
     private suspend fun safeGetStoreReviewsCall(jsonObject: JsonObject) {
         storeReview.postValue(Resource.Loading())

@@ -383,8 +383,7 @@
                         android:backgroundTint="@color/textGrey"
                         android:gravity="center_vertical"
                         android:hint="Example 79000"
-                        android:inputType="number"
-                        android:maxLength="6"
+                        android:inputType="text"
                         android:paddingHorizontal="@dimen/_10sdp"
                         app:layout_constraintStart_toStartOf="@id/checkPinCodeLbl"
                         app:layout_constraintTop_toBottomOf="@+id/checkPinCodeLbl" />

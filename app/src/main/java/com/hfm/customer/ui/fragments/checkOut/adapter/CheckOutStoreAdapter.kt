@@ -205,10 +205,6 @@ class CheckOutStoreAdapter @Inject constructor() :
 
     private var onAppliedCoupon: ((status: Boolean, amount: String) -> Unit)? = null
 
-    fun setOnAppliedCoupon(listener: (status: Boolean, amount: String) -> Unit) {
-        onAppliedCoupon = listener
-    }
-
     private var onRemoveCoupon: ((id: Int) -> Unit)? = null
 
     fun setOnSellerRemoveCoupon(listener: (id: Int) -> Unit) {

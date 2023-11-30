@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.myOrders.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -24,14 +25,13 @@ class MyAllOrdersAdapter @Inject constructor() :
 
     inner class ViewHolder(private val bind: ItemMyOrdersBinding) :
         RecyclerView.ViewHolder(bind.root) {
+        @SuppressLint("SetTextI18n")
         fun bind(data: Purchase) {
 
             with(bind) {
                 orderId.text = "Order #: ${data.order_id}"
                 requestedDate.text = "${data.order_date} | ${data.order_time}"
-                price.text =
-                    "RM ${formatToTwoDecimalPlaces(data.grand_total.toString().toDouble())}"
-                items.text = "(${data.products.size})"
+                price.text = "RM ${formatToTwoDecimalPlaces(data.grand_total.toString().toDouble())} (${data.products.size}) items"
                 val productsAdapter = MyAllOrdersProductsAdapter()
                 initRecyclerView(context, productsRv, productsAdapter)
                 productsAdapter.differ.submitList(data.products)

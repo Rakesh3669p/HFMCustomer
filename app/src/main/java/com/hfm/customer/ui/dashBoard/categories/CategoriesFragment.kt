@@ -1,12 +1,14 @@
 package com.hfm.customer.ui.dashBoard.categories
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.CatSubcat
@@ -21,11 +23,16 @@ import com.hfm.customer.utils.initRecyclerViewGrid
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class CategoriesFragment : Fragment() {
 
+    private var initialized: Int = 0
+    private var selectedPosition: Int = 0
     private var catId: Int = -1
     private lateinit var mainCategoryData: List<CatSubcat>
     private lateinit var binding: FragmentCategoriesBinding
@@ -41,6 +48,14 @@ class CategoriesFragment : Fragment() {
     private lateinit var noInnternetDialog: NoInternetDialog
     private val mainViewModel: MainViewModel by activityViewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) {
+            initialized = savedInstanceState.getInt("initialized")
+            selectedPosition = savedInstanceState.getInt("position")
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,6 +70,21 @@ class CategoriesFragment : Fragment() {
         }
         return currentView!!
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        /*       categoryMainAdapter.setSelectionPosition(selectedPosition)
+               currentView?.findViewById<TextView>(R.id.categoryName)?.text = mainCategoryData[selectedPosition].category_name
+               catId = mainCategoryData[selectedPosition].category_id
+               categoriesAdapter.differ.submitList(mainCategoryData[selectedPosition].subcategory)*/
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt("initialized", 1)
+        outState.putInt("position", selectedPosition)
+        super.onSaveInstanceState(outState)
+    }
+
 
     private fun init() {
         loader = Loader(requireContext())
@@ -89,20 +119,22 @@ class CategoriesFragment : Fragment() {
 
     private fun setCategories(categoryData: List<CatSubcat>) {
         mainCategoryData = categoryData
+        catId = mainCategoryData[selectedPosition].category_id
+        binding.categoryName.text = mainCategoryData[selectedPosition].category_name
+        categoryMainAdapter.setSelectionPosition(selectedPosition)
         categoryMainAdapter.differ.submitList(mainCategoryData)
-        categoriesAdapter.differ.submitList(mainCategoryData[0].subcategory)
-        catId = mainCategoryData[0].category_id
-        binding.categoryName.text = mainCategoryData[0].category_name
+        categoriesAdapter.differ.submitList(mainCategoryData[selectedPosition].subcategory)
     }
 
     private fun setOnClickListener() {
 
         categoryMainAdapter.setOnMainCategoryClickListener { position ->
+            selectedPosition = position
             binding.categoryName.text = mainCategoryData[position].category_name
             catId = mainCategoryData[position].category_id
             categoriesAdapter.differ.submitList(mainCategoryData[position].subcategory)
         }
-        categoriesAdapter.setOnCategoryClickListener {subCatId->
+        categoriesAdapter.setOnCategoryClickListener { subCatId ->
             val bundle = Bundle()
             bundle.putString("catId", catId.toString())
             bundle.putString("subCatId", subCatId.toString())

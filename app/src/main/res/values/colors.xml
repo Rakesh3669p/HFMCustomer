@@ -12,7 +12,8 @@
     <color name="red">#e21419</color>
     <color name="green">#06B100</color>
     <color name="orange">#fa790d</color>
-    <color name="purple">#7c76b2</color>
+    <color name="purpleLite">#7c76b2</color>
+    <color name="purple">#6a00ff</color>
     <color name="redLite">#ffeaed</color>
     <color name="background">#f9f9f9</color>
     <color name="blacktrans">#14000000</color>

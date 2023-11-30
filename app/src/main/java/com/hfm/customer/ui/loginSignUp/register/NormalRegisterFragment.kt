@@ -74,9 +74,11 @@ class NormalRegisterFragment : Fragment(), View.OnClickListener {
                         showToast(response.data.message)
                         val name = binding.name.text.toString().trim()
                         val email = binding.email.text.toString().trim()
+                        val refCode = binding.referral.text.toString().trim()
                         val bundle = Bundle()
                         bundle.apply { putString("name", name) }
                         bundle.apply { putString("email", email) }
+                        bundle.apply { putString("refCode", refCode) }
                         bundle.apply { putString("type", "normal") }
                         findNavController().navigate(R.id.otpFragment, bundle)
                     } else {

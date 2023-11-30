@@ -109,6 +109,68 @@
                 app:layout_constraintStart_toStartOf="@+id/selectOrderLbl"
                 app:layout_constraintTop_toBottomOf="@+id/selectOrderLbl" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:visibility="gone"
+                android:id="@+id/ordersLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edt_box_smaa_radius"
+                android:backgroundTint="@color/red"
+                android:padding="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/orderEdt">
+
+                <TextView
+                    android:id="@+id/orderId"
+                    style="@style/textMediumSemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Order #: 5684685"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/orderDate"
+                    style="@style/textSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:text="Apr 20, 2022"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toEndOf="@id/orderId"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/amount"
+                    style="@style/textMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:singleLine="false"
+                    android:text="RM 20,000.00 (3 Items)"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/orderId" />
+
+                <TextView
+                    android:id="@+id/viewOrder"
+                    style="@style/textMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:singleLine="false"
+                    android:text="@string/view_order_lbl"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/orderId"
+                    app:layout_constraintBottom_toBottomOf="@+id/orderId"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/orderDetailsGroup"
                 android:layout_width="match_parent"
@@ -125,7 +187,7 @@
                 android:text="Title"
                 app:layout_constraintEnd_toEndOf="@id/ticketSpinner"
                 app:layout_constraintStart_toStartOf="@id/ticketSpinner"
-                app:layout_constraintTop_toBottomOf="@+id/orderEdt" />
+                app:layout_constraintTop_toBottomOf="@+id/ordersLayout" />
 
 
             <EditText

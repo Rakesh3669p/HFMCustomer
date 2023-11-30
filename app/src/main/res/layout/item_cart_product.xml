@@ -204,7 +204,7 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:paddingHorizontal="@dimen/_5sdp"
             android:paddingVertical="@dimen/_3sdp"
-            android:text=""
+            android:text="Flash Deals Ends In: 00:00:00:00"
             android:visibility="gone"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/productImage"
