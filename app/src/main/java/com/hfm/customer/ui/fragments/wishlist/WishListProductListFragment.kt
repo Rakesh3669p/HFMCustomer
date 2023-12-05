@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.wishlist
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -56,6 +57,7 @@ class WishListProductListFragment : Fragment() {
         mainViewModel.getWishListProducts()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setObserver() {
         mainViewModel.wishListProducts.observe(viewLifecycleOwner){response->
             when(response){
@@ -63,6 +65,7 @@ class WishListProductListFragment : Fragment() {
                     appLoader.dismiss()
                     if(response.data?.httpcode=="200"){
                         binding.noDataLayout.root.isVisible = response.data.data.wishlist.isEmpty()
+                        binding.noDataLayout.noDataLbl.text = "No favourite products found!"
                         productListAdapter.differ.submitList(response.data.data.wishlist)
                     }else{
                         showToast(response.data?.message.toString())

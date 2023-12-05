@@ -23,7 +23,7 @@
     <string name="company_name_lbl">Company Name</string>
     <string name="company_register_no_lbl">Company Register No.</string>
     <string name="nature_of_business_lbl">Nature of Business</string>
-    <string name="company_contact_no_lbl">Company Contact no.</string>
+    <string name="company_contact_no_lbl">Company Contact No.</string>
     <string name="verify_lbl">Verify</string>
     <string name="otp_verification_lbl">OTP Verification</string>
     <string name="create_password_lbl">Create Password</string>
@@ -116,7 +116,7 @@
     <string name="variantsLbl">Variants</string>
     <string name="confirmLbl">Confirm</string>
     <string name="no_default_address_found_please_add_address_lbl">No default address found. Please add address.</string>
-    <string name="add_new_address_lbl">Add New Address</string>
+    <string name="add_new_address_lbl">+ Add New Address</string>
     <string name="add_new_address_lbl2">Add New Address</string>
     <string name="standard_delivery_lbl">Standard Delivery</string>
     <string name="order_total_lbl">Order Total</string>

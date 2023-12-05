@@ -44,15 +44,18 @@
             android:layout_height="match_parent"
             android:paddingBottom="@dimen/_70sdp">
 
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/deliverAddressLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:elevation="@dimen/_2sdp"
+                android:layout_marginVertical="@dimen/_1sdp"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingBottom="@dimen/_5sdp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -71,20 +74,21 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/addNewAddress"
                     style="@style/textMediumSemiBold"
-                    app:backgroundTint="@color/white"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="@dimen/_12ssp"
-                    android:textAllCaps="false"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_35sdp"
                     android:layout_marginEnd="@dimen/_7sdp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="@string/add_new_address_lbl"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:textColor="@color/red"
+                    android:textSize="@dimen/_12ssp"
+                    app:backgroundTint="@color/white"
                     app:cornerRadius="@dimen/_6sdp"
-                    app:strokeColor="@color/red"
-                    app:strokeWidth="1dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/red"
+                    app:strokeWidth="1dp" />
 
                 <TextView
                     android:id="@+id/noAddressLbl"
@@ -115,21 +119,22 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/manageAddress"
                     style="@style/textMediumSemiBold"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="@dimen/_12ssp"
-                    android:textAllCaps="false"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_35sdp"
                     android:layout_marginEnd="@dimen/_7sdp"
                     android:clickable="true"
                     android:focusable="true"
+                    android:fontFamily="@font/roboto_medium"
                     android:foreground="?android:attr/selectableItemBackgroundBorderless"
                     android:paddingHorizontal="@dimen/_18sdp"
                     android:paddingVertical="0dp"
                     android:text="@string/manage_address_lbl"
+                    android:textAllCaps="false"
                     android:textColor="@color/red"
+                    android:textSize="@dimen/_12ssp"
                     app:backgroundTint="@color/white"
                     app:cornerRadius="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:strokeColor="@color/red"
@@ -140,8 +145,8 @@
                     style="@style/textMediumSemiBold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginStart="@dimen/_9sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginBottom="@dimen/_10sdp"
                     android:text="John Doe"
                     android:textColor="@color/black"
@@ -156,8 +161,8 @@
                     android:layout_marginStart="@dimen/_9sdp"
                     android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginBottom="@dimen/_5sdp"
-                    android:text="19th floor, Plaza OSK, Jalan Ampang,\n50450 kuala Lumpur, Malaysia"
                     android:singleLine="false"
+                    android:text="19th floor, Plaza OSK, Jalan Ampang,\n50450 kuala Lumpur, Malaysia"
                     android:textColor="@color/textGreyDark"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/customerName" />
@@ -170,11 +175,11 @@
                     android:layout_marginStart="@dimen/_9sdp"
                     android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginBottom="@dimen/_5sdp"
-                    android:text="+ 063 - 2166 6515"
                     android:singleLine="false"
+                    android:text="+ 063 - 2166 6515"
                     android:textColor="@color/textGreyDark"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/customerAddress" />
 
 
@@ -183,17 +188,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
-                    app:constraint_referenced_ids="deliverToLbl2,manageAddress,customerName,customerAddress,customerMobile"/>
+                    app:constraint_referenced_ids="deliverToLbl2,manageAddress,customerName,customerAddress,customerMobile" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/addAddressGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:constraint_referenced_ids="deliverToLbl,addNewAddress,noAddressLbl"/>
+                    app:constraint_referenced_ids="deliverToLbl,addNewAddress,noAddressLbl" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <TextView
                 android:id="@+id/cartDetailsLbl"

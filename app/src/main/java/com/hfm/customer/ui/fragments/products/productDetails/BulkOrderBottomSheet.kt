@@ -99,8 +99,7 @@ class BulkOrderBottomSheet(
                 "Kilograms",
                 "Boxes",
                 "Outers",
-                "Carton"
-            )
+                "Carton")
 
 
             val adapter: ArrayAdapter<String> =

@@ -64,7 +64,7 @@
                 android:layout_height="@dimen/_30sdp"
                 android:layout_marginStart="@dimen/_50sdp"
                 android:layout_marginTop="@dimen/_50sdp"
-                android:background="@color/textGreyDark"
+                android:background="@color/grey_lite"
                 android:padding="@dimen/_5sdp"
                 android:src="@drawable/ic_camera"
                 android:tint="@color/red"
@@ -82,7 +82,7 @@
                 android:gravity="center"
                 android:paddingVertical="@dimen/_10sdp"
                 android:text="Customer Type: Business"
-                android:textColor="@color/black"
+                android:textColor="@color/red"
                 app:layout_constraintBottom_toTopOf="@+id/nameLbl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -231,7 +231,7 @@
                 android:gravity="center_vertical"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_10sdp"
-                app:layout_constraintBottom_toTopOf="@+id/changePasswordLbl"
+                app:layout_constraintBottom_toTopOf="@+id/changePasswordEdt"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/emailLbl"
                 app:layout_constraintTop_toBottomOf="@+id/emailLbl" />
@@ -245,6 +245,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:text="@string/change_password_lbl"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/changePasswordEdt"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -255,7 +256,7 @@
                 style="@style/textMediumSemiBold"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_45sdp"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:background="@drawable/edt_line_box"
                 android:drawableEnd="@drawable/ic_keyboard_arrow"
                 android:drawableTint="@color/textGreyDark"
@@ -266,10 +267,51 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                app:layout_constraintBottom_toTopOf="@+id/save"
+                app:layout_constraintBottom_toTopOf="@+id/deleteAccount"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/changePasswordLbl"
-                app:layout_constraintTop_toBottomOf="@+id/changePasswordLbl" />
+                app:layout_constraintStart_toStartOf="@+id/emailEdt"
+                app:layout_constraintTop_toBottomOf="@+id/emailEdt" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/deleteAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/edt_line_box"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                app:layout_constraintBottom_toTopOf="@+id/save"
+                app:layout_constraintTop_toBottomOf="@id/changePasswordEdt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+                <TextView
+                    android:id="@+id/deleteAccountLbl"
+                    style="@style/textMediumSemiBold"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="@string/delete_my_account_lbl"
+                    app:layout_constraintBottom_toTopOf="@+id/deleteAccountDesc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/deleteAccountDesc"
+                    style="@style/textMediumSemiBold"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:text="All your data will be erased"
+                    android:gravity="center"
+                    android:textColor="@color/grey"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/deleteAccountLbl" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <com.google.android.material.button.MaterialButton
@@ -289,7 +331,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/changePasswordEdt"
+                app:layout_constraintTop_toBottomOf="@id/deleteAccount"
                 tools:ignore="UnusedAttribute"
                 tools:layout_editor_absoluteX="13dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>

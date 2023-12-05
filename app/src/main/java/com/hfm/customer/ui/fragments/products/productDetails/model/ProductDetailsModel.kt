@@ -105,7 +105,7 @@ data class OtherProduct(
 data class Product(
     val isPurchased: Int,
     val actual_price: Double?,
-    val attrs_list: List<Any>,
+    val attrs_list: List<String>,
     val brand_id: Any,
     val brand_name: String,
     val bulk_quantity: Any,
@@ -146,6 +146,7 @@ data class Product(
     val tag: List<Any>,
     val total_reviews: Any,
     val review_submitted: Int,
+    val seller_health: Int,
     val video: String?="",
     val cart_id: Any,
     var currentEndTime: String,

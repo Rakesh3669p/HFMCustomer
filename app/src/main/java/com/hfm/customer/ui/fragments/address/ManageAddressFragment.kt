@@ -137,7 +137,6 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
                     }
                     if (response.data?.httpcode == 200)
                         if (from == "checkOut") {
-                            mainViewModel.defaultAddress(addressId.toString())
                             findNavController().previousBackStackEntry?.savedStateHandle?.set(
                                 "addressId",
                                 addressId
@@ -169,6 +168,7 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
             addNewAddress.setOnClickListener(this@ManageAddressFragment)
         }
         manageAddressAdapter.setOnDefaultClickListener { addressId ->
+            this.addressId = addressId
             mainViewModel.defaultAddress(addressId.toString())
         }
 

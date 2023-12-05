@@ -29,6 +29,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -41,6 +42,7 @@ import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.navigation.fragment.findNavController
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.RatingReviewsData
+import com.hfm.customer.databinding.DialogLowSellerBinding
 import com.hfm.customer.databinding.DialogQtyPopupBinding
 import com.hfm.customer.databinding.FragmentProductDetailBinding
 import com.hfm.customer.databinding.ReviewMediaImagesBinding
@@ -633,7 +635,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 productData.product.offer_price != null && productData.product.offer_price.toString() != "false"
 
             val actualPrice = productData.product.actual_price.toString().toDoubleOrNull()
-            productListingPrice.text = "NP: RM ${formatToTwoDecimalPlaces(actualPrice?:0.0)}"
+            productListingPrice.text = "NP: RM ${formatToTwoDecimalPlaces(actualPrice ?: 0.0)}"
 
             addToWishlist.setImageResource(if (productData.product.in_wishlist == 1) R.drawable.like_active else R.drawable.ic_fav)
 
@@ -647,7 +649,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
 
             setDescriptionAndSpecification()
-
+            if (productData.varaiants_list.isNotEmpty() && productData.product.attrs_list.isNotEmpty()) {
+                variantType.isVisible = true
+                variantType.text = productData.product.attrs_list[0]
+            }
             if (productData.varaiants_list.isNotEmpty()) {
                 val selectedVariantData = productData.varaiants_list[0]
                 selectedVariant = selectedVariantData.pro_id.toString()
@@ -790,15 +795,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
                 productData.cross_selling_products.getOrNull(0)?.let { crossSellingProduct ->
                     with(crossSellingProduct) {
-
                         if (crossSellingProduct.image.isNotEmpty()) {
                             productImage.loadImage(replaceBaseUrl(crossSellingProduct.image[0].image))
                         }
 
-
-
                         productName.text = product_name
-
 
                         val offerPrice = crossSellingProduct.offer_price.toString().toDoubleOrNull()
                         val actualPrice = crossSellingProduct.actual_price.toString().toDouble()
@@ -1015,15 +1016,15 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        vouchersAdapter.setOnItemClickListener {position->
-            if(sessionManager.isLogin){
+        vouchersAdapter.setOnItemClickListener { position ->
+            if (sessionManager.isLogin) {
                 val couponCode = vouchersAdapter.differ.currentList[position].couponCode
                 val clipboardManager =
                     requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clipData = ClipData.newPlainText("text", couponCode)
                 clipboardManager.setPrimaryClip(clipData)
                 showToast("Coupon code copied")
-            }else{
+            } else {
                 requireActivity().moveToLogin(sessionManager)
 
             }
@@ -1161,6 +1162,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun showCartQtyDialog() {
+
+
         if (!sessionManager.isLogin) {
             showToast("Please login first")
             startActivity(Intent(requireActivity(), LoginActivity::class.java))
@@ -1168,10 +1171,21 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             return
         }
 
+        if (productData.product.seller_health == 0) {
+            showSellerHealthDialog()
+            return
+        }
+
         val appCompatDialog = Dialog(requireContext())
         val bindingDialog = DialogQtyPopupBinding.inflate(layoutInflater)
         appCompatDialog.setContentView(bindingDialog.root)
         appCompatDialog.setCancelable(true)
+
+        bindingDialog.qty.doOnTextChanged { text, _, _, _ ->
+            if (text.toString().trim() == "0") {
+                bindingDialog.qty.setText("")
+            }
+        }
 
         bindingDialog.apply.setOnClickListener {
             addedQty = bindingDialog.qty.text.toString().trim()
@@ -1184,6 +1198,16 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
         }
         bindingDialog.cancel.setOnClickListener { appCompatDialog.dismiss() }
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.show()
+    }
+
+    private fun showSellerHealthDialog() {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DialogLowSellerBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.setCancelable(true)
+        bindingDialog.ok.setOnClickListener { appCompatDialog.dismiss() }
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         appCompatDialog.show()
     }

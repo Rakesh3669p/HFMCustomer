@@ -152,6 +152,7 @@ class StoreHomeFragment(private val storeData: StoreData) : Fragment(), View.OnC
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
+                        showToast("Voucher claimed successfully")
                         mainViewModel.getSellerVouchers(
                             storeData.shop_detail[0].seller_id.toString(),
                             0
@@ -277,7 +278,7 @@ class StoreHomeFragment(private val storeData: StoreData) : Fragment(), View.OnC
             if(!sessionManager.isLogin){
                 showToast("Please login first")
                 requireActivity().moveToLogin(sessionManager)
-                return@setOnItemClickListener
+                    return@setOnItemClickListener
             }
             val couponCode = sellerVouchers[position].couponCode
             if (storeData.shop_detail[0].seller_id != null) {

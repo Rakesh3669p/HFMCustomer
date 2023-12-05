@@ -730,6 +730,20 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/sellerLbl" />
 
+<TextView
+                        android:id="@+id/orderType"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="OrderType: Normal"
+                        android:paddingEnd="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintEnd_toStartOf="@id/chat"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/seller" />
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/chat"
                         android:layout_width="wrap_content"
@@ -750,12 +764,12 @@
                         style="@style/textMediumSemiBold"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
                         android:singleLine="false"
                         android:text="@string/delivery_partner"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/seller" />
+                        app:layout_constraintTop_toBottomOf="@id/orderType" />
 
                     <TextView
                         android:id="@+id/deliveryPartner"

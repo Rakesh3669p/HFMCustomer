@@ -87,14 +87,17 @@ class NotificationFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setObserver() {
-        mainViewModel.notificationViewed.observe(viewLifecycleOwner){response->
+        mainViewModel.notificationViewed.observe(requireActivity()){response->
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
-                        if(response.data.data.unread_count!=null) {
-                            notificationCount.postValue(response.data.data.unread_count)
+                        response.data.data?.let {
+                            if(it.unread_count!=null) {
+                                notificationCount.postValue(response.data.data.unread_count)
+                            }
                         }
+
                     }
                 }
 
@@ -160,16 +163,16 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                             bundle.putString("from", "bulkOrder")
                             bundle.putString("orderId", notification.ref_id.toString())
                             bundle.putString("saleId", notification.bulk_order_sale_id.toString())
-                            findNavController().navigate(R.id.bulkOrderDetailsFragment, bundle)
                             mainViewModel.viewedNotification(notificationId = notification.id)
+                            findNavController().navigate(R.id.bulkOrderDetailsFragment, bundle)
                         }
 
                         else -> {
                             val bundle = Bundle()
                             bundle.putString("orderId", notification.order_id)
                             bundle.putString("saleId", notification.ref_id.toString())
-                            findNavController().navigate(R.id.orderDetailsFragment, bundle)
                             mainViewModel.viewedNotification(notificationId = notification.id)
+                            findNavController().navigate(R.id.orderDetailsFragment, bundle)
                         }
                     }
 

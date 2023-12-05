@@ -29,19 +29,17 @@ class StoreVouchersAdapter @Inject constructor() :
                 discountDescription.text = data.desc
                 voucherExpiry.text = "Expires on: ${data.validUpto}"
 
-
-                if(data.isClaimed==1){
+                if (data.isClaimed == "1") {
                     userNow.backgroundTintList = grey
                     userNow.text = "Claimed"
-                }else{
+                } else {
                     userNow.backgroundTintList = red
                     userNow.text = "Claim Now"
                 }
                 userNow.setOnClickListener {
-                    if(data.isClaimed==0) {
+                    if (data.isClaimed == "0") {
                         onItemClick?.invoke(absoluteAdapterPosition)
-                    }else
-                    {
+                    } else {
                         Toast.makeText(context, "Already claimed", Toast.LENGTH_SHORT).show()
                     }
                 }

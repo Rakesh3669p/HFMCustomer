@@ -210,11 +210,14 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
         with(binding) {
             data.purchase[0].let {
                 orderDetails = it
+
                 if (orderDetails.order_type == "bulk_order") {
+                    orderType.text = "OrderType: Bulk Order"
                     chat.text = "Support"
                     deliveryPartner.makeInvisible()
                     deliveryPartnerLbl.makeInvisible()
                 } else if (orderDetails.order_type == "normal_order") {
+                    orderType.text = "OrderType: Normal Order"
                     chat.text = "Chat"
                     deliveryPartner.makeVisible()
                     deliveryPartnerLbl.makeVisible()
@@ -332,7 +335,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
 
                 totalAmount.text = "${formatToTwoDecimalPlaces(it.grand_total)}"
                 totalSavings.isVisible = false
-
+                uploadedImage.setOnClickListener { showDeliveryProof() }
                 if (it.payment_uploaded_image.isNullOrEmpty() && it.order_status == "cancelled"||it.order_status == "cancel_initiated" || it.payment_mode == "Online Payment") {
                     paymentReceiptCv.isVisible = false
                     submit.isVisible = false

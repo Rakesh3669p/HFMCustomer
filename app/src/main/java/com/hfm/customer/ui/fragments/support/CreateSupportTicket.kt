@@ -6,6 +6,8 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,9 +95,13 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
             binding.orderDetailsGroup.isVisible = true
             binding.ordersLayout.isVisible = true
 
-            binding.orderId.text = "OrderId #:${orderId}"
+            binding.orderId.text = "Order #:${orderId}"
             binding.orderDate.text = orderDateTime
-            binding.amount.text = "RM ${formatToTwoDecimalPlaces(orderAmount.toDouble())} (${itemsCount})"
+            binding.amount.text = "RM ${formatToTwoDecimalPlaces(orderAmount.toDouble())} (${itemsCount} Items)"
+            val spannable = SpannableString(getString(R.string.view_order_lbl))
+            spannable.setSpan(UnderlineSpan(), 0, getString(R.string.view_order_lbl).length, 0)
+            binding.viewOrder.text = spannable
+
         }
     }
 
@@ -105,7 +111,8 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
             back.setOnClickListener (this@CreateSupportTicket)
             send.setOnClickListener (this@CreateSupportTicket)
             orderEdt.setOnClickListener (this@CreateSupportTicket)
-            uploadImages.setOnClickListener (this@CreateSupportTicket)
+            imageUploadLayout.setOnClickListener (this@CreateSupportTicket)
+            closeBtn.setOnClickListener (this@CreateSupportTicket)
 
             binding.ticketSpinner.onItemSelectedListener =
                 object : AdapterView.OnItemSelectedListener {
@@ -227,9 +234,8 @@ class CreateSupportTicket : Fragment(), View.OnClickListener {
             binding.back.id -> findNavController().popBackStack()
             binding.send.id -> sendATicket()
             binding.orderEdt.id -> findNavController().navigate(R.id.myAllOrdersFragment)
-            binding.uploadImages.id -> {
-             showImagePickupDialog()
-            }
+            binding.imageUploadLayout.id -> showImagePickupDialog()
+            binding.closeBtn.id -> binding.ticketSpinner.setSelection(0,true)
         }
     }
 

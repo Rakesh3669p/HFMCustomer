@@ -167,7 +167,10 @@ class BulkOrderDetailsFragment : Fragment(), View.OnClickListener {
                     productVariant.text = "Qty: ${it.quantity}"
                 }
                 unitOfMeasures.text = "Unit Of Measure: ${it.unit_of_measure}"
-                unitPrice.text = "Unit Price: ${it.unit_price}"
+                val unitPriceChecked = it.unit_price.toString().toDoubleOrNull()
+                if(unitPriceChecked!=null) {
+                    unitPrice.text = "Unit Price: RM ${formatToTwoDecimalPlaces(unitPriceChecked)}"
+                }
 
 
                 dateNeeded.text = it.date_needed

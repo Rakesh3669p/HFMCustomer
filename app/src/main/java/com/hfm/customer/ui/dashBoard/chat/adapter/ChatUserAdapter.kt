@@ -3,6 +3,7 @@ package com.hfm.customer.ui.dashBoard.chat.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -25,8 +26,13 @@ class ChatUserAdapter @Inject constructor() : RecyclerView.Adapter<ChatUserAdapt
             with(bind) {
                 userImage.loadImage(replaceBaseUrl(data.logo))
                 userName.text = data.store_name
-                lastMessage.text = data.last_message
+                if(!data.order_id.isNullOrEmpty()){
+                    lastMessage.text = "Order #:${data.order_id}"
+                }else {
+                    lastMessage.text = data.last_message
+                }
                 date.text = data.last_chat_date
+                messageCounts.isVisible = data.unread_msg>0
                 messageCounts.text = data.unread_msg.toString()
 
                 root.setOnClickListener {

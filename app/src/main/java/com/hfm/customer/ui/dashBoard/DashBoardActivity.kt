@@ -68,8 +68,7 @@ class DashBoardActivity : AppCompatActivity() {
     private fun init() {
         appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
         navController = findNavController(R.id.nav_host_fragment_content_main)
-        navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+        navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         setupWithNavController(binding.bottomNavigationView, navHostFragment.navController)
         navController.addOnDestinationChangedListener(destinationListener)
         sessionManager.deviceId = getDeviceIdInternal(this)
