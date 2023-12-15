@@ -1,15 +1,23 @@
 package com.hfm.customer.ui.fragments.wallet
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentWalletBinding
 import com.hfm.customer.ui.fragments.wallet.adapter.WalletAdapter
+import com.hfm.customer.ui.fragments.wallet.model.WalletData
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
@@ -65,11 +73,8 @@ class WalletFragment : Fragment(), View.OnClickListener {
                 is Resource.Success->{
                     appLoader.dismiss()
                     if(response.data?.httpcode=="200"){
-                        binding.balanceLbl.text = getString(R.string.current_balance_lbl)
-                        val pointToRM = response.data.data.total_balance/100
-                        binding.balance.text = "${response.data.data.total_balance.roundToInt()} Points (RM ${formatToTwoDecimalPlaces(pointToRM)})"
-                        initRecyclerView(requireContext(),binding.walletRv,walletAdapter)
-                        walletAdapter.differ.submitList(response.data.data.wallet)
+                        setData(response.data.data)
+
                     }else{
                         showToast(response.data?.message.toString())
                     }
@@ -79,6 +84,65 @@ class WalletFragment : Fragment(), View.OnClickListener {
             }
 
         }
+    }
+
+    private fun setData(data: WalletData) {
+
+        if(data.total_balance<=0){
+            binding.noData.root.isVisible = true
+            binding.noData.noDataLbl.text = getString(R.string.no_points_record_found_lbl)
+            return
+        }else{
+            binding.noData.root.isVisible = false
+        }
+
+        binding.balanceLbl.text = getString(R.string.current_balance_lbl)
+        binding.balance.text = "${data.total_balance} Points (RM ${formatToTwoDecimalPlaces(data.wallet_cash)})"
+
+        val redColor = ContextCompat.getColor(requireContext(), R.color.red)
+        val spannableString = SpannableString("Notice: Your ${data.recent_expire.amount} referral will expire on ${data.recent_expire.date}")
+
+// Set red color span for amount
+        val redColorSpanAmount = ForegroundColorSpan(redColor)
+        spannableString.setSpan(
+            redColorSpanAmount,
+            spannableString.indexOf(data.recent_expire.amount),
+            spannableString.indexOf(data.recent_expire.amount) + data.recent_expire.amount.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+// Set bold span for amount
+        val boldSpanAmount = StyleSpan(Typeface.BOLD)
+        spannableString.setSpan(
+            boldSpanAmount,
+            spannableString.indexOf(data.recent_expire.amount),
+            spannableString.indexOf(data.recent_expire.amount) + data.recent_expire.amount.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+// Set red color span for date
+        val redColorSpanDate = ForegroundColorSpan(redColor)
+        spannableString.setSpan(
+            redColorSpanDate,
+            spannableString.indexOf(data.recent_expire.date),
+            spannableString.indexOf(data.recent_expire.date) + data.recent_expire.date.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+// Set bold span for date
+        val boldSpanDate = StyleSpan(Typeface.BOLD)
+        spannableString.setSpan(
+            boldSpanDate,
+            spannableString.indexOf(data.recent_expire.date),
+            spannableString.indexOf(data.recent_expire.date) + data.recent_expire.date.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        binding.referralExpire.text = spannableString
+
+        binding.referralExpire.isVisible = !data.recent_expire.amount.isEmpty()
+        initRecyclerView(requireContext(),binding.walletRv,walletAdapter)
+        walletAdapter.differ.submitList(data.wallet)
     }
 
     private fun apiError(message: String?) {

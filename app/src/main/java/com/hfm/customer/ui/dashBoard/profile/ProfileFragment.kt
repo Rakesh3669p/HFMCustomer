@@ -171,8 +171,8 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 val request = ImageRequest.Builder(requireContext())
                     .data(imageReplaced)
                     .target(profileImage)
-                    .placeholder(R.drawable.user)
-                    .error(R.drawable.user)
+                    .placeholder(R.drawable.ic_avatar)
+                    .error(R.drawable.ic_avatar)
                     .build()
                 lifecycleScope.launch {
                     imageLoader.execute(request)

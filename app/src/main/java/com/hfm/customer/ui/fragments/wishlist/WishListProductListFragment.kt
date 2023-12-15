@@ -42,13 +42,17 @@ class WishListProductListFragment : Fragment() {
         if (currentView == null) {
             currentView = inflater.inflate(R.layout.fragment_wishlist_product_list, container, false)
             binding = FragmentWishlistProductListBinding.bind(currentView!!)
-            init()
-            setObserver()
+
             setOnClickListener()
         }
         return currentView!!
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        init()
+        setObserver()
+    }
     private fun init() {
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
@@ -65,7 +69,7 @@ class WishListProductListFragment : Fragment() {
                     appLoader.dismiss()
                     if(response.data?.httpcode=="200"){
                         binding.noDataLayout.root.isVisible = response.data.data.wishlist.isEmpty()
-                        binding.noDataLayout.noDataLbl.text = "No favourite products found!"
+                        binding.noDataLayout.noDataLbl.text = "No favourite products found."
                         productListAdapter.differ.submitList(response.data.data.wishlist)
                     }else{
                         showToast(response.data?.message.toString())

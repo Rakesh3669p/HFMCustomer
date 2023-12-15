@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -19,19 +20,21 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.BottomSheetFilterBinding
 import com.hfm.customer.databinding.BottomSheetSortingBinding
 import com.hfm.customer.databinding.FragmentProductListBinding
-import com.hfm.customer.ui.dashBoard.home.model.Brand
+import com.hfm.customer.ui.fragments.brands.model.Brand
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.ui.fragments.products.productList.adapter.FilterProductListBrandsAdapter
 import com.hfm.customer.ui.fragments.products.productList.adapter.ProductCategoryListAdapter
 import com.hfm.customer.ui.fragments.products.productList.adapter.ProductListAdapter
 import com.hfm.customer.ui.fragments.products.productList.model.ProductListData
 import com.hfm.customer.ui.fragments.products.productList.model.Subcategory
+import com.hfm.customer.ui.fragments.store.StoreFragment
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.makeInvisible
+import com.hfm.customer.utils.makeVisible
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
@@ -51,6 +54,8 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         var selectedBrandFilters: MutableList<Int> = ArrayList()
     }
 
+    private var feature: String = ""
+    private lateinit var filterDialog: BottomSheetDialog
     private var showProductsRandomly: Boolean = false
 
     @Inject
@@ -126,15 +131,19 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         search = arguments?.getString("keyword") ?: ""
         wholeSale = arguments?.getInt("wholeSale") ?: 0
         flashSale = arguments?.getInt("flashSale") ?: 0
+        feature = arguments?.getString("feature")?:""
         val endTime = arguments?.getString("endTime") ?: ""
-        showProductsRandomly = catId.isEmpty() && subCatId.isEmpty() && brandId.isEmpty() && search.isEmpty() && wholeSale == 0 && flashSale == 0 && endTime.isEmpty()
+        showProductsRandomly = catId.isEmpty() && subCatId.isEmpty() && brandId.isEmpty() && search.isEmpty() && wholeSale == 0 && flashSale == 0 && endTime.isEmpty() && feature.isEmpty()
 
         makeProductListApiCall()
-        mainViewModel.getBrandsList()
+        mainViewModel.getBrands()
+
         if(showProductsRandomly) {
             binding.result.makeInvisible()
             binding.category.makeInvisible()
         }
+
+
         with(binding) {
             productListRv.apply {
                 setHasFixedSize(true)
@@ -188,9 +197,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             page = pageNo,
             wholeSale = wholeSale,
             flashSale = flashSale,
-            random = if(showProductsRandomly)1 else 0,
-
-            )
+            random = if(showProductsRandomly)1 else 0,)
     }
 
     private fun setObserver() {
@@ -201,6 +208,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                     binding.loader.isVisible = false
                     binding.bottomLoader.isVisible = false
                     if (response.data?.httpcode == 200) {
+
                         setProductData(response.data.data)
                     } else showToast(
                         response.data?.message.toString()
@@ -214,11 +222,14 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        mainViewModel.homeBrands.observe(viewLifecycleOwner) { response ->
+        mainViewModel.brands.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
                     if (response.data?.httpcode == 200) {
                         brands = response.data.data.brands
+                        if(this::filterDialog.isInitialized&&filterDialog.isShowing){
+                            filterBrandAdapter.differ.submitList(brands)
+                        }
                     }
                 }
 
@@ -251,6 +262,8 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                     productCategoryListAdapter.differ.submitList(subCategories)
                 }
             }
+
+
         }
 
         isLoading = data.products.isEmpty()
@@ -259,15 +272,36 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         } else {
         }*/
         productList.addAll(data.products)
+          if(pageNo==0 && productList.isEmpty()){
+              binding.result.makeInvisible()
+              binding.category.makeInvisible()
+          }else{
+              binding.result.makeVisible()
+              binding.category.makeVisible()
+          }
+
+        binding.category.isVisible = !(pageNo==0 && productList.isEmpty())
 
         binding.noData.root.isVisible = productList.isEmpty()
         binding.noData.noDataLbl.text = "No Products Found"
         productListAdapter.differ.submitList(productList)
         productListAdapter.notifyDataSetChanged()
 
+
         if (data.products.isNotEmpty()) {
-            binding.result.text = "${data.total_products} results for "
-            binding.category.text = "${data.products[0].category_name}"
+            if(wholeSale==1){
+                binding.result.text = "${data.total_products} results for "
+                binding.category.text = "Factory Direct WholeSale"
+            }else if(flashSale==1){
+                binding.result.text = "${data.total_products} results for "
+                binding.category.text = "Flash Deal"
+            }else if (feature.isNotEmpty()){
+                binding.result.text = "${data.total_products} results for "
+                binding.category.text = "Feature Products"
+            }else {
+                binding.result.text = "${data.total_products} results for "
+                binding.category.text = "${data.products[0].category_name}"
+            }
         }
     }
 
@@ -402,8 +436,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
 
     private fun showFilterBottomSheet() {
         bottomSheetFilterBinding = BottomSheetFilterBinding.inflate(layoutInflater)
-        val filterDialog =
-            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
+        filterDialog = BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         filterDialog.setContentView(bottomSheetFilterBinding.root)
         filterDialog.setCanceledOnTouchOutside(true)
         filterDialog.setCancelable(true)
@@ -418,7 +451,20 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                 adapter = filterBrandAdapter
             }
 
+            clearSearch.setOnClickListener {
+                brandSearch.setText("")
+            }
 
+            brandSearch.doOnTextChanged { text, _, _, _ ->
+                clearSearch.isVisible = !text.isNullOrEmpty()
+                val searchValue = brandSearch.text.toString().lowercase()
+                if (text.toString().isNotEmpty()) {
+                    mainViewModel.getBrands(filterName = searchValue)
+                } else if (text.isNullOrEmpty()) {
+                    mainViewModel.getBrands(filterName ="")
+                }
+
+            }
             rangeSlider.addOnChangeListener { slider, _, fromUser ->
                 if (fromUser) {
                     min.setText(slider.values[0].roundToInt().toString())

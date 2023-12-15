@@ -139,6 +139,7 @@ fun Fragment.showToast(msg: String) {
     Toast.makeText(this.requireContext(), msg, Toast.LENGTH_SHORT).show()
 }
 
+
 fun Activity.showToast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }
@@ -170,7 +171,7 @@ fun replaceBaseUrl(originalUrl: String): String {
 }
 
 fun formatToTwoDecimalPlaces(number: Double): String {
-    val df = DecimalFormat("0.00")
+    val df = DecimalFormat("#,##0.00")
     return df.format(number)
 }
 
@@ -341,9 +342,21 @@ fun RecyclerView.setupLoadMoreListener(
 }
 
 
-fun String.toOrderDetailsFormattedDate(): String {
+fun String.toOrderDetailsFormattedDateOld(): String {
     val inputDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
     val outputDateFormat = SimpleDateFormat("E, d' 'MMM yyyy | hh:mm a", Locale.US)
+
+    return try {
+        val date = inputDateFormat.parse(this)
+        outputDateFormat.format(date)
+    } catch (e: Exception) {
+        // Handle parsing or formatting errors here
+        this // Return the original string if there's an error
+    }
+}
+fun String.toOrderDetailsFormattedDate(): String {
+    val inputDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
+    val outputDateFormat = SimpleDateFormat("E, d' 'MMM yyyy", Locale.US)
 
     return try {
         val date = inputDateFormat.parse(this)

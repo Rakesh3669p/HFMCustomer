@@ -51,8 +51,8 @@
                 android:id="@+id/profileImage"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_80sdp"
-                android:src="@color/greyDark"
                 android:scaleType="fitXY"
+                android:src="@drawable/ic_avatar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -181,16 +181,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/natureOfBusiness" />
 
-            <Spinner
-                android:id="@+id/countryCodeSpinner"
-                style="@style/SpinnerTheme2"
-                android:layout_width="@dimen/_55sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:gravity="start"
-                app:layout_constraintStart_toStartOf="@id/mobileNumberEdt"
-                app:layout_constraintBottom_toBottomOf="@+id/mobileNumberEdt"
-                app:layout_constraintTop_toTopOf="@+id/mobileNumberEdt" />
-
 
             <EditText
                 android:id="@+id/mobileNumberEdt"
@@ -201,15 +191,26 @@
                 android:background="@drawable/edt_line_box"
                 android:gravity="start"
                 android:hint="@string/mobile_number_lbl"
-                android:paddingEnd="@dimen/_10sdp"
-                android:paddingStart="@dimen/_60sdp"
+                android:inputType="number"
                 android:paddingVertical="@dimen/_12sdp"
+                android:paddingStart="@dimen/_60sdp"
+                android:paddingEnd="@dimen/_10sdp"
                 app:layout_constraintBottom_toTopOf="@+id/emailLbl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/companyContactNoLbl" />
 
- <TextView
+            <Spinner
+                android:id="@+id/countryCodeSpinner"
+                style="@style/SpinnerTheme3"
+                android:layout_width="@dimen/_70sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:gravity="start"
+                app:layout_constraintBottom_toBottomOf="@+id/mobileNumberEdt"
+                app:layout_constraintStart_toStartOf="@id/mobileNumberEdt"
+                app:layout_constraintTop_toTopOf="@+id/mobileNumberEdt" />
+
+            <TextView
                 android:id="@+id/emailLbl"
                 style="@style/textSmallSemiBold"
                 android:layout_width="0dp"
@@ -221,7 +222,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mobileNumberEdt" />
 
-            <EditText
+            <TextView
                 android:id="@+id/emailEdt"
                 style="@style/textMedium"
                 android:layout_width="0dp"
@@ -235,7 +236,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/emailLbl"
                 app:layout_constraintTop_toBottomOf="@+id/emailLbl" />
-
 
 
             <TextView
@@ -258,19 +258,20 @@
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:background="@drawable/edt_line_box"
+                android:clickable="true"
                 android:drawableEnd="@drawable/ic_keyboard_arrow"
                 android:drawableTint="@color/textGreyDark"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_10sdp"
                 android:text="@string/change_password_lbl"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 app:layout_constraintBottom_toTopOf="@+id/deleteAccount"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/emailEdt"
                 app:layout_constraintTop_toBottomOf="@+id/emailEdt" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/deleteAccount"
                 android:layout_width="match_parent"
@@ -281,16 +282,17 @@
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 app:layout_constraintBottom_toTopOf="@+id/save"
-                app:layout_constraintTop_toBottomOf="@id/changePasswordEdt"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/changePasswordEdt">
+
                 <TextView
                     android:id="@+id/deleteAccountLbl"
                     style="@style/textMediumSemiBold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:layout_marginTop="@dimen/_10sdp"
+                    android:gravity="center"
                     android:text="@string/delete_my_account_lbl"
                     app:layout_constraintBottom_toTopOf="@+id/deleteAccountDesc"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -303,8 +305,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_10sdp"
-                    android:text="All your data will be erased"
                     android:gravity="center"
+                    android:text="All your data will be erased"
                     android:textColor="@color/grey"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

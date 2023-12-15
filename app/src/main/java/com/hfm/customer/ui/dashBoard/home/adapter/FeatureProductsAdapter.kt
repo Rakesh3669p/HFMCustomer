@@ -48,12 +48,12 @@ class FeatureProductsAdapter @Inject constructor() :
                     }
                 }
 
-                if(data.frozen==1){
-                    frozenLbl.makeVisible()
-                    frozenLbl.text = "Fresh/Frozen"
-                }else if(data.chilled==1){
+                if(data.chilled==1){
                     frozenLbl.makeVisible()
                     frozenLbl.text = "Chilled"
+                }else if(data.frozen==1){
+                    frozenLbl.makeVisible()
+                    frozenLbl.text = "Fresh/Frozen"
                 }else{
                     frozenLbl.makeGone()
                 }

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemFilterBrandBinding
-import com.hfm.customer.ui.dashBoard.home.model.Brand
+import com.hfm.customer.ui.fragments.brands.model.Brand
 import com.hfm.customer.ui.fragments.products.productList.ProductListFragment.Companion.selectedBrandFilters
 import javax.inject.Inject
 

@@ -69,11 +69,12 @@
     <TextView
         android:id="@+id/category"
         style="@style/textSmallBold"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_8sdp"
-        android:text=""
+        android:paddingEnd="@dimen/_10sdp"
         android:textColor="@color/red"
+        app:layout_constraintEnd_toStartOf="@id/sort"
         app:layout_constraintStart_toEndOf="@id/result"
         app:layout_constraintTop_toBottomOf="@id/categoriesListRv" />
 
@@ -192,7 +193,7 @@
         layout="@layout/no_data_found"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/categoriesListRv"
+        app:layout_constraintTop_toBottomOf="@id/filter"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 

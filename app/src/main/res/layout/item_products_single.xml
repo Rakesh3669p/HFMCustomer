@@ -5,9 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/_4sdp"
-    android:layout_marginEnd="@dimen/_4sdp"
-
-    >
+    android:layout_marginEnd="@dimen/_4sdp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/productImageCard"
@@ -145,7 +143,7 @@
         android:gravity="center"
         android:maxLines="2"
         android:ellipsize="end"
-        android:text="Tom Yam Stramboat"
+        android:text="Tom Yam Stramboat "
         android:singleLine="false"
         app:layout_constraintEnd_toEndOf="@id/productImageCard"
         app:layout_constraintStart_toStartOf="@id/productImageCard"

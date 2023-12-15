@@ -3,10 +3,14 @@ package com.hfm.customer.ui.dashBoard
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.content.pm.Signature
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.PersistableBundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -27,6 +31,8 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
+import com.google.firebase.messaging.FirebaseMessaging
+import com.hfm.customer.BuildConfig
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ActivityDashBoardBinding
 import com.hfm.customer.utils.Resource
@@ -37,6 +43,8 @@ import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import javax.inject.Inject
 
 
@@ -70,14 +78,37 @@ class DashBoardActivity : AppCompatActivity() {
         navController = findNavController(R.id.nav_host_fragment_content_main)
         navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         setupWithNavController(binding.bottomNavigationView, navHostFragment.navController)
+
         navController.addOnDestinationChangedListener(destinationListener)
         sessionManager.deviceId = getDeviceIdInternal(this)
         mainViewModel.getAppUpdate()
         val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
         mainViewModel.checkLogin()
+        printHashKey()
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (it.isSuccessful) println("DeviceToken ${it.result}")
+        }
     }
 
+    fun printHashKey() {
+        try {
+            val info: PackageInfo = packageManager.getPackageInfo(
+                BuildConfig.APPLICATION_ID,
+                PackageManager.GET_SIGNATURES
+            )
+
+            for (signature: Signature in info.signatures) {
+                val md: MessageDigest = MessageDigest.getInstance("SHA")
+                md.update(signature.toByteArray())
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT))
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+        }
+    }
     private fun setObserver() {
 
         mainViewModel.checkLogin.observe(this) { response ->
@@ -217,6 +248,10 @@ class DashBoardActivity : AppCompatActivity() {
         }
     }
 
+    fun toProfile(){
+        navController.popBackStack()
+        binding.bottomNavigationView.selectedItemId = R.id.profileFragment
+    }
     override fun onResume() {
         super.onResume()
         setFlexibleUpdate()

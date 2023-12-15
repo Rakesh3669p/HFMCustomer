@@ -11,8 +11,16 @@ data class WalletModel(
 data class WalletData(
     val tot_credit: String,
     val tot_debit: String,
+    val referal_point: Double,
     val total_balance: Double,
-    val wallet: List<Wallet>
+    val wallet_cash: Double,
+    val wallet: List<Wallet>,
+    val recent_expire: RecentExpire
+)
+
+data class RecentExpire(
+    val amount:String,
+    val date:String
 )
 
 

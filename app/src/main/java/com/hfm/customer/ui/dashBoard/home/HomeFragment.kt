@@ -696,6 +696,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
             binding.featuresProductViewAll.id -> {
                 val bundle = Bundle()
+                bundle.putString("feature", "1")
                 findNavController().navigate(R.id.productListFragment, bundle)
             }
 

@@ -213,7 +213,7 @@ class ProfileSettingsBusiness : Fragment(), View.OnClickListener {
     }
 
     private fun setCountriesSpinner(country: List<Country>) {
-        val phoneCodes = country.map { it.phonecode.toString() }
+        val phoneCodes = country.map { "+${it.phonecode}" }
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, phoneCodes).apply {
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
@@ -273,14 +273,14 @@ class ProfileSettingsBusiness : Fragment(), View.OnClickListener {
                 val request = ImageRequest.Builder(requireContext())
                     .data(imageReplaced)
                     .target(profileImage)
-                    .placeholder(R.drawable.user)
-                    .error(R.drawable.user)
+                    .placeholder(R.drawable.ic_avatar)
+                    .error(R.drawable.ic_avatar)
                     .build()
                 lifecycleScope.launch {
                     imageLoader.execute(request)
                 }
                 nameEdt.setText("${it.first_name} ${it.last_name}")
-                emailEdt.setText(it.email)
+                emailEdt.text = it.email
                 registerNoEdt.setText(it.business_details.registration_no)
                 mobileNumberEdt.setText(it.business_details.contact_no)
                 natureOfBusinessId = it.business_details.business_type.toInt()

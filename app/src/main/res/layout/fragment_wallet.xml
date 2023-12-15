@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="@color/white">
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/back"
@@ -36,7 +36,6 @@
         style="@style/textSmallSemiBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_marginStart="@dimen/_20sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back" />
@@ -46,22 +45,43 @@
         style="@style/textLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_4sdp"
         android:text=""
         android:textSize="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:layout_marginStart="@dimen/_20sdp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/balanceLbl"/>
+        app:layout_constraintTop_toBottomOf="@id/balanceLbl" />
+
+
+    <TextView
+        android:id="@+id/referralExpire"
+        style="@style/textSmall"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_8sdp"
+        android:background="@color/redLite"
+        android:gravity="center_horizontal"
+        android:paddingVertical="@dimen/_2sdp"
+        android:text="Notice: Your 500 referral will expire on 20 Aug 2023"
+        app:layout_constraintTop_toBottomOf="@id/balance" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/walletRv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        tools:listitem="@layout/item_wallet_transaction"
-        tools:itemCount="4"
         android:layout_margin="@dimen/_8sdp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/balance"/>
+        app:layout_constraintTop_toBottomOf="@id/referralExpire"
+        tools:itemCount="4"
+        tools:listitem="@layout/item_wallet_transaction" />
 
+    <include
+        android:id="@+id/noData"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/no_data_found"
+        android:visibility="gone"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

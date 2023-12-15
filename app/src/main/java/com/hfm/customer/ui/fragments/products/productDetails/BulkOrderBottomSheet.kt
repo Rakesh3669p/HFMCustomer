@@ -20,6 +20,7 @@ import com.hfm.customer.R
 import com.hfm.customer.databinding.BottomSheetBulkOrderBinding
 import com.hfm.customer.ui.dashBoard.profile.model.Profile
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
+import com.hfm.customer.ui.fragments.products.productDetails.model.UOM
 import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import java.time.LocalDate
 
 class BulkOrderBottomSheet(
+    private val uomList: MutableList<UOM>,
     private val profileData: Profile,
     private val productData: Product,
     val callback: (
@@ -38,7 +40,8 @@ class BulkOrderBottomSheet(
         phone: String,
         dateNeeded: String,
         deliveryAddress: String,
-        remarks: String
+        remarks: String,
+        unitOfMeasures: String
 
     ) -> Unit
 ) : BottomSheetDialogFragment() {
@@ -82,28 +85,19 @@ class BulkOrderBottomSheet(
             scrollView.layoutParams = layoutParams
 
             productName.text = productData.product_name
-            val imageOriginal = if (productData.image?.isNotEmpty() == true) productData.image[0].image else ""
+            val imageOriginal =
+                if (productData.image?.isNotEmpty() == true) productData.image[0].image else ""
             productImage.loadImage(replaceBaseUrl(imageOriginal))
             name.text = "${profileData.first_name} ${profileData.last_name}"
             email.text = profileData.email
             address.setText(profileData.address1)
-
-
-            // Define an array of items
-            val items = arrayOf(
-                "Units of Measurement",
-                "Pieces",
-                "Packs",
-                "Sets",
-                "Numbers",
-                "Kilograms",
-                "Boxes",
-                "Outers",
-                "Carton")
+            val uomStart = UOM(id = 0, "Units of Measurement")
+            uomList.add(0, uomStart)
+            val uom = uomList.map { it.uom }
 
 
             val adapter: ArrayAdapter<String> =
-                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, items)
+                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, uom)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             unitsSpinner.adapter = adapter
             unitsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -113,7 +107,8 @@ class BulkOrderBottomSheet(
                     position: Int,
                     id: Long
                 ) {
-                    unitOfMeasures = parentView.getItemAtPosition(position) as String
+                    if (position == 0) return
+                    unitOfMeasures = uomList[position].id.toString()
 
                 }
 
@@ -187,7 +182,8 @@ class BulkOrderBottomSheet(
                     phone,
                     dateNeeded,
                     deliveryAddress,
-                    remarks
+                    remarks,
+                    unitOfMeasures
                 )
             }
             cancel.setOnClickListener {

@@ -31,8 +31,17 @@ class MyAllOrdersProductsAdapter @Inject constructor() : RecyclerView.Adapter<My
                     productImage.loadImage(replaceBaseUrl(data.product_image[0].image))
                 }
                 productName.text = data.product_name
+
+
                 if(data.product_type.lowercase()=="config"){
-                    productQty.text = "${data.attr_name1} | Qty: ${data.quantity.toString().toDouble().roundToInt()}"
+                    val attributeName = data.attr_name1
+                    val truncatedAttributeName = if (attributeName?.length!! > 9) {
+                        "${attributeName?.substring(0, 9)}..."
+                    } else {
+                        attributeName
+                    }
+
+                    productQty.text = "$truncatedAttributeName | Qty: ${data.quantity.toString().toDouble().roundToInt()}"
                 }else{
                     productQty.text = "Qty: ${data.quantity.toString().toDouble().roundToInt()}"
                 }

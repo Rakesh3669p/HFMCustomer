@@ -34,7 +34,7 @@ class CategoriesFragment : Fragment() {
     private var initialized: Int = 0
     private var selectedPosition: Int = 0
     private var catId: Int = -1
-    private lateinit var mainCategoryData: List<CatSubcat>
+    private var mainCategoryData: List<CatSubcat> = ArrayList()
     private lateinit var binding: FragmentCategoriesBinding
     private var currentView: View? = null
 
@@ -80,8 +80,8 @@ class CategoriesFragment : Fragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt("initialized", 1)
-        outState.putInt("position", selectedPosition)
+//        outState.putInt("initialized", 1)
+//        outState.putInt("position", selectedPosition)
         super.onSaveInstanceState(outState)
     }
 
@@ -94,6 +94,13 @@ class CategoriesFragment : Fragment() {
         with(binding) {
             initRecyclerView(requireContext(), categoriesMainRv, categoryMainAdapter)
             initRecyclerViewGrid(requireContext(), categoriesRv, categoriesAdapter, 3)
+        }
+
+        if(selectedPosition==0){
+            binding.categoriesMainRv.post {
+                binding.categoriesMainRv.scrollToPosition(0)
+            }
+
         }
     }
 
@@ -124,6 +131,21 @@ class CategoriesFragment : Fragment() {
         categoryMainAdapter.setSelectionPosition(selectedPosition)
         categoryMainAdapter.differ.submitList(mainCategoryData)
         categoriesAdapter.differ.submitList(mainCategoryData[selectedPosition].subcategory)
+
+        if(selectedPosition==0){
+            binding.categoriesMainRv.post {
+                binding.categoriesMainRv.scrollToPosition(0)
+            }
+
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        selectedPosition = 0
+        if(mainCategoryData.isNotEmpty()) {
+            setCategories(mainCategoryData)
+        }
     }
 
     private fun setOnClickListener() {

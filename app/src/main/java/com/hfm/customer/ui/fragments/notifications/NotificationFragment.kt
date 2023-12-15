@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.hfm.customer.MainActivity
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentNotificationsBinding
 import com.hfm.customer.ui.dashBoard.DashBoardActivity
@@ -193,16 +194,15 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 }
 
                 "profile" -> {
-                    findNavController().navigate(R.id.profileFragment)
+
                     mainViewModel.viewedNotification(notificationId = notification.id)
+                    (activity as DashBoardActivity).toProfile()
                 }
 
                 "cart" -> {
                     findNavController().navigate(R.id.cartFragment)
                     mainViewModel.viewedNotification(notificationId = notification.id)
                 }
-
-
 
                 "support" -> {
                     val bundle = Bundle()
@@ -211,14 +211,14 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                     mainViewModel.viewedNotification(notificationId = notification.id)
 
                 }
-                "new_chat_message" -> {
+
+                "new_chat_message","chat" -> {
                     val bundle = Bundle().apply {
                         putString("from", "chatList")
                         putInt("chatId", notification.ref_id)
                     }
                     findNavController().navigate(R.id.chatFragment, bundle)
                     mainViewModel.viewedNotification(notificationId = notification.id)
-
                 }
             }
         }

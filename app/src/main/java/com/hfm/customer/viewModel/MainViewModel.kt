@@ -46,6 +46,7 @@ import com.hfm.customer.ui.fragments.products.productDetails.model.AddToCartMode
 import com.hfm.customer.ui.fragments.products.productDetails.model.BulkOrderRequestModel
 import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetailsModel
+import com.hfm.customer.ui.fragments.products.productDetails.model.UOMModel
 import com.hfm.customer.ui.fragments.referral.ReferralModel
 import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
 import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
@@ -120,6 +121,7 @@ class MainViewModel @Inject constructor(
     val addBulkOrdersAction = SingleLiveEvent<Resource<SuccessModel>>()
     val addToWishList = SingleLiveEvent<Resource<SuccessModel>>()
     val removeFromWishList = SingleLiveEvent<Resource<SuccessModel>>()
+    val uomList = SingleLiveEvent<Resource<UOMModel>>()
     val removeCoupon = SingleLiveEvent<Resource<SuccessModel>>()
     val wishListProducts = SingleLiveEvent<Resource<WishListModel>>()
     val address = SingleLiveEvent<Resource<AddressModel>>()
@@ -725,7 +727,7 @@ class MainViewModel @Inject constructor(
         date: String,
         deliveryAddress: String,
         remarks: String,
-        unitOfMeasures: Int
+        unitOfMeasures: String
     ) = viewModelScope.launch {
         val jsonObject = JsonObject().apply {
             addProperty("access_token", sessionManager.token)
@@ -849,6 +851,21 @@ class MainViewModel @Inject constructor(
                 removeFromWishList.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             removeFromWishList.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getUOMList() = viewModelScope.launch { safeGetUOMListCall() }
+
+    private suspend fun safeGetUOMListCall() {
+        uomList.postValue(Resource.Loading())
+        try {
+            val response = repository.getUomList()
+            if (response.isSuccessful)
+                uomList.postValue(Resource.Success(checkResponseBody(response.body()) as UOMModel))
+            else
+                uomList.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            uomList.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 
@@ -1151,6 +1168,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("lang_id", "1")
         jsonObject.addProperty("device_id", sessionManager.deviceId)
         jsonObject.addProperty("page_url", "CART")
+        jsonObject.addProperty("payment_method_id", "1")
         jsonObject.addProperty("os_type", "app")
         safeGetCartCall(jsonObject)
     }
@@ -1258,6 +1276,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("lang_id", 1)
         jsonObject.addProperty("cart_subtotal", subTotal)
         jsonObject.addProperty("coupon_code", couponCode)
+        jsonObject.addProperty("payment_method_id", "1")
         jsonObject.addProperty("os_type", "app")
         safeApplyPlatFormVouchersCall(jsonObject)
     }
@@ -1275,7 +1294,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun applySellerVouchers(sellerId: String, couponCode: String, sellerSubtotal: Double) =
+    fun applySellerVouchers(sellerId: String, couponCode: String, sellerSubtotal: Double,sellerShippingCharges:Double) =
         viewModelScope.launch {
             val jsonObject = JsonObject()
             jsonObject.addProperty("lang_id", 1)
@@ -1283,6 +1302,8 @@ class MainViewModel @Inject constructor(
             jsonObject.addProperty("coupon_code", couponCode)
             jsonObject.addProperty("seller_id", sellerId)
             jsonObject.addProperty("seller_subtotal", sellerSubtotal)
+            jsonObject.addProperty("seller_shipping_charges", sellerShippingCharges)
+            jsonObject.addProperty("payment_method_id", "1")
             jsonObject.addProperty("os_type", "app")
             safeApplySellerVouchersCall(jsonObject)
         }
@@ -1676,10 +1697,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getBrands(name: String) = viewModelScope.launch {
+    fun getBrands(name: String = "",filterName:String= "") = viewModelScope.launch {
         val jsonObject = JsonObject()
         jsonObject.addProperty("sort_by_name", if (name != "1" || name.isEmpty()) "1" else "")
-        jsonObject.addProperty("filter_by_name", name)
+        jsonObject.addProperty("filter_by_name", filterName)
         jsonObject.addProperty("limit", 150)
         safeGetBrandsCall(jsonObject)
     }

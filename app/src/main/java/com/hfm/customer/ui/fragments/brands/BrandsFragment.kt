@@ -86,9 +86,11 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
                     if(response.data?.httpcode == 200){
                         initRecyclerViewGrid(requireContext(),binding.brandsRv,brandsAdapter,2)
                         brandsAdapter.differ.submitList(response.data.data.brands)
-                        binding.noData.isVisible = response.data.data.brands.isEmpty()
+                        binding.noData.root.isVisible = response.data.data.brands.isEmpty()
+                        binding.noData.noDataLbl.text = "No brands found."
                     }else if(response.data?.httpcode == 404){
-                        binding.noData.isVisible = true
+                        binding.noData.root.isVisible = true
+                        binding.noData.noDataLbl.text = "No brands found."
                         brandsAdapter.differ.submitList(emptyList())
                     }
                 }

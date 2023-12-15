@@ -20,7 +20,7 @@ data class Purchase(
     val cancel_order_detail: CancelledOrders,
     val cust_message: String,
     val delivery_charges: Double,
-    val shippingDiscount: Double,
+    val shipping_discount: Double,
     val delivery_partner: String,
     val delivery_proof: String,
     val delivery_status: String,

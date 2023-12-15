@@ -12,6 +12,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -41,8 +42,11 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
                 voucherDetailsLayout.isVisible = data.is_seller_coupon_applied == 1
                 if (data.is_seller_coupon_applied == 1) {
                     voucher.text = data.seller_coupon_data.title
-                    voucherDescription.text =
-                        "You saved additional RM ${formatToTwoDecimalPlaces(data.seller_coupon_data.seller_coupon_discount_amt)}"
+                    if(data.seller_coupon_data.is_free_shipping==1){
+                        voucherDescription.text = "Free shipping Voucher applied"
+                    }else{
+                        voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(data.seller_coupon_data.seller_coupon_discount_amt)}"
+                    }
                 }
 
 
@@ -122,9 +126,15 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
                 }
                 productAdapter.selectAllProducts(selectAll)
 
-                getVoucher.isVisible = data.seller_coupon_remaining != null && data.seller_coupon_remaining > 0
-                val remainingAmount = "RM ${data.seller_coupon_remaining?.let { formatToTwoDecimalPlaces(it) }}"
+                val sellerCouponRemaining = data.seller_coupon_remaining.toString().toDoubleOrNull()
+
+                getVoucher.isVisible = sellerCouponRemaining != null && sellerCouponRemaining > 0
+                val remainingAmount = "RM ${sellerCouponRemaining?.let { formatToTwoDecimalPlaces(it) }}"
                 getVoucher.text = "Buy $remainingAmount more to enjoy the voucher"
+            }
+
+            if(data.seller_coupon_text.isNotEmpty()){
+                Toast.makeText(context, data.seller_coupon_text, Toast.LENGTH_LONG).show()
             }
 
         }

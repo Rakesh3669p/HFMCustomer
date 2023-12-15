@@ -67,7 +67,7 @@
                 android:layout_width="@dimen/_50sdp"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_marginHorizontal="@dimen/_10sdp"
-                android:src="@drawable/user"
+                android:src="@drawable/ic_avatar"
                 android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="@id/basicDetailsBg"
                 app:layout_constraintStart_toStartOf="parent"

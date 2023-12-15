@@ -27,6 +27,7 @@ data class ShippingOption(
     val created_at: String,
     val id: Int,
     val is_active: Int,
+    var is_selected: Boolean = false,
     val title: String,
     val updated_at: Any
 )

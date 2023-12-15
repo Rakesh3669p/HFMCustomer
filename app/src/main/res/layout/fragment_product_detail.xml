@@ -1197,6 +1197,7 @@
                 app:layout_constraintTop_toBottomOf="@id/reviewsRv" />
 
             <View
+                android:id="@+id/fromSameShopDivider"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginStart="@dimen/_20sdp"

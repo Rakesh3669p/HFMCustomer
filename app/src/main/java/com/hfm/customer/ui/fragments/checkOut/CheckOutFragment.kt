@@ -46,6 +46,7 @@ import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.moveToLogin
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
+import com.hfm.customer.utils.showToastLong
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -276,8 +277,13 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                         if (this::platformVoucherDialog.isInitialized) {
                             platformVoucherDialog.dismiss()
                         }
-                        mainViewModel.getCheckoutInfo()
-                        showToast("Coupon Applied")
+
+                        if(response.data.status == "success"){
+                            mainViewModel.getCheckoutInfo()
+                            showToast("Voucher Applied")
+                        }else{
+                            showToastLong(response.data.message.toString())
+                        }
                     } else {
                         platformVoucherDialog.dismiss()
                         showToast(response.data?.message.toString())
@@ -296,8 +302,8 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (this::platformVoucherDialog.isInitialized) platformVoucherDialog.dismiss()
-                    if (response.data?.httpcode == 200) mainViewModel.getCheckoutInfo() else showToast(
-                        response.data?.message.toString()
+                    if (response.data?.httpcode == 200)
+                        mainViewModel.getCheckoutInfo() else showToast(response.data?.message.toString()
                     )
                 }
 
@@ -358,6 +364,14 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
     private fun setProducts(cartData: CartData) {
         this.cartData = cartData
 
+        if(cartData.wallet_text.isNotEmpty()){
+            showToast(cartData.wallet_text)
+        }
+
+        if(cartData.platform_coupon_text.isNotEmpty()){
+            showToast(cartData.platform_coupon_text)
+        }
+
         with(binding) {
             checkOutRv.apply {
                 layoutManager = LinearLayoutManager(requireContext())
@@ -412,14 +426,17 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             addVoucher.isVisible = cartData.is_platform_coupon_applied == 0
 
             voucherName.text = cartData.platform_coupon_data.title
-            voucherDescription.text =
-                "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.ofr_amount.toDouble())}"
+
+            if (cartData.platform_coupon_data.is_free_shipping == 1) {
+                voucherDescription.text = getString(R.string.free_shipping_applied_lbl)
+            } else {
+                voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(cartData.platform_coupon_data.platform_discount_amount)}"
+            }
 
             val walletBalance = cartData.wallet_balance
             if (walletBalance != "false") {
-                val pointToRM = walletBalance.toDouble() / 100
-                points.text = "${walletBalance.toDouble().roundToInt()} (RM ${
-                    formatToTwoDecimalPlaces(pointToRM)
+                points.text = "${walletBalance.toDouble()} (RM ${
+                    formatToTwoDecimalPlaces(cartData.wallet_cash.toDouble())
                 })"
             } else {
                 points.text = "0 (RM 0.00)"
@@ -538,7 +555,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 mainViewModel.applySellerVouchers(
                     selectingVoucherSellerId,
                     couponCode,
-                    sellerData?.seller_subtotal ?: 0.0
+                    sellerData?.seller_subtotal ?: 0.0,sellerData?.shipping?:0.0
                 )
             }
 
@@ -553,7 +570,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                 mainViewModel.applySellerVouchers(
                     selectingVoucherSellerId,
                     sellerSelectedVoucher?.couponCode ?: "",
-                    sellerData?.seller_subtotal ?: 0.0
+                    sellerData?.seller_subtotal ?: 0.0,sellerData?.shipping?:0.0
                 )
                 sellerSelectedVoucher = null
             }
@@ -596,8 +613,8 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             useWalletPoints.setOnClickListener {
                 if (useWalletPoints.isChecked) {
                     val walletBalance = cartData.wallet_balance.toDouble() / 100
-                    if (walletBalance > cartData.total_offer_cost) {
-                        mainViewModel.applyWallet((cartData.total_offer_cost * 100).toString())
+                    if (walletBalance > cartData.grand_total.toString().toDouble()) {
+                        mainViewModel.applyWallet((cartData.grand_total.toString().toDouble() * 100).toString())
                     } else {
                         mainViewModel.applyWallet(cartData.wallet_balance)
                     }
@@ -723,7 +740,13 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("lang_id", 1)
         jsonObject.addProperty("is_platform_coupon", cartData.is_platform_coupon_applied)
-        jsonObject.addProperty("platform_discount_amt", cartData.platform_voucher_amt)
+
+        if(cartData.platform_coupon_data.platform_discount_type == "shipping_discount"){
+            jsonObject.addProperty("platform_discount_amt", cartData.shipping_discount)
+        }else{
+            jsonObject.addProperty("platform_discount_amt", cartData.platform_voucher_amt)
+        }
+
         if (cartData.platform_coupon_data.coupon_id != null) {
 
             jsonObject.addProperty("platform_coupon_id", cartData.platform_coupon_data.coupon_id)
@@ -772,27 +795,22 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         bindingDialog.description.settings.javaScriptEnabled = true
 
 
-        bindingDialog.description.loadDataWithBaseURL(
-            null,
-            goodsTermsAndConditions,
-            "text/html",
-            "UTF-8",
-            null
-        )
+        bindingDialog.description.loadDataWithBaseURL(null, goodsTermsAndConditions, "text/html", "UTF-8", null)
         bindingDialog.description.webViewClient = WebViewClient()
         bindingDialog.description.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 view!!.context.startActivity(Intent(Intent.ACTION_VIEW, request?.url))
                 return true
             }
         }
+
         bindingDialog.decline.isVisible = true
         bindingDialog.accept.isVisible = true
         bindingDialog.agreeCheckBox.isVisible = true
-        appCompatDialog.show()
+        if(!appCompatDialog.isShowing) {
+            appCompatDialog.show()
+        }
+
         bindingDialog.close.setOnClickListener {
             appCompatDialog.dismiss()
         }
@@ -823,11 +841,12 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
             }
 
             binding.placeOrder.id -> {
-                if (cartData.shipping_customer_type == "international") {
-                    showTermsAndConditions()
-                } else {
-
-                    placeOrder()
+                if(this::cartData.isInitialized) {
+                    if (cartData.shipping_customer_type == "international") {
+                        showTermsAndConditions()
+                    } else {
+                        placeOrder()
+                    }
                 }
             }
 

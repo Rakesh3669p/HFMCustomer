@@ -1,7 +1,11 @@
 package com.hfm.customer.ui.fragments.referral
 
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +19,9 @@ import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.netWorkFailure
+import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,14 +67,17 @@ class ReferralFragment : Fragment(), View.OnClickListener {
                         "200" -> {
                             setReferral(response.data.data)
                         }
+
                         "400" -> {
 
                         }
+
                         else -> {
 
                         }
                     }
                 }
+
                 is Resource.Loading -> appLoader.show()
                 is Resource.Error -> apiError(response.message)
             }
@@ -76,15 +85,37 @@ class ReferralFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setReferral(data: ReferralData) {
-        with(binding){
+        with(binding) {
 //            referralImage.load()
+            if (data.referral.isNotEmpty()) {
+                data.referral[0].let {
 
-            if(data.refferal.isNotEmpty()){
-                data.refferal[0].let {
+
+                    // Assuming 'it' is an object with a property 'referral_points'
+                    val referralPoints = it.referral_points
+
+                    val inviteMessage = "Invite Friends,\nget $referralPoints points"
+                    val spannableString = SpannableString(inviteMessage)
+                    val startIndex = inviteMessage.indexOf(referralPoints)
+                    val endIndex = inviteMessage.length
+                    val boldTypeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
+                    spannableString.setSpan(StyleSpan(boldTypeface.style), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                    rewardsImageText.text = spannableString
+
+
+                    referralImage.loadImage(replaceBaseUrl(it.image))
                     couponCode.text = it.ref_code
-                    one.text = "1. Offer Valid on order of RM ${formatToTwoDecimalPlaces(it.ord_min_amount)} and above"
-                    two.text = "2. Maximum invitations: ${it.max_invitation} Friends"
-                    three.text = "3. Rewards cash expires in ${it.referral_rewards_expiry} days from date issued"
+                    one.text =
+                        "1. Offer Valid on order of RM ${formatToTwoDecimalPlaces(it.ord_min_amount)} and above"
+                    two.text = "2. Maximum invitations: ${it.max_invitations} Friends"
+                    val thirdPoint =
+                        if (it.referral_rewards_expiry.isNotEmpty() && it.referral_rewards_expiry.toInt() > 1) {
+                            "3. Rewards cash expires in ${it.referral_rewards_expiry} days from date issued"
+                        } else {
+                            "3. Rewards cash expires in ${it.referral_rewards_expiry} day from date issued"
+                        }
+                    three.text = thirdPoint
                 }
             }
 
@@ -103,6 +134,7 @@ class ReferralFragment : Fragment(), View.OnClickListener {
         with(binding) {
             back.setOnClickListener(this@ReferralFragment)
             share.setOnClickListener(this@ReferralFragment)
+            shareButton.setOnClickListener(this@ReferralFragment)
         }
     }
 
@@ -136,10 +168,12 @@ class ReferralFragment : Fragment(), View.OnClickListener {
         intent.type = "text/plain"
         startActivity(Intent.createChooser(intent, "Share Via"))
     }
+
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
             binding.share.id -> shareReferral()
+            binding.shareButton.id -> shareReferral()
         }
     }
 }

@@ -53,6 +53,7 @@ class WishListShopsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
         setObserver()
     }
 
@@ -61,7 +62,6 @@ class WishListShopsFragment : Fragment() {
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         mainViewModel.followedShops()
-
     }
 
     private fun setObserver() {

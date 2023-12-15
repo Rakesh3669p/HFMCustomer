@@ -212,12 +212,12 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 orderDetails = it
 
                 if (orderDetails.order_type == "bulk_order") {
-                    orderType.text = "OrderType: Bulk Order"
+                    orderType.text = "Order Type: Bulk Order"
                     chat.text = "Support"
                     deliveryPartner.makeInvisible()
                     deliveryPartnerLbl.makeInvisible()
                 } else if (orderDetails.order_type == "normal_order") {
-                    orderType.text = "OrderType: Normal Order"
+                    orderType.text = "Order Type: Normal Order"
                     chat.text = "Chat"
                     deliveryPartner.makeVisible()
                     deliveryPartnerLbl.makeVisible()
@@ -250,7 +250,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                         } else if (it.frontend_order_status.lowercase().contains("delivered")) {
                             requestStatus.setTextColor(greenColor)
                             requestStatus.text = it.frontend_order_status
-                        } else if (it.frontend_order_status.lowercase().contains("cancelled")) {
+                        } else if (it.frontend_order_status.lowercase().contains("cancelled")||it.frontend_order_status.lowercase().contains("cancel")) {
                             paymentReceiptCv.isVisible = false
                             submit.isVisible = false
                             requestStatus.setTextColor(redColor)
@@ -290,7 +290,8 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                     paymentMethodDivider1.isVisible = false
                 }
 
-                when (it.order_status) {
+
+                when (it.payment_status) {
                     "accepted","delivered" -> {
                         when (it.payment_upload_status) {
                             0 -> paymentStatus.text = "Not Uploaded"
@@ -309,6 +310,21 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                             }
                         }
                     }
+
+                    "rejected"-> {
+                        val remarks = if (it.reject_remarks.isNullOrEmpty()) "" else "(${it.reject_remarks})"
+                        paymentStatus.text = "Rejected $remarks"
+                        paymentStatus.setTextColor(redColor)
+                    }
+                }
+
+                if(it.order_status == "delivered"){
+                    paymentStatus.text = "Accepted (View)"
+                    val formattedShipping = "Accepted (View)"
+                    val spannableString = SpannableString(formattedShipping)
+                    spannableString.setSpan(ForegroundColorSpan(greenColor), 0, 8, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    paymentStatus.text = spannableString
+                    paymentStatus.setOnClickListener(this@OrderDetailsFragment)
                 }
 
                 billingAddress.text = "${it.shipping_address.address1}, ${it.shipping_address.address2},\n${it.shipping_address.city}, ${it.shipping_address.state}, ${it.shipping_address.country}, ${it.shipping_address.zip_code}\nPhone: ${it.shipping_address.phone}"
@@ -322,7 +338,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 subtotalLbl.text = "Subtotal (${it.products.size} Items)"
                 subtotal.text = "RM ${formatToTwoDecimalPlaces(it.sub_total)}"
                 shippingAmount.text = "RM ${formatToTwoDecimalPlaces(it.delivery_charges)}"
-                shippingDiscount.text = "RM -${formatToTwoDecimalPlaces(it.shippingDiscount)}"
+                shippingDiscount.text = "RM -${formatToTwoDecimalPlaces(it.shipping_discount)}"
                 wallet.text =
                     "RM -${formatToTwoDecimalPlaces(it.wallet_amount.toString().toDouble())}"
                 storeVoucher.text = "RM -${formatToTwoDecimalPlaces(it.seller_voucher_amount)}"

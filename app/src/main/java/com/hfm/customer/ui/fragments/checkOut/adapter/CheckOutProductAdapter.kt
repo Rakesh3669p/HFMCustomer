@@ -60,7 +60,7 @@ class CheckOutProductAdapter @Inject constructor() :
                     variants.text = "${data.attr_name1} | Qty: ${data.quantity.toString().toDouble().roundToInt()}"
                 }
 
-                flashDeal.isVisible = (data.offer_name == "Flash Sale" || data.offer_name == "Shocking Sale")
+                flashDeal.isVisible = (data.offer_name == "Flash Sale" || data.offer_name == "Shocking Sale" && !data.end_time.isNullOrEmpty())
                 if (flashDeal.isVisible) setTimer(data.end_time, flashDeal)
             }
         }

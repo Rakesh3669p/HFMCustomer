@@ -22,6 +22,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
+import com.hfm.customer.databinding.DeliveryProofBinding
 import com.hfm.customer.databinding.DialogueMediaPickupBinding
 import com.hfm.customer.databinding.FragmentChatBinding
 import com.hfm.customer.ui.dashBoard.chat.adapter.ChatAdapter
@@ -38,7 +39,9 @@ import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.hasEmailAddress
 import com.hfm.customer.utils.hasNumberGreaterThan10Digits
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.netWorkFailure
+import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,6 +61,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ChatFragment : Fragment(), View.OnClickListener {
 
+    private var storeName: String =""
     private var messagesList: MutableList<Message> = ArrayList()
 
     private val productId: String = ""
@@ -119,7 +123,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
         noInternetDialog.setOnDismissListener { init() }
 
         val from = arguments?.getString("from").toString()
-        val storeName = arguments?.getString("storeName").toString()
+        storeName = arguments?.getString("storeName")?:""
         sellerId = arguments?.getString("sellerId").toString()
         chatId = arguments?.getInt("chatId").toString()
         saleId = arguments?.getString("saleId").toString()
@@ -191,6 +195,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     when (response.data?.httpcode) {
                         200 -> {
+
                             setChatData(response.data.data.messages)
                         }
 
@@ -247,7 +252,9 @@ class ChatFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setChatData(messages: Messages) {
-
+        if(storeName.isNullOrEmpty()){
+            binding.toolBarTitle.text = messages.seller_name
+        }
         messagesList = messages.messages.toMutableList()
         chatAdapter.differ.submitList(messagesList)
         chatAdapter.setSellerName(messages.seller_name)
@@ -302,6 +309,21 @@ class ChatFragment : Fragment(), View.OnClickListener {
             sendMessage.setOnClickListener(this@ChatFragment)
             gallery.setOnClickListener(this@ChatFragment)
         }
+
+        chatAdapter.setOnChatImageClickListener {image->
+            showImageDialog(image)
+        }
+    }
+
+    private fun showImageDialog(image: String) {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DeliveryProofBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.setCancelable(true)
+        bindingDialog.productImage.loadImage(replaceBaseUrl(image) )
+        bindingDialog.close.setOnClickListener { appCompatDialog.dismiss() }
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.show()
     }
 
     private fun validAndSendMessage() {
@@ -311,12 +333,8 @@ class ChatFragment : Fragment(), View.OnClickListener {
             return
         }
 
-        if (containsSensitiveWords(message) || hasNumberGreaterThan10Digits(message) || hasEmailAddress(
-                message
-            )
-        ) {
+        if (containsSensitiveWords(message) || hasNumberGreaterThan10Digits(message) || hasEmailAddress(message)) {
             val currentDateTime = LocalDateTime.now()
-
             val timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss")
             val dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
             val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

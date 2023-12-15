@@ -79,7 +79,7 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
         val jsonStr = arguments?.getString("payLoad")
         receivedJsonObject = JsonParser().parse(jsonStr).asJsonObject
         val spannable = SpannableString(getString(R.string.how_to_make_payment_lbl))
-        spannable.setSpan(UnderlineSpan(), 0, getString(R.string.view_order_lbl).length, 0)
+        spannable.setSpan(UnderlineSpan(), 0, getString(R.string.how_to_make_payment_lbl).length, 0)
         binding.howToPayLbl.text = spannable
     }
 

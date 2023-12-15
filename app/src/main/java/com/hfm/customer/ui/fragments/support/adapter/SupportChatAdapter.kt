@@ -56,6 +56,9 @@ class SupportChatAdapter @Inject constructor() :
                         rightChatImage.isVisible = false
                     }
 
+                    rightChat.setOnClickListener {
+                        onImageClick?.invoke(replaceBaseUrl(data.image))
+                    }
                 } else {
                     showLeftChat(bind, true)
                     showRightChat(bind, false)
@@ -71,6 +74,10 @@ class SupportChatAdapter @Inject constructor() :
                     val chatTime = data.created_at.toUnixTimestamp()
                     leftTimeAgo.text = chatTime.toFormattedDateTimeChat()
                     leftChat.text = data.message
+
+                    leftChatImage.setOnClickListener {
+                        onImageClick?.invoke(replaceBaseUrl(data.image))
+                    }
                 }
 
             }
@@ -139,10 +146,10 @@ class SupportChatAdapter @Inject constructor() :
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onChatClick: ((id: Int) -> Unit)? = null
+    private var onImageClick: ((image: String) -> Unit)? = null
 
-    fun setOnChatClickListener(listener: (id: Int) -> Unit) {
-        onChatClick = listener
+    fun setOnImageClickListener(listener: (image: String) -> Unit) {
+        onImageClick = listener
     }
 
 }

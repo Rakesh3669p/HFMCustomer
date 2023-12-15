@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
 import com.hfm.customer.databinding.DialogNoChatBinding
@@ -87,6 +88,11 @@ class ChatListFragment : Fragment(), View.OnClickListener {
                         orderCount = response.data.data.order_count
                         if (response.data.data.list.isNotEmpty()) {
                             initRecyclerView(requireContext(), binding.chatUsersRv, chatUserAdapter)
+
+                            val animator = DefaultItemAnimator()
+                            animator.supportsChangeAnimations = false // Disable default change animations
+                            binding.chatUsersRv.itemAnimator = animator
+
                             chatUserAdapter.differ.submitList(response.data.data.list)
                         }
                     }  else if (response.data?.httpcode == 401) {

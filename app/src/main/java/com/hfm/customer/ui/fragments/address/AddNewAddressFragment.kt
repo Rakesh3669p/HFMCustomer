@@ -82,6 +82,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         setObserver()
     }
+
     private fun init() {
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
@@ -91,7 +92,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
 
         arguments?.let {
             from = it.getString("from").toString()
-            if(from =="update") {
+            if (from == "update") {
                 addressId = it.getInt("addressId")
                 addressType = if (it.getString("addressType")?.lowercase() == "home") 1 else 2
                 cityId = it.getString("cityId").toString()
@@ -105,11 +106,11 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
                 homeFlatNo = it.getString("homeFlatNo").toString()
                 streetBuildingName = it.getString("streetBuildingName").toString()
                 pinCode = it.getString("pinCode").toString()
-                isDefault = it.getInt("isDefault")?:0
+                isDefault = it.getInt("isDefault") ?: 0
             }
         }
-        if(from == "update") {
-            with(binding){
+        if (from == "update") {
+            with(binding) {
                 name.setText(customerName)
                 mobileNumber.setText(customerNumber)
                 houseNo.setText(homeFlatNo)
@@ -134,8 +135,12 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
             mMap.setOnMapClickListener {
                 marker?.position = it
-                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.Builder().target(it).zoom(11f).build()))
-                reverseGeocode(it.latitude,it.longitude)
+                mMap.moveCamera(
+                    CameraUpdateFactory.newCameraPosition(
+                        CameraPosition.Builder().target(it).zoom(11f).build()
+                    )
+                )
+                reverseGeocode(it.latitude, it.longitude)
             }
         }
     }
@@ -143,7 +148,8 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
     private fun reverseGeocode(latitude: Double, longitude: Double) {
         val geocoder = Geocoder(requireContext())
         try {
-            val addresses: List<Address> = geocoder.getFromLocation(latitude, longitude, 1) as List<Address>
+            val addresses: List<Address> =
+                geocoder.getFromLocation(latitude, longitude, 1) as List<Address>
 
             if (addresses.isNotEmpty()) {
                 val address = addresses[0]
@@ -152,7 +158,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
                 val country = address.countryName
                 val countryCode = address.countryCode
                 mainViewModel.getCountryCode(countryCode)
-                with(binding){
+                with(binding) {
                     countrySpinner.makeInvisible()
                     stateSpinner.makeInvisible()
                     citySpinner.makeInvisible()
@@ -166,7 +172,6 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
                     cityText.text = city
 
                 }
-
 
 
             } else {
@@ -251,10 +256,10 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
-                        if(from == "cart"){
+                        if (from == "cart") {
                             findNavController().navigate(R.id.action_addressFormToCart)
 
-                        }else {
+                        } else {
                             findNavController().navigate(R.id.action_addressFormToAddressList)
                         }
                     } else {
@@ -346,6 +351,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
         }
 
     }
+
     private fun apiError(message: String?) {
         appLoader.dismiss()
         showToast(message.toString())
@@ -370,7 +376,12 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
         spinner.setSelection(initialSelection)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parentView: AdapterView<*>, selectedItemView: View, position: Int, id: Long) {
+            override fun onItemSelected(
+                parentView: AdapterView<*>,
+                selectedItemView: View,
+                position: Int,
+                id: Long
+            ) {
                 onItemSelectedAction(position)
             }
 
@@ -379,11 +390,18 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setCountriesSpinner(country: List<Country>) {
-        val phoneCodes = country.map { "+${it.phonecode}"}
+        val phoneCodes = country.map { "+${it.phonecode}" }
         val countries = country.map { it.country_name }
         val countryIds = country.map { it.id.toString() }
 
-        setSpinnerWithList(binding.countryCodeSpinner, phoneCodes, 131) { position ->
+        val countrySelected: Country? = country.find { it.id.toString() == countryId }
+        val index = if (countrySelected != null) {
+            country.indexOf(countrySelected)
+        } else {
+            131
+        }
+
+        setSpinnerWithList(binding.countryCodeSpinner, phoneCodes, index) { position ->
             phoneCode = phoneCodes[position]
             countryId = countryIds[position]
             binding.countrySpinner.setSelection(position)
@@ -403,8 +421,13 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
             return
 
         val states = state.map { it.state_name }
-
-        setSpinnerWithList(binding.stateSpinner, states, 0) { position ->
+        val stateSelected: State? = state.find { it.id.toString() == stateId }
+        val index = if (stateSelected != null) {
+            state.indexOf(stateSelected)
+        } else {
+            0
+        }
+        setSpinnerWithList(binding.stateSpinner, states, index) { position ->
             if (position >= 0 && position < state.size) {
                 stateId = state[position].id.toString()
                 loginViewModel.getCitiesList(state[position].id)
@@ -414,12 +437,16 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
 
     private fun setCitySpinner(city: List<City>) {
         val cities = city.map { it.city_name }
-
-        setSpinnerWithList(binding.citySpinner, cities, 0) { position ->
+        val countrySelected: City? = city.find { it.id.toString() == cityId }
+        val index = if (countrySelected != null) {
+            city.indexOf(countrySelected)
+        } else {
+            0
+        }
+        setSpinnerWithList(binding.citySpinner, cities, index) { position ->
             cityId = city[position].id.toString()
         }
     }
-
 
 
     private fun setOnClickListener() {
@@ -470,7 +497,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
                 return
             }
             val isDefault = if (setAsDefaultCheckBox.isChecked) 1 else 2
-            if(from == "update") {
+            if (from == "update") {
                 mainViewModel.updateAddress(
                     addressId,
                     customerName,
@@ -489,7 +516,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
                     homeFlatNo,
                     streetBuildingName
                 )
-            }else{
+            } else {
                 mainViewModel.addNewAddress(
                     customerName,
                     addressType,

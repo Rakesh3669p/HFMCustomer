@@ -413,7 +413,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp"
                         android:singleLine="false"
-                        android:text="Bank Slip"
+                        android:text=""
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/paymentMethodLbl"

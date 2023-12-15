@@ -220,7 +220,7 @@ class OTPFragment : Fragment(), View.OnClickListener {
     }
 
     private fun startCountdown() {
-        countdownTimer = object : CountDownTimer(30000, 1000) { // 30 seconds, tick every 1 second
+        countdownTimer = object : CountDownTimer(180000, 1000) { // 30 seconds, tick every 1 second
             override fun onTick(millisUntilFinished: Long) {
                 val secondsRemaining = millisUntilFinished / 1000
                 binding.alreadyHaveAccount.text = "Resend OTP in: "

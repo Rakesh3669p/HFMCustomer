@@ -21,6 +21,7 @@ import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.webkit.WebView
@@ -57,6 +58,8 @@ import com.hfm.customer.ui.fragments.products.productDetails.adapter.SpecsAdapte
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.VouchersAdapter
 import com.hfm.customer.ui.fragments.products.productDetails.model.Image
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductData
+import com.hfm.customer.ui.fragments.products.productDetails.model.UOM
+import com.hfm.customer.ui.fragments.store.adapter.StoreVouchersAdapter
 import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
@@ -86,11 +89,14 @@ import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+
 @Suppress("DEPRECATION")
 @SuppressLint("UnsafeOptInUsageError", "SetTextI18n,SetJavaScriptEnabled")
 @AndroidEntryPoint
 class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
+    private var productId: String = ""
+    private var uomList: MutableList<UOM> = ArrayList()
     private var addedQty: String = "0"
     private lateinit var bulkOrderBottomSheetFragment: BulkOrderBottomSheet
     private lateinit var exoPause: ImageView
@@ -117,7 +123,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     lateinit var relativeProductListAdapter: RelativeProductListAdapter
 
     @Inject
-    lateinit var vouchersAdapter: VouchersAdapter
+    lateinit var vouchersAdapter: StoreVouchersAdapter
 
     @Inject
     lateinit var reviewsAdapter: ReviewsAdapter
@@ -175,6 +181,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (productId.isNotEmpty()) {
+            mainViewModel.getProductDetails(productId)
+        }
         setObserver()
     }
 
@@ -189,11 +198,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         exoBuffer = binding.productVideo.findViewById(androidx.media3.ui.R.id.exo_buffering)
         noInternetDialog.setOnDismissListener { init() }
         binding.loader.isVisible = true
-        val productId = arguments?.getString("productId").toString()
-
+        productId = arguments?.getString("productId").toString()
         mainViewModel.getProductDetails(productId)
         mainViewModel.getProfile()
         mainViewModel.getProductReview(productId = productId, limit = 4)
+        mainViewModel.getUOMList()
 
         binding.pinCode.setOnFocusChangeListener { _, _ ->
             scrollToView(binding.pinCode)
@@ -211,6 +220,26 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setObserver() {
+
+        mainViewModel.claimStoreVoucher.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (response.data?.httpcode == 200) {
+                        showToast("Voucher claimed successfully")
+                        mainViewModel.getSellerVouchers(
+                            sellerId = productData.product.seller_id.toString(),
+                            0
+                        )
+                    }
+                }
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error ->
+                    apiError(response.message)
+            }
+        }
+
         mainViewModel.profile.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -274,8 +303,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
-                        productData = response.data.data
-                        setProductDetails()
+                        if (this::productData.isInitialized) {
+                            productData = response.data.data
+                            setCartButton()
+                        } else {
+                            productData = response.data.data
+                            setProductDetails()
+                        }
                     } else showToast(response.data?.message.toString())
                 }
 
@@ -368,6 +402,23 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             }
         }
 
+        mainViewModel.uomList.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            uomList = response.data.data.UOM.toMutableList()
+                        }
+                    }
+                }
+
+                is Resource.Loading -> Unit
+                is Resource.Error -> apiError(response.message)
+            }
+        }
+
         mainViewModel.addToCart.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -381,6 +432,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                             qty = addedQty.toInt()
                             cartId = response.data.data.cart_id.toString()
                             cartCount.postValue(response.data.data.cart_count)
+                            productData.product.is_added_to_cart = 1
                         }
 
                         401 -> {
@@ -472,8 +524,16 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     if (response.data?.httpcode == 200) {
                         binding.addToCartMain.makeInvisible()
                         binding.cartCount.makeVisible()
-                        binding.qty.text = "1"
+                        try {
+                            binding.qty.text =
+                                (productData.product.quantity.toString().toInt() + 1).toString()
+                            if (binding.qty.text.toString().toInt() > 0) {
+                                productData.product.quantity = binding.qty.text.toString().toInt()
+                            }
+                        } catch (e: Exception) {
+                        }
                         cartCount.postValue(response.data.cart_count)
+                        productData.product.is_added_to_cart = 1
                     } else if (response.data?.httpcode == 401) {
                         sessionManager.isLogin = false
                         startActivity(Intent(requireActivity(), LoginActivity::class.java))
@@ -498,7 +558,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                             binding.qty.text = qty.toString()
                         }
 
-                        400 -> showToast(response.data.message)
+                        400 -> showToast(response.data.message.toString())
                         401 -> {
                             sessionManager.isLogin = false
                             startActivity(Intent(requireActivity(), LoginActivity::class.java))
@@ -586,11 +646,12 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         mainViewModel.getSellerVouchers(sellerId = productData.product.seller_id.toString(), 0)
         setComboProducts()
         setProductAvailability()
-
+        cartCount.postValue(productData.product.cart_count)
         with(binding) {
             initRecyclerView(requireContext(), productsImagesRv, productsImagesAdapter, true)
             initRecyclerView(requireContext(), productsVariantsRv, productsVariantsAdapter, true)
             initRecyclerView(requireContext(), relatedRv, relativeProductListAdapter, true)
+
 
             val productImages: MutableList<Image> = ArrayList()
             productData.product.image?.let { productImages.addAll(it) }
@@ -602,8 +663,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 replaceBaseUrl(productData.product.image!![0].image)
             )
 
-            soldOut.isVisible = productData.product.is_out_of_stock == 1
+            setCartButton()
 
+
+
+            soldOut.isVisible = productData.product.is_out_of_stock == 1
             productName.text = productData.product.product_name
             ratingBar.rating = productData.product.rating.toString().toFloat()
             ratingCount.text = productData.product.rating.toString().toDouble().toString()
@@ -672,12 +736,25 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 flashDealOrOutOfStock.isVisible = true
                 setTimer(productData.product.end_time)
             }
-
+            fromTheSameShopLbl.isVisible = productData.other_products.isNotEmpty()
+            fromSameShopDivider.isVisible = productData.other_products.isNotEmpty()
             relativeProductListAdapter.differ.submitList(productData.other_products)
             pinCode.clearFocus()
             binding.loader.isVisible = false
         }
         setFrequentlyBoughtProducts()
+    }
+
+    private fun setCartButton() {
+        if (productData.product.is_added_to_cart == 1) {
+            cartId = productData.product.cart_id.toString()
+            binding.addToCartMain.makeInvisible()
+            binding.cartCount.makeVisible()
+            binding.qty.text = productData.product.cart_quantity.toString()
+        } else {
+            binding.addToCartMain.makeVisible()
+            binding.cartCount.makeInvisible()
+        }
     }
 
 
@@ -777,7 +854,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
         with(binding.frequentlyBoughtItems.frequentlyBoughtItem1) {
             if (productData.product.image?.isNotEmpty() == true) {
-                productImage.loadImage(productData.product.image!![0].image)
+                productImage.loadImage(replaceBaseUrl(productData.product.image!![0].image))
             }
             productName.text = productData.product.product_name
             productPrice.text = binding.productPrice.text.toString()
@@ -1019,14 +1096,12 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         vouchersAdapter.setOnItemClickListener { position ->
             if (sessionManager.isLogin) {
                 val couponCode = vouchersAdapter.differ.currentList[position].couponCode
-                val clipboardManager =
-                    requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clipData = ClipData.newPlainText("text", couponCode)
-                clipboardManager.setPrimaryClip(clipData)
-                showToast("Coupon code copied")
+                mainViewModel.claimStoreVoucher(
+                    couponCode,
+                    sellerId = productData.product.seller_id.toString()
+                )
             } else {
                 requireActivity().moveToLogin(sessionManager)
-
             }
         }
 
@@ -1163,7 +1238,6 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
 
     private fun showCartQtyDialog() {
 
-
         if (!sessionManager.isLogin) {
             showToast("Please login first")
             startActivity(Intent(requireActivity(), LoginActivity::class.java))
@@ -1194,11 +1268,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 return@setOnClickListener
             }
             addToCart(addedQty)
+
             appCompatDialog.dismiss()
 
         }
         bindingDialog.cancel.setOnClickListener { appCompatDialog.dismiss() }
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         appCompatDialog.show()
     }
 
@@ -1323,9 +1399,10 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
             return
         }
         bulkOrderBottomSheetFragment = BulkOrderBottomSheet(
+            uomList,
             profileData,
             productData.product
-        ) { _, name, email, qty, phone, dateNeeded, deliveryAddress, remarks ->
+        ) { _, name, email, qty, phone, dateNeeded, deliveryAddress, remarks, unitOfMeasures ->
 
             val proId = selectedVariant.ifEmpty { productData.product.product_id.toString() }
             mainViewModel.sendBulkOrderRequest(
@@ -1337,7 +1414,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 dateNeeded,
                 deliveryAddress,
                 remarks,
-                1
+                unitOfMeasures
             )
 
         }

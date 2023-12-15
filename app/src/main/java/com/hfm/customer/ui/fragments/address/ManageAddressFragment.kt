@@ -62,11 +62,7 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         from = arguments?.getString("from").toString()
-        initRecyclerView(
-            requireContext(),
-            binding.manageAddressRv,
-            manageAddressAdapter
-        )
+        initRecyclerView(requireContext(), binding.manageAddressRv, manageAddressAdapter)
         val animator = DefaultItemAnimator()
         animator.supportsChangeAnimations = false // Disable default change animations
         binding.manageAddressRv.itemAnimator = animator
@@ -91,6 +87,7 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
 
                         addressList = response.data.data.address_list
                         manageAddressAdapter.differ.submitList(response.data.data.address_list)
+                        manageAddressAdapter.notifyDataSetChanged()
                     } else {
                         showToast(response.data?.message.toString())
                     }
@@ -200,10 +197,7 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
         }
         manageAddressAdapter.setOnAddressClickListener { addressId ->
             this.addressId = addressId
-            if (from == "checkOut") {
-                mainViewModel.defaultAddress(addressId.toString())
-            }
-
+            mainViewModel.defaultAddress(addressId.toString())
 
         }
     }
@@ -220,7 +214,7 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onPause() {
-        if(this::appLoader.isInitialized) {
+        if (this::appLoader.isInitialized) {
             while (appLoader.isShowing) {
                 appLoader.dismiss()
             }

@@ -24,6 +24,7 @@ import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.makeInvisible
 import com.hfm.customer.utils.makeVisible
 import com.hfm.customer.utils.replaceBaseUrl
+import com.hfm.customer.utils.showToast
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -36,8 +37,8 @@ class CartProductAdapter @Inject constructor() :
     private var selectAll: Boolean = false
     private lateinit var context: Context
     private lateinit var activity: Activity
-    private var handler:Handler = Handler(Looper.getMainLooper())
     private var countdownTimer: CountDownTimer? = null
+
     inner class ViewHolder(private val bind: ItemCartProductBinding) :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: Product) {
@@ -58,13 +59,18 @@ class CartProductAdapter @Inject constructor() :
                         )
                     }"
                 } else {
-                    productPrice.text = "RM ${formatToTwoDecimalPlaces(data.total_actual_price.toString().toDouble())}"
+                    productPrice.text = "RM ${
+                        formatToTwoDecimalPlaces(
+                            data.total_actual_price.toString().toDouble()
+                        )
+                    }"
                 }
 
                 qty.text = data.quantity.toString().toDouble().roundToInt().toString()
                 variant.isVisible = data.variants_list?.isNotEmpty() == true
 
-                available.isVisible = data.check_shipping_availability.toString().toDouble() < 1 && data.cart_selected.toString().toDouble() > 0
+                available.isVisible = data.check_shipping_availability.toString()
+                    .toDouble() < 1 && data.cart_selected.toString().toDouble() > 0
                 available.text = data.check_shipping_availability_text
 
                 if (data.check_shipping_availability.toString().toDouble() > 0) {
@@ -74,12 +80,11 @@ class CartProductAdapter @Inject constructor() :
                 }
 
 
-                sale.isVisible = (data.offer_name == "Flash Sale" || data.offer_name == "Shocking Sale")
+                sale.isVisible =
+                    (data.offer_name == "Flash Sale" || data.offer_name == "Shocking Sale" && !data.end_time.isNullOrEmpty())
                 if (sale.isVisible) {
-
-
-                        setTimer(data.end_time, sale, data)
-                        sale.text = data.currentEndTime
+                    setTimer(data.end_time, sale, data)
+                    sale.text = data.currentEndTime
 
                 }
 
@@ -150,7 +155,7 @@ class CartProductAdapter @Inject constructor() :
         countdownTimer = object : CountDownTimer(timeDifference, 1000) {
             override fun onTick(millisUntilFinished: Long) {
 
-                    activity.runOnUiThread {
+                activity.runOnUiThread {
                     updateCountdownText(millisUntilFinished, sale, data)
                 }
             }
@@ -253,6 +258,7 @@ class CartProductAdapter @Inject constructor() :
         selectAll = status
         notifyDataSetChanged()
     }
+
     fun setActivity(activity: Activity) {
         this.activity = activity
     }

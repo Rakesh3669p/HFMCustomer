@@ -47,6 +47,7 @@ import com.hfm.customer.ui.fragments.products.productDetails.model.BulkOrderRequ
 import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetailsModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.SellerVoucherModel
+import com.hfm.customer.ui.fragments.products.productDetails.model.UOMModel
 import com.hfm.customer.ui.fragments.referral.ReferralModel
 import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
 import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
@@ -185,7 +186,6 @@ interface HFMCustomerAPI {
     ): Response<VoucherListModel>
 
 
-
     @POST("customer/seller-claimed-coupon-list")
     suspend fun getClaimedVouchers(
         @Body jsonObject: JsonObject
@@ -231,6 +231,9 @@ interface HFMCustomerAPI {
     suspend fun addBulkOrdersAction(
         @Body jsonObject: JsonObject
     ): Response<SuccessModel>
+
+    @GET("customer/uom")
+    suspend fun getUnitOfMeasurements(): Response<UOMModel>
 
 
     @GET("customer/business-category")
@@ -313,7 +316,7 @@ interface HFMCustomerAPI {
         @Body jsonObject: JsonObject,
     ): Response<RatingReviewsModel>
 
-    @POST("customer/product/referral")
+    @POST("customer/referral")
     suspend fun getReferral(
         @Body jsonObject: JsonObject,
     ): Response<ReferralModel>

@@ -25,23 +25,24 @@ import javax.inject.Inject
 class ChatAdapter @Inject constructor() : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
     private lateinit var context: Context
     private var sellerName = ""
+
     inner class ViewHolder(private val bind: ItemChatBinding) :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: Message) {
             with(bind) {
-                if(absoluteAdapterPosition == 0){
+                if (absoluteAdapterPosition == 0) {
                     chatDate.isVisible = true
                     chatDate.text = data.chat_date.toFormattedDate()
-                }else{
-                    if(data.chat_date!=differ.currentList[absoluteAdapterPosition-1].chat_date){
+                } else {
+                    if (data.chat_date != differ.currentList[absoluteAdapterPosition - 1].chat_date) {
                         chatDate.isVisible = true
                         chatDate.text = data.chat_date.toFormattedDate()
                     }
                 }
 
-                if(data.align=="right"){
-                    showLeftChat(bind,false)
-                    showRightChat(bind,true)
+                if (data.align == "right") {
+                    showLeftChat(bind, false)
+                    showRightChat(bind, true)
                     val chatTime = data.created_at.toUnixTimestamp()
                     rightTimeAgo.text = chatTime.toFormattedDateTimeChat()
                     warning.isVisible = data.warningMessage
@@ -55,9 +56,9 @@ class ChatAdapter @Inject constructor() : RecyclerView.Adapter<ChatAdapter.ViewH
                         rightChatImage.isVisible = false
                     }
 
-                }else{
-                    showLeftChat(bind,true)
-                    showRightChat(bind,false)
+                } else {
+                    showLeftChat(bind, true)
+                    showRightChat(bind, false)
 
                     leftChat.isVisible = !data.message.isNullOrEmpty()
                     leftChat.text = data.message
@@ -72,6 +73,9 @@ class ChatAdapter @Inject constructor() : RecyclerView.Adapter<ChatAdapter.ViewH
                     leftChat.text = data.message
                     agentName.text = sellerName
                 }
+
+                leftChatImage.setOnClickListener { onChatImageClick?.invoke(data.image) }
+                rightChatImage.setOnClickListener { onChatImageClick?.invoke(data.image) }
             }
         }
     }
@@ -83,6 +87,7 @@ class ChatAdapter @Inject constructor() : RecyclerView.Adapter<ChatAdapter.ViewH
         val date = inputFormat.parse(this)
         return outputFormat.format(date)
     }
+
     private fun showLeftChat(bind: ItemChatBinding, status: Boolean) {
         bind.leftChatImage.isVisible = status
         bind.leftChat.isVisible = status
@@ -90,6 +95,7 @@ class ChatAdapter @Inject constructor() : RecyclerView.Adapter<ChatAdapter.ViewH
         bind.agentImage.isVisible = status
         bind.agentName.isVisible = status
     }
+
     private fun showRightChat(bind: ItemChatBinding, status: Boolean) {
         bind.rightChat.isVisible = status
         bind.rightTimeAgo.isVisible = status
@@ -129,13 +135,13 @@ class ChatAdapter @Inject constructor() : RecyclerView.Adapter<ChatAdapter.ViewH
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    private var onChatClick: ((id: Int) -> Unit)? = null
+    private var onChatImageClick: ((imageURl: String) -> Unit)? = null
 
-    fun setOnChatClickListener(listener: (id: Int) -> Unit) {
-        onChatClick = listener
+    fun setOnChatImageClickListener(listener: (imageURl: String) -> Unit) {
+        onChatImageClick = listener
     }
 
-    fun setSellerName(name:String){
+    fun setSellerName(name: String) {
         sellerName = name
     }
 
