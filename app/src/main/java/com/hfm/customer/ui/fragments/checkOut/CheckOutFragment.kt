@@ -154,7 +154,6 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                         }
                     }
                 }
-
                 is Resource.Loading -> appLoader.show()
                 is Resource.Error -> apiError(response.message)
             }
@@ -172,7 +171,6 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                         }
                     }
                 }
-
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
@@ -396,7 +394,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
                     checkOutRv.itemAnimator = null
                 }
             }
-
+            checkOutAdapter.setActivity(requireActivity())
             checkOutAdapter.differ.submitList(checkOutData)
             checkOutAdapter.setShippingOptions(shippingOptions)
 
@@ -435,11 +433,11 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
 
             val walletBalance = cartData.wallet_balance
             if (walletBalance != "false") {
-                points.text = "${walletBalance.toDouble()} (RM ${
-                    formatToTwoDecimalPlaces(cartData.wallet_cash.toDouble())
-                })"
+                points.text = "${formatToTwoDecimalPlaces(cartData.wallet_balance.toDouble())}"
+                pointsCash.text = "(RM ${formatToTwoDecimalPlaces(cartData.wallet_cash.toDouble())})"
             } else {
-                points.text = "0 (RM 0.00)"
+                points.text = "0"
+                pointsCash.text = "(RM 0.00)"
                 wallet.text = "RM 0.00"
             }
 
@@ -536,7 +534,7 @@ class CheckOutFragment : Fragment(), View.OnClickListener {
         with(sellerVoucherBinding) {
             noVouchers.isVisible = sellerVouchers.isEmpty() == true
             requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-            titleLbl.text = "Select Shop Vouchers"
+            titleLbl.text = "Select Store Vouchers"
             voucherCode.setOnClickListener {
                 voucherCode.isFocusable = true
                 voucherCode.requestFocus()

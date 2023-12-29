@@ -31,6 +31,7 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
     private var currentView: View? = null
 
     private val loginSignUpViewModel: LoginSignUpViewModel by activityViewModels()
+
     @Inject
     lateinit var sessionManager: SessionManager
 
@@ -52,7 +53,11 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        currentView ?: inflater.inflate(R.layout.fragment_business_create_password, container, false)?.apply {
+        currentView ?: inflater.inflate(
+            R.layout.fragment_business_create_password,
+            container,
+            false
+        )?.apply {
             currentView = this
             binding = FragmentBusinessCreatePasswordBinding.bind(this)
             init()
@@ -119,6 +124,7 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
                         setCitiesDropDown(response.data.data)
                     }
                 }
+
                 is Resource.Loading -> Unit
                 is Resource.Error -> apiError(response.message)
             }
@@ -133,6 +139,7 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
                         findNavController().navigate(R.id.action_businessCreatePasswordFragment_to_loginFragment)
                     }
                 }
+
                 is Resource.Loading -> appLoader.show()
                 is Resource.Error -> apiError(response.message)
             }
@@ -141,10 +148,10 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
 
     private fun setCitiesDropDown(data: CityData) {
         val cities = data.city.map { it.city_name }
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, cities).apply {
-                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                binding.citySpinner.adapter = this
-            }
+        ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, cities).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.citySpinner.adapter = this
+        }
         cityId = data.city[0].id.toString()
         binding.citySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -155,6 +162,7 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
             ) {
                 cityId = data.city[position].id.toString()
             }
+
             override fun onNothingSelected(parentView: AdapterView<*>?) {}
         }
     }
@@ -176,6 +184,7 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
                 loginSignUpViewModel.getCitiesList(data.state[position].id)
 
             }
+
             override fun onNothingSelected(parentView: AdapterView<*>?) {}
         }
     }
@@ -191,18 +200,20 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
         }
         binding.countrySpinner.adapter = adapter
         binding.countrySpinner.setSelection(131)
-        binding.countrySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parentView: AdapterView<*>,
-                selectedItemView: View,
-                position: Int,
-                id: Long
-            ) {
-                countryId = data.country[position].id.toString()
-                loginSignUpViewModel.getStateList(data.country[position].id)
+        binding.countrySpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parentView: AdapterView<*>,
+                    selectedItemView: View,
+                    position: Int,
+                    id: Long
+                ) {
+                    countryId = data.country[position].id.toString()
+                    loginSignUpViewModel.getStateList(data.country[position].id)
+                }
+
+                override fun onNothingSelected(parentView: AdapterView<*>?) {}
             }
-            override fun onNothingSelected(parentView: AdapterView<*>?) {}
-        }
     }
 
     private fun setOnClickListener() {
@@ -213,18 +224,22 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
 
     private fun registerUser() {
         val password = binding.password.text.toString()
-        val confirmPassword = binding.password.text.toString()
+        val confirmPassword = binding.confirmPassword.text.toString()
         val address = binding.address.text.toString()
         val pinCode = binding.postCode.text.toString()
         val refCode = binding.referral.text.toString()
 
+        if (password.isEmpty()) {
+            showToast("Password should not be empty.")
+            return
+        }
         if (password.length <= 7) {
             showToast("Min 8 characters required.")
             return
         }
 
         if (password != confirmPassword) {
-            showToast("Passwords do not match.")
+            showToast("Password and confirm password does not match!")
             return
         }
 
@@ -258,8 +273,9 @@ class BusinessCreatePasswordFragment : Fragment(), View.OnClickListener {
             cityId,
             pinCode,
 
-        )
+            )
     }
+
     private fun apiError(message: String?) {
         appLoader.dismiss()
         showToast(message.toString())

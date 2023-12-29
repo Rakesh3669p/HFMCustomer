@@ -263,10 +263,19 @@ class LoginFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.login.id -> validateAndLogin()
-            binding.newToHFMSignup.id -> findNavController().navigate(R.id.registerFragment)
-            binding.forgotPassword.id -> findNavController().navigate(R.id.resetPasswordFragment)
+            binding.newToHFMSignup.id -> {
+                binding.email.setText("")
+                binding.password.setText("")
+                findNavController().navigate(R.id.registerFragment)
+            }
+            binding.forgotPassword.id -> {
+                binding.email.setText("")
+                binding.password.setText("")
+                findNavController().navigate(R.id.resetPasswordFragment)
+            }
             binding.skipLbl.id -> {
-
+                binding.email.setText("")
+                binding.password.setText("")
                 startActivity(Intent(requireContext(), DashBoardActivity::class.java))
                 requireActivity().finish()
             }

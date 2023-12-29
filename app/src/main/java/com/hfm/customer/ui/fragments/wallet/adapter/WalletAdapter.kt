@@ -25,11 +25,11 @@ class WalletAdapter @Inject constructor() : RecyclerView.Adapter<WalletAdapter.V
                 if(data.credit_value){
                     transactionType.text = if(data.source.isNotEmpty()) "Received (${data.source})" else "Received"
                     amount.setTextColor(ContextCompat.getColor(context, R.color.green))
-                    amount.text = "${data.credit}P (RM ${formatToTwoDecimalPlaces(data.credit.toDouble()/100)})"
+                    amount.text = "${formatToTwoDecimalPlaces(data.credit.toDouble())}P (RM ${formatToTwoDecimalPlaces(data.credit.toDouble()/100)})"
                 }else{
                     transactionType.text = if(data.source.isNotEmpty()) "Paid (${data.source})" else "Paid"
                     amount.setTextColor(ContextCompat.getColor(context, R.color.red))
-                    amount.text = "${data.debit}P (RM ${formatToTwoDecimalPlaces(data.debit.toDouble()/100)})"
+                    amount.text = "${formatToTwoDecimalPlaces(data.debit.toDouble())}P (RM ${formatToTwoDecimalPlaces(data.debit.toDouble()/100)})"
                 }
                 dateLbl.text = data.created_at
             }

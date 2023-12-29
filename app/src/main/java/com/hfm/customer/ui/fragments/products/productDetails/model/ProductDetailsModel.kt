@@ -151,6 +151,7 @@ data class Product(
     val review_submitted: Int,
     val seller_health: Int,
     val video: String?="",
+    val app_video: String?="",
     val cart_id: Any,
     var currentEndTime: String,
     var cart_selected: Any,

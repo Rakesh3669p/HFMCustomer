@@ -128,10 +128,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
         noInternetDialog.setOnDismissListener { init() }
         noInternetDialog.takeIf { it.isShowing }?.dismiss()
         promotionBanner?.takeIf { it.isShowing }?.dismiss()
-        mainViewModel.getHomePageData()
-        mainViewModel.getNotifications(0)
-        mainViewModel.getCart()
-        binding.loader.isVisible = true
+//        mainViewModel.getHomePageData()
+//        mainViewModel.getNotifications(0)
+//        mainViewModel.getCart()
+
         requireActivity().hideKeyboard(binding.root)
     }
 
@@ -287,7 +287,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                                         response.data.data.center_left_banner[0].subcategory_id
                                     )
                                     findNavController().navigate(R.id.productListFragment, bundle)
-                                } else {
+                                } else if (response.data.data.center_left_banner[0].link_type == "product_detail") {
                                     val bundle = Bundle().apply {
                                         putString(
                                             "productId",
@@ -418,10 +418,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
         }
 
         notificationCount.observe(requireActivity()) { count ->
-            binding.notificationCountBg.isVisible = count > 0
-            binding.notificationCount.isVisible = count > 0
+            binding.notificationCountBg.isVisible = count > 0 && sessionManager.isLogin
+            binding.notificationCount.isVisible = count > 0 && sessionManager.isLogin
             binding.notificationCount.text = count.toString()
-
         }
     }
 
@@ -464,7 +463,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                                 bundle.putString("catId", bottomBanner.category)
                                 bundle.putString("subCatId", bottomBanner.sub_category)
                                 findNavController().navigate(R.id.productListFragment, bundle)
-                            } else {
+                            } else if (bottomBanner.link_type == "product_detail"){
                                 val bundle = Bundle().apply {
                                     putString(
                                         "productId",
@@ -485,7 +484,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                                 bundle.putString("catId", bottomBanner.category)
                                 bundle.putString("subCatId", bottomBanner.sub_category)
                                 findNavController().navigate(R.id.productListFragment, bundle)
-                            } else {
+                            } else if (bottomBanner.link_type == "product_detail"){
                                 val bundle = Bundle().apply {
                                     putString(
                                         "productId",
@@ -696,7 +695,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
             binding.featuresProductViewAll.id -> {
                 val bundle = Bundle()
-                bundle.putString("feature", "1")
+                bundle.putInt("feature", 1)
                 findNavController().navigate(R.id.productListFragment, bundle)
             }
 
@@ -706,6 +705,15 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 bundle.putString("endTime", saleTime)
                 findNavController().navigate(R.id.productListFragment, bundle)
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(binding.loader.isVisible){
+            mainViewModel.getHomePageData()
+            mainViewModel.getNotifications(0)
+            mainViewModel.getCart()
         }
     }
 }

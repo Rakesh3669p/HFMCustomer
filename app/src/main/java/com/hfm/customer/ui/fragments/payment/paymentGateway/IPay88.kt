@@ -107,7 +107,9 @@ class IPay88 : Fragment() {
         bindingDialog.desc.text = "We will notify you regarding the status of the order."
         bindingDialog.ok.setOnClickListener {
             appCompatDialog.dismiss()
-            findNavController().navigate(R.id.action_online_paymentFragment_to_myOrdersFragment)
+            val bundle = Bundle()
+            bundle.putString("from","toPay")
+            findNavController().navigate(R.id.action_online_paymentFragment_to_myOrdersFragment,bundle)
         }
         appCompatDialog.show()
     }
@@ -131,7 +133,9 @@ class IPay88 : Fragment() {
             delay(3000)
             if(appCompatDialog.isShowing){
                 appCompatDialog.dismiss()
-                findNavController().navigate(R.id.action_online_paymentFragment_to_myOrdersFragment)
+                val bundle = Bundle()
+                bundle.putString("from","cancelled")
+                findNavController().navigate(R.id.action_online_paymentFragment_to_myOrdersFragment,bundle)
             }
         }
 

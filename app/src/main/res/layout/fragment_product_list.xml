@@ -164,17 +164,7 @@
         tools:itemCount="21"
         tools:listitem="@layout/item_products" />
 
-    <ProgressBar
-        android:visibility="gone"
-        android:id="@+id/bottomLoader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:progressTint="@color/red"
-        android:layout_margin="@dimen/_5sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+
 
     <View
         android:visibility="gone"
@@ -195,6 +185,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/filter"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/bottomLoader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:progressTint="@color/red"
+        android:layout_margin="@dimen/_5sdp"
+        android:elevation="@dimen/_4sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/bottomLoader2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:progressTint="@color/red"
+        android:layout_margin="@dimen/_5sdp"
+        android:elevation="@dimen/_4sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

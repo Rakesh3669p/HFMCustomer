@@ -169,6 +169,7 @@
         app:tabMode="scrollable"
         app:tabIndicator="@drawable/tab_indicator"
         app:tabSelectedTextColor="@color/red"
+        app:tabTextColor="@color/black"
         app:tabTextAppearance="@style/textMediumSemiBold" />
 
     <androidx.viewpager2.widget.ViewPager2

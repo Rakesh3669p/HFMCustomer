@@ -165,6 +165,7 @@ class MainViewModel @Inject constructor(
     val updateshipingOption = SingleLiveEvent<Resource<SuccessModel>>()
     val bannerActivity = SingleLiveEvent<Resource<SuccessModel>>()
     val logOut = SingleLiveEvent<Resource<SuccessModel>>()
+    val updateDeviceToken = SingleLiveEvent<Resource<SuccessModel>>()
 
 
     fun getAppUpdate() = viewModelScope.launch {
@@ -597,6 +598,7 @@ class MainViewModel @Inject constructor(
         frozen: Int = 0,
         wholeSale: Int = 0,
         flashSale: Int = 0,
+        feature: Int = 0,
         chilled: Int = 0,
         deviceId: String,
         random: Int,
@@ -616,13 +618,14 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("frozen", frozen)
         jsonObject.addProperty("wholesale", wholeSale)
         jsonObject.addProperty("flash_deal", flashSale)
+        jsonObject.addProperty("featured", feature)
         jsonObject.addProperty("chilled", chilled)
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("keyword", search)
         jsonObject.addProperty("device_id", deviceId)
         jsonObject.addProperty("page_url", "products/us/img")
         jsonObject.addProperty("os_type", "app")
-        jsonObject.addProperty("limit", 60)
+        jsonObject.addProperty("limit", 20)
         jsonObject.addProperty("random", random)
         jsonObject.addProperty("offset", page)
         safeGetProductListCall(jsonObject)
@@ -1699,7 +1702,11 @@ class MainViewModel @Inject constructor(
 
     fun getBrands(name: String = "",filterName:String= "") = viewModelScope.launch {
         val jsonObject = JsonObject()
-        jsonObject.addProperty("sort_by_name", if (name != "1" || name.isEmpty()) "1" else "")
+        if(name=="1") {
+            jsonObject.addProperty("sort_by_name", "1")
+        }else{
+            jsonObject.addProperty("sort_by_name", if (name != "0" || name.isEmpty()) "0" else "")
+        }
         jsonObject.addProperty("filter_by_name", filterName)
         jsonObject.addProperty("limit", 150)
         safeGetBrandsCall(jsonObject)
@@ -2246,6 +2253,29 @@ class MainViewModel @Inject constructor(
                 logOut.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             logOut.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun updateDeviceToken(fcmToken: String,deviceId: String="") = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("deviceToken", fcmToken)
+        jsonObject.addProperty("deviceId", deviceId)
+        jsonObject.addProperty("deviceName","")
+        jsonObject.addProperty("os","app")
+        safeUpdateDeviceTokenCall(jsonObject)
+    }
+
+    private suspend fun safeUpdateDeviceTokenCall(jsonObject: JsonObject) {
+        updateDeviceToken.postValue(Resource.Loading())
+        try {
+            val response = repository.updateDeviceToken(jsonObject)
+            if (response.isSuccessful)
+                updateDeviceToken.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                updateDeviceToken.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            updateDeviceToken.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 }

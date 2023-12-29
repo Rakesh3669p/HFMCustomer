@@ -1,6 +1,7 @@
 package com.hfm.customer.ui.fragments.checkOut.adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.os.CountDownTimer
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.hfm.customer.ui.fragments.products.productDetails.model.Product
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.replaceBaseUrl
+import kotlinx.coroutines.Dispatchers
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -27,7 +29,8 @@ import kotlin.math.roundToInt
 class CheckOutProductAdapter @Inject constructor() :
     RecyclerView.Adapter<CheckOutProductAdapter.ViewHolder>() {
     private lateinit var context: Context
-
+    private lateinit var activity: Activity
+    private var countdownTimer: CountDownTimer? = null
     inner class ViewHolder(private val bind: ItemCheckoutProductBinding) :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: Product) {
@@ -61,35 +64,41 @@ class CheckOutProductAdapter @Inject constructor() :
                 }
 
                 flashDeal.isVisible = (data.offer_name == "Flash Sale" || data.offer_name == "Shocking Sale" && !data.end_time.isNullOrEmpty())
-                if (flashDeal.isVisible) setTimer(data.end_time, flashDeal)
+                if (flashDeal.isVisible) setTimer(data.end_time, flashDeal, data)
             }
         }
     }
 
-    private fun setTimer(endTime: String, flashDeal: TextView) {
+    private fun setTimer(endTime: String, sale: TextView, data: Product) {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val endParsedTime = dateFormat.parse(endTime) ?: Date()
         val currentTime = Date()
         val timeDifference = endParsedTime.time - currentTime.time
-        val countdownTimer = object : CountDownTimer(timeDifference, 1000) {
+        countdownTimer = object : CountDownTimer(timeDifference, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                updateCountdownText(millisUntilFinished, flashDeal)
+                with(Dispatchers.Main){
+                    updateCountdownText(millisUntilFinished, sale, data)
+                }
+
             }
 
             override fun onFinish() {
-                updateCountdownText(0, flashDeal)
+                with(Dispatchers.Main){
+                    updateCountdownText(0, sale, data)
+                }
             }
         }
-        countdownTimer.start()
+
+        countdownTimer?.start()
     }
 
-    private fun updateCountdownText(millisUntilFinished: Long, flashDeal: TextView) {
+    private fun updateCountdownText(millisUntilFinished: Long, sale: TextView, data: Product) {
         val days = millisUntilFinished / (1000 * 60 * 60 * 24)
         val hours = (millisUntilFinished % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
         val minutes = (millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)
         val seconds = (millisUntilFinished % (1000 * 60)) / 1000
 
-        flashDeal.text = "Flash Deals Ends In: ${
+        val newCountdownText = "Flash Deals Ends In: ${
             String.format(
                 Locale.getDefault(),
                 "%02d:%02d:%02d:%02d",
@@ -99,6 +108,13 @@ class CheckOutProductAdapter @Inject constructor() :
                 seconds
             )
         }"
+
+        if (newCountdownText != data.currentEndTime) {
+            data.currentEndTime = newCountdownText
+            sale.text = newCountdownText
+        }/*
+        data.currentEndTime = newCountdownText
+        sale.text = newCountdownText*/
     }
 
     private val diffUtil = object : DiffUtil.ItemCallback<Product>() {
@@ -133,4 +149,8 @@ class CheckOutProductAdapter @Inject constructor() :
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+
+    fun setActivity(activity: Activity) {
+        this.activity = activity
+    }
 }

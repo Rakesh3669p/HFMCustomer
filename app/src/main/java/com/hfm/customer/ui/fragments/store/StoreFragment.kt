@@ -148,7 +148,7 @@ class StoreFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setTabLayoutAndViewPager(data: StoreData) {
-        binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Home"))
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText("Home & Shop Voucher"))
         binding.tabLayout.addTab(
             binding.tabLayout.newTab().setText("All Products(${data.total_products})")
         )

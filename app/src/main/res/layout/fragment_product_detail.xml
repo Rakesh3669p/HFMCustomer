@@ -184,181 +184,185 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/productsDetailsCv"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:elevation="@dimen/_2sdp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_10sdp"
                 app:cardUseCompatPadding="true"
-                app:layout_constraintBottom_toBottomOf="@id/productsVariantsRv"
                 app:layout_constraintEnd_toEndOf="@id/productImageCv"
                 app:layout_constraintStart_toStartOf="@id/productImageCv"
-                app:layout_constraintTop_toBottomOf="@id/flashDealOrOutOfStock" />
+                app:layout_constraintTop_toBottomOf="@id/flashDealOrOutOfStock" >
 
-            <TextView
-                android:id="@+id/productName"
-                style="@style/textLarge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:elevation="@dimen/_2sdp"
-                android:singleLine="false"
-                android:text="@string/product_detailsLbl"
-                app:layout_constraintEnd_toEndOf="@+id/productImageCv"
-                app:layout_constraintStart_toStartOf="@id/productImageCv"
-                app:layout_constraintTop_toTopOf="@id/productsDetailsCv" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_10sdp">
+                    <TextView
+                        android:id="@+id/productName"
+                        style="@style/textLarge"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/_2sdp"
+                        android:singleLine="false"
+                        android:text="@string/product_detailsLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/brand"
-                style="@style/textSmallSemiBold"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:elevation="@dimen/_2sdp"
-                android:singleLine="false"
-                android:text="@string/product_detailsLbl"
-                android:textColor="@color/textGreyDark"
-                app:layout_constraintStart_toStartOf="@id/productName"
-                app:layout_constraintTop_toBottomOf="@+id/productName" />
+                    <TextView
+                        android:id="@+id/brand"
+                        style="@style/textSmallSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/_2sdp"
+                        android:singleLine="false"
+                        android:text="@string/product_detailsLbl"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintStart_toStartOf="@id/productName"
+                        app:layout_constraintTop_toBottomOf="@+id/productName" />
 
-            <RatingBar
-                android:id="@+id/ratingBar"
-                style="@style/RatingBarSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:elevation="@dimen/_2sdp"
-                android:progressTint="@color/red"
-                android:rating="4"
-                app:layout_constraintStart_toStartOf="@id/brand"
-                app:layout_constraintTop_toBottomOf="@id/brand" />
+                    <RatingBar
+                        android:id="@+id/ratingBar"
+                        style="@style/RatingBarSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:elevation="@dimen/_2sdp"
+                        android:progressTint="@color/red"
+                        android:rating="4"
+                        app:layout_constraintStart_toStartOf="@id/brand"
+                        app:layout_constraintTop_toBottomOf="@id/brand" />
 
-            <TextView
-                android:id="@+id/ratingCount"
-                style="@style/textMediumSemiBold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_5sdp"
-                android:elevation="@dimen/_2sdp"
-                android:text="5.0"
-                android:textColor="@color/red"
-                app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
-                app:layout_constraintStart_toEndOf="@+id/ratingBar"
-                app:layout_constraintTop_toTopOf="@+id/ratingBar" />
+                    <TextView
+                        android:id="@+id/ratingCount"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:elevation="@dimen/_2sdp"
+                        android:text="5.0"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@+id/ratingBar"
+                        app:layout_constraintStart_toEndOf="@+id/ratingBar"
+                        app:layout_constraintTop_toTopOf="@+id/ratingBar" />
 
-            <TextView
-                android:id="@+id/ratingDetails"
-                style="@style/textMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_5sdp"
-                android:elevation="@dimen/_2sdp"
-                android:text="(80 ratings &amp; 40 reviews)"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="@+id/ratingCount"
-                app:layout_constraintStart_toEndOf="@+id/ratingCount"
-                app:layout_constraintTop_toTopOf="@+id/ratingCount" />
-
-
-            <TextView
-                android:id="@+id/productPrice"
-                style="@style/textLargeSemiBold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:elevation="@dimen/_2sdp"
-                android:text="RM 42"
-                android:textColor="@color/red"
-                app:layout_constraintStart_toStartOf="@id/ratingBar"
-                app:layout_constraintTop_toBottomOf="@id/ratingBar" />
-
-            <TextView
-                android:id="@+id/productListingPrice"
-                style="@style/textMediumSemiBold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_3sdp"
-                android:elevation="@dimen/_2sdp"
-                android:text="NP: RM 42"
-                android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="@id/productPrice"
-                app:layout_constraintTop_toBottomOf="@id/productPrice" />
-
-            <TextView
-                android:id="@+id/itemsInComboLbl"
-                style="@style/textSmallSemiBold"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:elevation="@dimen/_2sdp"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:singleLine="false"
-                android:text="Items in Combo: "
-                android:textColor="@color/textGreyDark"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@id/productName"
-                app:layout_constraintTop_toBottomOf="@+id/productListingPrice" />
-            <TextView
-                android:id="@+id/itemsInComboCount"
-                style="@style/textSmallSemiBold"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:elevation="@dimen/_2sdp"
-                android:singleLine="false"
-                android:text="2"
-                android:textColor="@color/red"
-                android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@id/itemsInComboLbl"
-                app:layout_constraintTop_toTopOf="@+id/itemsInComboLbl"
-                app:layout_constraintBottom_toBottomOf="@+id/itemsInComboLbl"/>
+                    <TextView
+                        android:id="@+id/ratingDetails"
+                        style="@style/textMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:elevation="@dimen/_2sdp"
+                        android:text="(80 ratings &amp; 40 reviews)"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toBottomOf="@+id/ratingCount"
+                        app:layout_constraintStart_toEndOf="@+id/ratingCount"
+                        app:layout_constraintTop_toTopOf="@+id/ratingCount" />
 
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/comboRv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:elevation="@dimen/_2sdp"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/_12sdp"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="@id/productImageCv"
-                app:layout_constraintStart_toStartOf="@id/productImageCv"
-                app:layout_constraintTop_toBottomOf="@+id/itemsInComboLbl"
-                tools:itemCount="2"
-                tools:listitem="@layout/item_combo" />
+                    <TextView
+                        android:id="@+id/productPrice"
+                        style="@style/textLargeSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:elevation="@dimen/_2sdp"
+                        android:text="RM 42"
+                        android:textColor="@color/red"
+                        app:layout_constraintStart_toStartOf="@id/ratingBar"
+                        app:layout_constraintTop_toBottomOf="@id/ratingBar" />
 
-            <TextView
-                android:id="@+id/variantType"
-                style="@style/textSmallSemiBold"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:elevation="@dimen/_2sdp"
-                android:paddingTop="@dimen/_15sdp"
-                android:text="2"
-                android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@id/itemsInComboLbl"
-                app:layout_constraintTop_toBottomOf="@+id/comboRv"
-                app:layout_constraintBottom_toBottomOf="@+id/itemsInComboLbl"/>
+                    <TextView
+                        android:id="@+id/productListingPrice"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:elevation="@dimen/_2sdp"
+                        android:text="NP: RM 42"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="@id/productPrice"
+                        app:layout_constraintTop_toBottomOf="@id/productPrice" />
+
+                    <TextView
+                        android:id="@+id/itemsInComboLbl"
+                        style="@style/textSmallSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:singleLine="false"
+                        android:text="Items in Combo: "
+                        android:textColor="@color/textGreyDark"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="@id/productName"
+                        app:layout_constraintTop_toBottomOf="@+id/productListingPrice" />
+                    <TextView
+                        android:id="@+id/itemsInComboCount"
+                        style="@style/textSmallSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/_2sdp"
+                        android:singleLine="false"
+                        android:text="2"
+                        android:textColor="@color/red"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toEndOf="@id/itemsInComboLbl"
+                        app:layout_constraintTop_toTopOf="@+id/itemsInComboLbl"
+                        app:layout_constraintBottom_toBottomOf="@+id/itemsInComboLbl"/>
 
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/comboRv"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:elevation="@dimen/_2sdp"
+                        android:orientation="vertical"
+                        android:paddingBottom="@dimen/_12sdp"
+                        android:visibility="gone"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/itemsInComboLbl"
+                        tools:itemCount="3"
+                        tools:listitem="@layout/item_combo" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/productsVariantsRv"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:elevation="@dimen/_2sdp"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/_12sdp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="@id/productImageCv"
-                app:layout_constraintStart_toStartOf="@id/productImageCv"
-                app:layout_constraintTop_toBottomOf="@+id/variantType"
-                tools:itemCount="3"
-                tools:listitem="@layout/item_product_variants" />
+                    <TextView
+                        android:id="@+id/variantType"
+                        style="@style/textSmallSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:elevation="@dimen/_2sdp"
+                        android:paddingTop="@dimen/_15sdp"
+                        android:text="2"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toEndOf="@id/itemsInComboLbl"
+                        app:layout_constraintTop_toBottomOf="@+id/comboRv"
+                        app:layout_constraintBottom_toBottomOf="@+id/itemsInComboLbl"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/productsVariantsRv"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:elevation="@dimen/_2sdp"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/_12sdp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/variantType"
+                        tools:itemCount="3"
+                        android:visibility="gone"
+                        tools:listitem="@layout/item_product_variants" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/checkPinCodeCv"
@@ -1221,12 +1225,6 @@
                 tools:itemCount="4"
                 tools:listitem="@layout/item_products_single" />
 
-            <androidx.constraintlayout.widget.Group
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:constraint_referenced_ids="productImageCv,productsDetailsCv,productsImagesRv,productsVariantsRv,frequentlyBoughtItem1,frequentlyBoughtItem2,reviewCv,specificationsCv,voucherListCv,descriptionCv,storeDetailsCv" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
@@ -1384,5 +1382,13 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/_45sdp"
         android:background="@color/white"
+        android:visibility="gone" />
+    <include
+        android:id="@+id/noDataFound"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        layout="@layout/no_data_found"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

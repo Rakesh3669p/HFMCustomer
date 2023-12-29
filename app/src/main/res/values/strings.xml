@@ -237,4 +237,7 @@
     <string name="no_points_record_found_lbl">No points record found!</string>
     <string name="address_line_1_lbl">Address Line 1</string>
     <string name="address_line_2_lbl">Address Line 2</string>
+    <string name="viewLbl">View</string>
+    <string name="yesLbl">Yes</string>
+    <string name="noLbl">No</string>
 </resources>

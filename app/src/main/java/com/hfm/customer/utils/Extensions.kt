@@ -37,6 +37,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -390,6 +391,13 @@ fun Long.toTimeAgo(): CharSequence {
     )
 }
 
+fun String.toUnixTimestamp(): Long {
+    val dateFormat = SimpleDateFormat("MM-dd-yyyy HH:mm:ss", Locale.getDefault())
+    val date = dateFormat.parse(this)
+    return date?.time ?: 0
+}
+
+
 fun Long.toCustomTimeAgo(): CharSequence {
     val currentTimeMillis = System.currentTimeMillis()
     val timeDifferenceMillis = currentTimeMillis - this
@@ -409,14 +417,6 @@ fun Long.toCustomTimeAgo(): CharSequence {
         else -> "Just now"
     }
 }
-
-
-fun String.toUnixTimestamp(): Long {
-    val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
-    val date = dateFormat.parse(this)
-    return date?.time ?: 0
-}
-
 fun Long.toFormattedDateTimeChat(): String {
     val date = Date(this)
     val format = SimpleDateFormat("hh:mm a", Locale.US)

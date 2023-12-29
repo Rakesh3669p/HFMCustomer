@@ -1,5 +1,8 @@
 package com.hfm.customer.ui.fragments.referral
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -35,7 +38,7 @@ class ReferralFragment : Fragment(), View.OnClickListener {
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
-
+    private var referralData: ReferralData? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,7 +68,8 @@ class ReferralFragment : Fragment(), View.OnClickListener {
                     appLoader.dismiss()
                     when (response.data?.httpcode) {
                         "200" -> {
-                            setReferral(response.data.data)
+                            referralData = response.data.data
+                            setReferral()
                         }
 
                         "400" -> {
@@ -84,11 +88,11 @@ class ReferralFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun setReferral(data: ReferralData) {
+    private fun setReferral() {
         with(binding) {
 //            referralImage.load()
-            if (data.referral.isNotEmpty()) {
-                data.referral[0].let {
+            if (referralData?.referral?.isNotEmpty() == true) {
+                referralData?.referral!![0].let {
 
 
                     // Assuming 'it' is an object with a property 'referral_points'
@@ -99,12 +103,20 @@ class ReferralFragment : Fragment(), View.OnClickListener {
                     val startIndex = inviteMessage.indexOf(referralPoints)
                     val endIndex = inviteMessage.length
                     val boldTypeface = Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
-                    spannableString.setSpan(StyleSpan(boldTypeface.style), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    spannableString.setSpan(
+                        StyleSpan(boldTypeface.style),
+                        startIndex,
+                        endIndex,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
 
                     rewardsImageText.text = spannableString
 
 
-                    referralImage.loadImage(replaceBaseUrl(it.image))
+                    referralImage.load(replaceBaseUrl(it.image)) {
+                        placeholder(R.drawable.referral_image)
+                        error(R.drawable.referral_image)
+                    }
                     couponCode.text = it.ref_code
                     one.text =
                         "1. Offer Valid on order of RM ${formatToTwoDecimalPlaces(it.ord_min_amount)} and above"
@@ -133,35 +145,26 @@ class ReferralFragment : Fragment(), View.OnClickListener {
     private fun setOnClickListener() {
         with(binding) {
             back.setOnClickListener(this@ReferralFragment)
-            share.setOnClickListener(this@ReferralFragment)
+            copy.setOnClickListener(this@ReferralFragment)
             shareButton.setOnClickListener(this@ReferralFragment)
         }
     }
 
     private fun shareReferral() {
+        var couponCode = ""
+        var points = ""
+        var amount = ""
+        if (referralData?.referral?.isNotEmpty() == true) {
+            referralData?.referral!![0].let {
+                couponCode = it.ref_code
+                points = it.referral_points
+                amount = "(RM ${formatToTwoDecimalPlaces(it.referral_points_rm.toDouble())} OFF)"
+            }
 
-        val content = "\uD83C\uDF89 Unlock Exciting Offers with Our Referral Code! \uD83D\uDE80\n" +
-                "\n" +
-                "Hey there!\n" +
-                "\n" +
-                "Ready for an amazing experience? Use my referral code [YourReferralCode] when you sign up for [App Name] and unlock a world of exciting offers and exclusive perks! \uD83C\uDF1F\n" +
-                "\n" +
-                "Why join [App Name]?\n" +
-                "\n" +
-                "✨ [Highlight a key feature or benefit]\n" +
-                "✨ [Another key feature or benefit]\n" +
-                "✨ [Any special promotions or discounts]\n" +
-                "\n" +
-                "How to get started:\n" +
-                "\n" +
-                "Download [App Name] from the [App Store/Google Play].\n" +
-                "Sign up using my referral code: [YourReferralCode].\n" +
-                "Enjoy the perks and benefits that come with being part of our community!\n" +
-                "Hurry, the fun is just a click away! \uD83D\uDE80 Let's make your [App Name] experience unforgettable together!\n" +
-                "\n" +
-                "[App Store Link] | [Google Play Link]\n" +
-                "\n" +
-                "Happy exploring! \uD83C\uDF08"
+        }
+
+        val content =
+            "Sharing is Saving! I wanted to share a special referral code with you from www.halalfoodmaster.com. Use the code $couponCode when you sign up as new customer to get $points points $amount on your first purchase! Click here \"https://onelink.to/hz6kxn\" to register now."
 
         val intent = Intent(Intent.ACTION_SEND)
         intent.putExtra(Intent.EXTRA_TEXT, content)
@@ -169,11 +172,22 @@ class ReferralFragment : Fragment(), View.OnClickListener {
         startActivity(Intent.createChooser(intent, "Share Via"))
     }
 
+    private fun copyCode() {
+        val couponCode = binding.couponCode.text.trim()
+        val clipboardManager =
+            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText("text", couponCode)
+        clipboardManager.setPrimaryClip(clipData)
+        showToast("Referral code copied")
+    }
+
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
-            binding.share.id -> shareReferral()
+            binding.copy.id -> copyCode()
             binding.shareButton.id -> shareReferral()
         }
     }
+
+
 }

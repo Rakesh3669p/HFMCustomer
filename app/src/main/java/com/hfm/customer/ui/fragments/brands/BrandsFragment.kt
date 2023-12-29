@@ -29,18 +29,20 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 val alphabetList = listOf(
-    "#","A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+    "#", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
     "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
     "U", "V", "W", "X", "Y", "Z"
 )
 
 @AndroidEntryPoint
-class BrandsFragment : Fragment() ,View.OnClickListener{
+class BrandsFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentBrandsBinding
     private var currentView: View? = null
     private val mainViewModel: MainViewModel by viewModels()
-    @Inject lateinit var alphabetsAdapter: BrandsAlphabetsAdapter
-    @Inject lateinit var brandsAdapter: BrandStoreSingleAdapter
+    @Inject
+    lateinit var alphabetsAdapter: BrandsAlphabetsAdapter
+    @Inject
+    lateinit var brandsAdapter: BrandStoreSingleAdapter
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
     var alphabet = ""
@@ -63,9 +65,10 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
         setObserver()
 
     }
+
     private fun init() {
         appLoader = Loader(requireContext())
-        noInternetDialog= NoInternetDialog(requireContext())
+        noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         alphabetsAdapter.differ.submitList(alphabetList)
         binding.alphabetsRv.apply {
@@ -75,27 +78,29 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
             }
             adapter = alphabetsAdapter
         }
-        mainViewModel.getBrands(alphabet)
+        mainViewModel.getBrands(filterName = alphabet, name = "1")
     }
 
     private fun setObserver() {
-        mainViewModel.brands.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.brands.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
-                    if(response.data?.httpcode == 200){
-                        initRecyclerViewGrid(requireContext(),binding.brandsRv,brandsAdapter,2)
+                    if (response.data?.httpcode == 200) {
+                        initRecyclerViewGrid(requireContext(), binding.brandsRv, brandsAdapter, 2)
                         brandsAdapter.differ.submitList(response.data.data.brands)
                         binding.noData.root.isVisible = response.data.data.brands.isEmpty()
                         binding.noData.noDataLbl.text = "No brands found."
-                    }else if(response.data?.httpcode == 404){
+                        binding.brandsRv.post { binding.brandsRv.scrollToPosition(0) }
+                    } else if (response.data?.httpcode == 404) {
                         binding.noData.root.isVisible = true
                         binding.noData.noDataLbl.text = "No brands found."
                         brandsAdapter.differ.submitList(emptyList())
                     }
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
         }
     }
@@ -109,16 +114,15 @@ class BrandsFragment : Fragment() ,View.OnClickListener{
     }
 
 
-
     private fun setOnClickListener() {
         with(binding) {
             back.setOnClickListener(this@BrandsFragment)
             search.setOnClickListener(this@BrandsFragment)
         }
 
-        alphabetsAdapter.setOnItemClickListener {selectedAlphabet->
-            alphabet = if(selectedAlphabet=="#") "" else selectedAlphabet
-            mainViewModel.getBrands(alphabet)
+        alphabetsAdapter.setOnItemClickListener { selectedAlphabet ->
+            alphabet = if (selectedAlphabet == "#") "" else selectedAlphabet
+            mainViewModel.getBrands(filterName = alphabet, name = "1")
         }
 
         brandsAdapter.setOnBrandClickListener {

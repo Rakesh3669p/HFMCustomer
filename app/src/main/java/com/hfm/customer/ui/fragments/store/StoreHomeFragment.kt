@@ -49,6 +49,8 @@ import javax.inject.Inject
 class StoreHomeFragment(private val storeData: StoreData) : Fragment(), View.OnClickListener {
 
 
+    private var claimedPosition: Int? = null
+
     @Inject
     lateinit var vouchersAdapter: StoreVouchersAdapter
 
@@ -153,10 +155,11 @@ class StoreHomeFragment(private val storeData: StoreData) : Fragment(), View.OnC
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
                         showToast("Voucher claimed successfully")
-                        mainViewModel.getSellerVouchers(
+                        setClaiming()
+                        /*mainViewModel.getSellerVouchers(
                             storeData.shop_detail[0].seller_id.toString(),
                             0
-                        )
+                        )*/
                     } else {
                         binding.storeVouchers.isVisible = true
                     }
@@ -187,6 +190,15 @@ class StoreHomeFragment(private val storeData: StoreData) : Fragment(), View.OnC
                     apiError(response.message)
             }
         }
+    }
+
+    private fun setClaiming() {
+        claimedPosition?.let {
+            sellerVouchers[it].isClaimed = "1"
+            vouchersAdapter.differ.submitList(sellerVouchers)
+            vouchersAdapter.notifyItemChanged(it)
+        }
+
     }
 
     private fun apiError(message: String?) {
@@ -280,6 +292,7 @@ class StoreHomeFragment(private val storeData: StoreData) : Fragment(), View.OnC
                 requireActivity().moveToLogin(sessionManager)
                     return@setOnItemClickListener
             }
+            claimedPosition = position
             val couponCode = sellerVouchers[position].couponCode
             if (storeData.shop_detail[0].seller_id != null) {
                 mainViewModel.claimStoreVoucher(

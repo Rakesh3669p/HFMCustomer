@@ -218,9 +218,6 @@ class ProfileSettings : Fragment(), View.OnClickListener {
         appCompatDialog.setContentView(bindingDialog.root)
         appCompatDialog.setCancelable(true)
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-
-        appCompatDialog.setCancelable(false)
         appCompatDialog.show()
         bindingDialog.camera.setOnClickListener {
             ImagePicker.with(this).cameraOnly()
@@ -318,7 +315,7 @@ class ProfileSettings : Fragment(), View.OnClickListener {
         val bindingDialog = DialogueDeleteAccountBinding.inflate(layoutInflater)
         appCompatDialog.setContentView(bindingDialog.root)
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        appCompatDialog.setCancelable(false)
+        appCompatDialog.setCancelable(true)
         bindingDialog.cancel.setOnClickListener {
             appCompatDialog.dismiss()
         }

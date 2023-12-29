@@ -1,13 +1,17 @@
 package com.hfm.customer.ui.fragments.cart
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -21,6 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.hfm.customer.R
 import com.hfm.customer.databinding.BottomSheetVariantsBinding
 import com.hfm.customer.databinding.BottomSheetVoucherBinding
+import com.hfm.customer.databinding.DialogueDeleteAlertBinding
 import com.hfm.customer.databinding.FragmentCartBinding
 import com.hfm.customer.ui.fragments.address.model.Address
 import com.hfm.customer.ui.fragments.cart.adapter.CartAdapter
@@ -100,7 +105,6 @@ class CartFragment : Fragment(), View.OnClickListener {
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
         if (currentView == null) {
-            currentView = inflater.inflate(R.layout.fragment_cart, container, false)
             currentView = inflater.inflate(R.layout.fragment_cart, container, false)
             binding = FragmentCartBinding.bind(currentView!!)
             init()
@@ -511,10 +515,11 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
 
             if (cartData.wallet_balance != "false") {
-                points.text = "${cartData.wallet_balance.toDouble()
-                } (RM ${formatToTwoDecimalPlaces(cartData.wallet_cash.toDouble())})"
+                points.text = "${formatToTwoDecimalPlaces(cartData.wallet_balance.toDouble())}"
+                pointsCash.text = "(RM ${formatToTwoDecimalPlaces(cartData.wallet_cash.toDouble())})"
             } else {
-                points.text = "0 (RM 0.00)"
+                points.text = "0"
+                pointsCash.text = "(RM 0.00)"
                 wallet.text = "RM 0.00"
             }
 
@@ -598,12 +603,10 @@ class CartFragment : Fragment(), View.OnClickListener {
             mainViewModel.selectCart(cartId, if (status) 1 else 0)
         }
 
-        cartAdapter.setOnDeleteClickListener { cartId ->
-            mainViewModel.deleterCartProduct(cartId)
-        }
 
         cartAdapter.setOnDeleteClickListener { cartId ->
-            mainViewModel.deleterCartProduct(cartId)
+            showDeleteAlert(cartId)
+
         }
 
         cartAdapter.setOnStoreClicked { sellerId ->
@@ -614,7 +617,8 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         cartAdapter.setOnQtyChangeListener { cartId, qty ->
             if (qty.toInt() <= 0) {
-                mainViewModel.deleterCartProduct(cartId)
+                showToast("Quantity should be at least one")
+//                mainViewModel.deleterCartProduct(cartId)
             } else {
                 mainViewModel.updateCartQty(cartId, qty = qty.toInt())
             }
@@ -634,6 +638,49 @@ class CartFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun showDeleteAlert(cartId: String) {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DialogueDeleteAlertBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+
+        // Set a specific width for the dialog (for example, 80% of screen width)
+        val displayMetrics = resources.displayMetrics
+        val dialogWidth = (displayMetrics.widthPixels * 0.7).toInt()
+        appCompatDialog.window?.setLayout(dialogWidth, WindowManager.LayoutParams.WRAP_CONTENT)
+
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.setCancelable(true)
+        bindingDialog.desc.text = "Are you sure want to delete product?"
+        bindingDialog.ok.setOnClickListener {
+            mainViewModel.deleterCartProduct(cartId)
+            appCompatDialog.dismiss()
+        }
+        bindingDialog.cancel.setOnClickListener {
+            appCompatDialog.dismiss()
+        }
+        appCompatDialog.show()
+    }
+    private fun showDeleteAlertCart(cartIds: String) {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DialogueDeleteAlertBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        // Set a specific width for the dialog (for example, 80% of screen width)
+        val displayMetrics = resources.displayMetrics
+        val dialogWidth = (displayMetrics.widthPixels * 0.7).toInt()
+        appCompatDialog.window?.setLayout(dialogWidth, WindowManager.LayoutParams.WRAP_CONTENT)
+
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.setCancelable(true)
+        bindingDialog.desc.text = "Are you sure want to delete cart?"
+        bindingDialog.ok.setOnClickListener {
+            mainViewModel.deleterCartProduct(cartIds)
+            appCompatDialog.dismiss()
+        }
+        bindingDialog.cancel.setOnClickListener {
+            appCompatDialog.dismiss()
+        }
+        appCompatDialog.show()
+    }
     private fun showVariantsBottomSheet(variants: List<Variants>, cartId: String) {
 
         val variantsBinding = BottomSheetVariantsBinding.inflate(layoutInflater)
@@ -840,7 +887,8 @@ class CartFragment : Fragment(), View.OnClickListener {
         if (cartIds.isEmpty()) {
             showToast("Please select the product")
         } else {
-            mainViewModel.deleterCartProduct(cartIds)
+            showDeleteAlertCart(cartIds)
+
         }
     }
 

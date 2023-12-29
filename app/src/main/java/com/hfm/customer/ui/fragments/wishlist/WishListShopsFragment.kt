@@ -97,7 +97,7 @@ class WishListShopsFragment : Fragment() {
 
     private fun setFavStores(data: StoreFavouriteData) {
         binding.noDataLayout.root.isVisible = data.favourite_list.isEmpty()
-        binding.noDataLayout.noDataLbl.text = "No favourite shops found!"
+        binding.noDataLayout.noDataLbl.text = "No favourite shops found"
         initRecyclerView(requireContext(), binding.productListRv, wishlistShopAdapter)
         wishlistShopAdapter.differ.submitList(data.favourite_list)
     }

@@ -193,7 +193,7 @@
                 android:hint="@string/mobile_number_lbl"
                 android:inputType="number"
                 android:paddingVertical="@dimen/_12sdp"
-                android:paddingStart="@dimen/_60sdp"
+                android:paddingStart="@dimen/_70sdp"
                 android:paddingEnd="@dimen/_10sdp"
                 app:layout_constraintBottom_toTopOf="@+id/emailLbl"
                 app:layout_constraintEnd_toEndOf="parent"

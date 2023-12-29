@@ -1,5 +1,6 @@
 package com.hfm.customer.service
 
+import android.R.attr.bitmap
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,6 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
@@ -25,7 +28,6 @@ import kotlin.random.Random
 @AndroidEntryPoint
 class MessageService : FirebaseMessagingService() {
     private val channelId = "notification_channel"
-    private var audioStoryId = ""
 
     @Inject
     lateinit var sessionManager: SessionManager
@@ -36,28 +38,77 @@ class MessageService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        println("Push-notification object" + remoteMessage.data)
+        println("push notification Data: ${remoteMessage.data}")
+        val appTargetPage = remoteMessage.data["app_target_page"]
+        val notify_type = remoteMessage.data["notify_type"]
+        val ref_id = remoteMessage.data["ref_id"]
+        val bulk_order_sale_id = remoteMessage.data["bulk_order_sale_id"]
+        val orderId = remoteMessage.data["orderId"]
+        val id = remoteMessage.data["id"]
+        val title = remoteMessage.data["title"]
+        val desc = remoteMessage.data["description"]
+        if(title!=null) {
+            showNotification(appTargetPage,
+                    notify_type,
+                    ref_id,
+                    bulk_order_sale_id,
+                    orderId,
+                    id,title,desc
+
+            )
+        }
     }
 
 
     @SuppressLint("UnspecifiedImmutableFlag", "SuspiciousIndentation")
-    private fun showNotification(title: String, message: String) {
+    private fun showNotification(
+        appTargetPage: String?,
+        notify_type: String?,
+        ref_id: String?,
+        bulk_order_sale_id: String?,
+        orderId: String?,
+        id: String?,
+        title: String?,
+        desc: String?
+    ) {
         val randoms = Random(System.currentTimeMillis()).nextInt(1000)
         val smallIcon = Bitmap.createScaledBitmap(
             BitmapFactory.decodeResource(resources, R.drawable.app_icon),
-            512,
-            512,
+            256,
+            256,
             false
         )
+
+        val appIcon: Drawable = BitmapDrawable(resources, smallIcon)
+
 
 
         var intent: Intent? = null
 
         if (intent == null) {
             intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                Intent(this, DashBoardActivity::class.java)
+                Intent(this, DashBoardActivity::class.java).also {
+                    it.putExtra("appTargetPage",appTargetPage)
+                    it.putExtra("notify_type",notify_type)
+                    it.putExtra("ref_id",ref_id)
+                    it.putExtra("bulk_order_sale_id",bulk_order_sale_id)
+                    it.putExtra("orderId",orderId)
+                    it.putExtra("id",id)
+                    it.putExtra("title",title)
+                    it.putExtra("description",desc)
+                }
             } else {
-                Intent(this, DashBoardActivity::class.java)
+                Intent(this, DashBoardActivity::class.java).apply {
+                    putExtra("appTargetPage",appTargetPage)
+                    putExtra("notify_type",notify_type)
+                    putExtra("ref_id",ref_id)
+                    putExtra("bulk_order_sale_id",bulk_order_sale_id)
+                    putExtra("orderId",orderId)
+                    putExtra("id",id)
+                    putExtra("title",title)
+                    putExtra("description",desc)
+
+                }
             }
         }
 
@@ -77,13 +128,13 @@ class MessageService : FirebaseMessagingService() {
 
         val builder: NotificationCompat.Builder =
             NotificationCompat.Builder(applicationContext, channelId)
-                .setSmallIcon(R.drawable.app_icon)
+                .setSmallIcon(R.drawable.ic_notification_badge)
                 .setAutoCancel(true)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(pendingIntent)
                 .setContentTitle(title)
+                .setContentText(desc)
                 .setOngoing(false)
-                .setLargeIcon(smallIcon)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -92,7 +143,7 @@ class MessageService : FirebaseMessagingService() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
-                NotificationChannel(channelId, "web_app", NotificationManager.IMPORTANCE_HIGH)
+                NotificationChannel(channelId, "app", NotificationManager.IMPORTANCE_HIGH)
 
             notificationChannel.apply {
                 vibrationPattern = longArrayOf(0.toLong())

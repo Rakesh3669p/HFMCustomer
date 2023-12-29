@@ -20,4 +20,5 @@ data class Referral(
     val referral_rewards_expiry: String,
     val image: String,
     val referral_points: String,
+    val referral_points_rm: String,
 )

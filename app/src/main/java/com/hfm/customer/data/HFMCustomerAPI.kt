@@ -469,6 +469,12 @@ interface HFMCustomerAPI {
     ): Response<SuccessModel>
 
 
+    @POST("customer/device-token")
+    suspend fun updateDeviceToken(
+        @Body jsonObject: JsonObject
+    ): Response<SuccessModel>
+
+
     @POST("customer/logout")
     suspend fun logout(
         @Body jsonObject: JsonObject

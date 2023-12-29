@@ -24,7 +24,7 @@ class StoreProductsReviewsMediaAdapter @Inject constructor() :
             with(bind) {
                 reviewThumbnail.loadImage(replaceBaseUrl(data))
                 root.setOnClickListener {
-                    onItemClick?.invoke(data)
+                    onItemClick?.invoke(data,absoluteAdapterPosition)
                 }
             }
         }
@@ -64,9 +64,9 @@ class StoreProductsReviewsMediaAdapter @Inject constructor() :
     override fun getItemCount(): Int = differ.currentList.size
     override fun getItemViewType(position: Int): Int = position
 
-    private var onItemClick: ((imageLink: String) -> Unit)? = null
+    private var onItemClick: ((imageLink: String,index:Int) -> Unit)? = null
 
-    fun setOnItemClickListener(listener: (imageLink: String) -> Unit) {
+    fun setOnItemClickListener(listener: (imageLink: String,index:Int) -> Unit) {
         onItemClick = listener
     }
 

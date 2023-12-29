@@ -24,7 +24,7 @@
         style="@style/textLargeSemiBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/supportLbl"
+        android:text="@string/hfmSupportLbl"
         app:layout_constraintBottom_toBottomOf="@id/back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

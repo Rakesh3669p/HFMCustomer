@@ -256,7 +256,7 @@ class AddNewAddressFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
-                        if (from == "cart") {
+                        if (from == "cart" || from == "checkOut") {
                             findNavController().navigate(R.id.action_addressFormToCart)
 
                         } else {

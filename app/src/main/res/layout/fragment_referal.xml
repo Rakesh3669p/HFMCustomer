@@ -75,7 +75,7 @@
                 android:fontFamily="@font/roboto"
                 android:lineSpacingExtra="1dp"
                 android:singleLine="false"
-                android:text="Invite Friends,\n get 500 points"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="@dimen/_20ssp"
                 app:layout_constraintBottom_toTopOf="@+id/rewardsText"
@@ -107,7 +107,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:textColor="@color/white"
                 android:layout_marginBottom="@dimen/_10sdp"
-                android:text="Every 100 points(p) = RM 1"
+                android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/referralImage" />
@@ -173,7 +173,7 @@
 
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/_10sdp"
-                android:text="#123456"
+                android:text=""
                 android:textColor="@color/grey"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -181,12 +181,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/three" />
 
             <androidx.constraintlayout.utils.widget.ImageFilterView
-                android:id="@+id/share"
+                android:id="@+id/copy"
                 android:layout_width="@dimen/_24sdp"
                 android:layout_height="@dimen/_24sdp"
                 android:layout_marginEnd="@dimen/_8sdp"
                 android:padding="@dimen/_4sdp"
-                android:src="@drawable/ic_share"
+                android:src="@drawable/ic_copy"
                 app:layout_constraintBottom_toBottomOf="@id/couponCode"
                 app:layout_constraintEnd_toEndOf="@id/couponCode"
                 app:layout_constraintTop_toTopOf="@id/couponCode" />

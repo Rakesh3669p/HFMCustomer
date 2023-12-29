@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.view.marginBottom
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -54,7 +56,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         var selectedBrandFilters: MutableList<Int> = ArrayList()
     }
 
-    private var feature: String = ""
+
     private lateinit var filterDialog: BottomSheetDialog
     private var showProductsRandomly: Boolean = false
 
@@ -76,6 +78,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
     private var minPrice: String = ""
     private var wholeSale: Int = 0
     private var flashSale: Int = 0
+    private var feature: Int = 0
 
 
     @Inject
@@ -98,6 +101,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
 
     private var isLoading = false
     private var pageNo = 0
+    var initial =true
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -131,15 +135,19 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         search = arguments?.getString("keyword") ?: ""
         wholeSale = arguments?.getInt("wholeSale") ?: 0
         flashSale = arguments?.getInt("flashSale") ?: 0
-        feature = arguments?.getString("feature")?:""
-        val endTime = arguments?.getString("endTime") ?: ""
-        showProductsRandomly = catId.isEmpty() && subCatId.isEmpty() && brandId.isEmpty() && search.isEmpty() && wholeSale == 0 && flashSale == 0 && endTime.isEmpty() && feature.isEmpty()
+        feature = arguments?.getInt("feature") ?: 0
+
+        showProductsRandomly =
+            catId.isEmpty() && subCatId.isEmpty() && brandId.isEmpty() && search.isEmpty() && wholeSale == 0 && flashSale == 0 && feature == 0
 
         makeProductListApiCall()
         mainViewModel.getBrands()
 
-        if(showProductsRandomly) {
-            binding.result.makeInvisible()
+        if (showProductsRandomly) {
+//            binding.result.makeInvisible()
+            binding.bottomLoader.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = 120
+            }
             binding.category.makeInvisible()
         }
 
@@ -163,6 +171,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             override fun onTick(millisUntilFinished: Long) {
                 updateCountdownText(millisUntilFinished)
             }
+
             override fun onFinish() {
                 updateCountdownText(0)
             }
@@ -182,8 +191,9 @@ class ProductListFragment : Fragment(), View.OnClickListener {
     }
 
     private fun makeProductListApiCall() {
+
         mainViewModel.getProductList(
-            catId = catId,
+            catId = if (brandId.isEmpty()) catId else "",
             subCatId = subCatId,
             brandId = brandId,
             maxPrice = maxPrice,
@@ -197,7 +207,9 @@ class ProductListFragment : Fragment(), View.OnClickListener {
             page = pageNo,
             wholeSale = wholeSale,
             flashSale = flashSale,
-            random = if(showProductsRandomly)1 else 0,)
+            feature = feature,
+            random = if (showProductsRandomly) 1 else 0,
+        )
     }
 
     private fun setObserver() {
@@ -208,15 +220,14 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                     binding.loader.isVisible = false
                     binding.bottomLoader.isVisible = false
                     if (response.data?.httpcode == 200) {
-
                         setProductData(response.data.data)
+
                     } else showToast(
                         response.data?.message.toString()
                     )
                 }
 
-                is Resource.Loading -> if (pageNo == 0) appLoader.show() else binding.bottomLoader.isVisible =
-                    true
+                is Resource.Loading -> if (pageNo == 0) appLoader.show() else binding.bottomLoader.isVisible = true
 
                 is Resource.Error -> apiError(response.message)
             }
@@ -227,7 +238,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                 is Resource.Success -> {
                     if (response.data?.httpcode == 200) {
                         brands = response.data.data.brands
-                        if(this::filterDialog.isInitialized&&filterDialog.isShowing){
+                        if (this::filterDialog.isInitialized && filterDialog.isShowing) {
                             filterBrandAdapter.differ.submitList(brands)
                         }
                     }
@@ -272,37 +283,47 @@ class ProductListFragment : Fragment(), View.OnClickListener {
         } else {
         }*/
         productList.addAll(data.products)
-          if(pageNo==0 && productList.isEmpty()){
-              binding.result.makeInvisible()
-              binding.category.makeInvisible()
-          }else{
-              binding.result.makeVisible()
-              binding.category.makeVisible()
-          }
+        if (pageNo == 0 && productList.isEmpty()) {
+            binding.result.makeInvisible()
+            binding.category.makeInvisible()
+        } else {
+            binding.result.makeVisible()
+            binding.category.makeVisible()
+        }
 
-        binding.category.isVisible = !(pageNo==0 && productList.isEmpty())
+
 
         binding.noData.root.isVisible = productList.isEmpty()
         binding.noData.noDataLbl.text = "No Products Found"
+        if(binding.noData.root.isVisible){
+            binding.sort.isVisible = !initial
+            binding.filter.isVisible = !initial
+        }
         productListAdapter.differ.submitList(productList)
         productListAdapter.notifyDataSetChanged()
 
 
         if (data.products.isNotEmpty()) {
-            if(wholeSale==1){
+            if (wholeSale == 1) {
                 binding.result.text = "${data.total_products} results for "
                 binding.category.text = "Factory Direct WholeSale"
-            }else if(flashSale==1){
+            } else if (flashSale == 1) {
                 binding.result.text = "${data.total_products} results for "
                 binding.category.text = "Flash Deal"
-            }else if (feature.isNotEmpty()){
+            } else if (feature == 1) {
                 binding.result.text = "${data.total_products} results for "
-                binding.category.text = "Feature Products"
-            }else {
+                binding.category.text = "Featured Products"
+            } else {
                 binding.result.text = "${data.total_products} results for "
                 binding.category.text = "${data.products[0].category_name}"
             }
         }
+
+        if (showProductsRandomly) {
+            binding.result.text = "${data.total_products} results"
+            binding.category.makeInvisible()
+        }
+        initial = false
     }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
@@ -354,7 +375,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                 filterBrandAdapter.notifyItemChanged(adapterPosition)
                 brandId = ""
                 selectedBrandFilters.forEach {
-                    brandId = "$brandId,$it"
+                    brandId = if (brandId.isEmpty()) "$it" else "$brandId,$it"
                 }
             }
             productListAdapter.setOnProductClickListener { id ->
@@ -405,7 +426,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                     lowToHigh = "1",
                     deviceId = sessionManager.deviceId,
                     page = pageNo,
-                    random = if(showProductsRandomly)1 else 0
+                    random = if (showProductsRandomly) 1 else 0
                 )
 
             }
@@ -422,7 +443,7 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                     highToLow = "1",
                     deviceId = sessionManager.deviceId,
                     page = pageNo,
-                    random = if(showProductsRandomly)1 else 0
+                    random = if (showProductsRandomly) 1 else 0
                 )
 
             }
@@ -436,7 +457,8 @@ class ProductListFragment : Fragment(), View.OnClickListener {
 
     private fun showFilterBottomSheet() {
         bottomSheetFilterBinding = BottomSheetFilterBinding.inflate(layoutInflater)
-        filterDialog = BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
+        filterDialog =
+            BottomSheetDialog(requireActivity(), R.style.MyTransparentBottomSheetDialogTheme)
         filterDialog.setContentView(bottomSheetFilterBinding.root)
         filterDialog.setCanceledOnTouchOutside(true)
         filterDialog.setCancelable(true)
@@ -459,9 +481,9 @@ class ProductListFragment : Fragment(), View.OnClickListener {
                 clearSearch.isVisible = !text.isNullOrEmpty()
                 val searchValue = brandSearch.text.toString().lowercase()
                 if (text.toString().isNotEmpty()) {
-                    mainViewModel.getBrands(filterName = searchValue)
+                    mainViewModel.getBrands(name="1",filterName = searchValue)
                 } else if (text.isNullOrEmpty()) {
-                    mainViewModel.getBrands(filterName ="")
+                    mainViewModel.getBrands(name="1",filterName = "")
                 }
 
             }

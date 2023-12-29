@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.checkOut.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -31,6 +32,7 @@ class CheckOutStoreAdapter @Inject constructor() :
     RecyclerView.Adapter<CheckOutStoreAdapter.ViewHolder>() {
     private var shippingOptions: List<ShippingOption> = ArrayList()
     private lateinit var context: Context
+    private lateinit var activity: Activity
 
     inner class ViewHolder(private val bind: ItemCheckoutListBinding) :
         RecyclerView.ViewHolder(bind.root) {
@@ -137,6 +139,7 @@ class CheckOutStoreAdapter @Inject constructor() :
                 val checkOutStore =
                     data.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }
                 checkOutProducts.addAll(checkOutStore)
+                productAdapter.setActivity(activity)
                 productAdapter.differ.submitList(checkOutProducts)
 
                 val shippingCharge = (if(data.shipping==null) 0 else data.shipping.toString().toDouble()).toDouble()
@@ -250,5 +253,9 @@ class CheckOutStoreAdapter @Inject constructor() :
 
     fun setOnStoreClicked(listener: (id: Int) -> Unit) {
         onStoreClicked = listener
+    }
+
+    fun setActivity(activity: Activity){
+        this.activity = activity
     }
 }

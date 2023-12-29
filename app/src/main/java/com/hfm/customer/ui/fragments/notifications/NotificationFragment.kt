@@ -157,13 +157,13 @@ class NotificationFragment : Fragment(), View.OnClickListener {
         notificationAdapter.setOnItemClickListener { position ->
             val notification = notificationAdapter.differ.currentList[position]
             when (notification.app_target_page) {
-                "order" -> {
+                "order","bulk_order" -> {
                     when (notification.notify_type) {
                         "quotation_accepted", "bulk_order_requested", "quotation_rejected", "quotation_created" -> {
                             val bundle = Bundle()
                             bundle.putString("from", "bulkOrder")
                             bundle.putString("orderId", notification.ref_id.toString())
-                            bundle.putString("saleId", notification.bulk_order_sale_id.toString())
+                            bundle.putString("saleId", notification.bulk_order_sale_id)
                             mainViewModel.viewedNotification(notificationId = notification.id)
                             findNavController().navigate(R.id.bulkOrderDetailsFragment, bundle)
                         }
@@ -194,7 +194,6 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 }
 
                 "profile" -> {
-
                     mainViewModel.viewedNotification(notificationId = notification.id)
                     (activity as DashBoardActivity).toProfile()
                 }
@@ -218,6 +217,15 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                         putInt("chatId", notification.ref_id)
                     }
                     findNavController().navigate(R.id.chatFragment, bundle)
+                    mainViewModel.viewedNotification(notificationId = notification.id)
+                }
+                "notification_detail" -> {
+                    val bundle = Bundle().apply {
+                        putString("redirection", notification.ref_link)
+                        putString("title", notification.title)
+                        putString("description", notification.description)
+                    }
+                    findNavController().navigate(R.id.customNotificationViewFragment, bundle)
                     mainViewModel.viewedNotification(notificationId = notification.id)
                 }
             }

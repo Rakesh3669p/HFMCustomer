@@ -38,8 +38,7 @@ class MyOrdersFragment : Fragment(), View.OnClickListener {
     }
 
     private fun init() {
-        with(binding) {
-        }
+
     }
 
     private fun setObserver() {}
@@ -84,6 +83,7 @@ class MyOrdersFragment : Fragment(), View.OnClickListener {
             "toPay"->binding.ordersVp.currentItem =0
             "toShip"->binding.ordersVp.currentItem =1
             "toReceive"->binding.ordersVp.currentItem =2
+            "cancelled"->binding.ordersVp.currentItem =4
             "bulkOrders"->binding.ordersVp.currentItem =5
         }
 

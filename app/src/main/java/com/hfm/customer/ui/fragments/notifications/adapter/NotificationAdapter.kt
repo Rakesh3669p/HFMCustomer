@@ -1,6 +1,9 @@
 package com.hfm.customer.ui.fragments.notifications.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -23,11 +26,18 @@ class NotificationAdapter @Inject constructor() : RecyclerView.Adapter<Notificat
 
     inner class ViewHolder(private val binding: ItemNotificationBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("SetTextI18n")
         fun bind(data: Notification) {
 
             with(binding) {
-                notificationTitle.text = "${data.title}: ${data.description}"
-                val timestamp = data.created_at.toUnixTimestamp()
+
+                if(data.app_target_page=="notification_detail"){
+                    notificationTitle.text = data.title
+                }else{
+                    notificationTitle.text = "${data.title}: ${data.description}"
+                }
+
+                val timestamp = data.created_at_formatted.toUnixTimestamp()
                 val timeAgo = timestamp.toCustomTimeAgo()
                 time.text = timeAgo.toString()
 

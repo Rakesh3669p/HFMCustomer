@@ -37,13 +37,14 @@ class BulkOrdersAdapter @Inject constructor() :
                 orderAmount.isVisible = false
 
                 requestStatusLbl.isVisible =true
-                requestStatus.text = if(data.request_status==0) "Pending" else "Accepted"
+                requestStatus.text = if(data.request_status==0) "Pending" else if(data.request_status==1) "Accepted" else "Rejected"
                 val orangeColor = ContextCompat.getColor(context,R.color.orange)
                 val greenColor = ContextCompat.getColor(context,R.color.green)
-                if(data.request_status==0)  {
-                    requestStatus.setTextColor(orangeColor)
-                }else{
-                    requestStatus.setTextColor(greenColor)
+                val redColor = ContextCompat.getColor(context,R.color.red)
+                when (data.request_status) {
+                    0 -> requestStatus.setTextColor(orangeColor)
+                    1 -> requestStatus.setTextColor(greenColor)
+                    else -> requestStatus.setTextColor(redColor)
                 }
                 requestedDate.text = "${data.date_needed} | ${data.request_time}"
 

@@ -73,15 +73,17 @@ class CategoriesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        /*       categoryMainAdapter.setSelectionPosition(selectedPosition)
-               currentView?.findViewById<TextView>(R.id.categoryName)?.text = mainCategoryData[selectedPosition].category_name
-               catId = mainCategoryData[selectedPosition].category_id
-               categoriesAdapter.differ.submitList(mainCategoryData[selectedPosition].subcategory)*/
+        setObserver()
+//               categoryMainAdapter.setSelectionPosition(selectedPosition)
+//               currentView?.findViewById<TextView>(R.id.categoryName)?.text = mainCategoryData[selectedPosition].category_name
+//               catId = mainCategoryData[selectedPosition].category_id
+//               categoriesAdapter.differ.submitList(mainCategoryData[selectedPosition].subcategory)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-//        outState.putInt("initialized", 1)
-//        outState.putInt("position", selectedPosition)
+        outState.putInt("initialized", 1)
+        outState.putInt("position", selectedPosition)
+        setCategories(mainCategoryData)
         super.onSaveInstanceState(outState)
     }
 
@@ -111,7 +113,10 @@ class CategoriesFragment : Fragment() {
                 is Resource.Success -> {
                     loader.dismiss()
                     if (response.data?.status == "success") {
-                        response.data.data.cat_subcat.let { setCategories(it) }
+                        response.data.data.cat_subcat.let {
+
+                            setCategories(it)
+                        }
                     }
                 }
 
@@ -142,7 +147,7 @@ class CategoriesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        selectedPosition = 0
+//        selectedPosition = 0
         if(mainCategoryData.isNotEmpty()) {
             setCategories(mainCategoryData)
         }

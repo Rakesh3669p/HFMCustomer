@@ -147,7 +147,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filterBrandRv"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_200sdp"
+        android:layout_height="@dimen/_180sdp"
         tools:listitem="@layout/item_filter_brand"
         tools:itemCount="4"
         android:layout_marginTop="@dimen/_10sdp"

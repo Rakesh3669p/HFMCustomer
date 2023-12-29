@@ -47,6 +47,7 @@ class ChatListFragment : Fragment(), View.OnClickListener {
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
 
+    var loggedOut = false
     private val mainViewModel: MainViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,6 +73,7 @@ class ChatListFragment : Fragment(), View.OnClickListener {
         noInternetDialog.setOnDismissListener { init() }
         mainViewModel.getChatList()
         if(!sessionManager.isLogin){
+            loggedOut= true
             showToast("Please login first")
             sessionManager.isLogin = false
             startActivity(Intent(requireActivity(), LoginActivity::class.java))
@@ -96,10 +98,12 @@ class ChatListFragment : Fragment(), View.OnClickListener {
                             chatUserAdapter.differ.submitList(response.data.data.list)
                         }
                     }  else if (response.data?.httpcode == 401) {
-                        showToast("Please login first")
-                        sessionManager.isLogin = false
-                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
-                        requireActivity().finish()
+                        if(!loggedOut) {
+                            showToast("Please login first")
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
                     } else {
                         showToast(response.data?.message.toString())
                     }

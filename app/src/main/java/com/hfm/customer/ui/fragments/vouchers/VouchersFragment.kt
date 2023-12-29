@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfm.customer.R
@@ -84,6 +85,8 @@ class VouchersFragment : Fragment(){
                         platformVouchers = response.data.data.coupon_list
                         initRecyclerView(requireContext(), binding.vouchersRv, vouchersAdapter)
                         vouchersAdapter.differ.submitList(platformVouchers)
+                        binding.noData.root.isVisible = platformVouchers.isEmpty()
+                        binding.noData.noDataLbl.text = "No platform vouchers to show."
                     } else if (response.data?.httpcode == 401) {
                         sessionManager.isLogin = false
                         startActivity(Intent(requireActivity(), LoginActivity::class.java))

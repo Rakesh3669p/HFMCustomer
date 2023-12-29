@@ -97,7 +97,7 @@ class WalletFragment : Fragment(), View.OnClickListener {
         }
 
         binding.balanceLbl.text = getString(R.string.current_balance_lbl)
-        binding.balance.text = "${data.total_balance} Points (RM ${formatToTwoDecimalPlaces(data.wallet_cash)})"
+        binding.balance.text = "${formatToTwoDecimalPlaces(data.total_balance)} Points (RM ${formatToTwoDecimalPlaces(data.wallet_cash)})"
 
         val redColor = ContextCompat.getColor(requireContext(), R.color.red)
         val spannableString = SpannableString("Notice: Your ${data.recent_expire.amount} referral will expire on ${data.recent_expire.date}")

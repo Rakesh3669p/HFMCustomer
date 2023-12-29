@@ -56,7 +56,7 @@ class SupportChatAdapter @Inject constructor() :
                         rightChatImage.isVisible = false
                     }
 
-                    rightChat.setOnClickListener {
+                    rightChatImage.setOnClickListener {
                         onImageClick?.invoke(replaceBaseUrl(data.image))
                     }
                 } else {

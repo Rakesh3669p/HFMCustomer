@@ -2,8 +2,6 @@ package com.hfm.customer.ui.fragments.products.productDetails
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -21,9 +19,9 @@ import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
@@ -55,7 +53,6 @@ import com.hfm.customer.ui.fragments.products.productDetails.adapter.ProductVari
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.RelativeProductListAdapter
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.ReviewsAdapter
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.SpecsAdapter
-import com.hfm.customer.ui.fragments.products.productDetails.adapter.VouchersAdapter
 import com.hfm.customer.ui.fragments.products.productDetails.model.Image
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductData
 import com.hfm.customer.ui.fragments.products.productDetails.model.UOM
@@ -207,6 +204,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         binding.pinCode.setOnFocusChangeListener { _, _ ->
             scrollToView(binding.pinCode)
         }
+
+
     }
 
     private fun scrollToView(view: View) {
@@ -301,8 +300,9 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         mainViewModel.productDetails.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
+                    while (appLoader.isShowing) appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
+                        binding.noDataFound.root.isVisible = false
                         if (this::productData.isInitialized) {
                             productData = response.data.data
                             setCartButton()
@@ -310,6 +310,8 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                             productData = response.data.data
                             setProductDetails()
                         }
+                    } else if (response.data?.httpcode == 400) {
+                        binding.noDataFound.root.isVisible = true
                     } else showToast(response.data?.message.toString())
                 }
 
@@ -428,10 +430,11 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                             showToast(response.data.message)
                             binding.addToCartMain.makeInvisible()
                             binding.cartCount.makeVisible()
+                            mainViewModel.getProductDetails(productId)
+                            cartCount.postValue(response.data.data.cart_count)
                             binding.qty.text = addedQty
                             qty = addedQty.toInt()
                             cartId = response.data.data.cart_id.toString()
-                            cartCount.postValue(response.data.data.cart_count)
                             productData.product.is_added_to_cart = 1
                         }
 
@@ -520,24 +523,38 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         mainViewModel.addToCartMultiple.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
-                    if (response.data?.httpcode == 200) {
-                        binding.addToCartMain.makeInvisible()
-                        binding.cartCount.makeVisible()
-                        try {
-                            binding.qty.text =
-                                (productData.product.quantity.toString().toInt() + 1).toString()
-                            if (binding.qty.text.toString().toInt() > 0) {
-                                productData.product.quantity = binding.qty.text.toString().toInt()
+//                    appLoader.dismiss()
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            binding.addToCartMain.makeInvisible()
+                            binding.cartCount.makeVisible()
+                            try {
+                                binding.qty.text =
+                                    (productData.product.quantity.toString().toInt() + 1).toString()
+                                if (binding.qty.text.toString().toInt() > 0) {
+                                    productData.product.quantity = binding.qty.text.toString().toInt()
+                                }
+                            } catch (e: Exception) {
                             }
-                        } catch (e: Exception) {
+                            cartCount.postValue(response.data.cart_count)
+                            productData.product.is_added_to_cart = 1
+                            if(binding.qty.text.toString().isEmpty()) {
+                                binding.qty.text = "1"
+                            }else{
+                                binding.qty.text = (binding.qty.text.toString().toInt()+1).toString()
+                            }
+                            mainViewModel.getProductDetails(productId)
                         }
-                        cartCount.postValue(response.data.cart_count)
-                        productData.product.is_added_to_cart = 1
-                    } else if (response.data?.httpcode == 401) {
-                        sessionManager.isLogin = false
-                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
-                        requireActivity().finish()
+                        401 -> {
+                            appLoader.dismiss()
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
+                        else -> {
+                            appLoader.dismiss()
+                            showToast(response.data?.message.toString())
+                        }
                     }
                 }
 
@@ -550,16 +567,20 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         mainViewModel.updateCartCount.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-                    appLoader.dismiss()
+
                     when (response.data?.httpcode) {
                         200 -> {
                             binding.addToCartMain.makeInvisible()
                             binding.cartCount.makeVisible()
-                            binding.qty.text = qty.toString()
+                            mainViewModel.getProductDetails(productId)
                         }
 
-                        400 -> showToast(response.data.message.toString())
+                        400 -> {
+                            appLoader.dismiss()
+                            showToast(response.data.message)
+                        }
                         401 -> {
+                            appLoader.dismiss()
                             sessionManager.isLogin = false
                             startActivity(Intent(requireActivity(), LoginActivity::class.java))
                             requireActivity().finish()
@@ -729,6 +750,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                     "RM ${formatToTwoDecimalPlaces(offerPrice ?: variantActualPrice)}"
                 productListingPrice.text = "NP: RM ${formatToTwoDecimalPlaces(variantActualPrice)}"
                 selectedVariantData.isSelected = true
+                productsVariantsRv.isVisible = true
                 productsVariantsAdapter.differ.submitList(productData.varaiants_list)
             }
 
@@ -994,14 +1016,15 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
         exoBuffer.isVisible = true
         exoPlay.isVisible = false
         exoPause.isVisible = false
-        val yt =
-            YTExtractor(con = requireActivity(), CACHING = false, LOGGING = true, retryCount = 3)
+        val yt = YTExtractor(con = requireActivity(), CACHING = false, LOGGING = true, retryCount = 3)
+        val youtubeLink = productData.product.video.toString()
         lifecycleScope.launch {
-            yt.extract(extractYouTubeVideoId(productData.product.video.toString()).toString())
+            yt.extract(extractYouTubeVideoId(youtubeLink).toString())
             if (yt.state == State.SUCCESS) {
-                yt.getYTFiles().let {
-                    val videoMedia = it?.get(135)?.url.toString()
-                    val audioMedia = it?.get(251)?.url.toString()
+                yt.getYTFiles()?.let {
+                    println("ytSize ${it}")
+                    val videoMedia = it.get(134)?.url.toString()
+                    val audioMedia = it.get(251)?.url.toString()
                     startVideo(videoMedia, audioMedia)
                 }
             }
@@ -1054,7 +1077,7 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
                 exoPlay.isVisible = false
                 exoPause.isVisible = true
             } else {
-                exoBuffer.isVisible = true
+//                exoBuffer.isVisible = true
                 exoPlay.isVisible = true
                 exoPause.isVisible = false
             }
@@ -1436,7 +1459,13 @@ class ProductDetailsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun checkPinCode() {
+
         binding.pinCode.clearFocus()
+        if(productData.customer_addr?.pincode?.trim()==binding.pinCode.text.toString().trim()){
+            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+            return
+        }
         val pinCode = binding.pinCode.text.toString()
         if (pinCode.isEmpty()) {
             showToast("Please enter a valid postcode.")

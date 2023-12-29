@@ -339,5 +339,14 @@
             app:popUpToInclusive="true" />
 
     </fragment>
+    <fragment
+        android:id="@+id/customNotificationViewFragment"
+        android:name="com.hfm.customer.ui.fragments.notifications.CustomNotificationViewFragment"
+        android:label="CustomNotificationViewFragment"
+        tools:layout="@layout/fragment_custom_notifications_view"/>
+    <fragment
+        android:id="@+id/exploreProductListFragment"
+        android:name="com.hfm.customer.ui.dashBoard.explore.ExploreProductListFragment"
+        android:label="ExploreProductListFragment" />
 
 </navigation>
