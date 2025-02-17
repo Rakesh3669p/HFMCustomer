@@ -11,12 +11,12 @@ plugins {
 
 android {
     namespace 'com.hfm.customer'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.hfm.customer"
         minSdk 26
-        targetSdk 34
+        targetSdk 35
         versionCode 8
         versionName "1.0.3"
         multiDexEnabled true
@@ -25,7 +25,7 @@ android {
 
     buildTypes {
         debug {
-          buildConfigField "String", "BASE_URL", "\"https://admin.halalfoodmaster.com/api/\""
+            buildConfigField "String", "BASE_URL", "\"https://admin.halalfoodmaster.com/api/\""
 //          buildConfigField "String", "BASE_URL", "\"http://4.194.191.242/QA/admin/api/\""
 //            buildConfigField "String", "BASE_URL", "\"http://4.194.191.242/UAT/admin/api/\""
         }
@@ -38,7 +38,7 @@ android {
 
     aaptOptions { cruncherEnabled = false }
 
-    applicationVariants.all {
+    applicationVariants.configureEach {
         compileConfiguration.resolutionStrategy {}
         runtimeConfiguration.resolutionStrategy {}
         annotationProcessorConfiguration.resolutionStrategy {}
@@ -61,23 +61,23 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.10.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
 
     // Navigation Component
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.7.5'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.8.7'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.8.7'
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.9"
-    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.9")
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     // coroutine
@@ -89,47 +89,47 @@ dependencies {
     implementation("io.coil-kt:coil:2.5.0")
 
     //firebase-crashlytics
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.6.0'
-    implementation platform('com.google.firebase:firebase-bom:30.1.0')
-    implementation 'com.google.firebase:firebase-messaging:23.3.1'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:19.4.0'
+    implementation platform('com.google.firebase:firebase-bom:33.9.0')
+    implementation 'com.google.firebase:firebase-messaging:24.1.0'
     implementation "com.google.firebase:firebase-iid:21.1.0"
 
     //ViewPager
-    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
 
     implementation 'com.android.support:multidex:1.0.3'
 
     // required to avoid crash on Android 12 API 31
-    implementation 'androidx.work:work-runtime-ktx:2.8.1'
+    implementation 'androidx.work:work-runtime-ktx:2.10.0'
 
 
     // Social Login
-    implementation 'com.google.android.gms:play-services-auth:20.7.0'
-    implementation 'com.facebook.android:facebook-login:16.2.0'
+    implementation 'com.google.android.gms:play-services-auth:21.3.0'
+    implementation 'com.facebook.android:facebook-login:18.0.1'
 
     //Maps
     implementation 'com.google.maps.android:android-maps-utils:0.4.4'
-    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'com.google.android.gms:play-services-maps:19.0.0'
 
     // Architectural Components
-    implementation 'androidx.fragment:fragment-ktx:1.6.2'
-    implementation "androidx.activity:activity-ktx:1.8.1"
+    implementation 'androidx.fragment:fragment-ktx:1.8.6'
+    implementation "androidx.activity:activity-ktx:1.10.0"
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
 
     // Coroutine Lifecycle Scopes
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.8.7"
 
     //Scalable dp
     implementation "com.intuit.sdp:sdp-android:1.1.0"
     implementation "com.intuit.ssp:ssp-android:1.1.0"
 
     //HiltDagger
-    implementation("com.google.dagger:hilt-android:2.47")
-    kapt("com.google.dagger:hilt-android-compiler:2.47")
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     kapt("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
 
     //Splash Screen
@@ -147,13 +147,13 @@ dependencies {
 
     //Image picker
     implementation 'com.github.dhaval2404:imagepicker:2.1'
-    implementation "androidx.fragment:fragment-ktx:1.6.2"
+    implementation "androidx.fragment:fragment-ktx:1.8.6"
 
     //Exo Player
-    implementation 'androidx.media3:media3-exoplayer:1.2.0'
-    implementation 'androidx.media3:media3-exoplayer-dash:1.2.0'
-    implementation "androidx.media3:media3-session:1.2.0"
-    implementation 'androidx.media3:media3-ui:1.2.0'
+    implementation 'androidx.media3:media3-exoplayer:1.5.1'
+    implementation 'androidx.media3:media3-exoplayer-dash:1.5.1'
+    implementation "androidx.media3:media3-session:1.5.1"
+    implementation 'androidx.media3:media3-ui:1.5.1'
 
     implementation 'com.github.maxrave-dev:kotlin-youtubeExtractor:0.0.7'
 
