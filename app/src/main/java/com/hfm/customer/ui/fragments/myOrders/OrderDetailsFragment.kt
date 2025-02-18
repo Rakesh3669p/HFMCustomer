@@ -14,6 +14,9 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,8 +27,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
+import com.hfm.customer.databinding.DeliveryProofBinding
 import com.hfm.customer.databinding.DialogueMediaPickupBinding
 import com.hfm.customer.databinding.FragmentOrderDetailsBinding
 import com.hfm.customer.ui.fragments.myOrders.adapter.MyAllOrdersProductsAdapter
@@ -40,6 +45,8 @@ import com.hfm.customer.utils.createFileFromContentUri
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.initRecyclerView
 import com.hfm.customer.utils.loadImage
+import com.hfm.customer.utils.makeInvisible
+import com.hfm.customer.utils.makeVisible
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
@@ -204,10 +211,17 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
         with(binding) {
             data.purchase[0].let {
                 orderDetails = it
+
                 if (orderDetails.order_type == "bulk_order") {
+                    orderType.text = "Order Type: Bulk Order"
                     chat.text = "Support"
+                    deliveryPartner.makeInvisible()
+                    deliveryPartnerLbl.makeInvisible()
                 } else if (orderDetails.order_type == "normal_order") {
+                    orderType.text = "Order Type: Normal Order"
                     chat.text = "Chat"
+                    deliveryPartner.makeVisible()
+                    deliveryPartnerLbl.makeVisible()
                 }
                 orderId.text = "Order #:${it.order_id}"
 //                orderedDate.text = "${it.order_date} | ${it.order_time}"
@@ -215,6 +229,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 val orangeColor = ContextCompat.getColor(requireContext(), R.color.orange)
                 val greenColor = ContextCompat.getColor(requireContext(), R.color.green)
                 val redColor = ContextCompat.getColor(requireContext(), R.color.red)
+                val blackColor = ContextCompat.getColor(requireContext(), R.color.black)
                 viewTrackDetails.isVisible =
                     orderDetails.delivery_partner.lowercase() == "dhl shipping" || orderDetails.delivery_partner.lowercase() == "citylink shipping"
 
@@ -222,25 +237,28 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 submit.isVisible = paymentReceiptCv.isVisible
 
                 downLoadInvoice.isVisible = it.order_status == "delivered"
-
-                if(it.frontend_order_status.lowercase().contains("payment pending")){
-                    requestStatus.setTextColor(orangeColor)
-                    requestStatus.text = it.frontend_order_status
-                }else if(it.frontend_order_status.lowercase().contains("in process")){
-                    requestStatus.setTextColor(orangeColor)
-                    requestStatus.text = it.frontend_order_status
-                }else if(it.frontend_order_status.lowercase().contains("estimated delivery")){
-                    requestStatus.setTextColor(greenColor)
-                    requestStatus.text = it.frontend_order_status
-                }else if(it.frontend_order_status.lowercase().contains("delivered")){
-                    requestStatus.setTextColor(greenColor)
-                    requestStatus.text = it.frontend_order_status
-                }else if(it.frontend_order_status.lowercase().contains("cancelled")){
-                    paymentReceiptCv.isVisible = false
-                    submit.isVisible = false
-                    requestStatus.setTextColor(redColor)
-                    requestStatus.text = it.frontend_order_status
-                }
+                if(it.frontend_order_status!=null){
+                        if (it.frontend_order_status.lowercase().contains("payment pending")) {
+                            requestStatus.setTextColor(orangeColor)
+                            requestStatus.text = it.frontend_order_status
+                        } else if (it.frontend_order_status.lowercase().contains("in process")) {
+                            requestStatus.setTextColor(orangeColor)
+                            requestStatus.text = it.frontend_order_status
+                        } else if (it.frontend_order_status.lowercase()
+                                .contains("estimated delivery")
+                        ) {
+                            requestStatus.setTextColor(greenColor)
+                            requestStatus.text = it.frontend_order_status
+                        } else if (it.frontend_order_status.lowercase().contains("delivered")) {
+                            requestStatus.setTextColor(greenColor)
+                            requestStatus.text = it.frontend_order_status
+                        } else if (it.frontend_order_status.lowercase().contains("cancelled")||it.frontend_order_status.lowercase().contains("cancel")) {
+                            paymentReceiptCv.isVisible = false
+                            submit.isVisible = false
+                            requestStatus.setTextColor(redColor)
+                            requestStatus.text = it.frontend_order_status
+                        }
+                    }
 
 
                 requestedDate.text = "${it.order_date}"
@@ -250,8 +268,8 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 paymentMethod.text = it.payment_mode
 
                 if (it.order_status == "cancelled"||it.order_status == "cancel_initiated") {
-                    paymentStatus.isVisible = false
-                    paymentStatusLbl.isVisible = false
+                    paymentStatus.makeInvisible()
+                    paymentStatusLbl.makeInvisible()
                     orderTrackingCv.isVisible = false
 
                     cancelledLbl.isVisible = true
@@ -265,8 +283,8 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                     }
 
                 } else {
-                    paymentStatus.isVisible = true
-                    paymentStatusLbl.isVisible = true
+                    paymentStatus.makeVisible()
+                    paymentStatusLbl.makeVisible()
                     orderTrackingCv.isVisible = true
 
                     cancelledLbl.isVisible = false
@@ -274,11 +292,21 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                     paymentMethodDivider1.isVisible = false
                 }
 
-                when (it.order_status) {
+
+                when (it.payment_status) {
                     "accepted","delivered" -> {
                         when (it.payment_upload_status) {
                             0 -> paymentStatus.text = "Not Uploaded"
-                            1 -> paymentStatus.text = "Uploaded"
+                            1 -> {
+
+                                paymentStatus.text = "Accepted (View)"
+                                val formattedShipping = "Accepted (View)"
+                                val spannableString = SpannableString(formattedShipping)
+                                spannableString.setSpan(ForegroundColorSpan(greenColor), 0, 8, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                                paymentStatus.text = spannableString
+                                paymentStatus.setOnClickListener(this@OrderDetailsFragment)
+
+                            }
                             2 -> {
                                 val remarks = if (it.reject_remarks.isNullOrEmpty()) "" else "(${it.reject_remarks})"
                                 paymentStatus.text = "Rejected $remarks"
@@ -286,7 +314,70 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                             }
                         }
                     }
+                    "pending"->{
+                        when (it.payment_upload_status) {
+                            0 -> paymentStatus.text = "Not Uploaded"
+                            1 -> {
+                                paymentStatus.text = "Payment Slip Uploaded"
+                                paymentStatus.setTextColor(orangeColor)
+                            }
+
+                            2 -> {
+                                val remarks = if (it.reject_remarks.isNullOrEmpty()) "" else "(${it.reject_remarks})"
+                                paymentStatus.text = "Rejected $remarks"
+                                paymentStatus.setTextColor(redColor)
+                            }
+                        }
+                    }
+                    "paid"->{
+                        when (it.payment_upload_status) {
+                            0 -> paymentStatus.text = "Not Uploaded"
+                            1 -> {
+                                paymentStatus.text = "Payment Slip Uploaded"
+                                paymentStatus.setTextColor(orangeColor)
+                            }
+                            2 -> {
+                                val remarks = if (it.reject_remarks.isNullOrEmpty()) "" else "(${it.reject_remarks})"
+                                paymentStatus.text = "Rejected $remarks"
+                                paymentStatus.setTextColor(redColor)
+                            }
+                        }
+                    }
+
+
+                    "refunded"->{
+                        when (it.payment_upload_status) {
+                            0 -> paymentStatus.text = "Not Uploaded"
+                            1 -> {
+                                paymentStatus.text = "Payment Refunded"
+                                paymentStatus.setTextColor(greenColor)
+                            }
+                            2 -> {
+                                val remarks = if (it.reject_remarks.isNullOrEmpty()) "" else "(${it.reject_remarks})"
+                                paymentStatus.text = "Rejected $remarks"
+                                paymentStatus.setTextColor(redColor)
+                            }
+                        }
+                    }
+
+
+                    "rejected","cancelled"-> {
+                        val remarks = if (it.reject_remarks.isNullOrEmpty()) "" else "(${it.reject_remarks})"
+                        paymentStatus.text = "Rejected $remarks"
+                        paymentStatus.setTextColor(redColor)
+                    }
                 }
+
+                if(it.order_status == "delivered"){
+                    paymentStatus.setTextColor(blackColor)
+                    paymentStatus.text = "Accepted (View)"
+                    val formattedShipping = "Accepted (View)"
+                    val spannableString = SpannableString(formattedShipping)
+                    spannableString.setSpan(ForegroundColorSpan(greenColor), 0, 8, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    paymentStatus.text = spannableString
+                    paymentStatus.setOnClickListener(this@OrderDetailsFragment)
+                }
+
                 billingAddress.text = "${it.shipping_address.address1}, ${it.shipping_address.address2},\n${it.shipping_address.city}, ${it.shipping_address.state}, ${it.shipping_address.country}, ${it.shipping_address.zip_code}\nPhone: ${it.shipping_address.phone}"
                 shippingAddress.text = "${it.shipping_address.address1}, ${it.shipping_address.address2},\n${it.shipping_address.city}, ${it.shipping_address.state}, ${it.shipping_address.country}, ${it.shipping_address.zip_code}\nPhone: ${it.shipping_address.phone}"
                 initRecyclerView(requireContext(), productsRv, productAdapter)
@@ -298,6 +389,7 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
                 subtotalLbl.text = "Subtotal (${it.products.size} Items)"
                 subtotal.text = "RM ${formatToTwoDecimalPlaces(it.sub_total)}"
                 shippingAmount.text = "RM ${formatToTwoDecimalPlaces(it.delivery_charges)}"
+                shippingDiscount.text = "RM -${formatToTwoDecimalPlaces(it.shipping_discount)}"
                 wallet.text =
                     "RM -${formatToTwoDecimalPlaces(it.wallet_amount.toString().toDouble())}"
                 storeVoucher.text = "RM -${formatToTwoDecimalPlaces(it.seller_voucher_amount)}"
@@ -310,20 +402,20 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
 
                 totalAmount.text = "${formatToTwoDecimalPlaces(it.grand_total)}"
                 totalSavings.isVisible = false
-
+                uploadedImage.setOnClickListener { showDeliveryProof() }
                 if (it.payment_uploaded_image.isNullOrEmpty() && it.order_status == "cancelled"||it.order_status == "cancel_initiated" || it.payment_mode == "Online Payment") {
                     paymentReceiptCv.isVisible = false
                     submit.isVisible = false
-                } else if (it.payment_uploaded_image.isNullOrEmpty() || it.payment_status == "rejected") {
+                } else if (it.payment_uploaded_image.isNullOrEmpty()) {
                     uploadPaymentMethodLbl.text = "Upload Payment Receipt"
                     uploadedImage.isVisible = false
                     uploadImage.isVisible = true
                     uploadPaymentMethod.isVisible = true
                     submit.isVisible = true
-                } else {
+
+                } else if (!it.payment_uploaded_image.isNullOrEmpty()) {
                     uploadPaymentMethodLbl.text = "Uploaded Payment Receipt"
                     uploadedImage.isVisible = true
-
                     uploadedImage.loadImage(replaceBaseUrl(it.payment_uploaded_image))
                     uploadImage.isVisible = false
                     uploadPaymentMethod.isVisible = false
@@ -442,14 +534,29 @@ class OrderDetailsFragment : Fragment(), View.OnClickListener {
         }
 
         context?.registerReceiver(downloadReceiver, onComplete)
+    }
 
-
+    private fun showDeliveryProof(){
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DeliveryProofBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.setCancelable(true)
+        if(orderDetails.payment_uploaded_image.isNullOrEmpty()){
+            val imageToLoad = binding.uploadedImage.drawable
+            bindingDialog.productImage.setImageDrawable(imageToLoad)
+        }else{
+            bindingDialog.productImage.loadImage(replaceBaseUrl(orderDetails.payment_uploaded_image) )
+        }
+        bindingDialog.close.setOnClickListener { appCompatDialog.dismiss() }
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.show()
     }
 
 
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
+            binding.paymentStatus.id -> showDeliveryProof()
             binding.viewTrackDetails.id -> {
                 val bundle = Bundle()
                 bundle.putString("saleId", orderDetails.sale_id.toString())

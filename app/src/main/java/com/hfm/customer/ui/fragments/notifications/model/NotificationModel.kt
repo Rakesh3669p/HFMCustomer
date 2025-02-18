@@ -20,9 +20,10 @@ data class Notification(
     val app_target_page: String,
     val order_id: String,
     val ref_id: Int,
-    val bulk_order_sale_id: Int,
+    val bulk_order_sale_id: String,
     val description: String,
     val ref_link: String,
     var viewed: Int,
-    val created_at: String
+    val created_at: String,
+    val created_at_formatted: String
 )

@@ -27,21 +27,55 @@ class StoreVouchersAdapter @Inject constructor() :
                 val grey = ContextCompat.getColorStateList(context, R.color.textGreyDark)
                 discountPercent.text = data.title
                 discountDescription.text = data.desc
-                voucherExpiry.text = "Expires on: ${data.validUpto}"
 
+                useNow.text = if (data.isClaimed == "1") "Claimed" else "Claim Now"
 
-                if(data.isClaimed==1){
-                    userNow.backgroundTintList = grey
-                    userNow.text = "Claimed"
-                }else{
-                    userNow.backgroundTintList = red
-                    userNow.text = "Claim Now"
+                when (data.status) {
+                    "not_available" -> {
+                        useNow.backgroundTintList = grey
+                        useNow.text = "Not Available"
+                        useNow.isEnabled = false
+                        discountPercent.setTextColor(grey)
+                        discountDescription.setTextColor(grey)
+                        voucherExpiry.setTextColor(grey)
+                        voucherExpiry.text = "Expired on: ${data.validUpto}"
+                    }
+
+                    "available" -> {
+                        useNow.backgroundTintList = red
+                        useNow.text = if (data.isClaimed == "1") "Claimed" else "Claim Now"
+                        useNow.isEnabled = true
+                        discountPercent.setTextColor(red)
+                        discountDescription.setTextColor(red)
+                        voucherExpiry.setTextColor(red)
+                        voucherExpiry.text = "Expires on: ${data.validUpto}"
+                    }
+
+                    "used" -> {
+                        useNow.backgroundTintList = grey
+                        useNow.text = "Used"
+                        useNow.isEnabled = false
+                        discountPercent.setTextColor(grey)
+                        discountDescription.setTextColor(grey)
+                        voucherExpiry.setTextColor(grey)
+                        voucherExpiry.text = "Used on: ${data.usedOn}"
+                    }
+
+                    "expired" -> {
+                        useNow.backgroundTintList = grey
+                        useNow.text = "Expired"
+                        useNow.isEnabled = false
+                        discountPercent.setTextColor(grey)
+                        discountDescription.setTextColor(grey)
+                        voucherExpiry.setTextColor(grey)
+                        voucherExpiry.text = "Expired on: ${data.validUpto}"
+                    }
                 }
-                userNow.setOnClickListener {
-                    if(data.isClaimed==0) {
+
+                useNow.setOnClickListener {
+                    if (data.isClaimed == "0") {
                         onItemClick?.invoke(absoluteAdapterPosition)
-                    }else
-                    {
+                    } else {
                         Toast.makeText(context, "Already claimed", Toast.LENGTH_SHORT).show()
                     }
                 }

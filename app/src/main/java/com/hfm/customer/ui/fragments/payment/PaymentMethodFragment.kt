@@ -5,6 +5,8 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,6 +78,9 @@ class PaymentMethodFragment : Fragment(), View.OnClickListener {
         mainViewModel.getCheckoutInfo()
         val jsonStr = arguments?.getString("payLoad")
         receivedJsonObject = JsonParser().parse(jsonStr).asJsonObject
+        val spannable = SpannableString(getString(R.string.how_to_make_payment_lbl))
+        spannable.setSpan(UnderlineSpan(), 0, getString(R.string.how_to_make_payment_lbl).length, 0)
+        binding.howToPayLbl.text = spannable
     }
 
 

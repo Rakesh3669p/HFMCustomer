@@ -48,6 +48,7 @@
         app:tabIndicator="@drawable/tab_indicator"
         app:tabIndicatorAnimationMode="linear"
         app:tabIndicatorColor="@color/red"
+        app:tabTextColor="@color/black"
         app:tabIndicatorFullWidth="true"
         app:tabIndicatorGravity="bottom"
         app:tabIndicatorHeight="3dp"

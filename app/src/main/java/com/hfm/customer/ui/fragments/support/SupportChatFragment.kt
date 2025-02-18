@@ -20,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
+import com.hfm.customer.databinding.DeliveryProofBinding
 import com.hfm.customer.databinding.DialogueMediaPickupBinding
 import com.hfm.customer.databinding.FragmentChatBinding
 import com.hfm.customer.ui.dashBoard.chat.adapter.ChatAdapter
@@ -38,7 +39,9 @@ import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.hasEmailAddress
 import com.hfm.customer.utils.hasNumberGreaterThan10Digits
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.netWorkFailure
+import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.utils.toOrderChatFormattedDate
 import com.hfm.customer.viewModel.MainViewModel
@@ -262,7 +265,24 @@ class SupportChatFragment : Fragment(), View.OnClickListener {
             gallery.setOnClickListener(this@SupportChatFragment)
 
         }
+
+        supportChatAdapter.setOnImageClickListener {image->
+            showImageDialog(image)
+        }
     }
+
+
+    private fun showImageDialog(image: String) {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DeliveryProofBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.setCancelable(true)
+        bindingDialog.productImage.loadImage(replaceBaseUrl(image) )
+        bindingDialog.close.setOnClickListener { appCompatDialog.dismiss() }
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.show()
+    }
+
 
     private fun validAndSendMessage() {
         val message = binding.edtMessage.text.toString()

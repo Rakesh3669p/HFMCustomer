@@ -74,22 +74,16 @@ class ProductListAdapter @Inject constructor() :
                     saveLbl.isVisible = false
                 }
 
-                if (data.frozen == 1) {
-
+                if(data.chilled==1){
                     frozenLbl.makeVisible()
-                    val filters = arrayOfNulls<InputFilter>(1)
-                    filters[0] = InputFilter.LengthFilter(5)
-                    frozenLbl.filters = filters
-                    frozenLbl.text = "Fresh/Frozen"
-                } else if (data.chilled == 1) {
-                    frozenLbl.makeVisible()
-                    val filters = arrayOfNulls<InputFilter>(1)
-                    filters[0] = InputFilter.LengthFilter(10)
-                    frozenLbl.filters = filters
                     frozenLbl.text = "Chilled"
-                } else {
+                }else if(data.frozen==1){
+                    frozenLbl.makeVisible()
+                    frozenLbl.text = "Fresh/Frozen"
+                }else{
                     frozenLbl.makeGone()
                 }
+
 
                 if (data.wholesale != null) wholeSaleLbl.isVisible =
                     data.wholesale.toString().toDouble() > 0

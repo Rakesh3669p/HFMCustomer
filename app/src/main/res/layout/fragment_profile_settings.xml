@@ -50,7 +50,7 @@
                 android:id="@+id/profileImage"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_80sdp"
-                android:src="@drawable/user"
+                android:src="@drawable/ic_avatar"
                 android:scaleType="fitXY"
 
                 app:layout_constraintEnd_toEndOf="parent"

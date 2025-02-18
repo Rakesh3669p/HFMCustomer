@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.wishlist
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@SuppressLint("SetTextI18n")
 
 @AndroidEntryPoint
 class WishListShopsFragment : Fragment() {
@@ -51,6 +53,7 @@ class WishListShopsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
         setObserver()
     }
 
@@ -59,7 +62,6 @@ class WishListShopsFragment : Fragment() {
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         mainViewModel.followedShops()
-
     }
 
     private fun setObserver() {
@@ -95,6 +97,7 @@ class WishListShopsFragment : Fragment() {
 
     private fun setFavStores(data: StoreFavouriteData) {
         binding.noDataLayout.root.isVisible = data.favourite_list.isEmpty()
+        binding.noDataLayout.noDataLbl.text = "No favourite shops found"
         initRecyclerView(requireContext(), binding.productListRv, wishlistShopAdapter)
         wishlistShopAdapter.differ.submitList(data.favourite_list)
     }

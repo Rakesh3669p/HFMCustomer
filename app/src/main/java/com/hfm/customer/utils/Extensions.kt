@@ -37,6 +37,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -139,6 +140,7 @@ fun Fragment.showToast(msg: String) {
     Toast.makeText(this.requireContext(), msg, Toast.LENGTH_SHORT).show()
 }
 
+
 fun Activity.showToast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }
@@ -170,7 +172,7 @@ fun replaceBaseUrl(originalUrl: String): String {
 }
 
 fun formatToTwoDecimalPlaces(number: Double): String {
-    val df = DecimalFormat("0.00")
+    val df = DecimalFormat("#,##0.00")
     return df.format(number)
 }
 
@@ -341,9 +343,21 @@ fun RecyclerView.setupLoadMoreListener(
 }
 
 
-fun String.toOrderDetailsFormattedDate(): String {
+fun String.toOrderDetailsFormattedDateOld(): String {
     val inputDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
     val outputDateFormat = SimpleDateFormat("E, d' 'MMM yyyy | hh:mm a", Locale.US)
+
+    return try {
+        val date = inputDateFormat.parse(this)
+        outputDateFormat.format(date)
+    } catch (e: Exception) {
+        // Handle parsing or formatting errors here
+        this // Return the original string if there's an error
+    }
+}
+fun String.toOrderDetailsFormattedDate(): String {
+    val inputDateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
+    val outputDateFormat = SimpleDateFormat("E, d' 'MMM yyyy", Locale.US)
 
     return try {
         val date = inputDateFormat.parse(this)
@@ -377,6 +391,13 @@ fun Long.toTimeAgo(): CharSequence {
     )
 }
 
+fun String.toUnixTimestamp(): Long {
+    val dateFormat = SimpleDateFormat("MM-dd-yyyy HH:mm:ss", Locale.getDefault())
+    val date = dateFormat.parse(this)
+    return date?.time ?: 0
+}
+
+
 fun Long.toCustomTimeAgo(): CharSequence {
     val currentTimeMillis = System.currentTimeMillis()
     val timeDifferenceMillis = currentTimeMillis - this
@@ -396,14 +417,6 @@ fun Long.toCustomTimeAgo(): CharSequence {
         else -> "Just now"
     }
 }
-
-
-fun String.toUnixTimestamp(): Long {
-    val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
-    val date = dateFormat.parse(this)
-    return date?.time ?: 0
-}
-
 fun Long.toFormattedDateTimeChat(): String {
     val date = Date(this)
     val format = SimpleDateFormat("hh:mm a", Locale.US)

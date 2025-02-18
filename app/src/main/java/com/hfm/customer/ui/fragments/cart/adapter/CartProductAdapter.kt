@@ -1,17 +1,20 @@
 package com.hfm.customer.ui.fragments.cart.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemCartProductBinding
 import com.hfm.customer.ui.fragments.products.productDetails.model.Product
@@ -21,6 +24,7 @@ import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.makeInvisible
 import com.hfm.customer.utils.makeVisible
 import com.hfm.customer.utils.replaceBaseUrl
+import com.hfm.customer.utils.showToast
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -32,20 +36,21 @@ class CartProductAdapter @Inject constructor() :
     RecyclerView.Adapter<CartProductAdapter.ViewHolder>() {
     private var selectAll: Boolean = false
     private lateinit var context: Context
+    private lateinit var activity: Activity
+    private var countdownTimer: CountDownTimer? = null
+
     inner class ViewHolder(private val bind: ItemCartProductBinding) :
         RecyclerView.ViewHolder(bind.root) {
         fun bind(data: Product) {
             with(bind) {
+
                 if (!data.image.isNullOrEmpty()) {
                     productImage.loadImage(replaceBaseUrl(data.image[0].image))
                 } else if (!data.product_image.isNullOrEmpty()) {
                     productImage.loadImage(replaceBaseUrl(data.product_image[0].image))
                 }
+
                 productName.text = data.product_name
-                if (data.offer_name == "Shocking Sale") {
-//                    sale.isVisible = true
-//                    setTimer(data.end_time,sale)
-                }
 
                 if (data.total_offer_price.toString().toDouble() > 0) {
                     productPrice.text = "RM ${
@@ -54,12 +59,11 @@ class CartProductAdapter @Inject constructor() :
                         )
                     }"
                 } else {
-                    productPrice.text =
-                        "RM ${
-                            formatToTwoDecimalPlaces(
-                                data.total_actual_price.toString().toDouble()
-                            )
-                        }"
+                    productPrice.text = "RM ${
+                        formatToTwoDecimalPlaces(
+                            data.total_actual_price.toString().toDouble()
+                        )
+                    }"
                 }
 
                 qty.text = data.quantity.toString().toDouble().roundToInt().toString()
@@ -77,10 +81,12 @@ class CartProductAdapter @Inject constructor() :
 
 
                 sale.isVisible =
-                    (data.offer_name == "Flash Sale" || data.offer_name == "Shocking Sale")
+                    (data.offer_name == "Flash Sale" || data.offer_name == "Shocking Sale" && !data.end_time.isNullOrEmpty())
                 if (sale.isVisible) {
-                        setTimer(data.end_time, sale)
-                 }
+                    setTimer(data.end_time, sale, data)
+                    sale.text = data.currentEndTime
+
+                }
 
                 if (!data.variants_list.isNullOrEmpty()) {
                     variant.text = data.attr_name1
@@ -129,7 +135,7 @@ class CartProductAdapter @Inject constructor() :
 
                 variant.setOnClickListener {
                     data.variants_list?.forEach {
-                        if (data.attr_name1.contains(it.combination)) {
+                        if (data.attr_name1.toString().contains(it.combination)) {
                             it.isSelected = true
                         }
                     }
@@ -141,30 +147,35 @@ class CartProductAdapter @Inject constructor() :
         }
     }
 
-    private fun setTimer(endTime: String, sale: TextView) {
+    private fun setTimer(endTime: String, sale: TextView, data: Product) {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val endTimeString = endTime
-        val endTime = dateFormat.parse(endTimeString) ?: Date()
+        val endParsedTime = dateFormat.parse(endTime) ?: Date()
         val currentTime = Date()
-        val timeDifference = endTime.time - currentTime.time
-        val countdownTimer = object : CountDownTimer(timeDifference, 1000) {
+        val timeDifference = endParsedTime.time - currentTime.time
+        countdownTimer = object : CountDownTimer(timeDifference, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                updateCountdownText(millisUntilFinished, sale)
+
+                activity.runOnUiThread {
+                    updateCountdownText(millisUntilFinished, sale, data)
+                }
             }
 
             override fun onFinish() {
-                updateCountdownText(0, sale)
+                activity.runOnUiThread {
+                    updateCountdownText(0, sale, data)
+                }
             }
         }
 
-        countdownTimer.start()
+        countdownTimer?.start()
     }
 
-    private fun updateCountdownText(millisUntilFinished: Long, sale: TextView) {
+    private fun updateCountdownText(millisUntilFinished: Long, sale: TextView, data: Product) {
         val days = millisUntilFinished / (1000 * 60 * 60 * 24)
         val hours = (millisUntilFinished % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
         val minutes = (millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)
         val seconds = (millisUntilFinished % (1000 * 60)) / 1000
+
         val newCountdownText = "Flash Deals Ends In: ${
             String.format(
                 Locale.getDefault(),
@@ -175,7 +186,13 @@ class CartProductAdapter @Inject constructor() :
                 seconds
             )
         }"
-        sale.text = newCountdownText
+
+        if (newCountdownText != data.currentEndTime) {
+            data.currentEndTime = newCountdownText
+            sale.text = newCountdownText
+        }/*
+        data.currentEndTime = newCountdownText
+        sale.text = newCountdownText*/
     }
 
     private val diffUtil = object : DiffUtil.ItemCallback<Product>() {
@@ -240,5 +257,9 @@ class CartProductAdapter @Inject constructor() :
     fun selectAllProducts(status: Boolean) {
         selectAll = status
         notifyDataSetChanged()
+    }
+
+    fun setActivity(activity: Activity) {
+        this.activity = activity
     }
 }

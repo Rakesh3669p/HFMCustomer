@@ -44,9 +44,8 @@ class ReviewsAdapter @Inject constructor() :
                     onVideoClick?.invoke(data.video_link.toString())
                 }
 
-                mediaAdapter.setOnItemClickListener {
-
-                    onImageClick?.invoke(data.image,absoluteAdapterPosition)
+                mediaAdapter.setOnItemClickListener {image,index->
+                    onImageClick?.invoke(data.image,index)
                 }
             }
         }

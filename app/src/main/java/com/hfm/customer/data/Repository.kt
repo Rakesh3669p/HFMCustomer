@@ -40,6 +40,7 @@ class Repository @Inject constructor(private val service: HFMCustomerAPI) {
     suspend fun addToWishList(jsonObject: JsonObject) = service.addToWishList(jsonObject)
     suspend fun removeFromWishList(jsonObject: JsonObject) = service.removeFromWishList(jsonObject)
     suspend fun removeCoupon(jsonObject: JsonObject) = service.removeCoupon(jsonObject)
+    suspend fun getUomList() = service.getUnitOfMeasurements()
     suspend fun getWishListProducts(jsonObject: JsonObject) = service.getWishListProducts(jsonObject)
     suspend fun getAddress(jsonObject: JsonObject) = service.getAddress(jsonObject)
     suspend fun getCheckOutInfo(jsonObject: JsonObject) = service.getCheckOutInfo(jsonObject)
@@ -64,6 +65,7 @@ class Repository @Inject constructor(private val service: HFMCustomerAPI) {
     suspend fun checkAvailability(jsonObject: JsonObject) = service.checkAvailability(jsonObject)
     suspend fun updateProfileCustomer(requestBody: MutableMap<String, RequestBody?>) = service.updateProfileCustomer(requestBody)
     suspend fun getReviews(jsonObject: JsonObject) = service.getReviews(jsonObject)
+    suspend fun getReferral(jsonObject: JsonObject) = service.getReferral(jsonObject)
     suspend fun submitReview(requestBody: MutableMap<String, RequestBody?>) = service.submitReview(requestBody)
     suspend fun updateProfileBusiness(requestBody: MutableMap<String, RequestBody?>) = service.updateProfileBusiness(requestBody)
     suspend fun updateCartQty(jsonObject: JsonObject) = service.updateCartQty(jsonObject)
@@ -103,5 +105,6 @@ class Repository @Inject constructor(private val service: HFMCustomerAPI) {
     suspend fun updateShipping(jsonObject: JsonObject) = service.updateShipping(jsonObject)
     suspend fun sellerBannerActivity(jsonObject: JsonObject) = service.sellerBannerActivity(jsonObject)
     suspend fun forgotPassword(jsonObject: JsonObject) = service.forgotPassword(jsonObject)
+    suspend fun updateDeviceToken(jsonObject: JsonObject) = service.updateDeviceToken(jsonObject)
     suspend fun logout(jsonObject: JsonObject) = service.logout(jsonObject)
 }

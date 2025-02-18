@@ -21,21 +21,17 @@ class WalletAdapter @Inject constructor() : RecyclerView.Adapter<WalletAdapter.V
         fun bind(data: Wallet) {
 
             with(binding) {
-
+                transactionid.text = data.source_ids
                 if(data.credit_value){
-                    transactionType.text = "Received (${data.source})"
-                    transactionType.setTextColor(ContextCompat.getColor(context, R.color.green))
+                    transactionType.text = if(data.source.isNotEmpty()) "Received (${data.source})" else "Received"
                     amount.setTextColor(ContextCompat.getColor(context, R.color.green))
-                    amount.text = "RM ${formatToTwoDecimalPlaces(data.credit.toDouble()/100)}"
+                    amount.text = "${formatToTwoDecimalPlaces(data.credit.toDouble())}P (RM ${formatToTwoDecimalPlaces(data.credit.toDouble()/100)})"
                 }else{
-                    transactionType.text = "Paid (${data.source})"
-                    transactionType.setTextColor(ContextCompat.getColor(context, R.color.red))
+                    transactionType.text = if(data.source.isNotEmpty()) "Paid (${data.source})" else "Paid"
                     amount.setTextColor(ContextCompat.getColor(context, R.color.red))
-                    amount.text = "RM ${formatToTwoDecimalPlaces(data.debit.toDouble()/100)}"
+                    amount.text = "${formatToTwoDecimalPlaces(data.debit.toDouble())}P (RM ${formatToTwoDecimalPlaces(data.debit.toDouble()/100)})"
                 }
-                dateLbl.text = "${data.source_ids} ${data.created_at}"
-
-
+                dateLbl.text = data.created_at
             }
         }
     }

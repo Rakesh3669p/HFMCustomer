@@ -117,8 +117,6 @@ class ProfileSettings : Fragment(), View.OnClickListener {
 
     private fun setObserver() {
 
-
-
         mainViewModel.deleteAccount.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -193,8 +191,8 @@ class ProfileSettings : Fragment(), View.OnClickListener {
                 val request = ImageRequest.Builder(requireContext())
                     .data(imageReplaced)
                     .target(profileImage)
-                    .placeholder(R.drawable.user)
-                    .error(R.drawable.user)
+                    .placeholder(R.drawable.ic_avatar)
+                    .error(R.drawable.ic_avatar)
                     .build()
                 lifecycleScope.launch {
                     imageLoader.execute(request)
@@ -220,9 +218,6 @@ class ProfileSettings : Fragment(), View.OnClickListener {
         appCompatDialog.setContentView(bindingDialog.root)
         appCompatDialog.setCancelable(true)
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-
-        appCompatDialog.setCancelable(false)
         appCompatDialog.show()
         bindingDialog.camera.setOnClickListener {
             ImagePicker.with(this).cameraOnly()
@@ -320,7 +315,7 @@ class ProfileSettings : Fragment(), View.OnClickListener {
         val bindingDialog = DialogueDeleteAccountBinding.inflate(layoutInflater)
         appCompatDialog.setContentView(bindingDialog.root)
         appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        appCompatDialog.setCancelable(false)
+        appCompatDialog.setCancelable(true)
         bindingDialog.cancel.setOnClickListener {
             appCompatDialog.dismiss()
         }

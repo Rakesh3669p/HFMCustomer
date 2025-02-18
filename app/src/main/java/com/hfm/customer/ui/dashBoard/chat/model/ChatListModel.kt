@@ -22,7 +22,7 @@ data class ChatList(
     val seller_message: String,
     val seller_name: String,
     val store_name: String,
-    val unread_msg: Int,
+    var unread_msg: Int,
     val last_message:String,
     val last_chat_date:String,
     val seller_vaccation:String

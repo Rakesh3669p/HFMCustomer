@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.hfm.customer.R
 import com.hfm.customer.databinding.ItemBulkOrderBinding
+import com.hfm.customer.databinding.ItemOrderListBinding
 import com.hfm.customer.ui.fragments.myOrders.model.Purchase
 import com.hfm.customer.utils.formatToTwoDecimalPlaces
 import com.hfm.customer.utils.loadImage
@@ -27,7 +28,7 @@ class MyOrdersListAdapter @Inject constructor() :
     private lateinit var context: Context
 
 
-    inner class ViewHolder(private val bind: ItemBulkOrderBinding) :
+    inner class ViewHolder(private val bind: ItemOrderListBinding) :
         RecyclerView.ViewHolder(bind.root) {
         @SuppressLint("SetTextI18n")
         fun bind(data: Purchase) {
@@ -103,7 +104,7 @@ class MyOrdersListAdapter @Inject constructor() :
     ): MyOrdersListAdapter.ViewHolder {
         context = parent.context
         return ViewHolder(
-            ItemBulkOrderBinding.inflate(
+            ItemOrderListBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false

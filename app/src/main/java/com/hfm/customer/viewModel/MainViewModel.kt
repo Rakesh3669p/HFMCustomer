@@ -46,6 +46,8 @@ import com.hfm.customer.ui.fragments.products.productDetails.model.AddToCartMode
 import com.hfm.customer.ui.fragments.products.productDetails.model.BulkOrderRequestModel
 import com.hfm.customer.ui.fragments.products.productList.model.ProductListModel
 import com.hfm.customer.ui.fragments.products.productDetails.model.ProductDetailsModel
+import com.hfm.customer.ui.fragments.products.productDetails.model.UOMModel
+import com.hfm.customer.ui.fragments.referral.ReferralModel
 import com.hfm.customer.ui.fragments.search.model.RelatedSearchTermsModel
 import com.hfm.customer.ui.fragments.store.model.StoreDetailsModel
 import com.hfm.customer.ui.fragments.store.model.StoreProductsModel
@@ -119,6 +121,7 @@ class MainViewModel @Inject constructor(
     val addBulkOrdersAction = SingleLiveEvent<Resource<SuccessModel>>()
     val addToWishList = SingleLiveEvent<Resource<SuccessModel>>()
     val removeFromWishList = SingleLiveEvent<Resource<SuccessModel>>()
+    val uomList = SingleLiveEvent<Resource<UOMModel>>()
     val removeCoupon = SingleLiveEvent<Resource<SuccessModel>>()
     val wishListProducts = SingleLiveEvent<Resource<WishListModel>>()
     val address = SingleLiveEvent<Resource<AddressModel>>()
@@ -137,6 +140,7 @@ class MainViewModel @Inject constructor(
     val updateProfileCustomer = SingleLiveEvent<Resource<SuccessModel>>()
     val submitReview = SingleLiveEvent<Resource<SuccessModel>>()
     val ratingReview = SingleLiveEvent<Resource<RatingReviewsModel>>()
+    val referrals = SingleLiveEvent<Resource<ReferralModel>>()
     val sendMessage = SingleLiveEvent<Resource<MessageSentModel>>()
     val sendSupportMessage = SingleLiveEvent<Resource<SuccessModel>>()
     val orderHistory = SingleLiveEvent<Resource<OrderHistoryModel>>()
@@ -161,6 +165,7 @@ class MainViewModel @Inject constructor(
     val updateshipingOption = SingleLiveEvent<Resource<SuccessModel>>()
     val bannerActivity = SingleLiveEvent<Resource<SuccessModel>>()
     val logOut = SingleLiveEvent<Resource<SuccessModel>>()
+    val updateDeviceToken = SingleLiveEvent<Resource<SuccessModel>>()
 
 
     fun getAppUpdate() = viewModelScope.launch {
@@ -593,6 +598,7 @@ class MainViewModel @Inject constructor(
         frozen: Int = 0,
         wholeSale: Int = 0,
         flashSale: Int = 0,
+        feature: Int = 0,
         chilled: Int = 0,
         deviceId: String,
         random: Int,
@@ -612,13 +618,14 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("frozen", frozen)
         jsonObject.addProperty("wholesale", wholeSale)
         jsonObject.addProperty("flash_deal", flashSale)
+        jsonObject.addProperty("featured", feature)
         jsonObject.addProperty("chilled", chilled)
         jsonObject.addProperty("access_token", sessionManager.token)
         jsonObject.addProperty("keyword", search)
         jsonObject.addProperty("device_id", deviceId)
         jsonObject.addProperty("page_url", "products/us/img")
         jsonObject.addProperty("os_type", "app")
-        jsonObject.addProperty("limit", 60)
+        jsonObject.addProperty("limit", 20)
         jsonObject.addProperty("random", random)
         jsonObject.addProperty("offset", page)
         safeGetProductListCall(jsonObject)
@@ -723,7 +730,7 @@ class MainViewModel @Inject constructor(
         date: String,
         deliveryAddress: String,
         remarks: String,
-        unitOfMeasures: Int
+        unitOfMeasures: String
     ) = viewModelScope.launch {
         val jsonObject = JsonObject().apply {
             addProperty("access_token", sessionManager.token)
@@ -847,6 +854,21 @@ class MainViewModel @Inject constructor(
                 removeFromWishList.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             removeFromWishList.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun getUOMList() = viewModelScope.launch { safeGetUOMListCall() }
+
+    private suspend fun safeGetUOMListCall() {
+        uomList.postValue(Resource.Loading())
+        try {
+            val response = repository.getUomList()
+            if (response.isSuccessful)
+                uomList.postValue(Resource.Success(checkResponseBody(response.body()) as UOMModel))
+            else
+                uomList.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            uomList.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 
@@ -1149,6 +1171,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("lang_id", "1")
         jsonObject.addProperty("device_id", sessionManager.deviceId)
         jsonObject.addProperty("page_url", "CART")
+        jsonObject.addProperty("payment_method_id", "1")
         jsonObject.addProperty("os_type", "app")
         safeGetCartCall(jsonObject)
     }
@@ -1256,6 +1279,7 @@ class MainViewModel @Inject constructor(
         jsonObject.addProperty("lang_id", 1)
         jsonObject.addProperty("cart_subtotal", subTotal)
         jsonObject.addProperty("coupon_code", couponCode)
+        jsonObject.addProperty("payment_method_id", "1")
         jsonObject.addProperty("os_type", "app")
         safeApplyPlatFormVouchersCall(jsonObject)
     }
@@ -1273,7 +1297,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun applySellerVouchers(sellerId: String, couponCode: String, sellerSubtotal: Double) =
+    fun applySellerVouchers(sellerId: String, couponCode: String, sellerSubtotal: Double,sellerShippingCharges:Double) =
         viewModelScope.launch {
             val jsonObject = JsonObject()
             jsonObject.addProperty("lang_id", 1)
@@ -1281,6 +1305,8 @@ class MainViewModel @Inject constructor(
             jsonObject.addProperty("coupon_code", couponCode)
             jsonObject.addProperty("seller_id", sellerId)
             jsonObject.addProperty("seller_subtotal", sellerSubtotal)
+            jsonObject.addProperty("seller_shipping_charges", sellerShippingCharges)
+            jsonObject.addProperty("payment_method_id", "1")
             jsonObject.addProperty("os_type", "app")
             safeApplySellerVouchersCall(jsonObject)
         }
@@ -1445,6 +1471,26 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun getReferral() =
+        viewModelScope.launch {
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("access_token", sessionManager.token)
+            safeGetReferralCall(jsonObject)
+        }
+
+    private suspend fun safeGetReferralCall(jsonObject: JsonObject) {
+        referrals.postValue(Resource.Loading())
+        try {
+            val response = repository.getReferral(jsonObject)
+            if (response.isSuccessful)
+                referrals.postValue(Resource.Success(checkResponseBody(response.body()) as ReferralModel))
+            else
+                referrals.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            referrals.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
     fun createSupportTicket(requestBody: MutableMap<String, RequestBody?>) = viewModelScope.launch {
         safeCreateSupportTicketCall(requestBody)
     }
@@ -1594,18 +1640,19 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getStoreReviews(sellerId: Int, rating: String, pageNo: Int, media: String="") = viewModelScope.launch {
-        val jsonObject = JsonObject()
-        jsonObject.addProperty("access_token", sessionManager.token)
-        jsonObject.addProperty("seller_id", sellerId)
-        jsonObject.addProperty("rating", rating)
-        jsonObject.addProperty("media", media)
-        jsonObject.addProperty("limit", 50)
-        jsonObject.addProperty("offset", pageNo)
-        jsonObject.addProperty("lang_id", "")
-        jsonObject.addProperty("os_type", "app")
-        safeGetStoreReviewsCall(jsonObject)
-    }
+    fun getStoreReviews(sellerId: Int, rating: String, pageNo: Int, media: String = "") =
+        viewModelScope.launch {
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("access_token", sessionManager.token)
+            jsonObject.addProperty("seller_id", sellerId)
+            jsonObject.addProperty("rating", rating)
+            jsonObject.addProperty("media", media)
+            jsonObject.addProperty("limit", 50)
+            jsonObject.addProperty("offset", pageNo)
+            jsonObject.addProperty("lang_id", "")
+            jsonObject.addProperty("os_type", "app")
+            safeGetStoreReviewsCall(jsonObject)
+        }
 
     private suspend fun safeGetStoreReviewsCall(jsonObject: JsonObject) {
         storeReview.postValue(Resource.Loading())
@@ -1653,10 +1700,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getBrands(name: String) = viewModelScope.launch {
+    fun getBrands(name: String = "",filterName:String= "") = viewModelScope.launch {
         val jsonObject = JsonObject()
-        jsonObject.addProperty("sort_by_name", if (name != "1" || name.isEmpty()) "1" else "")
-        jsonObject.addProperty("filter_by_name", name)
+        if(name=="1") {
+            jsonObject.addProperty("sort_by_name", "1")
+        }else{
+            jsonObject.addProperty("sort_by_name", if (name != "0" || name.isEmpty()) "0" else "")
+        }
+        jsonObject.addProperty("filter_by_name", filterName)
         jsonObject.addProperty("limit", 150)
         safeGetBrandsCall(jsonObject)
     }
@@ -2202,6 +2253,29 @@ class MainViewModel @Inject constructor(
                 logOut.postValue(Resource.Error(response.message(), null))
         } catch (t: Throwable) {
             logOut.postValue(Resource.Error(checkThrowable(t), null))
+        }
+    }
+
+    fun updateDeviceToken(fcmToken: String,deviceId: String="") = viewModelScope.launch {
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("access_token", sessionManager.token)
+        jsonObject.addProperty("deviceToken", fcmToken)
+        jsonObject.addProperty("deviceId", deviceId)
+        jsonObject.addProperty("deviceName","")
+        jsonObject.addProperty("os","app")
+        safeUpdateDeviceTokenCall(jsonObject)
+    }
+
+    private suspend fun safeUpdateDeviceTokenCall(jsonObject: JsonObject) {
+        updateDeviceToken.postValue(Resource.Loading())
+        try {
+            val response = repository.updateDeviceToken(jsonObject)
+            if (response.isSuccessful)
+                updateDeviceToken.postValue(Resource.Success(checkResponseBody(response.body()) as SuccessModel))
+            else
+                updateDeviceToken.postValue(Resource.Error(response.message(), null))
+        } catch (t: Throwable) {
+            updateDeviceToken.postValue(Resource.Error(checkThrowable(t), null))
         }
     }
 }

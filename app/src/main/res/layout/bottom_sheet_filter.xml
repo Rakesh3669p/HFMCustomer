@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bottom_sort_bg"
     android:elevation="@dimen/_10sdp"
-    android:maxHeight="@dimen/_450sdp"
+    android:maxHeight="@dimen/_480sdp"
     android:paddingHorizontal="@dimen/_10sdp"
     android:paddingBottom="@dimen/_10sdp">
 
@@ -114,16 +114,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rangeSlider" />
 
+    <EditText
+        android:id="@+id/brandSearch"
+        style="@style/textMedium"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/radius_box"
+        android:drawableStart="@drawable/ic_search_32"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/_5sdp"
+        android:hint="Search Brands"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/brandsLbl" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:visibility="gone"
+        android:id="@+id/clearSearch"
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_16sdp"
+        android:src="@drawable/ic_close"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:background="@color/grey_lite"
+        android:padding="@dimen/_1sdp"
+        app:roundPercent="1"
+        app:layout_constraintEnd_toEndOf="@id/brandSearch"
+        app:layout_constraintTop_toTopOf="@id/brandSearch"
+        app:layout_constraintBottom_toBottomOf="@id/brandSearch"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filterBrandRv"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_180sdp"
         tools:listitem="@layout/item_filter_brand"
         tools:itemCount="4"
         android:layout_marginTop="@dimen/_10sdp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/brandsLbl"
+        app:layout_constraintTop_toBottomOf="@id/brandSearch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -135,10 +165,9 @@
         android:textSize="@dimen/_12ssp"
         android:textAllCaps="false"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_50sdp"
+        android:layout_height="@dimen/_45sdp"
         android:text="@string/cancelLbl"
         android:textColor="@color/red"
-
         app:cornerRadius="@dimen/_6sdp"
         app:strokeColor="@color/red"
         app:strokeWidth="1dp"
@@ -148,11 +177,10 @@
         app:layout_constraintBottom_toBottomOf="@id/apply"
         app:layout_constraintTop_toTopOf="@id/apply"/>
 
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/apply"
         android:layout_width="0dp"
-        android:layout_height="@dimen/_50sdp"
+        android:layout_height="@dimen/_45sdp"
         android:layout_marginTop="12dp"
         android:backgroundTint="@color/red"
         android:paddingVertical="@dimen/_10sdp"

@@ -59,7 +59,7 @@
         android:backgroundTint="@color/red"
         android:layout_margin="@dimen/_10sdp"
         android:paddingVertical="@dimen/_10sdp"
-        android:text="@string/add_new_address_lbl"
+        android:text="@string/add_new_address_lbl2"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textFontWeight="600"

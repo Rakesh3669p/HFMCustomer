@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.hfm.customer.MainActivity
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentNotificationsBinding
 import com.hfm.customer.ui.dashBoard.DashBoardActivity
@@ -87,14 +88,17 @@ class NotificationFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setObserver() {
-        mainViewModel.notificationViewed.observe(viewLifecycleOwner){response->
+        mainViewModel.notificationViewed.observe(requireActivity()){response->
             when (response) {
                 is Resource.Success -> {
                     appLoader.dismiss()
                     if (response.data?.httpcode == 200) {
-                        if(response.data.data.unread_count!=null) {
-                            notificationCount.postValue(response.data.data.unread_count)
+                        response.data.data?.let {
+                            if(it.unread_count!=null) {
+                                notificationCount.postValue(response.data.data.unread_count)
+                            }
                         }
+
                     }
                 }
 
@@ -153,23 +157,23 @@ class NotificationFragment : Fragment(), View.OnClickListener {
         notificationAdapter.setOnItemClickListener { position ->
             val notification = notificationAdapter.differ.currentList[position]
             when (notification.app_target_page) {
-                "order" -> {
+                "order","bulk_order" -> {
                     when (notification.notify_type) {
                         "quotation_accepted", "bulk_order_requested", "quotation_rejected", "quotation_created" -> {
                             val bundle = Bundle()
                             bundle.putString("from", "bulkOrder")
                             bundle.putString("orderId", notification.ref_id.toString())
-                            bundle.putString("saleId", notification.bulk_order_sale_id.toString())
-                            findNavController().navigate(R.id.bulkOrderDetailsFragment, bundle)
+                            bundle.putString("saleId", notification.bulk_order_sale_id)
                             mainViewModel.viewedNotification(notificationId = notification.id)
+                            findNavController().navigate(R.id.bulkOrderDetailsFragment, bundle)
                         }
 
                         else -> {
                             val bundle = Bundle()
                             bundle.putString("orderId", notification.order_id)
                             bundle.putString("saleId", notification.ref_id.toString())
-                            findNavController().navigate(R.id.orderDetailsFragment, bundle)
                             mainViewModel.viewedNotification(notificationId = notification.id)
+                            findNavController().navigate(R.id.orderDetailsFragment, bundle)
                         }
                     }
 
@@ -190,16 +194,14 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                 }
 
                 "profile" -> {
-                    findNavController().navigate(R.id.profileFragment)
                     mainViewModel.viewedNotification(notificationId = notification.id)
+                    (activity as DashBoardActivity).toProfile()
                 }
 
                 "cart" -> {
                     findNavController().navigate(R.id.cartFragment)
                     mainViewModel.viewedNotification(notificationId = notification.id)
                 }
-
-
 
                 "support" -> {
                     val bundle = Bundle()
@@ -208,14 +210,23 @@ class NotificationFragment : Fragment(), View.OnClickListener {
                     mainViewModel.viewedNotification(notificationId = notification.id)
 
                 }
-                "new_chat_message" -> {
+
+                "new_chat_message","chat" -> {
                     val bundle = Bundle().apply {
                         putString("from", "chatList")
                         putInt("chatId", notification.ref_id)
                     }
                     findNavController().navigate(R.id.chatFragment, bundle)
                     mainViewModel.viewedNotification(notificationId = notification.id)
-
+                }
+                "notification_detail" -> {
+                    val bundle = Bundle().apply {
+                        putString("redirection", notification.ref_link)
+                        putString("title", notification.title)
+                        putString("description", notification.description)
+                    }
+                    findNavController().navigate(R.id.customNotificationViewFragment, bundle)
+                    mainViewModel.viewedNotification(notificationId = notification.id)
                 }
             }
         }

@@ -229,7 +229,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/flashDealsProductsRv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_200sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -340,7 +340,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/factoryDealsRv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_200sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -450,7 +450,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/featuresProductRv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_200sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -470,6 +470,6 @@
         android:layout_height="0dp"
         android:background="@color/white"
         app:layout_constraintTop_toBottomOf="@id/searchBar"
-        android:visibility="gone"
+        android:visibility="visible"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

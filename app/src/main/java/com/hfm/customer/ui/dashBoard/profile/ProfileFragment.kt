@@ -62,6 +62,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     ): View? {
 
         if (!sessionManager.isLogin) {
+            showToast("Please login first")
             startActivity(Intent(requireActivity(), LoginActivity::class.java))
             requireActivity().finish()
             return currentView
@@ -90,6 +91,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         binding.logout.isVisible = sessionManager.isLogin
         binding.version.text = "Version ${BuildConfig.VERSION_NAME}"
         mainViewModel.getProfile()
+        binding.referral.isVisible = sessionManager.isLogin
     }
 
     private fun setObserver() {
@@ -102,12 +104,14 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                         "200" -> {
                             setProfile(response.data.data)
                         }
+
                         "401" -> {
                             sessionManager.isLogin = false
                             sessionManager.token = ""
                             startActivity(Intent(requireActivity(), LoginActivity::class.java))
                             requireActivity().finish()
                         }
+
                         else -> {
                             showToast(response.data?.message.toString())
                         }
@@ -119,24 +123,27 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        mainViewModel.logOut.observe(viewLifecycleOwner){response->
-            when(response){
-                is Resource.Success->{
+        mainViewModel.logOut.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
                     appLoader.dismiss()
 
-                    if(response.data?.httpcode==200){
+                    if (response.data?.httpcode == 200) {
+
                         sessionManager.token = ""
                         cartCount.postValue(0)
                         sessionManager.isLogin = false
+                        showToast("Logout successfully")
                         startActivity(Intent(requireContext(), LoginActivity::class.java))
                         requireActivity().finish()
-                    }else{
+                    } else {
 
                         showToast(response.data?.message.toString())
                     }
                 }
-                is Resource.Loading->appLoader.show()
-                is Resource.Error->apiError(response.message)
+
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
             }
         }
     }
@@ -164,8 +171,8 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 val request = ImageRequest.Builder(requireContext())
                     .data(imageReplaced)
                     .target(profileImage)
-                    .placeholder(R.drawable.user)
-                    .error(R.drawable.user)
+                    .placeholder(R.drawable.ic_avatar)
+                    .error(R.drawable.ic_avatar)
                     .build()
                 lifecycleScope.launch {
                     imageLoader.execute(request)
@@ -174,7 +181,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 if (it.customer_type != null) {
                     customerType = it.customer_type.uppercase()
                     userType.text = "Customer Type: ${customerType.uppercase()}"
-                }else{
+                } else {
                     userType.text = "Customer Type: Normal"
                 }
             }

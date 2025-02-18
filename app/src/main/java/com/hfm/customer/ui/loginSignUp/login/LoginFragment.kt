@@ -3,14 +3,21 @@ package com.hfm.customer.ui.loginSignUp.login
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.facebook.AccessToken
 import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.GraphRequest
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -30,6 +37,7 @@ import com.hfm.customer.utils.isValidEmail
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -66,6 +74,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         appLoader = Loader(requireContext())
         sessionManager.deviceId = getDeviceIdInternal(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
+        noInternetDialog.setOnDismissListener { init() }
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .build()
@@ -80,6 +89,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     if (response.data?.httpcode == 200) {
                         sessionManager.isLogin = true
                         sessionManager.token = response.data.data.access_token
+                        showToast("Login successfully")
                         startActivity(Intent(requireActivity(), DashBoardActivity::class.java))
                         requireActivity().finish()
                     } else {
@@ -166,6 +176,69 @@ class LoginFragment : Fragment(), View.OnClickListener {
             }
         }
 
+    private fun faceBookLogin() {
+        LoginManager.getInstance().logOut()
+        callbackManager = CallbackManager.Factory.create()
+        LoginManager.getInstance().logIn(this, listOf("email", "public_profile"))
+        LoginManager.getInstance().registerCallback(callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onSuccess(loginResult: LoginResult) {
+                    if (loginResult.accessToken.token != null) {
+                        requestData()
+                    }
+                }
+
+                override fun onCancel() {
+                    Log.d("MainActivity", "Facebook onCancel.")
+                }
+
+                override fun onError(error: FacebookException) {
+                    Log.d("MainActivity", "Facebook onError.")
+                }
+            })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        callbackManager!!.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+    private fun requestData() {
+        val request = GraphRequest.newMeRequest(
+            AccessToken.getCurrentAccessToken()
+        ) { _, response ->
+            val json = response!!.getJSONObject()
+            try {
+                if (json != null) {
+                    var profileAvatar = ""
+                    if (json.getJSONObject("picture") != null && json.getJSONObject("picture")
+                            .getJSONObject("data") != null && json.getJSONObject("picture")
+                            .getJSONObject("data").getString("url") != null
+                    ) {
+                        profileAvatar =
+                            json.getJSONObject("picture").getJSONObject("data").getString("url")
+                    }
+
+                    sessionManager.loginType = "F"
+                    loginSignUpViewModel.socialLogin(
+                        email = json.getString("email"),
+                        name = json.getString("name"),
+                        avatar = profileAvatar,
+                        loginId = json.getString("id"),
+                        type = "google",
+                        deviceId = sessionManager.deviceId
+                    )
+
+                }
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+        }
+        val parameters = Bundle()
+        parameters.putString("fields", "id,name,first_name,last_name,picture.type(large),email")
+        request.parameters = parameters
+        request.executeAsync()
+    }
+
     private fun handleSignInResult(task: Task<GoogleSignInAccount>) {
         try {
             val account = task.getResult(ApiException::class.java)
@@ -190,15 +263,27 @@ class LoginFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.login.id -> validateAndLogin()
-            binding.newToHFMSignup.id -> findNavController().navigate(R.id.registerFragment)
-            binding.forgotPassword.id -> findNavController().navigate(R.id.resetPasswordFragment)
+            binding.newToHFMSignup.id -> {
+                binding.email.setText("")
+                binding.password.setText("")
+                findNavController().navigate(R.id.registerFragment)
+            }
+            binding.forgotPassword.id -> {
+                binding.email.setText("")
+                binding.password.setText("")
+                findNavController().navigate(R.id.resetPasswordFragment)
+            }
             binding.skipLbl.id -> {
+                binding.email.setText("")
+                binding.password.setText("")
                 startActivity(Intent(requireContext(), DashBoardActivity::class.java))
                 requireActivity().finish()
             }
 
-            binding.facebook.id -> {}
+            binding.facebook.id -> faceBookLogin()
             binding.google.id -> googleSignInLauncher.launch(mGoogleSignInClient!!.signInIntent)
         }
     }
+
+
 }

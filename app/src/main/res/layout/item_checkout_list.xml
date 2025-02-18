@@ -44,7 +44,7 @@
                 android:drawableEnd="@drawable/ic_keyboard_arrow"
                 android:drawableTint="@color/textGreyDark"
                 android:gravity="center"
-                android:text="@string/shop_voucher_lb"
+                android:text="@string/store_voucher_lbl"
                 android:textColor="@color/textGreyDark"
                 app:layout_constraintBottom_toBottomOf="@id/storeName"
                 app:layout_constraintEnd_toEndOf="parent"

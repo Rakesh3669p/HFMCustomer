@@ -1,6 +1,10 @@
 package com.hfm.customer.ui.dashBoard.profile
 
 import android.app.Activity
+import android.app.Dialog
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,8 +24,10 @@ import coil.util.DebugLogger
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.Country
+import com.hfm.customer.databinding.DialogueDeleteAccountBinding
 import com.hfm.customer.databinding.FragmentProfileSettingsBusinessBinding
 import com.hfm.customer.ui.dashBoard.profile.model.ProfileData
+import com.hfm.customer.ui.loginSignUp.LoginActivity
 import com.hfm.customer.ui.loginSignUp.LoginSignUpViewModel
 import com.hfm.customer.ui.loginSignUp.register.model.BusinessData
 import com.hfm.customer.utils.Loader
@@ -107,7 +113,24 @@ class ProfileSettingsBusiness : Fragment(), View.OnClickListener {
     }
 
     private fun setObserver() {
+        mainViewModel.deleteAccount.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    appLoader.dismiss()
+                    if (response.data?.httpcode == 200) {
+                        sessionManager.isLogin = false
+                        sessionManager.token = ""
+                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                        requireActivity().finish()
+                    } else {
+                        showToast(response.data?.message.toString())
+                    }
+                }
 
+                is Resource.Loading -> appLoader.show()
+                is Resource.Error -> apiError(response.message)
+            }
+        }
         mainViewModel.profile.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -190,7 +213,7 @@ class ProfileSettingsBusiness : Fragment(), View.OnClickListener {
     }
 
     private fun setCountriesSpinner(country: List<Country>) {
-        val phoneCodes = country.map { it.phonecode.toString() }
+        val phoneCodes = country.map { "+${it.phonecode}" }
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, phoneCodes).apply {
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
@@ -250,14 +273,14 @@ class ProfileSettingsBusiness : Fragment(), View.OnClickListener {
                 val request = ImageRequest.Builder(requireContext())
                     .data(imageReplaced)
                     .target(profileImage)
-                    .placeholder(R.drawable.user)
-                    .error(R.drawable.user)
+                    .placeholder(R.drawable.ic_avatar)
+                    .error(R.drawable.ic_avatar)
                     .build()
                 lifecycleScope.launch {
                     imageLoader.execute(request)
                 }
                 nameEdt.setText("${it.first_name} ${it.last_name}")
-                emailEdt.setText(it.email)
+                emailEdt.text = it.email
                 registerNoEdt.setText(it.business_details.registration_no)
                 mobileNumberEdt.setText(it.business_details.contact_no)
                 natureOfBusinessId = it.business_details.business_type.toInt()
@@ -286,9 +309,25 @@ class ProfileSettingsBusiness : Fragment(), View.OnClickListener {
             save.setOnClickListener(this@ProfileSettingsBusiness)
             changePasswordEdt.setOnClickListener(this@ProfileSettingsBusiness)
             back.setOnClickListener(this@ProfileSettingsBusiness)
+            deleteAccount.setOnClickListener(this@ProfileSettingsBusiness)
         }
     }
 
+    private fun deleteAccount() {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DialogueDeleteAccountBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.setCancelable(true)
+        bindingDialog.cancel.setOnClickListener {
+            appCompatDialog.dismiss()
+        }
+        bindingDialog.yes.setOnClickListener {
+            mainViewModel.deleteAccount()
+            appCompatDialog.dismiss()
+        }
+        appCompatDialog.show()
+    }
 
 
     private fun updateProfile() {
@@ -346,6 +385,8 @@ class ProfileSettingsBusiness : Fragment(), View.OnClickListener {
             }
 
             binding.back.id -> findNavController().popBackStack()
+            binding.deleteAccount.id -> deleteAccount()
+
         }
     }
 

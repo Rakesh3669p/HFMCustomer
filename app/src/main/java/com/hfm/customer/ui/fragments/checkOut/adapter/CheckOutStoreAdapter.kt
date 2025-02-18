@@ -1,5 +1,6 @@
 package com.hfm.customer.ui.fragments.checkOut.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -10,6 +11,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -30,7 +32,7 @@ class CheckOutStoreAdapter @Inject constructor() :
     RecyclerView.Adapter<CheckOutStoreAdapter.ViewHolder>() {
     private var shippingOptions: List<ShippingOption> = ArrayList()
     private lateinit var context: Context
-    private var initialShippingSetupDone = false
+    private lateinit var activity: Activity
 
     inner class ViewHolder(private val bind: ItemCheckoutListBinding) :
         RecyclerView.ViewHolder(bind.root) {
@@ -41,43 +43,57 @@ class CheckOutStoreAdapter @Inject constructor() :
                 val greyLite = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.grey_lite))
                 val greyDark = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.textGreyDark))
                 val white = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white))
+
                 val hasStandardDelivery = shippingOptions.any { it.title == "Standard Delivery" && it.is_active == 1 }
                 val hasSelfPickup = shippingOptions.any { it.title == "Self Pickup" && it.is_active == 1 }
 
-                if (absoluteAdapterPosition<=differ.currentList.size-1) {
-                    data.standardPickUp = hasStandardDelivery
-                    data.selfPickUp = hasStandardDelivery && !hasSelfPickup
+                if(shippingOptions.isNotEmpty()){
+                    if(!shippingOptions.any{it.is_selected}) {
+                        shippingOptions[0].is_selected = true
+                    }
                 }
+
 
                 standardDelivery.isVisible = hasStandardDelivery
                 selfPickup.isVisible = hasSelfPickup
 
-                if (data.selfPickUp) {
-                    selfPickup.backgroundTintList = red
-                    selfPickup.setTextColor(white)
-                } else {
-                    selfPickup.backgroundTintList = greyLite
-                    selfPickup.setTextColor(greyDark)
+                shippingOptions.forEach {
+                    if(it.title == standardDelivery.text.toString()){
+                        if(it.is_selected){
+                            standardDelivery.backgroundTintList = red
+                            standardDelivery.setTextColor(white)
+                        }else{
+                            standardDelivery.backgroundTintList = greyLite
+                            standardDelivery.setTextColor(greyDark)
+                        }
+                    }else if(it.title == selfPickup.text.toString()){
+                        if(it.is_selected){
+                            selfPickup.backgroundTintList = red
+                            selfPickup.setTextColor(white)
+                        }else{
+                            selfPickup.backgroundTintList = greyLite
+                            selfPickup.setTextColor(greyDark)
+                        }
+                    }
                 }
 
-                if (data.standardPickUp) {
-                    standardDelivery.backgroundTintList = red
-                    standardDelivery.setTextColor(white)
-                } else {
-                    standardDelivery.backgroundTintList = greyLite
-                    standardDelivery.setTextColor(greyDark)
-                }
 
                 standardDelivery.setOnClickListener {
-                    data.selfPickUp = false
-                    data.standardPickUp = true
+                    shippingOptions.forEach {
+                        it.is_selected = false
+                    }
+                    val index=shippingOptions.indexOf(shippingOptions.find { it.title == standardDelivery.text.toString() })
+                    shippingOptions[index].is_selected = true
                     onShippingOption?.invoke(data.seller.seller_id,shippingOptions[0].id)
                     notifyDataSetChanged()
                 }
 
                 selfPickup.setOnClickListener {
-                    data.selfPickUp = true
-                    data.standardPickUp = false
+                    shippingOptions.forEach {
+                        it.is_selected = false
+                    }
+                    val index=shippingOptions.indexOf(shippingOptions.find { it.title == selfPickup.text.toString() })
+                    shippingOptions[index].is_selected = true
                     onShippingOption?.invoke(data.seller.seller_id,shippingOptions[1].id)
                     notifyDataSetChanged()
                 }
@@ -102,7 +118,13 @@ class CheckOutStoreAdapter @Inject constructor() :
                         endIndex,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-                    voucherDescription.text = spannableString
+
+                    if (data.seller_coupon_data.is_free_shipping == 1) {
+                        voucherDescription.text = "Free shipping Voucher applied"
+                    } else {
+                        voucherDescription.text = spannableString
+                    }
+
 //                    voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(data.seller_coupon_data.seller_coupon_discount_amt)}"
                 }
                 storeName.text = data.seller.seller
@@ -117,6 +139,7 @@ class CheckOutStoreAdapter @Inject constructor() :
                 val checkOutStore =
                     data.seller.products.filter { it.cart_selected.toString().toDouble() > 0 }
                 checkOutProducts.addAll(checkOutStore)
+                productAdapter.setActivity(activity)
                 productAdapter.differ.submitList(checkOutProducts)
 
                 val shippingCharge = (if(data.shipping==null) 0 else data.shipping.toString().toDouble()).toDouble()
@@ -151,6 +174,10 @@ class CheckOutStoreAdapter @Inject constructor() :
 
                 storeName.setOnClickListener {
                     onStoreClicked?.invoke(data.seller.seller_id)
+                }
+
+                if(data.seller_coupon_text.isNotEmpty()){
+                    Toast.makeText(context, data.seller_coupon_text, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -205,10 +232,6 @@ class CheckOutStoreAdapter @Inject constructor() :
 
     private var onAppliedCoupon: ((status: Boolean, amount: String) -> Unit)? = null
 
-    fun setOnAppliedCoupon(listener: (status: Boolean, amount: String) -> Unit) {
-        onAppliedCoupon = listener
-    }
-
     private var onRemoveCoupon: ((id: Int) -> Unit)? = null
 
     fun setOnSellerRemoveCoupon(listener: (id: Int) -> Unit) {
@@ -230,5 +253,9 @@ class CheckOutStoreAdapter @Inject constructor() :
 
     fun setOnStoreClicked(listener: (id: Int) -> Unit) {
         onStoreClicked = listener
+    }
+
+    fun setActivity(activity: Activity){
+        this.activity = activity
     }
 }

@@ -44,16 +44,171 @@
             android:layout_height="match_parent"
             android:paddingBottom="@dimen/_70sdp">
 
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/deliverAddressLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:elevation="@dimen/_2sdp"
+                android:layout_marginVertical="@dimen/_1sdp"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingBottom="@dimen/_5sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/deliverToLbl"
+                    style="@style/textLargeSemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_9sdp"
+                    android:text="Deliver To"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@id/addNewAddress"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/addNewAddress" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addNewAddress"
+                    style="@style/textMediumSemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginEnd="@dimen/_7sdp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="@string/add_new_address_lbl"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/_12ssp"
+                    app:backgroundTint="@color/white"
+                    app:cornerRadius="@dimen/_6sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/red"
+                    app:strokeWidth="1dp" />
+
+                <TextView
+                    android:id="@+id/noAddressLbl"
+                    style="@style/textMediumSemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_9sdp"
+                    android:paddingBottom="@dimen/_15sdp"
+                    android:text="@string/no_default_address_found_please_add_address_lbl"
+                    android:textColor="@color/textGreyDark"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/addNewAddress" />
+
+
+                <TextView
+                    android:id="@+id/deliverToLbl2"
+                    style="@style/textLargeSemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_9sdp"
+                    android:text="@string/deliver_to_lbl"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toBottomOf="@id/manageAddress"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/manageAddress" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/manageAddress"
+                    style="@style/textMediumSemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginEnd="@dimen/_7sdp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/roboto_medium"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    android:paddingHorizontal="@dimen/_18sdp"
+                    android:paddingVertical="0dp"
+                    android:text="@string/manage_address_lbl"
+                    android:textAllCaps="false"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/_12ssp"
+                    app:backgroundTint="@color/white"
+                    app:cornerRadius="@dimen/_6sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/red"
+                    app:strokeWidth="1dp" />
+
+                <TextView
+                    android:id="@+id/customerName"
+                    style="@style/textMediumSemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_9sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:text="John Doe"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/manageAddress" />
+
+                <TextView
+                    android:id="@+id/customerAddress"
+                    style="@style/textMediumSemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_9sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:singleLine="false"
+                    android:text="19th floor, Plaza OSK, Jalan Ampang,\n50450 kuala Lumpur, Malaysia"
+                    android:textColor="@color/textGreyDark"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/customerName" />
+
+                <TextView
+                    android:id="@+id/customerMobile"
+                    style="@style/textMediumSemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_9sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:singleLine="false"
+                    android:text="+ 063 - 2166 6515"
+                    android:textColor="@color/textGreyDark"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/customerAddress" />
+
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/manageAddressGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    app:constraint_referenced_ids="deliverToLbl2,manageAddress,customerName,customerAddress,customerMobile" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/addAddressGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:constraint_referenced_ids="deliverToLbl,addNewAddress,noAddressLbl" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <TextView
                 android:id="@+id/cartDetailsLbl"
                 style="@style/textMediumSemiBold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:text="@string/cart_details_lbl"
-
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/deliverAddressLayout" />
 
             <TextView
                 android:id="@+id/totalItems"
@@ -83,7 +238,7 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/_5sdp"
                 app:layout_constraintTop_toBottomOf="@id/cartDetailsLbl"
-                tools:itemCount="1"
+                tools:itemCount="0"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_cart_list" />
 
@@ -231,8 +386,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="@dimen/_3sdp"
-                    android:paddingHorizontal="@dimen/_5sdp"
-                    >
+                    android:paddingHorizontal="@dimen/_5sdp">
 
                     <CheckBox
                         android:id="@+id/useWalletPoints"
@@ -250,12 +404,25 @@
                         style="@style/textMediumSemiBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/_7sdp"
+                        android:layout_marginEnd="16dp"
                         android:text="0.00"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toTopOf="@id/pointsCash"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/useWalletPoints"
+                        app:layout_constraintVertical_bias="0.444" />
+                    <TextView
+                        android:id="@+id/pointsCash"
+                        style="@style/textSmallSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:text="(RM 0.00)"
                         android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="@id/useWalletPoints"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/useWalletPoints" />
+                        app:layout_constraintTop_toBottomOf="@id/points"
+                        app:layout_constraintVertical_bias="0.444" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -406,28 +573,51 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/walletBillLbl" />
 
-                    <TextView
-                        android:id="@+id/shippingChargesLbl"
+                        <TextView
+                            android:id="@+id/shippingChargesLbl"
+                            style="@style/textMediumSemiBold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:text="@string/shipping_fee_lbl"
+                            android:textColor="@color/black"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/walletBillLbl" />
+
+                        <TextView
+                            android:id="@+id/shippingAmount"
+                            style="@style/textMediumBold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_9sdp"
+                            android:text="RM 0.00"
+                            android:textColor="@color/black"
+                            app:layout_constraintBottom_toBottomOf="@id/shippingChargesLbl"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/shippingChargesLbl" />
+
+  <TextView
+                        android:id="@+id/shippingDiscountLbl"
                         style="@style/textMediumSemiBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_10sdp"
-                        android:text="@string/shipping_fee_lbl"
+                        android:text="@string/shipping_discount_lbl"
                         android:textColor="@color/black"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/walletBillLbl" />
+                        app:layout_constraintTop_toBottomOf="@id/shippingChargesLbl" />
 
                     <TextView
-                        android:id="@+id/shippingAmount"
+                        android:id="@+id/shippingDiscount"
                         style="@style/textMediumBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_9sdp"
                         android:text="RM 0.00"
-                        android:textColor="@color/black"
-                        app:layout_constraintBottom_toBottomOf="@id/shippingChargesLbl"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/shippingDiscountLbl"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/shippingChargesLbl" />
+                        app:layout_constraintTop_toTopOf="@id/shippingDiscountLbl" />
 
 
                     <View
@@ -438,7 +628,7 @@
                         android:background="@color/grey_lite"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/shippingChargesLbl" />
+                        app:layout_constraintTop_toBottomOf="@id/shippingDiscountLbl" />
 
                     <TextView
                         android:id="@+id/totalLbl"
@@ -514,6 +704,7 @@
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 
     <View
         android:visibility="gone"

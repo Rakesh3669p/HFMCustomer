@@ -10,8 +10,8 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/back"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_34sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:clickable="true"
         android:contentDescription="@string/back_lbl"
         android:focusable="true"
@@ -119,19 +119,19 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/manageAddress"
                     style="@style/textMediumSemiBold"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="@dimen/_12ssp"
-                    android:textAllCaps="false"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_35sdp"
                     android:layout_marginEnd="@dimen/_7sdp"
                     android:clickable="true"
                     android:focusable="true"
+                    android:fontFamily="@font/roboto_medium"
                     android:foreground="?android:attr/selectableItemBackgroundBorderless"
                     android:paddingHorizontal="@dimen/_18sdp"
                     android:paddingVertical="0dp"
                     android:text="@string/manage_address_lbl"
+                    android:textAllCaps="false"
                     android:textColor="@color/red"
+                    android:textSize="@dimen/_12ssp"
                     app:backgroundTint="@color/white"
                     app:cornerRadius="@dimen/_6sdp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -144,8 +144,8 @@
                     style="@style/textMediumSemiBold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginStart="@dimen/_9sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginBottom="@dimen/_10sdp"
                     android:text="John Doe"
                     android:textColor="@color/black"
@@ -160,8 +160,8 @@
                     android:layout_marginStart="@dimen/_9sdp"
                     android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginBottom="@dimen/_5sdp"
-                    android:text="19th floor, Plaza OSK, Jalan Ampang,\n50450 kuala Lumpur, Malaysia"
                     android:singleLine="false"
+                    android:text="19th floor, Plaza OSK, Jalan Ampang,\n50450 kuala Lumpur, Malaysia"
                     android:textColor="@color/textGreyDark"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/customerName" />
@@ -174,11 +174,11 @@
                     android:layout_marginStart="@dimen/_9sdp"
                     android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginBottom="@dimen/_5sdp"
-                    android:text="+ 063 - 2166 6515"
                     android:singleLine="false"
+                    android:text="+ 063 - 2166 6515"
                     android:textColor="@color/textGreyDark"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/customerAddress" />
 
 
@@ -186,18 +186,16 @@
                     android:id="@+id/manageAddressGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="deliverToLbl2,manageAddress,customerName,customerAddress,customerMobile"/>
+                    app:constraint_referenced_ids="deliverToLbl2,manageAddress,customerName,customerAddress,customerMobile" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/addAddressGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:constraint_referenced_ids="deliverToLbl,addNewAddress,noAddressLbl"/>
+                    app:constraint_referenced_ids="deliverToLbl,addNewAddress,noAddressLbl" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 
             <androidx.recyclerview.widget.RecyclerView
@@ -236,8 +234,8 @@
                 android:id="@+id/voucherDetailsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/_8sdp"
                 android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginVertical="@dimen/_8sdp"
                 android:background="@drawable/dash_box"
                 android:padding="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -250,11 +248,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_9sdp"
+                    android:paddingEnd="@dimen/_5sdp"
                     android:text="NEW 10"
                     android:textColor="@color/black"
-                    android:paddingEnd="@dimen/_5sdp"
-                    app:layout_constraintEnd_toStartOf="@id/removeVoucher"
                     app:layout_constraintBottom_toTopOf="@id/voucherDescription"
+                    app:layout_constraintEnd_toStartOf="@id/removeVoucher"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -264,11 +262,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_9sdp"
+                    android:paddingEnd="@dimen/_5sdp"
                     android:text="you saved additional RM 12"
                     android:textColor="@color/black"
-                    android:paddingEnd="@dimen/_5sdp"
-                    app:layout_constraintEnd_toStartOf="@id/removeVoucher"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/removeVoucher"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/voucherName" />
 
@@ -287,20 +285,20 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/addVoucher"
                 style="@style/textMediumSemiBold"
-                app:backgroundTint="@color/white"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_35sdp"
-                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:paddingHorizontal="@dimen/_18sdp"
                 android:text="Apply your exclusive vouchers"
                 android:textColor="@color/red"
+                app:backgroundTint="@color/white"
                 app:cornerRadius="@dimen/_6sdp"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/voucherDetailsLayout"
                 app:strokeColor="@color/red"
                 app:strokeWidth="1dp" />
@@ -332,11 +330,11 @@
                 android:id="@+id/walletPointsCv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/_8sdp"
                 android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginVertical="@dimen/_8sdp"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_4sdp"
                 app:cardElevation="@dimen/_2sdp"
-                app:cardBackgroundColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/walletLbl">
@@ -363,12 +361,25 @@
                         style="@style/textMediumSemiBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_9sdp"
-                        android:text="500 (RM5)"
+                        android:layout_marginEnd="16dp"
+                        android:text="0.00"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toTopOf="@id/pointsCash"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/useWalletPoints"
+                        app:layout_constraintVertical_bias="0.444" />
+                    <TextView
+                        android:id="@+id/pointsCash"
+                        style="@style/textSmallSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:text="(RM 0.00)"
                         android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="@id/useWalletPoints"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/useWalletPoints" />
+                        app:layout_constraintTop_toBottomOf="@id/points"
+                        app:layout_constraintVertical_bias="0.444" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -431,7 +442,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_9sdp"
                         android:text="RM 0.00"
-                        android:textColor="@color/red"
+                        android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="@id/subtotalLbl"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/subtotalLbl" />
@@ -523,11 +534,33 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_9sdp"
                         android:text="RM 0.00"
-                        android:textColor="@color/red"
+                        android:textColor="@color/black"
                         app:layout_constraintBottom_toBottomOf="@id/shippingChargesLbl"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/shippingChargesLbl" />
 
+                    <TextView
+                        android:id="@+id/shippingDiscountLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="@string/shipping_discount_lbl"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/shippingChargesLbl" />
+
+                    <TextView
+                        android:id="@+id/shippingDiscount"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_9sdp"
+                        android:text="RM 0.00"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/shippingDiscountLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/shippingDiscountLbl" />
 
                     <View
                         android:id="@+id/divider"
@@ -537,7 +570,7 @@
                         android:background="@color/grey_lite"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/shippingChargesLbl" />
+                        app:layout_constraintTop_toBottomOf="@id/shippingDiscountLbl" />
 
                     <TextView
                         android:id="@+id/totalLbl"
@@ -560,8 +593,7 @@
                         android:textColor="@color/red"
                         app:layout_constraintBottom_toBottomOf="@id/totalLbl"
                         app:layout_constraintEnd_toStartOf="@id/totalAmount"
-                        app:layout_constraintTop_toTopOf="@id/totalLbl"
-                        />
+                        app:layout_constraintTop_toTopOf="@id/totalLbl" />
 
                     <TextView
                         android:id="@+id/totalAmount"
@@ -576,7 +608,6 @@
                         app:layout_constraintTop_toTopOf="@id/rmLbl" />
 
                     <TextView
-                        android:visibility="gone"
                         android:id="@+id/totalSavings"
                         style="@style/textMedium"
                         android:layout_width="wrap_content"
@@ -584,6 +615,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:text="Total Savings: RM5.00"
                         android:textColor="@color/textGreyDark"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/totalAmount" />
 
@@ -596,7 +628,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <TextView
-            android:id="@+id/placeOrder"
+        android:id="@+id/placeOrder"
         style="@style/textLargeSemiBold"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
@@ -614,32 +646,32 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <View
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/toolBarTitle"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolBarTitle" />
 
     <TextView
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Under Construction"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolBarTitle"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolBarTitle" />
 
     <View
-        android:visibility="gone"
         android:id="@+id/loader"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolBarTitle"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolBarTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -82,6 +82,7 @@ class CreatePasswordFragment : Fragment(), View.OnClickListener {
         firstName = arguments?.getString("name").toString()
         email = arguments?.getString("email").toString()
         from = arguments?.getString("from").toString()
+        refCode = arguments?.getString("refCode").toString()
         binding.back.isVisible = from == "profile"
         if (from == "profile") {
             with(binding) {
@@ -140,7 +141,9 @@ class CreatePasswordFragment : Fragment(), View.OnClickListener {
 
         password = binding.password.text.toString().trim()
         confirmPassword = binding.confirmPassword.text.toString().trim()
-        if (password.length <= 7) {
+        if (password.isEmpty()) {
+            showToast("Password should not be empty.")
+        }else if (password.length <= 7) {
             showToast("Min 8 characters required.")
         } else if (password != confirmPassword) {
             showToast("Password and confirm password does not match!")

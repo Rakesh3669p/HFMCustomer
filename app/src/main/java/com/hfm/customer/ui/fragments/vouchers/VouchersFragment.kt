@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.hfm.customer.R
@@ -24,6 +25,7 @@ import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.SessionManager
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.moveToLogin
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
@@ -83,6 +85,8 @@ class VouchersFragment : Fragment(){
                         platformVouchers = response.data.data.coupon_list
                         initRecyclerView(requireContext(), binding.vouchersRv, vouchersAdapter)
                         vouchersAdapter.differ.submitList(platformVouchers)
+                        binding.noData.root.isVisible = platformVouchers.isEmpty()
+                        binding.noData.noDataLbl.text = "No platform vouchers to show."
                     } else if (response.data?.httpcode == 401) {
                         sessionManager.isLogin = false
                         startActivity(Intent(requireActivity(), LoginActivity::class.java))
@@ -107,15 +111,19 @@ class VouchersFragment : Fragment(){
 
     private fun setOnClickListener() {
         vouchersAdapter.setOnItemClickListener { position ->
-            val couponCode = platformVouchers[position].couponCode
-            val clipboardManager =
-                requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clipData = ClipData.newPlainText("text", couponCode)
-            clipboardManager.setPrimaryClip(clipData)
-            showToast("Coupon code copied")
+            if(sessionManager.isLogin){
+                val couponCode = platformVouchers[position].couponCode
+                val clipboardManager =
+                    requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData = ClipData.newPlainText("text", couponCode)
+                clipboardManager.setPrimaryClip(clipData)
+                showToast("Coupon code copied")
+            }else {
+                showToast("Please login first")
+                requireActivity().moveToLogin(sessionManager)
+
+            }
         }
     }
-
-
 
 }

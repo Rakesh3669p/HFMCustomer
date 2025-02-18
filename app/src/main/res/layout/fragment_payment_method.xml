@@ -41,7 +41,7 @@
         android:layout_marginEnd="@dimen/_10sdp"
         android:gravity="center"
         android:paddingVertical="@dimen/_10sdp"
-        android:text="How to make payment?"
+        android:text="@string/how_to_make_payment_lbl"
         android:textColor="@color/red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back" />

@@ -7,20 +7,18 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:elevation="@dimen/_10sdp"
-    android:paddingHorizontal="@dimen/_10sdp"
     android:paddingBottom="@dimen/_10sdp">
 
 
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/back"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:clickable="true"
         android:contentDescription="@string/back_lbl"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        android:paddingVertical="@dimen/_5sdp"
         android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,6 +40,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingHorizontal="@dimen/_10sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/titleLbl"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -109,6 +108,82 @@
                 app:layout_constraintStart_toStartOf="@+id/selectOrderLbl"
                 app:layout_constraintTop_toBottomOf="@+id/selectOrderLbl" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:visibility="gone"
+                android:id="@+id/ordersLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edt_box_smaa_radius"
+                android:backgroundTint="@color/red"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingBottom="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/orderEdt">
+
+                <androidx.constraintlayout.utils.widget.ImageFilterView
+                    android:id="@+id/closeBtn"
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:padding="@dimen/_2sdp"
+                    android:src="@drawable/ic_close"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/orderId"
+                    style="@style/textMediumSemiBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Order #: 5684685"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/orderDate"
+                    style="@style/textSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:text="Apr 20, 2022"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toEndOf="@id/orderId"
+                    app:layout_constraintTop_toTopOf="@id/orderId"
+                    app:layout_constraintBottom_toBottomOf="@+id/orderId"/>
+
+                <TextView
+                    android:id="@+id/amount"
+                    style="@style/textMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:singleLine="false"
+                    android:text="RM 20,000.00 (3 Items)"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/orderId" />
+
+                <TextView
+                    android:id="@+id/viewOrder"
+                    style="@style/textMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:singleLine="false"
+                    android:text="@string/view_order_lbl"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/amount"
+                    app:layout_constraintBottom_toBottomOf="@+id/amount"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/orderDetailsGroup"
                 android:layout_width="match_parent"
@@ -125,7 +200,7 @@
                 android:text="Title"
                 app:layout_constraintEnd_toEndOf="@id/ticketSpinner"
                 app:layout_constraintStart_toStartOf="@id/ticketSpinner"
-                app:layout_constraintTop_toBottomOf="@+id/orderEdt" />
+                app:layout_constraintTop_toBottomOf="@+id/ordersLayout" />
 
 
             <EditText
@@ -153,23 +228,31 @@
                 app:layout_constraintStart_toStartOf="@id/ticketSpinner"
                 app:layout_constraintTop_toBottomOf="@+id/titleEdt" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/imageUploadLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edt_line_box"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layout_constraintTop_toBottomOf="@+id/uploadImagesLbl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/title">
             <TextView
                 android:id="@+id/uploadImages"
                 style="@style/textMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_85sdp"
-                android:layout_marginTop="@dimen/_7sdp"
-                android:background="@drawable/edt_line_box"
-                android:drawableLeft="@drawable/add_photo_alternate"
+                android:drawableStart="@drawable/add_photo_alternate"
                 android:gravity="center"
                 android:drawablePadding="@dimen/_10sdp"
-                android:paddingHorizontal="@dimen/_80sdp"
                 android:paddingVertical="@dimen/_10sdp"
                 android:text="@string/browse_images_lbl"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/title"
-                app:layout_constraintTop_toBottomOf="@+id/uploadImagesLbl" />
-
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                 />
+            </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.constraintlayout.utils.widget.ImageFilterView
                 android:visibility="gone"
                 android:id="@+id/uploadedImage"
@@ -180,10 +263,10 @@
                 android:src="@drawable/logo"
                 android:layout_margin="@dimen/_5sdp"
                 android:background="@color/background"
-                app:layout_constraintStart_toStartOf="@id/uploadImages"
-                app:layout_constraintEnd_toEndOf="@id/uploadImages"
-                app:layout_constraintTop_toTopOf="@id/uploadImages"
-                app:layout_constraintBottom_toBottomOf="@id/uploadImages"/>
+                app:layout_constraintStart_toStartOf="@id/imageUploadLayout"
+                app:layout_constraintEnd_toEndOf="@id/imageUploadLayout"
+                app:layout_constraintTop_toTopOf="@id/imageUploadLayout"
+                app:layout_constraintBottom_toBottomOf="@id/imageUploadLayout"/>
 
             <TextView
                 android:id="@+id/messagesLbl"
@@ -194,7 +277,7 @@
                 android:text="@string/messageLbl"
                 app:layout_constraintEnd_toEndOf="@id/ticketSpinner"
                 app:layout_constraintStart_toStartOf="@id/ticketSpinner"
-                app:layout_constraintTop_toBottomOf="@+id/uploadImages" />
+                app:layout_constraintTop_toBottomOf="@+id/imageUploadLayout" />
 
             <EditText
                 android:id="@+id/messageEdt"

@@ -43,17 +43,12 @@ class FactoryAdapter @Inject constructor() :
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
                 }
 
-                if(data.frozen==1){
+                if(data.chilled==1){
                     frozenLbl.makeVisible()
-                    val filters = arrayOfNulls<InputFilter>(1)
-                    filters[0] = InputFilter.LengthFilter(5)
-                    frozenLbl.text = "Fresh/Frozen"
-                }else if(data.chilled==1){
-                    frozenLbl.makeVisible()
-                    val filters = arrayOfNulls<InputFilter>(1)
-                    filters[0] = InputFilter.LengthFilter(10)
-                    frozenLbl.filters = filters
                     frozenLbl.text = "Chilled"
+                }else if(data.frozen==1){
+                    frozenLbl.makeVisible()
+                    frozenLbl.text = "Fresh/Frozen"
                 }else{
                     frozenLbl.makeGone()
                 }

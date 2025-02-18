@@ -1,20 +1,33 @@
 package com.hfm.customer.ui.fragments.store
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.Review
 import com.hfm.customer.databinding.FragmentStoreRatingBinding
+import com.hfm.customer.databinding.ReviewMediaImagesBinding
+import com.hfm.customer.databinding.ReviewMediaVideoBinding
 import com.hfm.customer.ui.fragments.products.productDetails.adapter.ReviewsAdapter
 import com.hfm.customer.ui.fragments.store.model.StoreData
 import com.hfm.customer.ui.fragments.store.model.StoreReviewsData
@@ -22,14 +35,18 @@ import com.hfm.customer.utils.Loader
 import com.hfm.customer.utils.NoInternetDialog
 import com.hfm.customer.utils.Resource
 import com.hfm.customer.utils.initRecyclerView
+import com.hfm.customer.utils.loadImage
 import com.hfm.customer.utils.makeGone
 import com.hfm.customer.utils.makeVisible
 import com.hfm.customer.utils.netWorkFailure
+import com.hfm.customer.utils.replaceBaseUrl
 import com.hfm.customer.utils.showToast
 import com.hfm.customer.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.IOException
 import javax.inject.Inject
 
+@SuppressLint("UnsafeOptInUsageError")
 @AndroidEntryPoint
 class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.OnClickListener {
 
@@ -39,13 +56,21 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
     private val reviews: MutableList<Review> = ArrayList()
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
+    private lateinit var dataSourceFactory: DefaultDataSource.Factory
     private val mainViewModel: MainViewModel by viewModels()
     private var sellerId: Int = 0
     private var ratings = ""
     private var media = ""
     private var isLoading = false
-
     private var pageNo = 0
+
+    private val reviewPlayer: ExoPlayer by lazy {
+        ExoPlayer.Builder(requireContext()).build().apply {
+            setAudioAttributes(audioAttributes, true)
+            pauseAtEndOfMediaItems = true
+            setHandleAudioBecomingNoisy(true)
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -75,6 +100,7 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
         binding.loader.makeVisible()
         appLoader = Loader(requireContext())
         noInternetDialog = NoInternetDialog(requireContext())
+        dataSourceFactory = DefaultDataSource.Factory(requireContext())
         initRecyclerView(requireContext(), binding.reviewsRv, reviewsAdapter)
         binding.reviewsRv.addOnScrollListener(scrollListener)
     }
@@ -158,8 +184,119 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
             all.setOnClickListener(this@StoreRatingFragment)
             mediaSelection.setOnClickListener(this@StoreRatingFragment)
         }
+
+        reviewsAdapter.setOnImageClickListener { images, index ->
+            showImageDialog(images, index)
+
+        }
+        reviewsAdapter.setOnVideoClickListener { video ->
+            showVideoDialog(video)
+
+        }
     }
 
+    private fun showImageDialog(images: List<String>, index: Int) {
+        var currentIndex = index
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = ReviewMediaImagesBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.setCancelable(true)
+
+        bindingDialog.productImage.loadImage(replaceBaseUrl(images[currentIndex]))
+        bindingDialog.right.setOnClickListener {
+
+            if (currentIndex < images.size - 1) {
+                currentIndex++
+                bindingDialog.productImage.loadImage(replaceBaseUrl(images[currentIndex]))
+            }
+        }
+
+        bindingDialog.left.setOnClickListener {
+            if (currentIndex > 0) {
+                currentIndex--
+                bindingDialog.productImage.loadImage(replaceBaseUrl(images[currentIndex]))
+            }
+        }
+
+        bindingDialog.close.setOnClickListener { appCompatDialog.dismiss() }
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.show()
+    }
+
+    private fun showVideoDialog(video: String) {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = ReviewMediaVideoBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+        appCompatDialog.setCancelable(true)
+        bindingDialog.reviewVideo.clipToOutline = true
+        bindingDialog.reviewVideo.player = reviewPlayer
+        val exoPlay: ImageView =
+            bindingDialog.reviewVideo.findViewById(androidx.media3.ui.R.id.exo_play)
+        val exoPause: ImageView =
+            bindingDialog.reviewVideo.findViewById(androidx.media3.ui.R.id.exo_pause)
+        val exoBuffer: ProgressBar =
+            bindingDialog.reviewVideo.findViewById(androidx.media3.ui.R.id.exo_buffering)
+        exoPlay.setOnClickListener {
+            playReviewVideo(video)
+        }
+
+        exoPause.setOnClickListener {
+            reviewPlayer.pause()
+        }
+
+        playReviewVideo(video)
+
+        reviewPlayer.addListener(object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+                if (isPlaying) {
+                    exoBuffer.isVisible = false
+                    exoPlay.isVisible = false
+                    exoPause.isVisible = true
+                } else {
+                    exoBuffer.isVisible = true
+                    exoPlay.isVisible = true
+                    exoPause.isVisible = false
+                }
+            }
+        })
+
+        bindingDialog.close.setOnClickListener { appCompatDialog.dismiss() }
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.show()
+    }
+
+    private fun playReviewVideo(video: String) {
+        val mediaItem: MediaItem = MediaItem.fromUri(video)
+
+        val mediaSource =
+            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+        val currentMediaItem: MediaItem? = reviewPlayer.currentMediaItem
+        if (currentMediaItem == null || currentMediaItem != mediaSource.mediaItem) {
+            try {
+                reviewPlayer.stop()
+                reviewPlayer.setMediaSource(mediaSource)
+                reviewPlayer.prepare()
+//                reviewPlayer.addListener(playerListener)
+                reviewPlayer.playWhenReady = true
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        } else {
+            toggleReviewPlayPause()
+        }
+    }
+
+    private fun toggleReviewPlayPause() {
+        if (reviewPlayer.isPlaying) {
+            reviewPlayer.pause()
+        } else {
+            if (reviewPlayer.currentPosition >= reviewPlayer.duration) {
+                reviewPlayer.seekTo(0)
+            }
+            reviewPlayer.play()
+        }
+    }
     private fun setSelection(selectedView: TextView) {
         val grey =
             ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.grey_lite))
@@ -247,5 +384,14 @@ class StoreRatingFragment(private val storeData: StoreData) : Fragment(), View.O
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        reviewPlayer.pause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        reviewPlayer.release()
+    }
 
 }

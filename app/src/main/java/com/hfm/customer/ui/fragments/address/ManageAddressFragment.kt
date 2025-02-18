@@ -1,15 +1,22 @@
 package com.hfm.customer.ui.fragments.address
 
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.hfm.customer.R
+import com.hfm.customer.databinding.DialogueDeleteAlertBinding
+import com.hfm.customer.databinding.DialogueOrderSuccessBinding
 import com.hfm.customer.databinding.FragmentManageAddressBinding
 import com.hfm.customer.ui.fragments.address.adapter.ManageAddressAdapter
 import com.hfm.customer.ui.fragments.address.model.Address
@@ -62,19 +69,12 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         from = arguments?.getString("from").toString()
-        initRecyclerView(
-            requireContext(),
-            binding.manageAddressRv,
-            manageAddressAdapter
-        )
+        initRecyclerView(requireContext(), binding.manageAddressRv, manageAddressAdapter)
         val animator = DefaultItemAnimator()
         animator.supportsChangeAnimations = false // Disable default change animations
         binding.manageAddressRv.itemAnimator = animator
         mainViewModel.getAddress()
-
-
     }
-
 
     private fun setObserver() {
         mainViewModel.address.observe(viewLifecycleOwner) { response ->
@@ -91,6 +91,7 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
 
                         addressList = response.data.data.address_list
                         manageAddressAdapter.differ.submitList(response.data.data.address_list)
+                        manageAddressAdapter.notifyDataSetChanged()
                     } else {
                         showToast(response.data?.message.toString())
                     }
@@ -137,7 +138,6 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
                     }
                     if (response.data?.httpcode == 200)
                         if (from == "checkOut") {
-                            mainViewModel.defaultAddress(addressId.toString())
                             findNavController().previousBackStackEntry?.savedStateHandle?.set(
                                 "addressId",
                                 addressId
@@ -168,12 +168,15 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
             back.setOnClickListener(this@ManageAddressFragment)
             addNewAddress.setOnClickListener(this@ManageAddressFragment)
         }
+
         manageAddressAdapter.setOnDefaultClickListener { addressId ->
+            this.addressId = addressId
             mainViewModel.defaultAddress(addressId.toString())
         }
 
         manageAddressAdapter.setOnDeleteClickListener { addressId ->
-            mainViewModel.deleteAddress(addressId.toString())
+            showDeleteAlert(addressId)
+
         }
 
         manageAddressAdapter.setOnEditAddressClickListener { position ->
@@ -200,27 +203,51 @@ class ManageAddressFragment : Fragment(), View.OnClickListener {
         }
         manageAddressAdapter.setOnAddressClickListener { addressId ->
             this.addressId = addressId
-            if (from == "checkOut") {
-                mainViewModel.defaultAddress(addressId.toString())
-            }
-
+            mainViewModel.defaultAddress(addressId.toString())
 
         }
     }
+
+    private fun showDeleteAlert(addressId: Int) {
+        val appCompatDialog = Dialog(requireContext())
+        val bindingDialog = DialogueDeleteAlertBinding.inflate(layoutInflater)
+        appCompatDialog.setContentView(bindingDialog.root)
+
+        // Set a specific width for the dialog (for example, 80% of screen width)
+        val displayMetrics = resources.displayMetrics
+        val dialogWidth = (displayMetrics.widthPixels * 0.7).toInt()
+        appCompatDialog.window?.setLayout(dialogWidth, WindowManager.LayoutParams.WRAP_CONTENT)
+
+        appCompatDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        appCompatDialog.setCancelable(true)
+        bindingDialog.desc.text = "Are you sure want to delete address?"
+
+        bindingDialog.ok.setOnClickListener {
+            mainViewModel.deleteAddress(addressId.toString())
+            appCompatDialog.dismiss()
+        }
+
+        bindingDialog.cancel.setOnClickListener {
+            appCompatDialog.dismiss()
+        }
+
+        appCompatDialog.show()
+    }
+
 
     override fun onClick(v: View?) {
         when (v?.id) {
             binding.back.id -> findNavController().popBackStack()
             binding.addNewAddress.id -> {
                 val bundle = Bundle()
-                bundle.putString("from", "new")
+                bundle.putString("from", if(from == "checkOut")"checkOut" else "new")
                 findNavController().navigate(R.id.addNewAddressFragment, bundle)
             }
         }
     }
 
     override fun onPause() {
-        if(this::appLoader.isInitialized) {
+        if (this::appLoader.isInitialized) {
             while (appLoader.isShowing) {
                 appLoader.dismiss()
             }

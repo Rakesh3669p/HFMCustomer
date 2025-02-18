@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.hfm.customer.R
 import com.hfm.customer.databinding.DialogNoChatBinding
@@ -46,6 +47,7 @@ class ChatListFragment : Fragment(), View.OnClickListener {
     private lateinit var appLoader: Loader
     private lateinit var noInternetDialog: NoInternetDialog
 
+    var loggedOut = false
     private val mainViewModel: MainViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,7 +72,13 @@ class ChatListFragment : Fragment(), View.OnClickListener {
         noInternetDialog = NoInternetDialog(requireContext())
         noInternetDialog.setOnDismissListener { init() }
         mainViewModel.getChatList()
-
+        if(!sessionManager.isLogin){
+            loggedOut= true
+            showToast("Please login first")
+            sessionManager.isLogin = false
+            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+            requireActivity().finish()
+        }
     }
 
     private fun setObserver() {
@@ -82,12 +90,20 @@ class ChatListFragment : Fragment(), View.OnClickListener {
                         orderCount = response.data.data.order_count
                         if (response.data.data.list.isNotEmpty()) {
                             initRecyclerView(requireContext(), binding.chatUsersRv, chatUserAdapter)
+
+                            val animator = DefaultItemAnimator()
+                            animator.supportsChangeAnimations = false // Disable default change animations
+                            binding.chatUsersRv.itemAnimator = animator
+
                             chatUserAdapter.differ.submitList(response.data.data.list)
                         }
                     }  else if (response.data?.httpcode == 401) {
-                        sessionManager.isLogin = false
-                        startActivity(Intent(requireActivity(), LoginActivity::class.java))
-                        requireActivity().finish()
+                        if(!loggedOut) {
+                            showToast("Please login first")
+                            sessionManager.isLogin = false
+                            startActivity(Intent(requireActivity(), LoginActivity::class.java))
+                            requireActivity().finish()
+                        }
                     } else {
                         showToast(response.data?.message.toString())
                     }

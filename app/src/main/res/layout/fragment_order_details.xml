@@ -413,7 +413,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp"
                         android:singleLine="false"
-                        android:text="Bank Slip"
+                        android:text=""
                         android:textColor="@color/textGreyDark"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/paymentMethodLbl"
@@ -730,6 +730,20 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/sellerLbl" />
 
+<TextView
+                        android:id="@+id/orderType"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:singleLine="false"
+                        android:text="OrderType: Normal"
+                        android:paddingEnd="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:textColor="@color/textGreyDark"
+                        app:layout_constraintEnd_toStartOf="@id/chat"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/seller" />
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/chat"
                         android:layout_width="wrap_content"
@@ -750,12 +764,12 @@
                         style="@style/textMediumSemiBold"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
                         android:singleLine="false"
                         android:text="@string/delivery_partner"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/seller" />
+                        app:layout_constraintTop_toBottomOf="@id/orderType" />
 
                     <TextView
                         android:id="@+id/deliveryPartner"
@@ -940,6 +954,28 @@
                         app:layout_constraintTop_toTopOf="@id/shippingChargesLbl" />
 
 
+                    <TextView
+                        android:id="@+id/shippingDiscountLbl"
+                        style="@style/textMediumSemiBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="@string/shipping_discount_lbl"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/shippingChargesLbl" />
+
+                    <TextView
+                        android:id="@+id/shippingDiscount"
+                        style="@style/textMediumBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_9sdp"
+                        android:text="RM 0.00"
+                        android:textColor="@color/red"
+                        app:layout_constraintBottom_toBottomOf="@id/shippingDiscountLbl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/shippingDiscountLbl" />
                     <View
                         android:id="@+id/divider"
                         android:layout_width="0dp"
@@ -948,7 +984,7 @@
                         android:background="@color/grey_lite"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/shippingChargesLbl" />
+                        app:layout_constraintTop_toBottomOf="@id/shippingDiscountLbl" />
 
                     <TextView
                         android:id="@+id/totalLbl"

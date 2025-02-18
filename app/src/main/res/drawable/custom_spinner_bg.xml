@@ -11,7 +11,7 @@
 
     <item>
         <layer-list>
-            <item android:drawable="@drawable/arrow_drop_down" android:gravity="center_vertical|right" android:right="@dimen/_5sdp"/>
+            <item android:drawable="@drawable/ic_dropdown" android:gravity="center_vertical|right" android:right="@dimen/_5sdp"/>
         </layer-list>
     </item>
 </layer-list>

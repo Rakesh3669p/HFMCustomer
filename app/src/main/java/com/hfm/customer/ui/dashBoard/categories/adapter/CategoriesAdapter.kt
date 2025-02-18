@@ -72,4 +72,6 @@ class CategoriesAdapter @Inject constructor() :
         onCategoryClick = listener
     }
 
+
+
 }

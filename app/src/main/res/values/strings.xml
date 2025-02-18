@@ -1,6 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Halal Food Master</string>
     <string name="google_map_api_key">AIzaSyCREqHFu9GW1WE2fJgjagHZPenTl5KUxJ0</string>
+
+<!--    2980c34291dcf32b527ea439ff58fa8e-->
+    <string name="facebook_app_id">238960619212995</string>
+    <string name="fb_login_protocol_scheme">fb238960619212995</string>
+    <string name="facebook_client_token">21f527469fed1157c83714c0ffae31f8</string>
+
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="create_account_lbl">Create A New Account</string>
@@ -23,7 +31,7 @@
     <string name="company_name_lbl">Company Name</string>
     <string name="company_register_no_lbl">Company Register No.</string>
     <string name="nature_of_business_lbl">Nature of Business</string>
-    <string name="company_contact_no_lbl">Company Contact no.</string>
+    <string name="company_contact_no_lbl">Company Contact No.</string>
     <string name="verify_lbl">Verify</string>
     <string name="otp_verification_lbl">OTP Verification</string>
     <string name="create_password_lbl">Create Password</string>
@@ -116,7 +124,7 @@
     <string name="variantsLbl">Variants</string>
     <string name="confirmLbl">Confirm</string>
     <string name="no_default_address_found_please_add_address_lbl">No default address found. Please add address.</string>
-    <string name="add_new_address_lbl">Add New Address</string>
+    <string name="add_new_address_lbl">+ Add New Address</string>
     <string name="add_new_address_lbl2">Add New Address</string>
     <string name="standard_delivery_lbl">Standard Delivery</string>
     <string name="order_total_lbl">Order Total</string>
@@ -220,4 +228,16 @@
     <string name="cancelled_lbl">Cancelled</string>
     <string name="claimedLbl">Claimed</string>
     <string name="delete_my_account_lbl">Delete My Account</string>
+    <string name="enter_quantity_lbl">Enter Quantity</string>
+    <string name="shipping_discount_lbl">Shipping Discount</string>
+    <string name="referral_code_optional_lbl">Referral Code (Optional)</string>
+    <string name="sellerLowDesc">This item can\'t currently be added to your cart due to a low seller performance rating. Kindly explore our other great food options or check back later! Thank you for your patience.</string>
+    <string name="sorryLbl">Sorry !</string>
+    <string name="free_shipping_applied_lbl">Free shipping Voucher applied</string>
+    <string name="no_points_record_found_lbl">No points record found!</string>
+    <string name="address_line_1_lbl">Address Line 1</string>
+    <string name="address_line_2_lbl">Address Line 2</string>
+    <string name="viewLbl">View</string>
+    <string name="yesLbl">Yes</string>
+    <string name="noLbl">No</string>
 </resources>

@@ -39,21 +39,21 @@ class FeatureProductsAdapter @Inject constructor() :
                 if(data.offer_price!=null&&data.offer_price.toString() !="false"&&data.offer_price.toString().toDouble()>0){
                     productPrice.text = "RM ${formatToTwoDecimalPlaces(data.offer_price.toString().toDouble())}"
                 }else{
-                    if(data.actual_price!=null)
-                    productPrice.text = "RM ${formatToTwoDecimalPlaces(data.actual_price.toString().toDouble())}"
+                    if(data.actual_price!=null) {
+                        productPrice.text = "RM ${
+                            formatToTwoDecimalPlaces(
+                                data.actual_price.toString().toDouble()
+                            )
+                        }"
+                    }
                 }
 
-                if(data.frozen==1){
+                if(data.chilled==1){
                     frozenLbl.makeVisible()
-                    val filters = arrayOfNulls<InputFilter>(1)
-                    filters[0] = InputFilter.LengthFilter(5)
-                    frozenLbl.text = "Fresh/Frozen"
-                }else if(data.chilled==1){
-                    frozenLbl.makeVisible()
-                    val filters = arrayOfNulls<InputFilter>(1)
-                    filters[0] = InputFilter.LengthFilter(10)
-                    frozenLbl.filters = filters
                     frozenLbl.text = "Chilled"
+                }else if(data.frozen==1){
+                    frozenLbl.makeVisible()
+                    frozenLbl.text = "Fresh/Frozen"
                 }else{
                     frozenLbl.makeGone()
                 }

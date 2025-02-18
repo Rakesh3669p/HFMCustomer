@@ -1,6 +1,7 @@
 package com.hfm.customer.ui.fragments.cart.adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -11,9 +12,11 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hfm.customer.R
@@ -29,7 +32,7 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
 
     private lateinit var context: Context
     private var selectAll = false
-
+    private lateinit var activity:Activity
     inner class ViewHolder(private val bind: ItemCartListBinding) :
         RecyclerView.ViewHolder(bind.root) {
 
@@ -39,8 +42,11 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
                 voucherDetailsLayout.isVisible = data.is_seller_coupon_applied == 1
                 if (data.is_seller_coupon_applied == 1) {
                     voucher.text = data.seller_coupon_data.title
-                    voucherDescription.text =
-                        "You saved additional RM ${formatToTwoDecimalPlaces(data.seller_coupon_data.seller_coupon_discount_amt)}"
+                    if(data.seller_coupon_data.is_free_shipping==1){
+                        voucherDescription.text = "Free shipping Voucher applied"
+                    }else{
+                        voucherDescription.text = "You saved additional RM ${formatToTwoDecimalPlaces(data.seller_coupon_data.seller_coupon_discount_amt)}"
+                    }
                 }
 
 
@@ -51,6 +57,12 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
                 storeName.text = data.seller.seller
                 val productAdapter = CartProductAdapter()
                 initRecyclerView(context, productsRv, productAdapter)
+                val animator: RecyclerView.ItemAnimator? = productsRv.itemAnimator
+                if (animator is DefaultItemAnimator) {
+                    animator.supportsChangeAnimations = false
+                    productsRv.itemAnimator = null
+                }
+                productAdapter.setActivity(activity)
                 productAdapter.differ.submitList(data.seller.products)
 
                 productAdapter.setOnDeleteClickListener { cartId ->
@@ -114,9 +126,15 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
                 }
                 productAdapter.selectAllProducts(selectAll)
 
-                getVoucher.isVisible = data.seller_coupon_remaining != null && data.seller_coupon_remaining > 0
-                val remainingAmount = "RM ${data.seller_coupon_remaining?.let { formatToTwoDecimalPlaces(it) }}"
+                val sellerCouponRemaining = data.seller_coupon_remaining.toString().toDoubleOrNull()
+
+                getVoucher.isVisible = sellerCouponRemaining != null && sellerCouponRemaining > 0
+                val remainingAmount = "RM ${sellerCouponRemaining?.let { formatToTwoDecimalPlaces(it) }}"
                 getVoucher.text = "Buy $remainingAmount more to enjoy the voucher"
+            }
+
+            if(data.seller_coupon_text.isNotEmpty()){
+                Toast.makeText(context, data.seller_coupon_text, Toast.LENGTH_LONG).show()
             }
 
         }
@@ -203,5 +221,8 @@ class CartAdapter @Inject constructor() : RecyclerView.Adapter<CartAdapter.ViewH
         onStoreClicked = listener
     }
 
+    fun setActivity(activity: Activity){
+        this.activity = activity
+    }
 
 }

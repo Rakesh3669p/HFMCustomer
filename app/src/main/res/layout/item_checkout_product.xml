@@ -68,7 +68,7 @@
         android:layout_marginTop="@dimen/_15sdp"
         android:paddingHorizontal="@dimen/_10sdp"
         android:paddingVertical="@dimen/_5sdp"
-        android:text="Flash Deals Ends In: 02:40:59"
+        android:text="Flash Deals Ends In: 00:00:00:00"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"

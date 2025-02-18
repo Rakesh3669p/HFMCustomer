@@ -10,13 +10,12 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/back"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
         android:clickable="true"
         android:contentDescription="@string/back_lbl"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        android:paddingVertical="@dimen/_5sdp"
         android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,11 +28,12 @@
         android:layout_height="wrap_content"
         android:text="Title"
         android:paddingEnd="@dimen/_10sdp"
-        android:translationX="-10dp"
+        android:layout_marginStart="@dimen/_35sdp"
+        android:translationX="-12dp"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="@id/back"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/back"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/back" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,6 +60,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/orderDate"
             style="@style/textSmall"
             android:layout_width="wrap_content"
@@ -71,6 +72,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/amount"
             style="@style/textMedium"
             android:layout_width="0dp"
@@ -88,12 +90,12 @@
             style="@style/textMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
             android:singleLine="false"
             android:text="@string/view_order_lbl"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/orderId" />
+            app:layout_constraintTop_toTopOf="@+id/orderId"
+            app:layout_constraintBottom_toBottomOf="@+id/orderId"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

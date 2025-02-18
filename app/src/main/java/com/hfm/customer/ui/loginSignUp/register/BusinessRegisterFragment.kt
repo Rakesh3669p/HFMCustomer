@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,16 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.GraphRequest
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.hfm.customer.R
 import com.hfm.customer.commonModel.CountryData
 import com.hfm.customer.databinding.FragmentBusinessRegisterBinding
@@ -37,6 +48,7 @@ import com.hfm.customer.utils.isValidEmail
 import com.hfm.customer.utils.netWorkFailure
 import com.hfm.customer.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONException
 
 @AndroidEntryPoint
 class BusinessRegisterFragment : Fragment(), View.OnClickListener {
@@ -67,7 +79,7 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
             currentView = inflater.inflate(R.layout.fragment_business_register, container, false)
             binding = FragmentBusinessRegisterBinding.bind(currentView!!)
             init()
-            setObserver()
+
             setOnClickListener()
         }
         return currentView!!
@@ -75,7 +87,7 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setObserver()
     }
 
     private fun init() {
@@ -165,7 +177,7 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
                             putString("phoneCode", phoneCode)
                             putInt("natureOfBusiness", natureOfBusinessId)
                         }
-
+                        findNavController().popBackStack()
                         findNavController().navigate(R.id.otpFragment, bundle)
                     } else {
                         showToast(response.data?.message.toString())
@@ -185,8 +197,6 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
 
     private fun setCountriesDropDown(data: CountryData) {
         val phoneCodes = data.country.map { "+${it.phonecode}" }
-        val countries = data.country.map { it.country_name }
-        val countryIds = data.country.map { it.id.toString() }
 
         setSpinnerWithList(binding.countryCodeSpinner, phoneCodes, 131) { position ->
             phoneCode = data.country[position].phonecode.toString()
@@ -327,6 +337,7 @@ class BusinessRegisterFragment : Fragment(), View.OnClickListener {
             appCompatDialog.dismiss()
         }
     }
+
 
     override fun onClick(v: View?) {
         when (v?.id) {

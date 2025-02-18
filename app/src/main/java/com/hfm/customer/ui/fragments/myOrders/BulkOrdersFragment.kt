@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -61,12 +62,19 @@ class BulkOrdersFragment : Fragment(){
                     while (appLoader.isShowing) {
                         appLoader.dismiss()
                     }
-                    if(response.data?.httpcode == 200){
-                        initRecyclerView(requireContext(),binding.bulkOrdersRv,bulkOrderAdapter)
-                        bulkOrders = response.data.data.bulkrequest_order_details
-                        bulkOrderAdapter.differ.submitList(response.data.data.bulkrequest_order_details)
-                    }else{
-                        showToast(response.data?.message.toString())
+                    when (response.data?.httpcode) {
+                        200 -> {
+                            initRecyclerView(requireContext(),binding.bulkOrdersRv,bulkOrderAdapter)
+                            bulkOrders = response.data.data.bulkrequest_order_details
+                            bulkOrderAdapter.differ.submitList(response.data.data.bulkrequest_order_details)
+                            binding.noDataLayout.root.isVisible=response.data.data.bulkrequest_order_details.isEmpty()
+                        }
+                        404 -> {
+                            binding.noDataLayout.root.isVisible=true
+                        }
+                        else -> {
+                            showToast(response.data?.message.toString())
+                        }
                     }
 
                 }

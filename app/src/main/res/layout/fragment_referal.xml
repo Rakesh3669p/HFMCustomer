@@ -61,10 +61,56 @@
                 android:id="@+id/referralImage"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_240sdp"
-                android:src="@color/red"
+                android:scaleType="fitXY"
+                android:src="@drawable/referral_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/rewardsImageText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:fontFamily="@font/roboto"
+                android:lineSpacingExtra="1dp"
+                android:singleLine="false"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="@dimen/_20ssp"
+                app:layout_constraintBottom_toTopOf="@+id/rewardsText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/rewardsText"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:textSize="@dimen/_18ssp"
+                android:textColor="@color/white"
+                android:singleLine="false"
+                android:fontFamily="@font/roboto_bold"
+                android:text="get 500 points"
+                app:layout_constraintEnd_toEndOf="@id/rewardsImageText"
+                app:layout_constraintStart_toStartOf="@id/rewardsImageText"
+                app:layout_constraintBottom_toTopOf="@+id/pointsCalc" />
+
+
+            <TextView
+                android:id="@+id/pointsCalc"
+                style="@style/textSmallSemiBold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:textColor="@color/white"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:text=""
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/referralImage" />
 
             <TextView
                 android:id="@+id/rewardsLbl"
@@ -73,6 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
+                android:textSize="@dimen/_14ssp"
                 android:text="Reward cash T&amp;C's from referral program"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -109,6 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_15sdp"
+                android:singleLine="false"
                 android:text="3. Rewards cash expires in 30 days from date issued"
                 android:textColor="@color/textGreyDark"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -122,21 +170,32 @@
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginVertical="@dimen/_20sdp"
                 android:background="@drawable/dash_box_grey_small"
-                android:drawableEnd="@drawable/ic_address"
+
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/_10sdp"
-                android:text="#123456"
+                android:text=""
                 android:textColor="@color/grey"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/three" />
 
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/copy"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:padding="@dimen/_4sdp"
+                android:src="@drawable/ic_copy"
+                app:layout_constraintBottom_toBottomOf="@id/couponCode"
+                app:layout_constraintEnd_toEndOf="@id/couponCode"
+                app:layout_constraintTop_toTopOf="@id/couponCode" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/send"
+        android:id="@+id/shareButton"
         style="@style/textLarge"
         android:layout_width="0dp"
         android:layout_height="@dimen/_45sdp"

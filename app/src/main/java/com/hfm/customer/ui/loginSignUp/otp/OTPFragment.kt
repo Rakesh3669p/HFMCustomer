@@ -46,6 +46,7 @@ class OTPFragment : Fragment(), View.OnClickListener {
     private var country = ""
     private var state = ""
     private var city = ""
+    private var refCode = ""
 
     private var countdownTimer: CountDownTimer? = null
 
@@ -81,6 +82,7 @@ class OTPFragment : Fragment(), View.OnClickListener {
         from = arguments?.getString("from").toString()
         firstName = arguments?.getString("name").toString()
         email = arguments?.getString("email").toString()
+        refCode = arguments?.getString("refCode").toString()
         binding.otpField1.requestFocus()
 
         if (from == business) {
@@ -135,6 +137,7 @@ class OTPFragment : Fragment(), View.OnClickListener {
                             val bundle = Bundle().apply {
                                 putString("name", firstName)
                                 putString("email", email)
+                                putString("refCode", refCode)
                                 putString("customerType", customerType)
                             }
 
@@ -217,7 +220,7 @@ class OTPFragment : Fragment(), View.OnClickListener {
     }
 
     private fun startCountdown() {
-        countdownTimer = object : CountDownTimer(30000, 1000) { // 30 seconds, tick every 1 second
+        countdownTimer = object : CountDownTimer(180000, 1000) { // 30 seconds, tick every 1 second
             override fun onTick(millisUntilFinished: Long) {
                 val secondsRemaining = millisUntilFinished / 1000
                 binding.alreadyHaveAccount.text = "Resend OTP in: "

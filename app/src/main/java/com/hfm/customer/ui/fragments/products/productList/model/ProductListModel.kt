@@ -25,10 +25,6 @@ data class SubcategoryData(
     val subcategory: List<Subcategory>?=null
 )
 
-data class CategoryBreadcrumbs(
-    val category: Category
-)
-
 data class Category(
     val category_id: Int,
     val category_name: String

@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginHorizontal="@dimen/_5sdp"
         tools:itemCount="21"
-        android:paddingBottom="@dimen/_65sdp"
+        android:paddingBottom="@dimen/_15sdp"
         android:clipToPadding="false"
         tools:listitem="@layout/item_shops"
         />

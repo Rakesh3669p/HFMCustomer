@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.hfm.customer.R
 import com.hfm.customer.databinding.FragmentVouchersBinding
@@ -70,6 +71,8 @@ class ClaimedVouchersFragment : Fragment(){
                         platformVouchers = response.data.data.coupon_list
                         initRecyclerView(requireContext(), binding.vouchersRv, claimedVouchersAdapter)
                         claimedVouchersAdapter.differ.submitList(platformVouchers)
+                        binding.noData.root.isVisible = platformVouchers.isEmpty()
+                        binding.noData.noDataLbl.text = "No claimed vouchers to show."
                     } else if (response.data?.httpcode == 401) {
                         sessionManager.isLogin = false
                         startActivity(Intent(requireActivity(), LoginActivity::class.java))

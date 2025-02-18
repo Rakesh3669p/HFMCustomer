@@ -39,5 +39,5 @@ data class BulkrequestOrderDetail(
     val shipping_address: String,
     val shipping_charges: Any,
     val unit_of_measure: String,
-    val unit_price: Any
+    val unit_price: Any?
 )

@@ -14,7 +14,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Delivered: Nuts Enough Kikirirki Series Peanut Butter Creamy (350g)"
+        android:ellipsize="end"
         android:singleLine="false"
+        android:maxLines="2"
         app:layout_constraintEnd_toStartOf="@id/arrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
